@@ -70,10 +70,10 @@ class PedidosController extends Controller
 	}
 	}	
 	public function store(Request $request){
-		//dd($request);
+		dd($request);
 		$user=Auth::user()->name;
-   try{
-   DB::beginTransaction(); 
+ try{
+  DB::beginTransaction(); 
    $contador=DB::table('pedidos')->select('idpedido')->limit('1')->orderby('idpedido','desc')->first();
    if ($contador==NULL){$numero=0;}else{$numero=$contador->idpedido;}
 

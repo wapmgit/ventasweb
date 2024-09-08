@@ -199,6 +199,11 @@ $idv=0;
 @push ('scripts')
 <script>
 $(document).ready(function(){
+		dato=document.getElementById('vpedido').value.split('_');
+      var comi= dato[1];
+      $("#comision").val(comi);
+	  $("#nvendedor").val(dato[0]);
+	  
 	$('[data-mask]').inputmask();
 	document.getElementById('pcantidad').addEventListener('keypress',function(e){ validar(e); });	
 	document.getElementById('pprecio_venta').addEventListener('keypress',function(e){ validarno(e); });	
