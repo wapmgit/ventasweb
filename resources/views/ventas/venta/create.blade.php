@@ -274,6 +274,7 @@ $(document).ready(function(){
 		$("#tipocli").val(dato[4]);
 		$("#comision").val(comi);
 		$("#nvendedor").html("<strong>Vendedor:</strong> "+ vendedor);
+		$("#nvendedor").val(vendedor);
 				if ($("#tipocli").val()==1){		
 		document.getElementById('procesa').style.display="none"; } 
 		}else{

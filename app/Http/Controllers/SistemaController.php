@@ -179,7 +179,10 @@ class SistemaController extends Controller
         $emp->direccion=$request->get('direccion');
         $emp->telefono=$request->get('telefono');
         $emp->tasaespecial=$request->get('tasaajuste');
-        $emp->serie=$request->get('usaserie');
+		if($request->get('usaserie')){
+        $emp->serie=$request->get('usaserie');}else{
+			$emp->serie="A";
+		}
         $emp->codigo=$request->get('codigo');
 				if(!empty($request->file('imagen'))){
 			$file = $request->file('imagen');

@@ -77,7 +77,7 @@ class VentasController extends Controller
 	}
 	}	
     public function store(Request $request){
-		//dd($request);
+	//	dd($request);
 		 $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$user=Auth::user()->name;
    try{
