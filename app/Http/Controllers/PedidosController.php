@@ -70,7 +70,7 @@ class PedidosController extends Controller
 	}
 	}	
 	public function store(Request $request){
-		dd($request);
+	
 		$user=Auth::user()->name;
  try{
   DB::beginTransaction(); 
