@@ -77,7 +77,7 @@ class VentasController extends Controller
 	}
 	}	
     public function store(Request $request){
-	//	dd($request);
+		//dd($request);
 		 $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$user=Auth::user()->name;
    try{
@@ -562,12 +562,13 @@ public function fbs($id){
 		}
     }
 	public function facturar(Request $request, $idcliente){
+		//dd($request);
 				$rol=DB::table('roles')-> select('crearventa')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->crearventa==1){
 	     $monedas=DB::table('monedas')->get();
 	     $vendedor=DB::table('vendedores')->get();
 		 $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
-         $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.nombre','clientes.cedula','clientes.tipo_cliente','vendedores.comision','vendedores.nombre as nombrev')
+         $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.nombre','clientes.cedula','clientes.tipo_cliente','vendedores.comision','vendedores.id_vendedor as nombrev')
          -> where('status','=','A')
 		 ->groupby('clientes.id_cliente')
          -> where ('id_cliente','=',$idcliente)

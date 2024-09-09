@@ -278,7 +278,7 @@ $(document).ready(function(){
 				if ($("#tipocli").val()==1){		
 		document.getElementById('procesa').style.display="none"; } 
 		}else{
-			//alert();
+		
 		$("#id_cliente")
 		.append( '<option value="0" selected>Seleccione Cliente.</option>')
 		.selectpicker('refresh');
