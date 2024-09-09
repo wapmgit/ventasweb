@@ -15,14 +15,14 @@
 
 
 --
--- Create schema svweb
+-- Create schema juanchodb
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ svweb;
-USE svweb;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ juanchodb;
+USE juanchodb;
 
 --
--- Table structure for table `svweb`.`ajustes`
+-- Table structure for table `juanchodb`.`ajustes`
 --
 
 DROP TABLE IF EXISTS `ajustes`;
@@ -36,7 +36,7 @@ CREATE TABLE `ajustes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`ajustes`
+-- Dumping data for table `juanchodb`.`ajustes`
 --
 
 /*!40000 ALTER TABLE `ajustes` DISABLE KEYS */;
@@ -44,7 +44,7 @@ CREATE TABLE `ajustes` (
 
 
 --
--- Table structure for table `svweb`.`articulos`
+-- Table structure for table `juanchodb`.`articulos`
 --
 
 DROP TABLE IF EXISTS `articulos`;
@@ -76,7 +76,7 @@ CREATE TABLE `articulos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `svweb`.`articulos`
+-- Dumping data for table `juanchodb`.`articulos`
 --
 
 /*!40000 ALTER TABLE `articulos` DISABLE KEYS */;
@@ -84,7 +84,7 @@ CREATE TABLE `articulos` (
 
 
 --
--- Table structure for table `svweb`.`bancos`
+-- Table structure for table `juanchodb`.`bancos`
 --
 
 DROP TABLE IF EXISTS `bancos`;
@@ -100,7 +100,7 @@ CREATE TABLE `bancos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`bancos`
+-- Dumping data for table `juanchodb`.`bancos`
 --
 
 /*!40000 ALTER TABLE `bancos` DISABLE KEYS */;
@@ -108,7 +108,7 @@ CREATE TABLE `bancos` (
 
 
 --
--- Table structure for table `svweb`.`categoria`
+-- Table structure for table `juanchodb`.`categoria`
 --
 
 DROP TABLE IF EXISTS `categoria`;
@@ -122,7 +122,7 @@ CREATE TABLE `categoria` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`categoria`
+-- Dumping data for table `juanchodb`.`categoria`
 --
 
 /*!40000 ALTER TABLE `categoria` DISABLE KEYS */;
@@ -130,7 +130,7 @@ CREATE TABLE `categoria` (
 
 
 --
--- Table structure for table `svweb`.`clientes`
+-- Table structure for table `juanchodb`.`clientes`
 --
 
 DROP TABLE IF EXISTS `clientes`;
@@ -155,7 +155,7 @@ CREATE TABLE `clientes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`clientes`
+-- Dumping data for table `juanchodb`.`clientes`
 --
 
 /*!40000 ALTER TABLE `clientes` DISABLE KEYS */;
@@ -163,7 +163,7 @@ CREATE TABLE `clientes` (
 
 
 --
--- Table structure for table `svweb`.`comisiones`
+-- Table structure for table `juanchodb`.`comisiones`
 --
 
 DROP TABLE IF EXISTS `comisiones`;
@@ -179,7 +179,7 @@ CREATE TABLE `comisiones` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`comisiones`
+-- Dumping data for table `juanchodb`.`comisiones`
 --
 
 /*!40000 ALTER TABLE `comisiones` DISABLE KEYS */;
@@ -187,7 +187,7 @@ CREATE TABLE `comisiones` (
 
 
 --
--- Table structure for table `svweb`.`compras`
+-- Table structure for table `juanchodb`.`compras`
 --
 
 DROP TABLE IF EXISTS `compras`;
@@ -214,7 +214,7 @@ CREATE TABLE `compras` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`compras`
+-- Dumping data for table `juanchodb`.`compras`
 --
 
 /*!40000 ALTER TABLE `compras` DISABLE KEYS */;
@@ -222,7 +222,7 @@ CREATE TABLE `compras` (
 
 
 --
--- Table structure for table `svweb`.`comprobante`
+-- Table structure for table `juanchodb`.`comprobante`
 --
 
 DROP TABLE IF EXISTS `comprobante`;
@@ -245,7 +245,7 @@ CREATE TABLE `comprobante` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`comprobante`
+-- Dumping data for table `juanchodb`.`comprobante`
 --
 
 /*!40000 ALTER TABLE `comprobante` DISABLE KEYS */;
@@ -253,7 +253,7 @@ CREATE TABLE `comprobante` (
 
 
 --
--- Table structure for table `svweb`.`ctascon`
+-- Table structure for table `juanchodb`.`ctascon`
 --
 
 DROP TABLE IF EXISTS `ctascon`;
@@ -268,7 +268,7 @@ CREATE TABLE `ctascon` (
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`ctascon`
+-- Dumping data for table `juanchodb`.`ctascon`
 --
 
 /*!40000 ALTER TABLE `ctascon` DISABLE KEYS */;
@@ -288,7 +288,7 @@ INSERT INTO `ctascon` (`idcod`,`codigo`,`descrip`,`tipo`,`inactiva`) VALUES
 
 
 --
--- Table structure for table `svweb`.`datacsv`
+-- Table structure for table `juanchodb`.`datacsv`
 --
 
 DROP TABLE IF EXISTS `datacsv`;
@@ -302,7 +302,7 @@ CREATE TABLE `datacsv` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`datacsv`
+-- Dumping data for table `juanchodb`.`datacsv`
 --
 
 /*!40000 ALTER TABLE `datacsv` DISABLE KEYS */;
@@ -310,7 +310,7 @@ CREATE TABLE `datacsv` (
 
 
 --
--- Table structure for table `svweb`.`detalle_ajustes`
+-- Table structure for table `juanchodb`.`detalle_ajustes`
 --
 
 DROP TABLE IF EXISTS `detalle_ajustes`;
@@ -326,7 +326,7 @@ CREATE TABLE `detalle_ajustes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`detalle_ajustes`
+-- Dumping data for table `juanchodb`.`detalle_ajustes`
 --
 
 /*!40000 ALTER TABLE `detalle_ajustes` DISABLE KEYS */;
@@ -334,7 +334,7 @@ CREATE TABLE `detalle_ajustes` (
 
 
 --
--- Table structure for table `svweb`.`detalle_compras`
+-- Table structure for table `juanchodb`.`detalle_compras`
 --
 
 DROP TABLE IF EXISTS `detalle_compras`;
@@ -352,7 +352,7 @@ CREATE TABLE `detalle_compras` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`detalle_compras`
+-- Dumping data for table `juanchodb`.`detalle_compras`
 --
 
 /*!40000 ALTER TABLE `detalle_compras` DISABLE KEYS */;
@@ -360,7 +360,7 @@ CREATE TABLE `detalle_compras` (
 
 
 --
--- Table structure for table `svweb`.`detalle_devolucion`
+-- Table structure for table `juanchodb`.`detalle_devolucion`
 --
 
 DROP TABLE IF EXISTS `detalle_devolucion`;
@@ -375,7 +375,7 @@ CREATE TABLE `detalle_devolucion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`detalle_devolucion`
+-- Dumping data for table `juanchodb`.`detalle_devolucion`
 --
 
 /*!40000 ALTER TABLE `detalle_devolucion` DISABLE KEYS */;
@@ -383,7 +383,7 @@ CREATE TABLE `detalle_devolucion` (
 
 
 --
--- Table structure for table `svweb`.`detalle_devolucioncompras`
+-- Table structure for table `juanchodb`.`detalle_devolucioncompras`
 --
 
 DROP TABLE IF EXISTS `detalle_devolucioncompras`;
@@ -397,7 +397,7 @@ CREATE TABLE `detalle_devolucioncompras` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`detalle_devolucioncompras`
+-- Dumping data for table `juanchodb`.`detalle_devolucioncompras`
 --
 
 /*!40000 ALTER TABLE `detalle_devolucioncompras` DISABLE KEYS */;
@@ -405,7 +405,7 @@ CREATE TABLE `detalle_devolucioncompras` (
 
 
 --
--- Table structure for table `svweb`.`detalle_pedido`
+-- Table structure for table `juanchodb`.`detalle_pedido`
 --
 
 DROP TABLE IF EXISTS `detalle_pedido`;
@@ -423,7 +423,7 @@ CREATE TABLE `detalle_pedido` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`detalle_pedido`
+-- Dumping data for table `juanchodb`.`detalle_pedido`
 --
 
 /*!40000 ALTER TABLE `detalle_pedido` DISABLE KEYS */;
@@ -431,7 +431,7 @@ CREATE TABLE `detalle_pedido` (
 
 
 --
--- Table structure for table `svweb`.`detalle_venta`
+-- Table structure for table `juanchodb`.`detalle_venta`
 --
 
 DROP TABLE IF EXISTS `detalle_venta`;
@@ -449,7 +449,7 @@ CREATE TABLE `detalle_venta` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`detalle_venta`
+-- Dumping data for table `juanchodb`.`detalle_venta`
 --
 
 /*!40000 ALTER TABLE `detalle_venta` DISABLE KEYS */;
@@ -457,7 +457,7 @@ CREATE TABLE `detalle_venta` (
 
 
 --
--- Table structure for table `svweb`.`devolucion`
+-- Table structure for table `juanchodb`.`devolucion`
 --
 
 DROP TABLE IF EXISTS `devolucion`;
@@ -471,7 +471,7 @@ CREATE TABLE `devolucion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`devolucion`
+-- Dumping data for table `juanchodb`.`devolucion`
 --
 
 /*!40000 ALTER TABLE `devolucion` DISABLE KEYS */;
@@ -479,7 +479,7 @@ CREATE TABLE `devolucion` (
 
 
 --
--- Table structure for table `svweb`.`devolucioncompras`
+-- Table structure for table `juanchodb`.`devolucioncompras`
 --
 
 DROP TABLE IF EXISTS `devolucioncompras`;
@@ -492,7 +492,7 @@ CREATE TABLE `devolucioncompras` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`devolucioncompras`
+-- Dumping data for table `juanchodb`.`devolucioncompras`
 --
 
 /*!40000 ALTER TABLE `devolucioncompras` DISABLE KEYS */;
@@ -500,7 +500,7 @@ CREATE TABLE `devolucioncompras` (
 
 
 --
--- Table structure for table `svweb`.`empresa`
+-- Table structure for table `juanchodb`.`empresa`
 --
 
 DROP TABLE IF EXISTS `empresa`;
@@ -531,7 +531,7 @@ CREATE TABLE `empresa` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`empresa`
+-- Dumping data for table `juanchodb`.`empresa`
 --
 
 /*!40000 ALTER TABLE `empresa` DISABLE KEYS */;
@@ -541,7 +541,7 @@ INSERT INTO `empresa` (`idempresa`,`codigo`,`nombre`,`direccion`,`rif`,`telefono
 
 
 --
--- Table structure for table `svweb`.`failed_jobs`
+-- Table structure for table `juanchodb`.`failed_jobs`
 --
 
 DROP TABLE IF EXISTS `failed_jobs`;
@@ -558,7 +558,7 @@ CREATE TABLE `failed_jobs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `svweb`.`failed_jobs`
+-- Dumping data for table `juanchodb`.`failed_jobs`
 --
 
 /*!40000 ALTER TABLE `failed_jobs` DISABLE KEYS */;
@@ -566,7 +566,7 @@ CREATE TABLE `failed_jobs` (
 
 
 --
--- Table structure for table `svweb`.`formalibre`
+-- Table structure for table `juanchodb`.`formalibre`
 --
 
 DROP TABLE IF EXISTS `formalibre`;
@@ -579,7 +579,7 @@ CREATE TABLE `formalibre` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`formalibre`
+-- Dumping data for table `juanchodb`.`formalibre`
 --
 
 /*!40000 ALTER TABLE `formalibre` DISABLE KEYS */;
@@ -587,7 +587,7 @@ CREATE TABLE `formalibre` (
 
 
 --
--- Table structure for table `svweb`.`gastos`
+-- Table structure for table `juanchodb`.`gastos`
 --
 
 DROP TABLE IF EXISTS `gastos`;
@@ -611,7 +611,7 @@ CREATE TABLE `gastos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`gastos`
+-- Dumping data for table `juanchodb`.`gastos`
 --
 
 /*!40000 ALTER TABLE `gastos` DISABLE KEYS */;
@@ -619,7 +619,7 @@ CREATE TABLE `gastos` (
 
 
 --
--- Table structure for table `svweb`.`kardex`
+-- Table structure for table `juanchodb`.`kardex`
 --
 
 DROP TABLE IF EXISTS `kardex`;
@@ -636,7 +636,7 @@ CREATE TABLE `kardex` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`kardex`
+-- Dumping data for table `juanchodb`.`kardex`
 --
 
 /*!40000 ALTER TABLE `kardex` DISABLE KEYS */;
@@ -644,7 +644,7 @@ CREATE TABLE `kardex` (
 
 
 --
--- Table structure for table `svweb`.`migrations`
+-- Table structure for table `juanchodb`.`migrations`
 --
 
 DROP TABLE IF EXISTS `migrations`;
@@ -656,7 +656,7 @@ CREATE TABLE `migrations` (
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `svweb`.`migrations`
+-- Dumping data for table `juanchodb`.`migrations`
 --
 
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
@@ -670,7 +670,7 @@ INSERT INTO `migrations` (`id`,`migration`,`batch`) VALUES
 
 
 --
--- Table structure for table `svweb`.`monedas`
+-- Table structure for table `juanchodb`.`monedas`
 --
 
 DROP TABLE IF EXISTS `monedas`;
@@ -685,7 +685,7 @@ CREATE TABLE `monedas` (
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`monedas`
+-- Dumping data for table `juanchodb`.`monedas`
 --
 
 /*!40000 ALTER TABLE `monedas` DISABLE KEYS */;
@@ -707,7 +707,7 @@ INSERT INTO `monedas` (`idmoneda`,`nombre`,`tipo`,`simbolo`,`valor`,`idbanco`) V
 
 
 --
--- Table structure for table `svweb`.`mov_ban`
+-- Table structure for table `juanchodb`.`mov_ban`
 --
 
 DROP TABLE IF EXISTS `mov_ban`;
@@ -734,7 +734,7 @@ CREATE TABLE `mov_ban` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`mov_ban`
+-- Dumping data for table `juanchodb`.`mov_ban`
 --
 
 /*!40000 ALTER TABLE `mov_ban` DISABLE KEYS */;
@@ -742,7 +742,7 @@ CREATE TABLE `mov_ban` (
 
 
 --
--- Table structure for table `svweb`.`mov_notas`
+-- Table structure for table `juanchodb`.`mov_notas`
 --
 
 DROP TABLE IF EXISTS `mov_notas`;
@@ -758,7 +758,7 @@ CREATE TABLE `mov_notas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`mov_notas`
+-- Dumping data for table `juanchodb`.`mov_notas`
 --
 
 /*!40000 ALTER TABLE `mov_notas` DISABLE KEYS */;
@@ -766,7 +766,7 @@ CREATE TABLE `mov_notas` (
 
 
 --
--- Table structure for table `svweb`.`mov_notasp`
+-- Table structure for table `juanchodb`.`mov_notasp`
 --
 
 DROP TABLE IF EXISTS `mov_notasp`;
@@ -782,7 +782,7 @@ CREATE TABLE `mov_notasp` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`mov_notasp`
+-- Dumping data for table `juanchodb`.`mov_notasp`
 --
 
 /*!40000 ALTER TABLE `mov_notasp` DISABLE KEYS */;
@@ -790,7 +790,7 @@ CREATE TABLE `mov_notasp` (
 
 
 --
--- Table structure for table `svweb`.`notasadm`
+-- Table structure for table `juanchodb`.`notasadm`
 --
 
 DROP TABLE IF EXISTS `notasadm`;
@@ -810,7 +810,7 @@ CREATE TABLE `notasadm` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`notasadm`
+-- Dumping data for table `juanchodb`.`notasadm`
 --
 
 /*!40000 ALTER TABLE `notasadm` DISABLE KEYS */;
@@ -818,7 +818,7 @@ CREATE TABLE `notasadm` (
 
 
 --
--- Table structure for table `svweb`.`notasadmp`
+-- Table structure for table `juanchodb`.`notasadmp`
 --
 
 DROP TABLE IF EXISTS `notasadmp`;
@@ -837,7 +837,7 @@ CREATE TABLE `notasadmp` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`notasadmp`
+-- Dumping data for table `juanchodb`.`notasadmp`
 --
 
 /*!40000 ALTER TABLE `notasadmp` DISABLE KEYS */;
@@ -845,7 +845,7 @@ CREATE TABLE `notasadmp` (
 
 
 --
--- Table structure for table `svweb`.`password_resets`
+-- Table structure for table `juanchodb`.`password_resets`
 --
 
 DROP TABLE IF EXISTS `password_resets`;
@@ -857,7 +857,7 @@ CREATE TABLE `password_resets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `svweb`.`password_resets`
+-- Dumping data for table `juanchodb`.`password_resets`
 --
 
 /*!40000 ALTER TABLE `password_resets` DISABLE KEYS */;
@@ -865,7 +865,7 @@ CREATE TABLE `password_resets` (
 
 
 --
--- Table structure for table `svweb`.`pedidos`
+-- Table structure for table `juanchodb`.`pedidos`
 --
 
 DROP TABLE IF EXISTS `pedidos`;
@@ -896,7 +896,7 @@ CREATE TABLE `pedidos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`pedidos`
+-- Dumping data for table `juanchodb`.`pedidos`
 --
 
 /*!40000 ALTER TABLE `pedidos` DISABLE KEYS */;
@@ -904,7 +904,7 @@ CREATE TABLE `pedidos` (
 
 
 --
--- Table structure for table `svweb`.`personal_access_tokens`
+-- Table structure for table `juanchodb`.`personal_access_tokens`
 --
 
 DROP TABLE IF EXISTS `personal_access_tokens`;
@@ -924,7 +924,7 @@ CREATE TABLE `personal_access_tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `svweb`.`personal_access_tokens`
+-- Dumping data for table `juanchodb`.`personal_access_tokens`
 --
 
 /*!40000 ALTER TABLE `personal_access_tokens` DISABLE KEYS */;
@@ -932,7 +932,7 @@ CREATE TABLE `personal_access_tokens` (
 
 
 --
--- Table structure for table `svweb`.`proveedores`
+-- Table structure for table `juanchodb`.`proveedores`
 --
 
 DROP TABLE IF EXISTS `proveedores`;
@@ -951,7 +951,7 @@ CREATE TABLE `proveedores` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`proveedores`
+-- Dumping data for table `juanchodb`.`proveedores`
 --
 
 /*!40000 ALTER TABLE `proveedores` DISABLE KEYS */;
@@ -959,7 +959,7 @@ CREATE TABLE `proveedores` (
 
 
 --
--- Table structure for table `svweb`.`recibos`
+-- Table structure for table `juanchodb`.`recibos`
 --
 
 DROP TABLE IF EXISTS `recibos`;
@@ -983,7 +983,7 @@ CREATE TABLE `recibos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`recibos`
+-- Dumping data for table `juanchodb`.`recibos`
 --
 
 /*!40000 ALTER TABLE `recibos` DISABLE KEYS */;
@@ -991,7 +991,7 @@ CREATE TABLE `recibos` (
 
 
 --
--- Table structure for table `svweb`.`reciboscomision`
+-- Table structure for table `juanchodb`.`reciboscomision`
 --
 
 DROP TABLE IF EXISTS `reciboscomision`;
@@ -1006,7 +1006,7 @@ CREATE TABLE `reciboscomision` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`reciboscomision`
+-- Dumping data for table `juanchodb`.`reciboscomision`
 --
 
 /*!40000 ALTER TABLE `reciboscomision` DISABLE KEYS */;
@@ -1014,7 +1014,7 @@ CREATE TABLE `reciboscomision` (
 
 
 --
--- Table structure for table `svweb`.`relacionnc`
+-- Table structure for table `juanchodb`.`relacionnc`
 --
 
 DROP TABLE IF EXISTS `relacionnc`;
@@ -1026,7 +1026,7 @@ CREATE TABLE `relacionnc` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`relacionnc`
+-- Dumping data for table `juanchodb`.`relacionnc`
 --
 
 /*!40000 ALTER TABLE `relacionnc` DISABLE KEYS */;
@@ -1034,7 +1034,7 @@ CREATE TABLE `relacionnc` (
 
 
 --
--- Table structure for table `svweb`.`relacionncp`
+-- Table structure for table `juanchodb`.`relacionncp`
 --
 
 DROP TABLE IF EXISTS `relacionncp`;
@@ -1046,7 +1046,7 @@ CREATE TABLE `relacionncp` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`relacionncp`
+-- Dumping data for table `juanchodb`.`relacionncp`
 --
 
 /*!40000 ALTER TABLE `relacionncp` DISABLE KEYS */;
@@ -1054,7 +1054,7 @@ CREATE TABLE `relacionncp` (
 
 
 --
--- Table structure for table `svweb`.`retenc`
+-- Table structure for table `juanchodb`.`retenc`
 --
 
 DROP TABLE IF EXISTS `retenc`;
@@ -1072,7 +1072,7 @@ CREATE TABLE `retenc` (
 ) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `svweb`.`retenc`
+-- Dumping data for table `juanchodb`.`retenc`
 --
 
 /*!40000 ALTER TABLE `retenc` DISABLE KEYS */;
@@ -1180,7 +1180,7 @@ INSERT INTO `retenc` (`codigo`,`codtrib`,`descrip`,`beneficiar`,`base`,`ret`,`su
 
 
 --
--- Table structure for table `svweb`.`retenciones`
+-- Table structure for table `juanchodb`.`retenciones`
 --
 
 DROP TABLE IF EXISTS `retenciones`;
@@ -1204,7 +1204,7 @@ CREATE TABLE `retenciones` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`retenciones`
+-- Dumping data for table `juanchodb`.`retenciones`
 --
 
 /*!40000 ALTER TABLE `retenciones` DISABLE KEYS */;
@@ -1212,7 +1212,7 @@ CREATE TABLE `retenciones` (
 
 
 --
--- Table structure for table `svweb`.`retencionventas`
+-- Table structure for table `juanchodb`.`retencionventas`
 --
 
 DROP TABLE IF EXISTS `retencionventas`;
@@ -1236,7 +1236,7 @@ CREATE TABLE `retencionventas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`retencionventas`
+-- Dumping data for table `juanchodb`.`retencionventas`
 --
 
 /*!40000 ALTER TABLE `retencionventas` DISABLE KEYS */;
@@ -1244,7 +1244,7 @@ CREATE TABLE `retencionventas` (
 
 
 --
--- Table structure for table `svweb`.`roles`
+-- Table structure for table `juanchodb`.`roles`
 --
 
 DROP TABLE IF EXISTS `roles`;
@@ -1316,7 +1316,7 @@ CREATE TABLE `roles` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`roles`
+-- Dumping data for table `juanchodb`.`roles`
 --
 
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
@@ -1332,7 +1332,7 @@ INSERT INTO `roles` (`idrol`,`iduser`,`newproveedor`,`editproveedor`,`edoctaprov
 
 
 --
--- Table structure for table `svweb`.`seriales`
+-- Table structure for table `juanchodb`.`seriales`
 --
 
 DROP TABLE IF EXISTS `seriales`;
@@ -1352,7 +1352,7 @@ CREATE TABLE `seriales` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`seriales`
+-- Dumping data for table `juanchodb`.`seriales`
 --
 
 /*!40000 ALTER TABLE `seriales` DISABLE KEYS */;
@@ -1360,7 +1360,7 @@ CREATE TABLE `seriales` (
 
 
 --
--- Table structure for table `svweb`.`sistema`
+-- Table structure for table `juanchodb`.`sistema`
 --
 
 DROP TABLE IF EXISTS `sistema`;
@@ -1371,7 +1371,7 @@ CREATE TABLE `sistema` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`sistema`
+-- Dumping data for table `juanchodb`.`sistema`
 --
 
 /*!40000 ALTER TABLE `sistema` DISABLE KEYS */;
@@ -1381,7 +1381,7 @@ INSERT INTO `sistema` (`idempresa`,`fechainicio`,`fechavence`) VALUES
 
 
 --
--- Table structure for table `svweb`.`users`
+-- Table structure for table `juanchodb`.`users`
 --
 
 DROP TABLE IF EXISTS `users`;
@@ -1401,7 +1401,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `svweb`.`users`
+-- Dumping data for table `juanchodb`.`users`
 --
 
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
@@ -1416,7 +1416,7 @@ INSERT INTO `users` (`id`,`name`,`email`,`email_verified_at`,`password`,`remembe
 
 
 --
--- Table structure for table `svweb`.`vendedores`
+-- Table structure for table `juanchodb`.`vendedores`
 --
 
 DROP TABLE IF EXISTS `vendedores`;
@@ -1432,7 +1432,7 @@ CREATE TABLE `vendedores` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`vendedores`
+-- Dumping data for table `juanchodb`.`vendedores`
 --
 
 /*!40000 ALTER TABLE `vendedores` DISABLE KEYS */;
@@ -1443,7 +1443,7 @@ INSERT INTO `vendedores` (`id_vendedor`,`nombre`,`telefono`,`direccion`,`comisio
 
 
 --
--- Table structure for table `svweb`.`venta`
+-- Table structure for table `juanchodb`.`venta`
 --
 
 DROP TABLE IF EXISTS `venta`;
@@ -1478,7 +1478,7 @@ CREATE TABLE `venta` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `svweb`.`venta`
+-- Dumping data for table `juanchodb`.`venta`
 --
 
 /*!40000 ALTER TABLE `venta` DISABLE KEYS */;
