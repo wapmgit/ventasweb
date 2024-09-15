@@ -147,7 +147,51 @@
             <!-- /.card-body -->
           </div>
             </div>
-        
+    		<div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
+		
+  <div class="card card-info">
+            <div class="card-header">
+              <h3 class="card-title">Opciones de Configuracion del Sistema</h3>
+
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>SysVent@sWeb</th>
+                
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                 <tr>
+                    <td>Lineas por Documento
+					</div></td>     
+                    <td>
+				<input type="number" min="1" size="5" class="form-control" name="nlineas"  value="{{$empresa->nlineas}}">			   
+                    </td>
+				</tr>
+				<tr>
+                    <td>¿Permitir Facturacion fiscal de ventas a credito?</td>
+                 
+                    <td class="text-right py-0 align-middle">
+   <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                      <input type="checkbox" name="facfiscalcre" <?Php if($empresa->facfiscalcredito==1) echo "checked"; ?> class="custom-control-input" id="customSwitch7">
+                      <label class="custom-control-label" for="customSwitch7"></label>
+                    </div>
+                    </td>
+</tr> 
+                </tbody>
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+            </div>    
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">	
             <div class="form-group">
 				<button class="btn btn-danger btn-sm" id="btncancelar" type="reset">Cancelar</button>

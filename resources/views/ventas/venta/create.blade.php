@@ -46,6 +46,8 @@ $idv=0;
 			<input type="hidden" value="{{$empresa->tc}}" id="valortasa" name="tc"></input>
 			<input type="hidden" value="{{$empresa->peso}}" id="valortasap" name="peso"></input>
 			<input type="hidden" value="{{$empresa->fl}}" id="usafl" ></input>
+			<input type="hidden" value="{{$empresa->nlineas}}" id="nlineas" ></input>
+			<input type="hidden" value="{{$empresa->facfiscalcredito}}" id="faccredito" ></input>
         </div>
 			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
 			<h4 id="nombrevendedor"></h4>
@@ -171,8 +173,8 @@ $idv=0;
 							
 						  </thead>
 						  <tfoot style="background-color: #A9D0F5"> 
-						  <th>Total</th>
-							  <th></th>
+						  <th colspan="2">Total items: <span id="item">0</span> </th>
+	
 							  <th>Exe:<input type="number" style="width: 70px" readonly  name="totalexe" id="texe">Bs</th>
 							  <th>Iva:<input type="number" style="width: 70px" readonly  name="total_iva" id="total_iva">Bs</th> 
 							  <th>BI:<input type="number" style="width: 80px" readonly name="totalbase" id="totalbase">Bs</th>
@@ -340,6 +342,9 @@ $(document).ready(function(){
 		if ($("#tipocli").val()==1){		
 		document.getElementById('procesa').style.display="none"; } 
 		$('#divdesglose').fadeIn("fast");
+		if($("#faccredito").val()==1){
+			document.getElementById('cfl').style.display="";
+		}
 		$("#pidpago").focus();
     })
 	$('#calculo').click(function(){
@@ -462,6 +467,7 @@ function trunc (x, posiciones = 0) {
 	var pagototal=0;
 	totalexe=0;
 	var cont=0;
+	var contl=0;
 	total=0;
 	totaliva=0;totalbase=0;
 	subtotal=[];
@@ -516,6 +522,7 @@ function trunc (x, posiciones = 0) {
   }
     function agregar(){
 		vdolar=$("#valortasa").val();
+		nlineas=$("#nlineas").val();
       var cantidad=0; var stock=0;
         datosarticulo=document.getElementById('pidarticulo').value.split('_');
         idarticulo=datosarticulo[0];
@@ -527,19 +534,33 @@ function trunc (x, posiciones = 0) {
 		costoarticulo=datosarticulo[4];
 		alicuota=datosarticulo[5];
 		mserial=datosarticulo[6];
-		
 		cantidad=cantidad*1;
         if (idarticulo!="" && cantidad != "" && cantidad > "0" &&  precio_venta!=""){
 
                 if (cantidad <= stock){
+						
 					if(alicuota>0){subexe[cont]=0;
-						base[cont]=trunc(((precio_venta)/((alicuota/100)+1)), 2);
-						auxb=trunc((base[cont]*vdolar),2);	
-						base[cont]=trunc((cantidad*auxb),2);						
-						subiva[cont]=trunc((base[cont]*(alicuota/100)), 2);						
-						totalbase=trunc((totalbase+base[cont]),2);
+						base[cont]=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
+						auxc=parseFloat((base[cont]*vdolar));
+							if(Number.isInteger(auxc)==true){
+								auxb=auxc;
+								base[cont]=(cantidad*auxb);	
+								totalbase=(totalbase+base[cont]);							
+								}else{
+									auxb=trunc(auxc,2);	
+									base[cont]=trunc((cantidad*auxb),2);	
+									totalbase=trunc((totalbase+base[cont]),2);
+							}; 
+							
+						subiva[cont]=trunc((base[cont]*(alicuota/100)), 2);											
 						subiva[cont]=trunc(subiva[cont],2);
-						}else{subiva[cont]=0; base[cont]=0; subexe[cont]=trunc(((precio_venta*vdolar)*cantidad),2);}				
+						}else{					
+							auxd=(precio_venta*vdolar);
+							if(Number.isInteger(auxd)==true){
+							subexe[cont]=(precio_venta*vdolar*cantidad);
+							}else{subexe[cont]=trunc((auxd*cantidad),2);}
+							subiva[cont]=0; base[cont]=0; 
+						}				
 					
 				totaliva=trunc((totaliva+subiva[cont]),2);
 				totalexe=parseFloat(totalexe)+parseFloat(subexe[cont]);
@@ -547,7 +568,8 @@ function trunc (x, posiciones = 0) {
                 total=parseFloat(total)+parseFloat(subtotal[cont].toFixed(2));
 
               var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td><input type="number" readonly="true"  style="width: 80px" name="precio_venta[]" value="'+precio_venta+'"></td><td><input type="number"  name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td>'+subtotal[cont].toFixed(2)+'<input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
-              cont++;
+				cont++;
+				contl++;
               limpiar();
 		
 			  var auxmbs=(parseFloat(total)*parseFloat(vdolar));
@@ -561,28 +583,34 @@ function trunc (x, posiciones = 0) {
 				$("#totalbase").val(totalbase);
 				$("#texe").val(totalexe.toFixed(2));
 				$("#total_venta").val(total);
-              evaluar();
+				evaluar();
+				$("#item").html(contl);
 				$('#detalles').append(fila);
 				$("#pidarticulo").selectpicker('toggle');
-					if(mserial==1){ 
-						var data = <?php echo json_encode($seriales);?>;
-					for(var i=0;i<data.length;i++){
-						if(data[i].idarticulo == datosarticulo[0]){
-						var fila='<tr class="accionada" id="filaseriales'+i+'" ><td><div class="form-check"><input class="form-check-input" type="checkbox" name="pidserial[]" value="'+data[i].idserial+'" onclick="javascript:cntseriales('+i+');" id="defaultCheck'+i+'"><label class="form-check-label" for="defaultCheck1">Chasis -> '+data[i].chasis+' motor -> '+data[i].motor+' Placa-> '+data[i].placa+' Color-> '+data[i].color+' Año-> '+data[i].año+'</label></div></td></tr>';
-    $('#lseriales').append(fila);
-	}
-					}
-					$("#modalseriales").modal("show")};			 
+						if(mserial==1){ 
+							var data = <?php echo json_encode($seriales);?>;
+								for(var i=0;i<data.length;i++){
+									if(data[i].idarticulo == datosarticulo[0]){
+										var fila='<tr class="accionada" id="filaseriales'+i+'" ><td><div class="form-check"><input class="form-check-input" type="checkbox" name="pidserial[]" value="'+data[i].idserial+'" onclick="javascript:cntseriales('+i+');" id="defaultCheck'+i+'"><label class="form-check-label" for="defaultCheck1">Chasis -> '+data[i].chasis+' motor -> '+data[i].motor+' Placa-> '+data[i].placa+' Color-> '+data[i].color+' Año-> '+data[i].año+'</label></div></td></tr>';
+										$('#lseriales').append(fila);
+									}
+								}
+						$("#modalseriales").modal("show")};			
+					if(contl >= nlineas){
+					alert('¡Limite de lineas por Documento alcanzado!')
+					document.getElementById('bt_add').style.display="none";
+				  }					
 				}else{
               alert("cantidad *"+cantidad+"* supera stock *"+stock+"*");
 			  $("#pcantidad").val(1);
               }
         }else{
-			  toastr.error('Error al ingresar el Articulo en venta, revisar datos!.');
+			  toastr.error('Error al ingresar el Articulo en venta, ¡ Revisar datos!.');
 			
         }
     }
     function eliminar(index){
+		nlineas=$("#nlineas").val();
 		vdolar=$("#valortasa").val();
 		totaliva=(parseFloat(totaliva) - parseFloat(subiva[index]));
 		totalbase=(parseFloat(totalbase) - parseFloat(base[index]));
@@ -602,7 +630,13 @@ function trunc (x, posiciones = 0) {
         $("#totalbase").val(totalbase.toFixed(2));
         $("#tdeuda").val(total);
         $("#fila" + index).remove();
-        evaluar();
+			contl--;
+		$("#item").html(contl);
+		if(parseFloat(contl) < parseFloat(nlineas)){
+				document.getElementById('bt_add').style.display="";
+				  }
+			evaluar();
+
     }
     function limpiar(){
 		$("#pidarticulo").val('1000');
@@ -700,14 +734,19 @@ function trunc (x, posiciones = 0) {
 			$("#pmonto").attr('placeholder','Esperando Seleccion');
 			$("#total_abono").text(pagototal.toFixed(2));
 			$("#totala").val(pagototal.toFixed(2));
-			if($("#resta").val()== 0){ 		document.getElementById('procesa').style.display=""; $("#procesa").attr("accesskey","p"); }
+			if($("#resta").val()== 0){ 		
+			document.getElementById('procesa').style.display=""; $("#procesa").attr("accesskey","p"); }
 			//  alert($("#totala").val());
            limpiarpago();		
-$("#pidpago").focus();		   
-             $('#det_pago').append(fila);
-			 if(($("#tdeuda").val()==0) && ($("#usafl").val()==1)){
+			$("#pidpago").focus();		   
+            $('#det_pago').append(fila);
+			if($("#faccredito").val()==0){		
+			if(($("#tdeuda").val()==0) && ($("#usafl").val()==1)){
 				document.getElementById('cfl').style.display="";
 				}
+			}else{
+					document.getElementById('cfl').style.display="";
+			}
 		}else { alert('¡El monto indicado no debe se mayor al saldo pendiente!');
 			limpiarpago();		
 			}

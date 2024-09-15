@@ -179,6 +179,7 @@ class SistemaController extends Controller
         $emp->direccion=$request->get('direccion');
         $emp->telefono=$request->get('telefono');
         $emp->tasaespecial=$request->get('tasaajuste');
+        $emp->nlineas=$request->get('nlineas');
 		if($request->get('usaserie')){
         $emp->serie=$request->get('usaserie');}else{
 			$emp->serie="A";
@@ -196,6 +197,7 @@ class SistemaController extends Controller
 		if($request->get('formal')=="on"){$emp->fl=1;}else{$emp->fl=0;}
 		if($request->get('actcosto')=="on"){$emp->actcosto=1;}else{$emp->actcosto=0;}
 		if($request->get('serie')=="on"){$emp->usaserie=1;}else{$emp->usaserie=0;}
+		if($request->get('facfiscalcre')=="on"){$emp->facfiscalcredito=1;}else{$emp->facfiscalcredito=0;}
         $emp->update();
 
 		 if ($tasa>0){

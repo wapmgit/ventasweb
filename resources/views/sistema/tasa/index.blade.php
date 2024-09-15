@@ -29,7 +29,7 @@
 				<td><input  type="text" readonly value="{{$cat1->nombre}}" name="nombre" class ="form-control"></input></td>
 				<td><input type="number" readonly value="{{$cat1->valor}}" name="v" class ="form-control"></input></td>
 				<td><input  type="hidden" value="{{$cat1->idmoneda}}" name="idmoneda[]" class ="form-control"></input>
-				<input type="number" value="{{$cat1->valor}}" name="valor[]" step="0.001" class ="form-control"></input></td>
+				<input type="number" value="{{$cat1->valor}}" name="valor[]" step="0.01" class ="form-control"></input></td>
 			</tr>
 				<?php } ?>
 				@endforeach

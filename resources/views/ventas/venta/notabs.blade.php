@@ -24,7 +24,7 @@ function truncar($numero, $digitos)
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	<table width="100%" BORDER="0">
-	<tr><td><small><b>FACTURA N° : </small></b><?php if($empresa->usaserie==1){ echo "Serie".$empresa->serie; } ?><?php  $idv=$venta->idforma; echo add_ceros($idv,$ceros); ?></td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo date("d-m-Y",strtotime($venta->fecha_emi)); ?></td><td><small><b>CONDICION: </small></b>Contado</td></tr>
+	<tr><td><small><b>FACTURA N° : </small>*</b><?php if($empresa->usaserie==1){ echo "Serie".$empresa->serie; } ?><?php  $idv=$venta->idventa; echo add_ceros($idv,$ceros); ?></td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo date("d-m-Y",strtotime($venta->fecha_emi)); ?></td><td><small><b>CONDICION: </small></b>Contado</td></tr>
 	<tr><td colspan="4"><small><b>NOMBRE Y APELLIDO O RAZON SOCIAL: </b> </small>{{$venta->nombre}} <b>RIF: </b> {{$venta->cedula}}</td></tr>
 	<tr><td colspan="4"  width="50%"><small><b>DOMICILIO FISCAL: </b> {{$venta->direccion}} </small><b>TELF: </b> {{$venta->telefono}}</td></tr>
 	</table>

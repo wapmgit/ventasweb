@@ -104,6 +104,7 @@ Route::get('facventa/{id}', [VentasController::class, 'facturar'])->name('facven
 Route::post('devolucion', [VentasController::class, 'devolucion'])->name('devolucion');
 Route::post('refrescar', [VentasController::class, 'refrescar'])->name('refrescar');
 Route::get('recibo/{id}', [ventasController::class, 'recibo'])->name('recibo');
+Route::get('tnotabs/{id}', [ventasController::class, 'notabs'])->name('tnotabs');
 Route::get('tcarta/{id}', [ventasController::class, 'show'])->name('tcarta');
 Route::get('fbs/{id}', [ventasController::class, 'fbs'])->name('fbs');
 Route::post('anulforma', [ventasController::class, 'anulforma'])->name('anulforma');
