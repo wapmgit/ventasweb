@@ -12,6 +12,7 @@ function add_ceros($numero,$ceros) {
 return $insertar_ceros = $recibo.$numero;
 };
 $cntser=0;
+$cntline=$cntser=0;
 ?>
             <div class="invoice p-3 mb-3">
               <!-- title row -->
@@ -50,13 +51,10 @@ $cntser=0;
                           <th>Precio</th>
                           <th>Subtotal</th>
                       </thead>
-                      <tfoot>                      
-                          <th colspan="4"><div align="right">TOTAL: </div></th>
-                          <th ><b><font size="4"><?php echo " $ ".number_format($venta->total_venta, 2,',','.'); ?> </b></font></th>
-                          </tfoot>
                       <tbody>
                         @foreach($detalles as $det)
-						<?php if ($det->cantidad>0){?>
+						<?php $cntline++; 
+						if ($det->cantidad>0){?>
                         <tr >
                           <td>{{$det->articulo}} <?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?></td>
                           <td>{{$det->cantidad}}</td>
@@ -77,7 +75,12 @@ $cntser=0;
 
 							<?php } ?>
                         @endforeach
+						<?php for($i=($cntline+$cntser);$i<30;$i++){ echo "<tr><td>&nbsp;</td></tr>"; }?>
                       </tbody>
+					       <tfoot>                      
+                          <th colspan="4"><div align="right">TOTAL: </div></th>
+                          <th ><b><font size="4"><?php echo " $ ".number_format($venta->total_venta, 2,',','.'); ?> </b></font></th>
+                          </tfoot>
             </table>
 	
         </div>                   
