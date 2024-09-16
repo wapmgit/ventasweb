@@ -8,8 +8,8 @@
 	</div>
                 <!-- /.col -->
 	<div class="col-sm-3 invoice-col">
-		<h2 align="center"><u>  NOTA DE ENTREGA </u></h2><div align="center">
-		{{$venta->tipo_comprobante}} {{$venta->serie_comprobante}} <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); ?>
+		<h3 align="center"><u>  NOTA DE ENTREGA </u></h3><div align="center">
+		*<?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); ?>
 		<span><strong><?php if($venta->devolu>0){ echo "**Devuelta**";} ?></span></strong></div>		
 	</div>	
 	<div class="col-sm-3 invoice-col" align="center">
