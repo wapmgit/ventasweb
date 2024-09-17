@@ -66,10 +66,10 @@ class ComprasController extends Controller
 	}   
    }
     public function store(Request $request){
-	//	dd($request);
+		//dd($request);
 	$user=Auth::user()->name;
-	try{
-    DB::beginTransaction();
+	//try{
+    //DB::beginTransaction();
     $ingreso=new Compras;
     $ingreso->idproveedor=$request->get('idproveedor');
     $ingreso->tipo_comprobante=$request->get('tipo_comprobante');
@@ -217,12 +217,12 @@ class ComprasController extends Controller
 		   }
 					}
                      
-               DB::commit();
+      /*         DB::commit();
 			   }
 catch(\Exception $e)
 {
     DB::rollback();
-}
+} */
 
 return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 }
