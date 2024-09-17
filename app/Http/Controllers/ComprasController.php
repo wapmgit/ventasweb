@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Compras;
 use App\Models\Gastos;
 use App\Models\Detallecompras;
-use App\Models\Devolucioncompras;
+use App\Models\DevolucionCompras;
 use App\Models\Detalledevolucioncompras;
 use App\Models\Comprobantes;
 use App\Models\MovBancos;
@@ -68,8 +68,8 @@ class ComprasController extends Controller
     public function store(Request $request){
 		//dd($request);
 	$user=Auth::user()->name;
-	//try{
-    //DB::beginTransaction();
+	try{
+   DB::beginTransaction();
     $ingreso=new Compras;
     $ingreso->idproveedor=$request->get('idproveedor');
     $ingreso->tipo_comprobante=$request->get('tipo_comprobante');
@@ -203,7 +203,7 @@ class ComprasController extends Controller
 			$col = $request -> get('color');		
 			$ano = $request -> get('ano');	
 			$conts=0;			
-		   while($conts < count($cha)){
+		   while($conts < count($cha)){ 
 				$ser=new Seriales;
 				$ser->idcompra=$ingreso->idcompra;
 				$ser->idarticulo=$art[$conts];
@@ -217,12 +217,12 @@ class ComprasController extends Controller
 		   }
 					}
                      
-      /*         DB::commit();
+            DB::commit();
 			   }
 catch(\Exception $e)
 {
     DB::rollback();
-} */
+}
 
 return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 }
