@@ -45,6 +45,7 @@ $cntline=$cntser=0;
 	
             <table id="detalles" width="100%">
                       <thead style="background-color: #A9D0F5">                    
+                          <th width="7%">Codigo</th>
                           <th>Articulo</th>
                           <th>Cantidad</th>
                           <th>Unidad</th>
@@ -56,11 +57,12 @@ $cntline=$cntser=0;
 						<?php $cntline++; 
 						if ($det->cantidad>0){?>
                         <tr >
+						  <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
                           <td>{{$det->articulo}} <?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?></td>
                           <td>{{$det->cantidad}}</td>
                           <td>{{$det->unidad}}</td>
-                          <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
-                          <td><?php echo number_format( (($det->cantidad*$det->precio_venta)-$det->descuento), 2,',','.'); ?></td>
+                          <td><?php echo number_format( $det->precio_venta*$venta->tasa, 2,',','.'); ?></td>
+                          <td><?php echo number_format( ((($det->cantidad*$det->precio_venta)-$det->descuento)*$venta->tasa), 2,',','.'); ?></td>
                         </tr>	<?php if ($seriales <> NULL){?>
 									@foreach($seriales as $ser) 
 									<?php  if ($det->idarticulo == $ser->idarticulo){ $cntser++;?>
@@ -77,9 +79,10 @@ $cntline=$cntser=0;
                         @endforeach
 						<?php for($i=($cntline+$cntser);$i<30;$i++){ echo "<tr><td>&nbsp;</td></tr>"; }?>
                       </tbody>
-					       <tfoot>                      
+					       <tfoot>  
+						<th>Codigo <?php echo " :".number_format(($venta->total_venta), 2,',','.'); ?></th>						   
                           <th colspan="4"><div align="right">TOTAL: </div></th>
-                          <th ><b><font size="4"><?php echo " $ ".number_format($venta->total_venta, 2,',','.'); ?> </b></font></th>
+                          <th align="center"><b><font size="4"><?php echo " Bs ".number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> </b></font></th>
                           </tfoot>
             </table>
 	
