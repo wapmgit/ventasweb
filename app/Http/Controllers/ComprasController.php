@@ -9,7 +9,7 @@ use App\Models\Compras;
 use App\Models\Gastos;
 use App\Models\Detallecompras;
 use App\Models\DevolucionCompras;
-use App\Models\Detalledevolucioncompras;
+use App\Models\DetalledevolucionCompras;
 use App\Models\Comprobantes;
 use App\Models\MovBancos;
 use App\Models\Proveedores;
