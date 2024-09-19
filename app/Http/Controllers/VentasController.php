@@ -238,7 +238,7 @@ catch(\Exception $e)
 	if($empresa->tikect==1){
 		  return Redirect::to('recibo/'.$venta->idventa);
 	}else{
-	return Redirect::to('tnotabs/'.$venta->idventa);
+	return Redirect::to($request->get('formato').'/'.$venta->idventa);
 	}
 	}
  public function showdevolucion($id)
@@ -469,8 +469,8 @@ public function recibo($id){
 public function show(Request $request, $id){
 
 			$ruta=$_SERVER["HTTP_REFERER"];
-			$c1= substr($ruta,34);		//modelo juancho
-			//$c1= substr($ruta,24); //base sistema		
+			//$c1= substr($ruta,34);		//modelo juancho
+			$c1= substr($ruta,24); //base sistema		
 
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$venta=DB::table('venta as v')

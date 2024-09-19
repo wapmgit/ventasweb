@@ -246,16 +246,24 @@ $idv=0;
 						</table>
 					</div>
 				</div>
-				<div class="modal-footer">
-				<div class="col-lg-4 ol-md-4 col-sm-4 col-xs-4" align="right" style="display: none" id="cfl">
-							¿ Forma Libre ? <input type="checkbox" id="convertir" name="convertir" />							
-							</div>
-					<div class="col-lg-8 ol-md-8 col-sm-8 col-xs-8" align="right">
-					<button type="button" class="btn btn-danger" id="regresar" data-dismiss="modal">Cancelar</button>
-					<input name="_token" value="{{ csrf_token() }}" type="hidden" ></input>
-					<button type="submit" id="procesa" class="btn btn-primary" ><u>P</u>rocesar</button>
-					<div style="display: none" id="loading">  <img src="{{asset('img/sistema/loading30.gif')}}"></div>
-					</div>
+		
+
+					<div class="col-lg-4 ol-md-4 col-sm-6 col-xs-6"  align="left" id="formato">
+						<select name="formato" class="form-control">
+						<option value="tnotabs" selected="selected">Formato Por Defecto</option>
+						<option  value="tcarta">Diseño Carta</option>				
+						</select>						
+								</div>
+					<div  class="col-lg-4 ol-md-4 col-sm-6 col-xs-6" align="right" style="display: none" id="cfl">
+								¿ Forma Libre ? <input type="checkbox" id="convertir" name="convertir" />							
+								</div>
+						<div class="col-lg-4 ol-md-4 col-sm-12 col-xs-12" align="right">
+						<button type="button" class="btn btn-danger" id="regresar" data-dismiss="modal">Cancelar</button>
+						<input name="_token" value="{{ csrf_token() }}" type="hidden" ></input>
+						<button type="submit" id="procesa" class="btn btn-primary" ><u>P</u>rocesar</button>
+						<div style="display: none" id="loading">  <img src="{{asset('img/sistema/loading30.gif')}}"></div>
+				
+				</div>
 				</div>	
 				 
 				</form>
