@@ -469,8 +469,8 @@ public function recibo($id){
 public function show(Request $request, $id){
 
 			$ruta=$_SERVER["HTTP_REFERER"];
-			//$c1= substr($ruta,34);		//modelo juancho
-			$c1= substr($ruta,24); //base sistema		
+			$c1= substr($ruta,34);		//modelo juancho
+			//$c1= substr($ruta,24); //base sistema		
 
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$venta=DB::table('venta as v')
