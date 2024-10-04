@@ -467,6 +467,7 @@ $("#guardar").hide();
 		precio_tasa=precio_tasa.toFixed(2);
         artiva=articulo.split('-');
         viva=artiva[4];
+		mserial=artiva[5];
         narticulo=artiva[1];
         if (idarticulo!="" && cantidad > 0 &&  precio_compra!=""){         
             neto=((cantidad*precio_compra)-precio_venta);
@@ -496,6 +497,12 @@ $("#guardar").hide();
             $("#piva").val(tmiva.toFixed(2));
             $("#pbase").val(tneto.toFixed(2));
              $("#pexento").val(texe.toFixed(2));
+			  if(mserial==1){ $("#modalseriales").modal("show");
+			for(m=0;m<cantidad;m++){
+			var fila2='<tr class="selected"><td><input type="hidden" name="artserial[]" value="'+idarticulo+'"><input type="text" name="chasis[]" value=""></td><td><input type="text" name="motor[]" value=""></td><td><input type="text" name="placa[]" style="width: 70px" value=""></td><td><input type="text" name="color[]" style="width: 70px" value=""></td><td><input type="text" name="ano[]" style="width: 50px" value=""></td></tr>';
+			$('#tableseriales').append(fila2);
+				}
+			 }
         }
         else{
             toastr.error('Error Al Ingresar El Articulo, Verifique!.');
