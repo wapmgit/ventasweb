@@ -328,7 +328,7 @@
 				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 					 <div class="form-group">
 					 <label>Valorizado: </label><label>
-					  <input type="checkbox" name="op57 class="minimal" @if($q->rlvalorizado==1) checked @endif ></label>
+					  <input type="checkbox" name="op57" class="minimal" @if($q->rlvalorizado==1) checked @endif ></label>
 					</div>
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
