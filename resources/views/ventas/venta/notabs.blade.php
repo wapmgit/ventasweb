@@ -20,7 +20,7 @@ function truncar($numero, $digitos)
             <div class="invoice p-3 mb-3">
 <div id="areaimprimir" >
 <div id="margen">
-<p id="encabezado" style="display:none"></br></br></br></p>
+<p id="encabezado" style="display:none"></br></br></br></br></p>
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	<table width="100%" BORDER="0">
