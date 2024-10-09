@@ -80,8 +80,8 @@ class VentasController extends Controller
 		//dd($request);
 		 $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$user=Auth::user()->name;
-   try{
-   DB::beginTransaction();
+  // try{
+   //DB::beginTransaction();
    $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->first();
    if ($contador==NULL){$numero=0;}else{$numero=$contador->idventa;}
 
@@ -103,7 +103,7 @@ class VentasController extends Controller
     $venta->fecha_hora=$mytime->toDateTimeString();
 	$venta->fecha_emi=$request->get('fecha_emi');
     $venta->impuesto='16';
-		if(($request->get('tdeuda')==0)and($request->get('convertir')=="on")){
+		if(($request->get('convertir')=="on")){
 			$venta->flibre=1;
 			}
 	if(empty($request->get('tdeuda'))){   $venta->saldo=$request->get('total_venta');}
@@ -115,7 +115,7 @@ class VentasController extends Controller
 	$venta->montocomision=($request->get('total_venta')*($request->get('comision')/100));
 	$venta->user=$user;
    $venta-> save();
-		if(($request->get('tdeuda')==0)and($request->get('convertir')=="on")){
+		if(($request->get('convertir')=="on")){
 			$pnro=DB::table('formalibre')
 			->select(DB::raw('MAX(idforma) as pnum'))
 			->first();				
@@ -226,12 +226,12 @@ class VentasController extends Controller
 		$cli=Clientes::findOrFail($idcliente[0]);
         $cli->lastfact=$mytime->toDateTimeString();
         $cli->update();
-	DB::commit();
+	/*DB::commit();
 }
 catch(\Exception $e)
 {
     DB::rollback();
-}
+} */
 	if($request->get('convertir')=="on"){
 	  return Redirect::to('fbs/'.$venta->idventa);
 	}
