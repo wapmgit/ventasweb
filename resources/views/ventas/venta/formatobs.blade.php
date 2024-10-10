@@ -17,14 +17,14 @@ function truncar($numero, $digitos)
     return intval($numero * $truncar) / $truncar;
 }
 ?>
-            <div class="invoice p-3 mb-3">
+ <div class="invoice p-3 mb-3">
 <div id="areaimprimir" >
 <div id="margen">
 <p id="encabezado" style="display:none"></br></br></br></br></p>
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-	<table width="100%" BORDER="0">
-	<tr><td><small><b>FACTURA N° : </small></b><?php if($empresa->usaserie==1){ echo "Serie".$empresa->serie; } ?><?php  $idv=$venta->idforma; echo add_ceros($idv,$ceros); ?></td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo date("d-m-Y",strtotime($venta->fecha_emi)); ?></td><td><small><b>CONDICION: </small></b>Contado</td></tr>
+	<table width="100%" <?php if($empresa->bordefac==1){ echo "border='1'";} ?>>
+	<tr ><td><small><b>FACTURA N°: </small></b><?php if($empresa->usaserie==1){ echo "Serie".$empresa->serie; } ?><?php  $idv=$venta->idforma; echo add_ceros($idv,$ceros); ?></td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo date("d-m-Y",strtotime($venta->fecha_emi)); ?></td><td><small><b>CONDICION: </small></b>Contado</td></tr>
 	<tr><td colspan="4"><small><b>NOMBRE Y APELLIDO O RAZON SOCIAL: </b> </small>{{$venta->nombre}} <b>RIF: </b> {{$venta->cedula}}</td></tr>
 	<tr><td colspan="4"  width="50%"><small><b>DOMICILIO FISCAL: </b> {{$venta->direccion}} </small><b>TELF: </b> {{$venta->telefono}}</td></tr>
 	</table>
@@ -36,20 +36,20 @@ function truncar($numero, $digitos)
                                               
         <div class="col-md-12">
 	
-            <table id="detalles" width="100%">
-                      <thead>                    
-							<th>Codigo</th>
+            <table id="detalles" width="100%" <?php if($empresa->bordefac==1){ echo "border='1'";} ?>>
+                      <thead >                    
+						  <th>Codigo</th>
                           <th>Descripcion</th>
                           <th>Cantidad</th>
-                          <th>Unidad.</th>
-                          <th>Descuento.</th>
+                          <th>Unidad</th>
+                          <th>Descuento</th>
                           <th>Costo Unit.</th>                    
                           <th>Subtotal</th>
                       </thead>
-                 
-                      <tbody>
+              
+			   <tbody>
                         @foreach($detalles as $det)
-						<?php $cntline++; ?>
+						<?php $cntline++; ?> 
                         <tr >
 						     <td>{{$det->codigo}}-{{$det->idarticulo}}</td>
                           <td>{{$det->articulo}} <?php if($det->iva>0){echo "(G)"; 
@@ -85,13 +85,14 @@ function truncar($numero, $digitos)
                         @endforeach
 						<?php for($i=($cntline+$cntser);$i<16;$i++){ echo "<tr><td>&nbsp;</td></tr>"; }?>
                       </tbody>
+					 
 					       <tfoot>                      
                           <th colspan="6">TOTAL:</th>
                           <th ><b><font size="4"><?php echo "Bs ".number_format(($acumsub), 2,',','.'); ?> </b></font></th>
                           </tfoot>
             </table>
 
-										  <table width="100%"><tr>
+										  <table width="100%"<?php if($empresa->bordefac==1){ echo "border='1'";} ?>><tr>
 	<td align="right"><b>Exento Bs: </b></td><td><b><font size="3"  align="center"><?php echo number_format(($venta->texe), 2,',','.'); ?> </b></td>			  
 	<td align="right"><b>Base Imponible Bs:  </b></td><td><b><font size="3"  align="center"><?php echo number_format(($venta->base), 2,',','.'); ?> </b></td>	
 	<td align="right"><b>Iva(16%) Bs: </b></td><td><b><font size="3"  align="center"><?php echo number_format(($venta->total_iva), 2,',','.'); ?> </b></td>

@@ -180,22 +180,32 @@
                     <td>¿Permitir Facturacion fiscal de ventas a credito?</td>
                  
                     <td class="text-right py-0 align-middle">
-   <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+					<div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                       <input type="checkbox" name="facfiscalcre" <?Php if($empresa->facfiscalcredito==1) echo "checked"; ?> class="custom-control-input" id="customSwitch7">
                       <label class="custom-control-label" for="customSwitch7"></label>
                     </div>
                     </td>
-</tr> 
+				</tr> 
 				<tr>
                     <td>¿Imprimir Relacion de Pedido en venta?</td>
                  
                     <td class="text-right py-0 align-middle">
-   <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+					<div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                       <input type="checkbox" name="relapedido" <?Php if($empresa->relapedido==1) echo "checked"; ?> class="custom-control-input" id="customSwitch8">
                       <label class="custom-control-label" for="customSwitch8"></label>
                     </div>
                     </td>
-</tr>
+				</tr>
+				<tr>
+                    <td>¿Imprimir Bordes de Tabla en Factura Forma Libre?</td>
+                 
+                    <td class="text-right py-0 align-middle">
+					<div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                      <input type="checkbox" name="bordefac" <?Php if($empresa->bordefac==1) echo "checked"; ?> class="custom-control-input" id="customSwitch9">
+                      <label class="custom-control-label" for="customSwitch9"></label>
+                    </div>
+                    </td>
+				</tr>
                 </tbody>
               </table>
             </div>
