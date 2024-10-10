@@ -198,6 +198,7 @@ class SistemaController extends Controller
 		if($request->get('actcosto')=="on"){$emp->actcosto=1;}else{$emp->actcosto=0;}
 		if($request->get('serie')=="on"){$emp->usaserie=1;}else{$emp->usaserie=0;}
 		if($request->get('facfiscalcre')=="on"){$emp->facfiscalcredito=1;}else{$emp->facfiscalcredito=0;}
+		if($request->get('relapedido')=="on"){$emp->relapedido=1;}else{$emp->relapedido=0;}
         $emp->update();
 
 		 if ($tasa>0){

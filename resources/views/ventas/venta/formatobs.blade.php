@@ -97,7 +97,7 @@ function truncar($numero, $digitos)
 	<td align="right"><b>Iva(16%) Bs: </b></td><td><b><font size="3"  align="center"><?php echo number_format(($venta->total_iva), 2,',','.'); ?> </b></td>
 	<td  align="right"><b>Total Bs: </b></td><td><b><font size="3"  align="center"><?php echo number_format((($venta->texe+$venta->base+$venta->total_iva)), 2,',','.'); ?> </b></td>
 	</tr>
-	<tr><td colspan="4"><small></small></td></tr>
+	<tr><td colspan="4"><?php if($empresa->relapedido==1){?><small>Relacionado con Pedido: {{$venta->idventa}}</small><?php } ?></td></tr>
 	</table>
         </div>                   
 		@if(Auth::user()->nivel=="A")
