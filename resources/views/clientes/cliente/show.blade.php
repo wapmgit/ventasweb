@@ -107,6 +107,12 @@ return $insertar_ceros = $recibo.$numero;
 					<td>{{ $cat->total_pagar}}</td>
 					<td> {{ $cat->saldo}}</td>				
 				</tr>
+				
+					@foreach($pagos as $p)
+					<?php if($cat->idventa==$p->idventa){ ?>
+					<tr style="line-height:80%"><td></td><td colspan="4"><small>------------> Recibo-{{$p->idrecibo}} <?php echo date("d-m-Y",strtotime($p->fecha)); ?></small></td><td colspan="4"><small>{{$p->idbanco}}->{{$p->recibido}}->{{$p->monto}}$</small></td><td></td><td></td></tr>
+					<?php } ?>
+					@endforeach
 				@endforeach
 				@foreach ($notas as $not)
 				<?php if ($not->tipo==1){ $link=1;}else{$link=2;}?>

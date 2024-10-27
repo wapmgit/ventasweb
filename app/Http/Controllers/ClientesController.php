@@ -25,7 +25,7 @@ class ClientesController extends Controller
 			$query=trim($request->get('searchText'));
 			$pacientes=DB::table('clientes')->where('clientes.nombre','LIKE','%'.$query.'%')
 			->join('vendedores as ven','ven.id_vendedor','=','clientes.vendedor')
-			->select('clientes.id_cliente','clientes.nombre','clientes.telefono','clientes.cedula','clientes.direccion','ven.nombre as vendedor')
+			->select('clientes.id_cliente','clientes.nombre','clientes.codpais','clientes.telefono','clientes.cedula','clientes.direccion','ven.nombre as vendedor')
 			->where('clientes.status','=','A')
 			->orderBy('clientes.id_cliente','desc')
 			->paginate(20);
@@ -55,6 +55,7 @@ class ClientesController extends Controller
         $paciente->nombre=$request->get('nombre');
         $paciente->cedula=$request->get('cedula');
         $paciente->rif=$request->get('rif');
+        $paciente->codpais=$request->get('codpais');
         $paciente->telefono=$request->get('telefono');
         $paciente->licencia=$request->get('licencia');
         $paciente->status='A';
@@ -93,7 +94,7 @@ class ClientesController extends Controller
 		  $pagos=DB::table('recibos as re')
 				  ->join('venta as v','v.idventa','=','re.idventa')
 				  ->join('clientes as cli','cli.id_cliente','=','v.idcliente')
-         -> select('re.monto','re.recibido','re.idbanco','re.idpago','v.tipo_comprobante','re.referencia','v.num_comprobante','re.fecha')
+         -> select('re.idrecibo','re.monto','re.recibido','re.idbanco','re.idpago','v.tipo_comprobante','re.referencia','v.num_comprobante','re.fecha','re.idventa')
 		 -> where('v.idcliente','=',$id)
             ->get(); 
 			$retencion=DB::table('retencionventas')->where('idcliente','=',$id)->get();
@@ -122,6 +123,7 @@ class ClientesController extends Controller
         $paciente->cedula=$request->get('cedula');
         $paciente->telefono=$request->get('telefono');
 		$paciente->licencia=$request->get('licencia');
+        $paciente->codpais=$request->get('codpais');
         $paciente->rif=$request->get('rif');
     	$paciente->direccion=$request->get('direccion');
     	$paciente->tipo_cliente=$request->get('tipo_cliente');

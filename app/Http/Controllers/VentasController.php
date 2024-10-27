@@ -555,6 +555,7 @@ public function notabs($id){
         $paciente->nombre=$request->get('cnombre');
         $paciente->cedula=$request->get('ccedula');
         $paciente->rif=$request->get('rif');
+        $paciente->codpais=$request->get('codpais');
         $paciente->telefono=$request->get('ctelefono');
         $paciente->status='A';
         $paciente->direccion=$request->get('cdireccion');
