@@ -24,9 +24,34 @@
 					<th>Stock</th>					
 				</thead><?php $stock=$articulo->stock; $comp=0; $vent=0; $de=0; $exis=0;$entra=0;$sale=0; $pago=0;?>
                @foreach ($datos as $compra)
-				<tr>       <?php  ?>
+				<tr>            <?php 
+				$data=explode("-",$compra->documento);
+				$doc=$data[0];			
+				$iddoc=$data[1];
+				$var=$iddoc."_".$compra->idarticulo;				?>
 				<td><?php  echo  $fecha=date_format(date_create($compra->fecha),'d-m-Y h:i:s');?></td>
-				<td>{{ $compra->documento}}</td>
+				<td><?php 
+switch ($doc) {
+    case "VENT": ?>
+			<a href="{{route('detalleventa',['id'=>$var])}}">{{$compra->documento}}</a>
+	<?php
+        break;
+    case "COMP":
+      ?>
+			<a href="{{route('detallecompra',['id'=>$var])}}">{{$compra->documento}}</a>
+	<?php
+        break;
+    case "AJUS":
+        ?>
+			<a href="{{route('detalleajuste',['id'=>$var])}}">{{$compra->documento}}</a>
+	<?php
+        break;
+		default:
+		   ?>
+			{{$compra->documento}}
+	<?php
+}
+?> </td>
 				<td> <?php  if($compra->tipo == 1){ $entra=$entra+ $compra->cantidad; ?>{{ $compra->cantidad}}<?php } ?></td>
 				<td> <?php  if($compra->tipo == 2){ $sale=$sale+ $compra->cantidad;?>{{ $compra->cantidad}}<?php } ?></td>
 				<td><?php $de=$entra-$sale; echo $de;?></td>

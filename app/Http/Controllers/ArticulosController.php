@@ -207,6 +207,76 @@ class ArticulosController extends Controller
         $result=DB::table('articulos')->where('codigo','=',$request->get('codigo'))->get();
          return response()->json($result);
      }
-      
-      }
+		}
+	public function detalleventa (Request $request,$id){
+		  $data=explode("_",$id);
+    $id=$data[0];
+    $art=$data[1];
+	$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			$venta=DB::table('venta as v')
+            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
+            -> select ('v.idventa','v.tasa','v.fecha_hora','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            ->where ('v.idventa','=',$id)
+            -> first();
+            $detalles=DB::table('detalle_venta as dv')
+            -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
+            -> select('a.idarticulo','a.nombre as articulo','a.iva','a.unidad','dv.cantidad','dv.descuento','dv.precio_venta')
+            -> where ('dv.idventa','=',$venta->idventa)
+            ->get();
+			
+			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
+            ->get();
+			$seriales=DB::table('seriales as se')-> where ('se.idventa','=',$id)
+            ->get();
+			$retencion=DB::table('retencionventas')-> where ('idFactura','=',$id)
+            ->first();
+			//dd($retencion);
+			$recibonc=DB::table('mov_notas as mov')-> where ('mov.iddoc','=',$id)-> where ('mov.tipodoc','=',"FAC")
+            ->get();
+      return view("almacen.articulo.detalleventa",["articulo"=>$art,"retencion"=>$retencion,"seriales"=>$seriales,"venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);  
+	  }
+	  	public function detalleajuste(Request $request,$id){
+			 $data=explode("_",$id);
+			$id=$data[0];
+			$art=$data[1];
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$ajuste=DB::table('ajustes as a')
+            -> join ('detalle_ajustes as da','a.idajuste','=','da.idajuste')
+            -> select ('a.idajuste','a.fecha_hora','a.concepto','a.responsable','a.monto')
+            ->where ('a.idajuste','=',$id)
+            -> first();
+
+            $detalles=DB::table('detalle_ajustes as da')
+            -> join('articulos as a','da.idarticulo','=','a.idarticulo')
+            -> select('a.idarticulo','a.nombre as articulo','da.cantidad','da.tipo_ajuste','da.costo')
+            -> where ('da.idajuste','=',$id)
+            ->get();
+
+		return view("almacen.articulo.detalleajuste",["articulo"=>$art,"ajuste"=>$ajuste,"detalles"=>$detalles,"empresa"=>$empresa]);
+	}
+		public function detallecompra(Request $request,$id){
+			//dd($id);
+		$data=explode("_",$id);
+		$id=$data[0];
+		$art=$data[1];
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+	
+		$ingreso=DB::table('compras as i')
+			-> join ('proveedores as p','i.idproveedor','=','p.idproveedor')
+			-> select ('i.idcompra as idingreso','i.fecha_hora','i.total','p.nombre','p.telefono','rif','direccion','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion as estado','i.base','i.miva','i.exento','i.estatus','i.idproveedor')
+			->where ('i.num_comprobante','=',$id)
+			-> first();
+	$pago=DB::table('comprobante')
+			-> where('idcompra','=',$ingreso->idingreso)->get();
+
+		$detalles=DB::table('detalle_compras as d')
+			-> join('articulos as a','d.idarticulo','=','a.idarticulo')
+			-> select('a.idarticulo','a.nombre as articulo','d.cantidad','d.precio_compra','d.precio_venta','d.subtotal')
+			-> where ('d.idcompra','=',$ingreso->idingreso)
+			->get();
+			
+		$ser=DB::table('seriales')-> where('idcompra','=',$ingreso->idingreso)->get();
+		$ret=DB::table('retenciones')-> where('idcompra','=',$ingreso->idingreso)->get();
+		return view("almacen.articulo.detallecompra",["articulo"=>$art,"ret"=>$ret,"ser"=>$ser,"ingreso"=>$ingreso,"empresa"=>$empresa,"detalles"=>$detalles,"pago"=>$pago]);
+	}
 }

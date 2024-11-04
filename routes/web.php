@@ -45,6 +45,9 @@ Route::post('guardararticulo', [ArticulosController::class, 'store'])->name('gua
 Route::post('altaarticulo', [ArticulosController::class, 'destroy'])->name('altaarticulo');
 Route::get('editarticulo/{id}', [ArticulosController::class, 'edit'])->name('editarticulo');
 Route::get('kardexarticulo/{id}', [ArticulosController::class, 'kardex'])->name('kardexarticulo');
+Route::get('detalleventa/{id}', [ArticulosController::class, 'detalleventa'])->name('detalleventa');
+Route::get('detalleajuste/{id}', [ArticulosController::class, 'detalleajuste'])->name('detalleajuste');
+Route::get('detallecompra/{id}', [ArticulosController::class, 'detallecompra'])->name('detallecompra');
 Route::get('showarticulo/{id}', [ArticulosController::class, 'show'])->name('showarticulo');
 Route::post('updatearticulo', [ArticulosController::class, 'update'])->name('updatearticulo');
 Route::post('validart', [ArticulosController::class, 'validar'])->name('validart');
