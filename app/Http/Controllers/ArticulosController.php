@@ -264,7 +264,7 @@ class ArticulosController extends Controller
 		$ingreso=DB::table('compras as i')
 			-> join ('proveedores as p','i.idproveedor','=','p.idproveedor')
 			-> select ('i.idcompra as idingreso','i.fecha_hora','i.total','p.nombre','p.telefono','rif','direccion','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion as estado','i.base','i.miva','i.exento','i.estatus','i.idproveedor')
-			->where ('i.num_comprobante','=',$id)
+			->where ('i.idcompra','=',$id)
 			-> first();
 	$pago=DB::table('comprobante')
 			-> where('idcompra','=',$ingreso->idingreso)->get();

@@ -166,7 +166,7 @@ class ComprasController extends Controller
 			        //si posee serial
 		$kar=new Kardex;
 		$kar->fecha=$mytime->toDateTimeString();
-		$kar->documento="COMP-".$request->get('num_comprobante');
+		$kar->documento="COMP-".$ingreso->idcompra."-".$request->get('num_comprobante');
 		$kar->idarticulo=$idarticulo[$cont];
 		$kar->cantidad=$cantidad[$cont];
 		$kar->costo=$precio_compra[$cont];
