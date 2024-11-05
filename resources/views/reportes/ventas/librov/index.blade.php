@@ -139,7 +139,7 @@ $cefe=0;?>
               <div class="row">
                 <!-- accepted payments column -->
                 <div class="col-4"></br></br></br></br>
-				<table width="50%">
+				<table width="50%"  style="line-height:70%">
 				<tr><td><font size="1"><small><b>LEYENDA</b></small></font></td></tr>
 				<tr><td><font size="1"><small>01-Reg: REGISTRO</small></font></td></tr>
 				<tr><td><font size="1"><small>02-comp: COMPLEMENTO</small></font></td></tr>
@@ -152,7 +152,7 @@ $cefe=0;?>
                   <p align="center" ><font size="1"><small><b>RESUMEN DEL LIBRO DE VENTAS</b></small></font></p>
 
                   <div>
-                    <table width="100%" border="1">
+                    <table width="100%"  style="line-height:70%" border="1">
                       <tr>
 					    <th></th>
                         <th style="width:10%"><font size="1"><small><b>Base Imponible</b></small></font></th>
