@@ -38,7 +38,7 @@ class ComprasController extends Controller
             $ingresos=DB::table('compras as i')
             -> join ('proveedores as p','i.idproveedor','=','p.idproveedor')
             -> join ('detalle_compras as di','i.idcompra','=','di.idcompra')
-            -> select ('i.idcompra as idingreso','i.fecha_hora','p.nombre','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion as estado','i.estatus',DB::raw('sum(di.subtotal)as total'))
+            -> select ('i.idcompra as idingreso','i.fecha_hora','i.emision','p.nombre','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion as estado','i.estatus',DB::raw('sum(di.subtotal)as total'))
             -> where ('p.nombre','LIKE','%'.$query.'%')
             -> orwhere('i.num_comprobante','LIKE','%'.$query.'%')
         //    -> orderBy('i.idcompra','desc')

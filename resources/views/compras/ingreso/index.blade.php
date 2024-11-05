@@ -11,7 +11,8 @@
 		<div class="table-responsive">
 			<table  id="comprastable" class="table table-bordered table-striped">
 				<thead>	<tr>		
-					<th>Fecha</th>
+					<th>Emision</th>
+					<th>Recepcion</th>
 					<th>Proveedor</th>
 					<th>Documento</th>
 					<th>Monto</th>
@@ -22,11 +23,13 @@
                @foreach ($ingresos as $ing)
 				<?php $status=$ing->estatus;				
 					$newdate=date("d-m-Y",strtotime($ing->fecha_hora));
+					$emi=date("d-m-Y",strtotime($ing->emision));
 				 ?>
 				<tr>
+					<td><?php echo $emi; ?></td>
 					<td><?php echo $newdate; ?></td>
 					<td>{{ $ing->nombre}}</td>
-					<td>{{ $ing->tipo_comprobante.':'.$ing->serie_comprobante.'-'.$ing->num_comprobante}}</td>
+					<td>{{ $ing->tipo_comprobante.':'.$ing->serie_comprobante}}</td>
 					<td><?php echo number_format( $ing->total, 2,',','.'); ?></td>
 					<td>{{ $ing->estado}}</td>			
 					<td>					
@@ -42,7 +45,8 @@
 				@endforeach
 				</tbody>		
 				<tfoot>	<tr>		
-					<th>Fecha</th>
+					<th>Emision</th>
+					<th>Recepcion</th>
 					<th>Proveedor</th>
 					<th>Documento</th>
 					<th>Monto</th>

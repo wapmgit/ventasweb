@@ -276,10 +276,10 @@ class ReportescomprasController extends Controller
             $datos=DB::table('compras as c')            
              ->join ('proveedores as p', 'p.idproveedor','=','c.idproveedor')      
             -> select('c.idcompra','c.emision as fecha','c.fecha_hora as recepcion','c.tipo_comprobante as tipo','c.serie_comprobante as factura','p.rif','p.nombre','c.num_comprobante as control','c.total','c.base','c.miva as iva','c.exento','c.tasa')
-				->whereBetween('c.emision', [$query, $query2])
+				->whereBetween('c.fecha_hora', [$query, $query2])
 				->where('c.tipo_comprobante','=',"FAC")
 				->where('c.estatus','=',"0")
-			->OrderBy('c.emision','asc')
+			->OrderBy('c.fecha_hora','asc')
             ->get();
 			//dd($datos);
 			$retenc=DB::table('retenciones as rt')
