@@ -10,7 +10,7 @@
               <i class="fas fa-times"></i>
             </button>
           </div>
-        </div>	<form action="{{route('utilidadventas')}}" method="GET" enctype="multipart/form-data" >         
+        </div>	<form action="{{route('valorizado')}}" method="GET" enctype="multipart/form-data" >         
 			{{csrf_field()}}
         <div class="card-body p-0"></br>
 		<div class="row">
