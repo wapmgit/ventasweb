@@ -24,19 +24,21 @@
             	<label for="cedula">Rif</label>
             	<input type="text" name="rif" class="form-control" onchange="conMayusculas(this)" value="{{$cliente->rif}}" placeholder="rif...">
 				@if($errors->first('rif'))<P class='text-danger'>{{$errors->first('rif')}}</p>@endif
-            </div>
+			</div>
 	</div>
 					<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">		
            <div class="form-group">
 		     <label for="tipo_cliente" >Codigo Pais</label>
 				<input type="text" name="codpais" class="form-control" value="{{$cliente->codpais}}" placeholder="+58">
+		    @if($errors->first('codpais'))<P class='text-danger'>{{$errors->first('codpais')}}</p>@endif
 		   </div>
 		</div>
 		<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">			
              <div class="form-group">
             	<label for="telefono">Telefono</label>
             	<input type="text" name="telefono" class="form-control" value="{{$cliente->telefono}}" placeholder="telefono...">
-            </div>
+             @if($errors->first('telefono'))<P class='text-danger'>{{$errors->first('telefono')}}</p>@endif
+			</div>
 	</div>
 	<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
            <div class="form-group">
@@ -48,7 +50,8 @@
               <div class="form-group">
             <label for="telefono">Direccion</label>
                 <input type="text" name="direccion" class="form-control" value="{{$cliente->direccion}}" placeholder="direccion...">
-           </div>
+ @if($errors->first('direccion'))<P class='text-danger'>{{$errors->first('direccion')}}</p>@endif          
+		  </div>
 	</div>
 
 					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">		

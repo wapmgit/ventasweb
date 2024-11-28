@@ -30,6 +30,7 @@
            <div class="form-group">
 		     <label for="tipo_cliente" >Codigo Pais</label>
 				<input type="text" name="codpais" class="form-control" value="{{old('codpais')}}" placeholder="+58">
+		   @if($errors->first('codpais'))<P class='text-danger'>{{$errors->first('codpais')}}</p>@endif
 		   </div>
 		</div>
 			<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">				
@@ -41,7 +42,8 @@
                       <span class="input-group-text"><i class="fas fa-phone"></i></span>
                     </div>
                     <input type="text" name="telefono" value="{{old('telefono')}}" class="form-control" data-inputmask='"mask": "(999) 999-9999"' data-mask>
-                  </div>
+                  @if($errors->first('telefono'))<P class='text-danger'>{{$errors->first('telefono')}}</p>@endif
+				  </div>
             </div>
 		</div>
 		<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">		
@@ -54,7 +56,8 @@
              <div class="form-group">
              <label for="direccion">Direccion</label>
             <input type="text" name="direccion" class="form-control" value="{{old('direccion')}}" placeholder="Direccion...">
-           </div>
+            @if($errors->first('direccion'))<P class='text-danger'>{{$errors->first('direccion')}}</p>@endif
+		   </div>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">	
            <div class="form-group">

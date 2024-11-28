@@ -49,6 +49,9 @@ class ClientesController extends Controller
 	$this->validate($request,[
             'nombre' => 'required',
             'rif' => 'required',
+            'codpais' => 'required',
+            'telefono' => 'required',
+            'direccion' => 'required',
             'cedula' => 'required'
         ]);
         $paciente=new Clientes;
@@ -116,6 +119,9 @@ class ClientesController extends Controller
 			$this->validate($request,[
             'nombre' => 'required',
 			'rif'=>'required',
+			'codpais' => 'required',
+            'telefono' => 'required',
+            'direccion' => 'required',
             'cedula' => 'required'
         ]);
 		$paciente=Clientes::findOrFail($request->get('id'));

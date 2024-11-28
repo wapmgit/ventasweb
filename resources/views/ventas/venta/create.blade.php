@@ -402,7 +402,7 @@ $(document).ready(function(){
 	document.getElementById('Cenviar').style.display="none";
 	
 	$("#Cenviar").on("click",function(){ 
-	
+	if(($("#codpais").val()!= "")&($("#telefono").val()!= "")&($("#direccion").val(total)!= "") ){
 		document.getElementById('Cenviar').style.display="none";	
          var form1= $('#formulariocliente');
          var url1 = '{{route("almacenacliente")}}';
@@ -429,6 +429,9 @@ $(document).ready(function(){
 			 $("#formulariocliente")[0].reset();
 			
         });
+		}else{
+		alert('Completar Campos Requeridos (*).');
+	}
     });
 	  //fin registrar cliente
 	  //valido cedula cliente nuevo
