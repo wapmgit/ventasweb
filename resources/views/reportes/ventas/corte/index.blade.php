@@ -136,7 +136,28 @@ $cefe=0;?>
       </table>
       </table>
 	  </div>
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+      <table  width="100%">
+      <thead >
+        
+          <tr><td colspan="3" align="center" style="background-color: #E6E6E6"> <strong>Desglose de Apartados</strong></td></tr>
+          <th>Moneda</th>
+          <th>Recibido</th>
+          <th>monto</th>
+          
+        </thead>
+         @foreach ($papartado as $cob)
+		   <?php $tingreso=$tingreso+$cob->monto; ?>
+      <tr >
+          <td><?php  echo $cob->idbanco; ?></td>
+          <td><?php echo number_format($cob->recibido, 2,',','.'); ?></td>
+          <td><?php  echo number_format($cob->monto, 2,',','.')." $"; ?></td>
+        </tr>
+        @endforeach
+        <tr><td colspan="2" align="center"><strong>Total Desglose de Apartado</strong></td><td><strong><?php echo number_format($tingreso, 2,',','.')." $"; ?></strong></td></tr>
+      </table>
+    </div>
+ <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 	    <table width="100%">
       <thead>
           <tr><td colspan="3" align="center" style="background-color: #E6E6E6"> <strong>Distribucion de Ingresos</strong></td></tr>

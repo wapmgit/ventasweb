@@ -33,24 +33,27 @@ return $dias;
                 <!-- /.col -->
 			<div class="col-sm-6 invoice-col">
 			<h2 align="center"> Estadisticas del Articulo </h2>		
+			<h3 align="center"> {{ $articulo->codigo}}</h3>		
 			</div>	
               </div>
 		       <div class="row">
              	   <div class="col-8 table-responsive">
 					<table width="100%">
 					<thead>			
-						<th>Codigo</th>
+						
 						<th>Nombre</th>					
 						<th>Stock</th>
+						<th>Apart.</th>
 						<th>Costo$</th>		
 						<th>Utilidad</th>
 						<th>Iva</th>
 						<th>Precio$</th>			
 					</thead>
 					<tr>
-						<td>{{ $articulo->codigo}}</td>
+
 						<td>{{$articulo->nombre}}</td>					
 						<td>{{ $articulo->stock}}</td>
+						<td>{{ $articulo->apartado}}</td>
 						<td><?php echo number_format($articulo->costo, 2,',','.'); ?></td>
 						<td><?php echo number_format($articulo->utilidad, 2,',','.'); ?></td>
 						<td><?php echo number_format($articulo->iva, 2,',','.'); ?></td>
@@ -105,7 +108,7 @@ return $dias;
                     </div>
 				<div class="col-3 table-responsive">
 					<h4  style="background-color: #E6E6E6">Datos de Interes</h4>
-						<small><label>Ventas en Ultimos 30 dias: </label><?php echo number_format(($analisisventa->cantidad), 2,',','.'); ?> Unds  </small></br>
+						<small><label>Ventas en Ultimos 30 dias: </label> <?php echo number_format(($analisisventa->cantidad), 2,',','.'); ?> Unds  </small></br>
 						<small><label>Prom. Semanal de Venta: </label> <?php echo number_format(($analisisventa->cantidad/7), 2,',','.'); ?> Unds</small>
 						<small><label>Compras en Ultimos 30 dias: </label> <?php echo number_format(($analisiscompra->cantidad), 2,',','.'); ?> Unds</br></small>
 						<small><label>Prom. Semanal de Compras: </label> <?php echo number_format(($analisiscompra->cantidad/7), 2,',','	 

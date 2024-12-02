@@ -191,10 +191,28 @@
 					  <input type="checkbox" name="op30" class="minimal" @if($q->importarpedido==1) checked @endif ></label>
 					</div>
 				</div>
-					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 					 <div class="form-group">
 					 <label>Modificar Pedido: </label><label>
 					  <input type="checkbox" name="op31" class="minimal" @if($q->editpedido==1) checked @endif ></label>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					 <div class="form-group">
+					 <label>Crear Apartado: </label><label>
+					  <input type="checkbox" name="op61" class="minimal" @if($q->newapartado==1) checked @endif ></label>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					 <div class="form-group">
+					 <label>Anular Apartado: </label><label>
+					  <input type="checkbox" name="op62" class="minimal" @if($q->anularapartado==1) checked @endif ></label>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					 <div class="form-group">
+					 <label>Abonar Apartado: </label><label>
+					  <input type="checkbox" name="op63" class="minimal" @if($q->abonarapartado==1) checked @endif ></label>
 					</div>
 				</div>
 				   </div>

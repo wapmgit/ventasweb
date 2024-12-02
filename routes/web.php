@@ -8,6 +8,7 @@ use App\Http\Controllers\ProveedoresController;
 use App\Http\Controllers\VendedoresController;
 use App\Http\Controllers\ComprasController;
 use App\Http\Controllers\VentasController;
+use App\Http\Controllers\ApartadoController;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\GastosController;
 use App\Http\Controllers\AjustesController;
@@ -135,7 +136,22 @@ Route::post('devolucionpedido', [PedidosController::class, 'devolucionpedido'])-
 Route::post('addarticulo', [PedidosController::class, 'addart'])->name('addarticulo');
 Route::get('pdescargados', [PedidosController::class, 'descargados'])->name('pdescargados');
 Route::get('bajarpedido/{id}', [PedidosController::class, 'bajarpedido'])->name('bajarpedido');
-
+// apartados
+Route::get('apartado', [ApartadoController::class, 'index'])->name('apartado');
+Route::get('newapartado', [ApartadoController::class, 'create'])->name('newapartado');
+Route::post('guardarapartado', [ApartadoController::class, 'store'])->name('guardarapartado');
+Route::get('reciboapar/{id}', [ApartadoController::class, 'recibo'])->name('reciboapar');
+Route::get('tcartaapar/{id}', [ApartadoController::class, 'show'])->name('tcartaapar');
+Route::get('tcartaimpor/{id}', [ApartadoController::class, 'showimportado'])->name('tcartaimpor');
+Route::post('anularapartado', [ApartadoController::class, 'destroy'])->name('anularapartado');
+Route::get('abonoapartado/{id}', [ApartadoController::class, 'abonoapartado'])->name('abonoapartado');
+Route::post('saveabono', [ApartadoController::class, 'saveabono'])->name('saveabono');
+Route::get('reciboapartado/{id}', [ApartadoController::class, 'reciboapartado'])->name('reciboapartado');
+Route::post('facapartado', [ApartadoController::class, 'facturar'])->name('facapartado');
+Route::post('recargoapartado', [ApartadoController::class, 'recargo'])->name('recargoapartado');
+//reporte apartado
+Route::get('reporteapartados', [ApartadoController::class, 'reporteapartados'])->name('reporteapartados');
+Route::get('apartadosresumen', [ApartadoController::class, 'apartadosresumen'])->name('apartadosresumen');
 //ajuste
 Route::get('ajustes', [AjustesController::class, 'index'])->name('ajustes');
 Route::get('newajuste', [AjustesController::class, 'create'])->name('newajuste');

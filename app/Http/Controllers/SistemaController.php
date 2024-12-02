@@ -134,6 +134,9 @@ class SistemaController extends Controller
 		if ($request->get('op58')){ $data->rcorrelativo=1; }else{ $data->rcorrelativo=0; }
 		if ($request->get('op59')){ $data->edoctacliente=1; }else{ $data->edoctacliente=0; }
 		if ($request->get('op60')){ $data->edoctaproveedor=1; }else{ $data->edoctaproveedor=0; }
+		if ($request->get('op61')){ $data->newapartado=1; }else{ $data->newapartado=0; }
+		if ($request->get('op62')){ $data->anularapartado=1; }else{ $data->anularapartado=0; }
+		if ($request->get('op63')){ $data->abonarapartado=1; }else{ $data->abonarapartado=0; }
 		$data ->update();
 			
 		$user=DB::table('users')->join('roles','users.id','=','roles.iduser')

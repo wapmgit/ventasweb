@@ -66,6 +66,7 @@
 								<td class="filap1"><?php echo number_format( $q->precio1, 2,',','.'); ?></td>	
 								<td class="filap2"><?php echo number_format( $q->precio2, 2,',','.'); ?></td>  
 							</tr>
+						
 							@endforeach
 							<tr style="background-color: #A9CCE3" >
 								<td colspan="2"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>

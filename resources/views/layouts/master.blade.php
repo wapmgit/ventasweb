@@ -324,6 +324,36 @@
               </li>
             </ul>
           </li>
+		  		   <li class="nav-item">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-book"></i>
+              <p>
+              Sistema de Apartado
+                <i class="fas fa-angle-left right"></i>             
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                 <a href="{{route('apartado')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Apartado</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{route('reporteapartados')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Articulos en Apartado</p>
+                </a>
+              </li>
+
+			<li class="nav-item">
+                <a href="{{route('apartadosresumen')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Reporte de Apartados</p>
+                </a>
+              </li>
+            </ul>
+          </li>
           <li class="nav-item">
             <a href="#" class="nav-link active">
               <i class="nav-icon fas fa-print"></i>
@@ -485,7 +515,7 @@
           </li>      
 		  <li class="nav-item">
             <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-table"></i>
+              <i class="nav-icon fas fa-wallet"></i>
               <p>
                 Banco
                 <i class="fas fa-angle-left right"></i>
@@ -549,7 +579,7 @@
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-table"></i>
+              <i class="nav-icon fas fa-percent"></i>
               <p>
                 Comisiones
                 <i class="fas fa-angle-left right"></i>
@@ -737,6 +767,7 @@
 <script src="{{asset('dist/js/adminlte.js')}}"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{{asset('dist/js/demo.js')}}"></script>
+
 <!-- AdminLTE dashboard demo (This is only for demo purposes) 
 <script src="{{asset('dist/js/pages/dashboard.js')}}"></script>-->
     @stack ('scripts')

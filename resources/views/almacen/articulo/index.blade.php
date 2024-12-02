@@ -27,8 +27,8 @@
 					<th>Grupo</th>
 					<th>stock</th>
 					<th>Imagen</th>
-					<th>Precio $</th>
-					<th>P. BS.</th>
+					<th>$</th>
+					<th>BS.</th>
 					<th>Opciones</th>
 				</thead>
                @foreach ($articulos as $cat)
@@ -83,6 +83,8 @@ $(document).ready(function(){
 
   });
 });
+
+
 </script>
 @endpush
 @endsection

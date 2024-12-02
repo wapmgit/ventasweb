@@ -13,12 +13,14 @@ use App\Models\MovBancos;
 use App\Models\DetalleVentas;
 use App\Models\Kardex;
 use App\Models\Articulos;
+use App\Models\Apartado;
 use App\Models\Seriales;
 use App\Models\Devolucion;
 use App\Models\Detalledevolucion;
 use App\Models\Formalibre;
 use App\Models\Clientes;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
 use DB;
 use Auth;
 
@@ -66,7 +68,7 @@ class VentasController extends Controller
         -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo','art.stock','art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial')
         -> where('art.estado','=','Activo')
         -> where ('art.stock','>','0')
-        ->groupby('articulo','art.idarticulo')
+        ->groupby('art.idarticulo')
         -> get();
 		//dd($articulos);
 		   $seriales =DB::table('seriales')->where('estatus','=',0)->get();
@@ -616,7 +618,7 @@ public function notabs($id){
 	}
 	}
 	public function anular(Request $request){
-			//dd($request);
+	//	dd($request);
     $id=$request->get('id');
     $tipo=$request->get('tipo');
 	if($tipo==1){
@@ -649,7 +651,8 @@ public function notabs($id){
 			$nd->pendiente=($nd->pendiente+$monton);
 			$nd->update();
 		}
-	}else{
+	}
+	{if($tipo==2){
 		$nota=Movnotas::findOrFail($id);
 				$nc=DB::table('relacionnc')-> where('idmov','=',$id)->first();
 		$doc=$nota->tipodoc;
@@ -670,6 +673,34 @@ public function notabs($id){
 		$nota->referencia="Anulado";
 		$nota->update();		
 	}	
+		if($tipo==3){
+		$user=Auth::user()->name;
+			 $recibo=Recibos::findOrFail($id);
+			 $venta=$recibo->idapartado;
+			 $monton=$recibo->monto;
+			 $nota=$recibo->idnota;
+			 $recibo->referencia='Anulado ->'.$monton;
+			 $recibo->monto='0';
+			 $recibo->recibido='0';
+			 $recibo->update();
+				$mbanco=DB::table('mov_ban')
+				->where('tipodoc','=',$request->get('doc'))
+				->where('iddocumento','=',$request->get('id'))->first();
+			
+				if($mbanco!= NULL){	
+				$delmov=MovBancos::findOrFail($mbanco->id_mov);
+				$delmov->monto=0;
+				$delmov->concepto="Anul.".$request->get('doc')."Rec".$request->get('id')."M:".$monton;
+				$delmov->estatus=1;
+				$delmov->update();
+				}
+				
+			$ingreso=Apartado::findOrFail($venta);
+			$ingreso->saldo=($ingreso->saldo+$monton);
+			$ingreso->update(); 
+		
+		}
+	}
 				 return Redirect::to('detalleingresos');
 	}
 	public function vcxc(Request $request)
@@ -691,5 +722,4 @@ public function notabs($id){
     $ventaf->update();
     return Redirect::to('correlativof');
 }
-
 }

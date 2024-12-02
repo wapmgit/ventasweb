@@ -63,7 +63,8 @@ switch ($doc) {
 			<tr>
 			<td>Entradas:<?Php echo $entra;?></td>
 			<td>Salidas:<?Php echo $sale;?></td>		
-			<td>Existencia:<?Php $exis=(($entra)-($sale)); echo $exis;?></td>
+			<td>Apartado:{{$articulo->apartado}}</td>		
+			<td>Existencia:<?Php $exis=(($entra)-($sale+$articulo->apartado)); echo $exis;?></td>
 			</tr>
 			</table>
 		</div>

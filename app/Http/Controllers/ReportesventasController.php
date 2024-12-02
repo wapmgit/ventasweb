@@ -158,7 +158,12 @@ class ReportesventasController extends Controller
 			-> where ('re.tiporecibo','=',"A")
 			-> groupby('re.idpago','re.idbanco')
             ->get();
-		
+			$papartado=DB::table('recibos as re')
+			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco')
+            -> whereBetween('re.fecha', [$query, $query2])
+			-> where ('re.tiporecibo','=',"AP")
+			-> groupby('re.idpago','re.idbanco')
+            ->get();
 			$ingresos=DB::table('recibos as re')
 			 -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco')
             -> whereBetween('re.fecha', [$query, $query2])
@@ -214,12 +219,21 @@ class ReportesventasController extends Controller
 			-> where ('re.tiporecibo','=',"P")
 			-> groupby('re.idpago','re.idbanco')
             ->get();
+			//apartados
+			
       // dd($query);   
 			$cobranza=DB::table('recibos as re')
             -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
 			-> where ('re.usuario','=',$user)
             -> whereBetween('re.fecha', [$query, $query2])
 			-> where ('re.tiporecibo','=',"A")
+			-> groupby('re.idpago','re.idbanco')
+            ->get();
+			$papartado=DB::table('recibos as re')
+            -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
+			-> where ('re.usuario','=',$user)
+            -> whereBetween('re.fecha', [$query, $query2])
+			-> where ('re.tiporecibo','=',"AP")
 			-> groupby('re.idpago','re.idbanco')
             ->get();
 		    $ingresos=DB::table('recibos as re')			
@@ -248,7 +262,7 @@ class ReportesventasController extends Controller
 	return view("reportes.mensajes.noautorizado");
 	}
 
-        return view('reportes.ventas.corte.index',["filtro"=>$filtro,"datos"=>$datos,"devolucion"=>$devolucion,"impuestos"=>$impuestos,"comision"=>$comisiones,"empresa"=>$empresa,"ingresos"=>$ingresos,"cobranza"=>$cobranza,"pagos"=>$pagos,"searchText"=>$query,"searchText2"=>$query2,"usuario"=>$usuario,"ingresosnd"=>$ingresosnd]);    
+        return view('reportes.ventas.corte.index',["papartado"=>$papartado,"filtro"=>$filtro,"datos"=>$datos,"devolucion"=>$devolucion,"impuestos"=>$impuestos,"comision"=>$comisiones,"empresa"=>$empresa,"ingresos"=>$ingresos,"cobranza"=>$cobranza,"pagos"=>$pagos,"searchText"=>$query,"searchText2"=>$query2,"usuario"=>$usuario,"ingresosnd"=>$ingresosnd]);    
   }
   	public function cobranza(Request $request)
     {   
@@ -296,6 +310,15 @@ class ReportesventasController extends Controller
             ->get();
 			$recibonc=DB::table('mov_notas as mov')-> whereBetween('mov.fecha', [$query, $query2])
             ->get();
+			$apartado=DB::table('recibos as re')
+			->join('apartado','apartado.idventa','=','re.idapartado' )
+			->join('clientes','clientes.id_cliente','=','apartado.idcliente')
+			->join('vendedores as vende','vende.id_vendedor','=','clientes.vendedor')
+			-> select('clientes.nombre','re.referencia','re.tiporecibo','apartado.tipo_comprobante','apartado.num_comprobante','re.idbanco','re.idpago','re.idrecibo','re.monto','re.recibido','re.fecha','vende.nombre as vendedor')    
+			-> where('apartado.devolu','=',0)
+            -> whereBetween('re.fecha', [$query, $query2])
+			-> groupby('re.idrecibo','re.idbanco')
+            ->get();
 			   }else{
 				   $cobranza=DB::table('recibos as re')
 				->join('venta','venta.idventa','=','re.idventa' )
@@ -315,7 +338,7 @@ class ReportesventasController extends Controller
 				->where('clientes.vendedor','=',$request->get('vendedor'))    
 				-> where('venta.devolu','=',0)				
 				-> whereBetween('re.fecha', [$query, $query2])
-				->groupby('re.idpago','idbanco')
+				->groupby('re.idpago','idbanco','tiporecibo')
 				->get();
 				$ingresosnd=DB::table('recibos as re')
 				-> join('notasadm as n','n.idnota','=','re.idnota')
@@ -326,9 +349,19 @@ class ReportesventasController extends Controller
 				->get();
 				$recibonc=DB::table('mov_notas as mov')-> whereBetween('mov.fecha', [$query, $query2])
 				->get();
+				 $apartado=DB::table('recibos as re')
+				->join('apartado','apartado.idventa','=','re.idapartado' )
+				->join('clientes','clientes.id_cliente','=','apartado.idcliente')
+				->join('vendedores as vende','vende.id_vendedor','=','clientes.vendedor')
+			 -> select('clientes.nombre','re.referencia','re.tiporecibo','apartado.tipo_comprobante','apartado.num_comprobante','re.idbanco','re.idrecibo','re.idpago','re.monto','re.recibido','re.fecha','vende.nombre as vendedor')
+				->where('clientes.vendedor','=',$request->get('vendedor'))  
+				-> where('apartado.devolu','=',0)
+				-> whereBetween('re.fecha', [$query, $query2])
+				-> groupby('re.idrecibo')
+				->get();
 			   }
 		   $query2=date("Y-m-d",strtotime($query2."- 1 days"));
-			return view('reportes.ventas.cobranza.index',["comprobante"=>$comprobante,"vendedores"=>$vendedores,"empresa"=>$empresa,"cobranza"=>$cobranza,"searchText"=>$query,"searchText2"=>$query2,"ingresosnd"=>$ingresosnd,"recibonc"=>$recibonc]);
+			return view('reportes.ventas.cobranza.index',["apartado"=>$apartado,"comprobante"=>$comprobante,"vendedores"=>$vendedores,"empresa"=>$empresa,"cobranza"=>$cobranza,"searchText"=>$query,"searchText2"=>$query2,"ingresosnd"=>$ingresosnd,"recibonc"=>$recibonc]);
 			   } else { 
 			return view("reportes.mensajes.noautorizado");
 			}
