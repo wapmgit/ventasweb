@@ -318,6 +318,7 @@ class ReportescomprasController extends Controller
              ->join ('proveedores as p', 'p.idproveedor','=','co.idproveedor')                            
             -> select('a.nombre as articulo','p.nombre as proveedor','co.num_comprobante','co.emision','se.*')
             ->whereBetween('co.emision', [$query, $query2])
+			->where('co.estatus','=',0)
 			->groupby('se.idserial','a.idarticulo')
 			->OrderBy('a.nombre')
             ->get();
