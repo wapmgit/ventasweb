@@ -511,6 +511,12 @@
                   <p>Lista de Proveedores</p>
                 </a>
 				</li>
+				<li class="nav-item">
+                <a href="repseriales" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Seriales</p>
+                </a>
+				</li>
             </ul>
           </li>      
 		  <li class="nav-item">

@@ -63,6 +63,13 @@ class ClientesController extends Controller
         $paciente->licencia=$request->get('licencia');
         $paciente->status='A';
         $paciente->direccion=$request->get('direccion');
+        $paciente->casa=$request->get('casa');
+        $paciente->avenida=$request->get('avenida');
+        $paciente->barrio=$request->get('barrio');
+        $paciente->ciudad=$request->get('ciudad');
+        $paciente->municipio=$request->get('municipio');
+        $paciente->entidad=$request->get('entidad');
+        $paciente->codpostal=$request->get('codpostal');
         $paciente->tipo_cliente=$request->get('tipo_cliente');
         $paciente->tipo_precio=$request->get('precio');
         $paciente->diascredito=$request->get('diascre');
@@ -116,6 +123,7 @@ class ClientesController extends Controller
 	}
 	public function update(Request $request)
 	{
+		//dd($request);
 			$this->validate($request,[
             'nombre' => 'required',
 			'rif'=>'required',
@@ -132,6 +140,13 @@ class ClientesController extends Controller
         $paciente->codpais=$request->get('codpais');
         $paciente->rif=$request->get('rif');
     	$paciente->direccion=$request->get('direccion');
+		$paciente->casa=$request->get('casa');
+        $paciente->avenida=$request->get('avenida');
+        $paciente->barrio=$request->get('barrio');
+        $paciente->ciudad=$request->get('ciudad');
+        $paciente->municipio=$request->get('municipio');
+        $paciente->entidad=$request->get('entidad');
+        $paciente->codpostal=$request->get('codpostal');
     	$paciente->tipo_cliente=$request->get('tipo_cliente');
     	$paciente->diascredito=$request->get('diascre');
 			if($request->get('agente')==1){

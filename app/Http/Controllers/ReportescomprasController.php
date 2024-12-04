@@ -7,7 +7,10 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Retenciones;
 use App\Models\Empresa;
 use App\Models\Compras;
+use App\Models\Seriales;
 use App\Models\Gastos;
+use App\Models\Ventas;
+use App\Models\Clientes;
 use DB;
 use Auth;
 
@@ -295,5 +298,53 @@ class ReportescomprasController extends Controller
 	return view("reportes.mensajes.noautorizado");
 	}
     }
-
+	public function seriales(Request $request)
+    {
+		//dd($request);
+		$rol=DB::table('roles')-> select('editserial','printcertificado')->where('iduser','=',$request->user()->id)->first();	
+        $corteHoy = date("Y-m-d");
+        $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+             $query=trim($request->get('searchText'));
+             $query2=trim($request->get('searchText2'));
+             if (($query)==""){$query=$corteHoy; }
+			$query2 = date_create($query2);
+            date_add($query2, date_interval_create_from_date_string('1 day'));
+            $query2=date_format($query2, 'Y-m-d');
+          
+            $datos=DB::table('seriales as se') 
+			 ->join ('compras as co', 'co.idcompra','=','se.idcompra')
+			 ->join ('detalle_compras as dc', 'dc.idcompra','=','co.idcompra') 
+             ->join ('articulos as a', 'a.idarticulo','=','dc.idarticulo')    			
+             ->join ('proveedores as p', 'p.idproveedor','=','co.idproveedor')                            
+            -> select('a.nombre as articulo','p.nombre as proveedor','co.num_comprobante','co.emision','se.*')
+            ->whereBetween('co.emision', [$query, $query2])
+			->groupby('se.idserial','a.idarticulo')
+			->OrderBy('a.nombre')
+            ->get();
+			$query2=date("Y-m-d",strtotime($query2."- 1 days"));
+			return view('reportes.compras.seriales.index',["rol"=>$rol,"datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);           
+		
+	}
+	public function editserial(Request $request){	
+		$compra=Seriales::findOrFail($request->get('id'));
+		$compra->chasis=$request->get('chasis');
+		$compra->motor=$request->get('motor');
+		$compra->placa=$request->get('placa');
+		$compra->color=$request->get('color');
+		$compra->año=$request->get('ano');
+		$compra->update(); 		
+			
+		return Redirect::to('repseriales');		
+	}
+	
+	public function certificado($id){	
+			 $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			$serial=Seriales::findOrFail($id);
+			$venta=Ventas::findOrFail($serial->idventa);	
+			$forma=DB::table('formalibre')-> where('idventa','=',$venta->idventa)->first();	
+			if($forma != NULL){ $documento= $forma->idforma;
+			}else{  $documento= $venta->idventa; }			
+			$cliente=Clientes::findOrFail($venta->idcliente);											
+		return view('reportes.compras.seriales.certificado',["cliente"=>$cliente,"documento"=>$documento,"venta"=>$venta,"empresa"=>$empresa]);           
+	}
 }

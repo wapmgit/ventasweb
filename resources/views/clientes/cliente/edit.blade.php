@@ -48,7 +48,7 @@
 		</div>
 	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">			
               <div class="form-group">
-            <label for="telefono">Direccion</label>
+            <label for="telefono">Direccion <a href="" data-target="#modaldireccionedit" data-toggle="modal"><button class="btn btn-primary btn-xs">+</button></a></label>
                 <input type="text" name="direccion" class="form-control" value="{{$cliente->direccion}}" placeholder="direccion...">
  @if($errors->first('direccion'))<P class='text-danger'>{{$errors->first('direccion')}}</p>@endif          
 		  </div>
@@ -112,6 +112,9 @@
 					   <div style="display: none" id="loading">  <img src="{{asset('img/sistema/loading30.gif')}}"></div>
             </div>	
 			</div>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">		
+@include('clientes.cliente.modaldireccionedit')
+</div>	
             </form>
 </div>
 

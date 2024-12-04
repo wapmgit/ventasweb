@@ -54,7 +54,7 @@
 		</div>
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">			
              <div class="form-group">
-             <label for="direccion">Direccion</label>
+             <label for="direccion">Direccion <a href="" data-target="#modaldireccion" data-toggle="modal"><button class="btn btn-primary btn-xs">+</button></a></label>
             <input type="text" name="direccion" class="form-control" value="{{old('direccion')}}" placeholder="Direccion...">
             @if($errors->first('direccion'))<P class='text-danger'>{{$errors->first('direccion')}}</p>@endif
 		   </div>
@@ -71,7 +71,7 @@
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">	
            <div class="form-group">
 				<label for="tipo_precio">Dias Credito </label><br>
-				  <input type="number" name="diascre"  id="diascre"  value="" class="form-control">
+				  <input type="number" name="diascre"  id="diascre"  value="0" class="form-control">
 
            </div>
 		</div>
@@ -113,7 +113,10 @@
             	<button class="btn btn-primary btn-sm" <?php if($cntvend==0){ echo "style='display: none'"; }?> type="button" id="btnguardar">Guardar</button>
 			    <div style="display: none" id="loading">  <img src="{{asset('img/sistema/loading30.gif')}}"></div>
             </div>	
-</div>			
+</div>		
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">		
+@include('clientes.cliente.modaldireccion')
+</div>	
 		</form>       
 	</div>
 @endsection

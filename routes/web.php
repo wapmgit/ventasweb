@@ -201,10 +201,13 @@ Route::get('retenciones', [ReportescomprasController::class, 'listaretenciones']
 Route::post('editretencion', [ReportescomprasController::class, 'ajustecorre'])->name('editretencion');
 Route::post('anularetencion', [ReportescomprasController::class, 'destroyretencion'])->name('anularetencion');
 Route::get('printretencion/{id}', [ReportescomprasController::class, 'verretencion'])->name('printretencion');
+Route::get('certificado/{id}', [ReportescomprasController::class, 'certificado'])->name('certificado');
 Route::get('reportecxp', [ReportescomprasController::class, 'cuentaspagar'])->name('reportecxp');
 Route::get('detallegresos', [ReportescomprasController::class, 'pagos'])->name('detallegresos');
 Route::get('comprasarticulo', [ReportescomprasController::class, 'comprasarticulo'])->name('comprasarticulo');
 Route::get('librocompras', [ReportescomprasController::class, 'libroc'])->name('librocompras');
+Route::get('repseriales', [ReportescomprasController::class, 'seriales'])->name('repseriales');
+Route::get('editserial', [ReportescomprasController::class, 'editserial'])->name('editserial');
 // informes articulos
 Route::get('reportearticulos', [ReportesarticulosController::class, 'articulos'])->name('reportearticulos');
 Route::get('valorizado', [ReportesarticulosController::class, 'valorizado'])->name('valorizado');

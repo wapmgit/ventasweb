@@ -107,7 +107,18 @@
 					  <input type="checkbox" name="op8" class="minimal" @if($q->editarticulo==1) checked @endif ></label>
 					</div>
 				</div>
-
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					 <div class="form-group">
+					 <label>Editar Seriales: </label><label>
+					  <input type="checkbox" name="op64" class="minimal" @if($q->editserial==1) checked @endif ></label>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					 <div class="form-group">
+					 <label>Imprimir Certificado: </label><label>
+					  <input type="checkbox" name="op65" class="minimal" @if($q->printcertificado==1) checked @endif ></label>
+					</div>
+				</div>
                   </div>
 				  </div>
                   <div class="tab-pane fade" id="custom-tabs-one-profile{{$q->id}}" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab{{$q->id}}">
