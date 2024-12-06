@@ -402,13 +402,12 @@ $(document).ready(function(){
 	document.getElementById('Cenviar').style.display="none";
 	
 	$("#Cenviar").on("click",function(){ 
-	if(($("#codpais").val()!= "")&($("#telefono").val()!= "")&($("#direccion").val(total)!= "") ){
+	if(($("#codpais").val()!= "")&($("#telefono").val()!= "")&($("#direccion").val()!= "") ){
 		document.getElementById('Cenviar').style.display="none";	
          var form1= $('#formulariocliente');
          var url1 = '{{route("almacenacliente")}}';
          var data1 = form1.serialize();
 		vl=0;
-		//alert();
 		$.post(url1,data1,function(result){  
 	    var resultado=result;
           console.log(resultado);	
