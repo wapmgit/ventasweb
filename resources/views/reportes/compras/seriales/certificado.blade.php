@@ -69,12 +69,12 @@ if($empresa->usaserie==1){$serie="SERIE".$empresa->serie;}else{$serie="";}
    <?php  echo "<sup><font  class='fuente'>".date("d-m-Y")."</font></sup>"; ?></br></br>
    <?php echo espaciostab(1).espacios(4)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->nombre}} </font></br></br>
     <?php echo espaciostab(1).espacios(2)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->casa}} </font>
-    <?php echo espaciostab(6).espacios(1)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->avenida}} </font></br></br>
+    <?php echo espaciostab(5).espacios(1)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->avenida}} </font></br></br>
 	<?php echo espaciostab(1).espacios(2)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->barrio}} </font>
     <?php echo espaciostab(6).espacios(1)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->ciudad}} </font></br></br>
 	<?php echo espaciostab(1).espacios(2)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->municipio}} </font>
-    <?php echo espaciostab(5).espacios(1)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->entidad}} </font>
-	<?php echo espaciostab(3).espacios(2)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->codpostal}} </font></br></br>
+    <?php echo espaciostab(4).espacios(1)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->entidad}} </font>
+	<?php echo espaciostab(3).espacios(1)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->codpostal}} </font></br></br>
 	<?php echo espaciostab(3).espacios(6)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->telefono}} </font></br>
    </br>		</br>   </br>
 		</br>   </br>
