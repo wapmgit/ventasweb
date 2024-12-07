@@ -36,7 +36,7 @@ if($empresa->usaserie==1){$serie="SERIE".$empresa->serie;}else{$serie="";}
 }
 .fuentet{
 	font-family: Arial;
-	 font-size: 18px;
+	 font-size: 16px;
 	font-weight: bold;
 }
 .fuente{
@@ -71,7 +71,7 @@ if($empresa->usaserie==1){$serie="SERIE".$empresa->serie;}else{$serie="";}
     <?php echo espaciostab(1).espacios(2)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->casa}} </font>
     <?php echo espaciostab(6).espacios(1)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->avenida}} </font></br></br>
 	<?php echo espaciostab(1).espacios(2)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->barrio}} </font>
-    <?php echo espaciostab(7).espacios(1)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->ciudad}} </font></br></br>
+    <?php echo espaciostab(6).espacios(1)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->ciudad}} </font></br></br>
 	<?php echo espaciostab(1).espacios(2)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->municipio}} </font>
     <?php echo espaciostab(5).espacios(1)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->entidad}} </font>
 	<?php echo espaciostab(3).espacios(2)."&nbsp;"; ?><font  class="fuentet">{{ $cliente->codpostal}} </font></br></br>
