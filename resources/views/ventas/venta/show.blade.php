@@ -15,6 +15,7 @@ $cntser=0;
 $cntline=$cntser=0;
 ?>
             <div class="invoice p-3 mb-3">
+			
               <!-- title row -->
               <div class="row">
                 <div class="col-12">
@@ -69,6 +70,7 @@ $cntline=$cntser=0;
 									<tr ><td colspan="6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Chasis:</b> {{$ser->chasis}}
 									<b>Motor:</b> {{$ser->motor}}
 									<b>Color:</b> {{$ser->color}}
+									<b>Placa:</b> {{$ser->placa}}
 									<b>Año:</b> {{$ser->año}}</td>
 									</tr>  
 									<?php } ?>
@@ -164,8 +166,8 @@ $cntline=$cntser=0;
 		@if(Auth::user()->nivel=="A")
 			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
                     <div class="form-group" align="center">
-					 <button type="button" id="regresar" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
-                     <button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
+					<button type="button" id="regresar" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
+                     <button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>                   
                     </div>
 			</div>  
 		@else
@@ -177,8 +179,10 @@ $cntline=$cntser=0;
 			</div> 
 			@endif
         </div>
+		
 	</div>
 @push ('scripts')
+<script src="{{asset('dist/js/jspdf.min.js')}}"></script>
 <script>
 $(document).ready(function(){
     $('#imprimir').click(function(){
@@ -204,6 +208,7 @@ window.location.href="/{{$ruta}}";
   
 });
 });
+
 </script>
 @endpush
 @endsection

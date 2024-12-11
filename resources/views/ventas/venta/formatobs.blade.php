@@ -76,6 +76,7 @@ function truncar($numero, $digitos)
 									<tr ><td colspan="6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Chasis:</b> {{$ser->chasis}}
 									<b>Motor:</b> {{$ser->motor}}
 									<b>Color:</b> {{$ser->color}}
+									<b>Placa:</b> {{$ser->placa}}
 									<b>Año:</b> {{$ser->año}}</td>
 									</tr>  
 									<?php } ?>
