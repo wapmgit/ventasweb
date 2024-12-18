@@ -43,7 +43,7 @@ return $insertar_ceros = $recibo.$numero;
 				</div>
 			</div>
 	<div class="row">
-		<form action="{{route('devolucion')}}" method="POST" enctype="multipart/form-data" >         
+		<form action="{{route('devolucion')}}" method="POST" id="formdevolucion" enctype="multipart/form-data" >         
         {{csrf_field()}}
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<table width="100%"><tr><td width="30%"><strong>Cliente</strong></td><td width="20%"><strong>Telefono</strong></td><td width="30%"><strong>Direccion</strong></td><td width="20%"><strong>Documento</strong></td>
@@ -131,15 +131,33 @@ return $insertar_ceros = $recibo.$numero;
 		<div class="col-lg-12 ol-md-12 col-sm-12 col-xs-12" align="center">	
        <a href="{{route('ventas')}}"> <button type="button" class="btn btn-danger btn-sm" id="regresar" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Cancelar</button></a>
         <input name="_token" value="{{ csrf_token() }}" type="hidden" ></input>
-        <button type="submit" id="procesa" class="btn btn-primary btn-sm">Procesar</button>     
+        <button type="button" id="procesa" class="btn btn-primary btn-sm">Procesar</button>     
         </div>
     </div>
 </form>
 @push ('scripts')
 <script>
 $(document).ready(function(){
-    $('#procesa').click(function(){
-  document.getElementById('procesa').style.display="none";
+	   $('#procesa').click(function(){
+Swal.fire({
+  title: "¿ Seguro de Aplicar Devolucion Total?",
+  text: "",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Si, Procesar!"
+}).then((result) => {
+  if (result.isConfirmed) {
+    Swal.fire({
+      title: "Devuelta!",
+      text: "Factura Devuelta.",
+      icon: "success"
+    });
+	  document.getElementById('procesa').style.display="none";
+	document.getElementById('formdevolucion').submit(); 
+  }
+});
     });
     });
 	function abrirdiv(ida,iddet,precio,cnt,na){
