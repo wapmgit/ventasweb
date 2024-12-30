@@ -13,3 +13,27 @@
 creacion de gti
 act de datos git
 probando gitbash
+// 
+13/11
+crear campo en tabla articulo para apartado
+en serailes ed apartado
+pasar tbla apartado y detalle apartado
+// colocar privilefios para los apartados
+//validar cuando se importa un apartado
+
+crear campos de apartado en roles
+
+//
+revisar step en agstos 
+revisar al cerrar sesion.. logout
+
+alter table clientes add casa varchar (50) null after direccion;
+alter table clientes add avenida varchar (50) null after casa;
+alter table clientes add barrio varchar (50) null after avenida;
+alter table clientes add ciudad varchar (50) null after barrio;
+alter table clientes add municipio varchar (50) null after ciudad;
+alter table clientes add entidad varchar (50) null after municipio;
+alter table clientes add codpostal varchar (50) null after entidad;
+
+alter table roles add editserial integer (2) DEFAULT 0 after anularcompra;
+alter table roles add printcertificado integer (2) DEFAULT 0 after editserial;

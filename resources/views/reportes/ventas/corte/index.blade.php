@@ -37,7 +37,7 @@ $cefe=0;?>
           <th>Devolucion</th>
           <th>Total Venta</th>
         </thead>
-        <?php $cntc=0; $cntcre=0; $cntde=0;$ctra= 0; $cche=0; $cdeb=0; $tcobranza=0; $tcobro=0; $acumdevolu=0; $credito=0; $acumc=0;$contado=0; $count=0; $vcredito=0; $tingreso=0; $vcontado=0; ?>
+        <?php $cntc=0; $cntcre=0; $cntde=0;$ctra= 0; $tingaparta=0; $cche=0; $cdeb=0; $tcobranza=0; $tcobro=0; $acumdevolu=0; $credito=0; $acumc=0;$contado=0; $count=0; $vcredito=0; $tingreso=0; $vcontado=0; ?>
                @foreach ($datos as $q)
                <?php $count++;
 			   if($q->estado=="Credito"){ $cntcre++; $vcredito=$vcredito+$q->total_venta; }else{ $cntc++;
@@ -63,7 +63,7 @@ $cefe=0;?>
 		<th><?php echo $cntde; ?></th>
 		<Tfoot>
 			
-      </table>
+      </table></br>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
   <table  width="100%">
@@ -92,7 +92,7 @@ $cefe=0;?>
           <td><strong><?php echo number_format($acumgravado, 2,',','.')." $"; ?></strong></td>
           <td><strong><?php echo number_format(($ivasale), 2,',','.')." $"; ?></strong></td>
 		</tr>
-      </table>
+      </table></br>
     </div>
   
 
@@ -107,7 +107,7 @@ $cefe=0;?>
           
         </thead>
          @foreach ($pagos as $cob)
-		   <?php $tingreso=$tingreso+$cob->monto; ?>
+		   <?php $tingreso=$tingreso+$cob->monto;	   ?>
       <tr >
           <td><?php  echo $cob->idbanco; ?></td>
           <td><?php echo number_format($cob->recibido, 2,',','.'); ?></td>
@@ -116,6 +116,7 @@ $cefe=0;?>
         @endforeach
         <tr><td colspan="2" align="center"><strong>Total Desglose de ventas</strong></td><td><strong><?php echo number_format($tingreso, 2,',','.')." $"; ?></strong></td></tr>
       </table>
+	  </br>
     </div>
 	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 	    <table  width="100%">
@@ -134,7 +135,7 @@ $cefe=0;?>
         @endforeach
 		    <tr><td colspan="2" align="center"><strong>Total Desglose de Cobranza</strong></td><td><strong><?php echo number_format($tcobranza, 2,',','.')." $"; ?></strong></td></tr>
       </table>
-      </table>
+   </br>
 	  </div>
 	    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
       <table  width="100%">
@@ -147,15 +148,15 @@ $cefe=0;?>
           
         </thead>
          @foreach ($papartado as $cob)
-		   <?php $tingreso=$tingreso+$cob->monto; ?>
+		   <?php $tingreso=$tingreso+$cob->monto; $tingaparta=$tingaparta+$cob->monto;	?>
       <tr >
           <td><?php  echo $cob->idbanco; ?></td>
           <td><?php echo number_format($cob->recibido, 2,',','.'); ?></td>
           <td><?php  echo number_format($cob->monto, 2,',','.')." $"; ?></td>
         </tr>
         @endforeach
-        <tr><td colspan="2" align="center"><strong>Total Desglose de Apartado</strong></td><td><strong><?php echo number_format($tingreso, 2,',','.')." $"; ?></strong></td></tr>
-      </table>
+        <tr><td colspan="2" align="center"><strong>Total Desglose de Apartado</strong></td><td><strong><?php echo number_format($tingaparta, 2,',','.')." $"; ?></strong></td></tr>
+      </table></br>
     </div>
  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 	    <table width="100%">
@@ -174,7 +175,7 @@ $cefe=0;?>
         @endforeach
 		    <tr><td colspan="2" align="center"><strong>Total Ingresos</strong></td><td><strong><?php echo number_format($tcobro, 2,',','.')." $"; ?></strong></td></tr>
       </table>
-      </table>
+      </br>
 	  </div>
     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
   <table  width="100%">
@@ -192,7 +193,7 @@ $cefe=0;?>
         
         </tr>
         @endforeach
-    </table>
+    </table></br>
     </div>	
 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 	    <table  width="100%">

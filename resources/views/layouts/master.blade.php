@@ -488,6 +488,12 @@
                 </a>
               </li>
 				<li class="nav-item">
+                <a href="{{route('balance')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Balance Ing./Egre.</p>
+                </a>
+              </li>
+				<li class="nav-item">
                 <a href="{{route('catalogo')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Catalogo</p>

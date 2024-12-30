@@ -238,7 +238,7 @@ class SistemaController extends Controller
 		      
 		
 	}
-			public function updatepass(Request $request)
+	public function updatepass(Request $request)
 	{
 		//dd($request);
     $user = Auth::user();
@@ -247,6 +247,77 @@ class SistemaController extends Controller
     $user->save();
 
     return redirect()->back()->with('success', '¡Contraseña actualizada correctamente!');
+	}
+	public function balance(Request $request)
+	{
+		//
+			$corteHoy = date("Y-m-d");
+            $query=trim($request->get('searchText'));
+			if (($query)==""){$query=$corteHoy; }
+             $query2=trim($request->get('searchText2'));
+           $query2 = date_create($query2);  
+	
+            date_add($query2, date_interval_create_from_date_string('1 day'));
+           $query2=date_format($query2, 'Y-m-d');
+		$rol=DB::table('roles')-> select('idrol')->where('iduser','=',$request->user()->id)->first();	
+		$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
+		$cobranza=DB::table('recibos as re')
+			->join('venta','venta.idventa','=','re.idventa' )
+			->join('clientes','clientes.id_cliente','=','venta.idcliente')
+			-> select('clientes.nombre','re.referencia','re.tiporecibo','venta.tipo_comprobante','venta.num_comprobante','re.idbanco','re.idpago','re.idrecibo','re.monto','re.recibido','re.fecha')    
+			-> where('venta.devolu','=',0)
+            -> whereBetween('re.fecha', [$query, $query2])
+			-> groupby('re.idrecibo','re.idbanco')
+            ->get();
+			//dd($cobranza);
+			$nd=DB::table('recibos as re')
+			->join('notasadm','notasadm.idnota','=','re.idnota' )
+			->join('clientes','clientes.id_cliente','=','notasadm.idcliente')
+			-> select('clientes.nombre','re.referencia','re.tiporecibo','notasadm.referencia','notasadm.idnota','re.idbanco','re.idpago','re.idrecibo','re.monto','re.recibido','re.fecha')    
+            -> whereBetween('re.fecha', [$query, $query2])
+			-> groupby('re.idrecibo','re.idbanco')
+            ->get();
+			//notas
+			$apartado=DB::table('recibos as re')
+			->join('apartado','apartado.idventa','=','re.idapartado' )
+			->join('clientes','clientes.id_cliente','=','apartado.idcliente')
+			-> select('clientes.nombre','re.referencia','re.tiporecibo','apartado.tipo_comprobante','apartado.num_comprobante','re.idbanco','re.idpago','re.idrecibo','re.monto','re.recibido','re.fecha')    
+			-> where('apartado.devolu','=',0)
+            -> whereBetween('re.fecha', [$query, $query2])
+			-> groupby('re.idrecibo','re.idbanco')
+            ->get();
+			 $ingresos=DB::table('recibos as re')			
+            -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
+            -> whereBetween('re.fecha', [$query, $query2])
+			-> groupby('re.idpago','re.idbanco')
+            ->get();
+
+			//de los egresos
+			$pagos=DB::table('comprobante as co')
+			->join('compras','compras.idcompra','=','co.idcompra' )
+			->join('proveedores as p','p.idproveedor','=','compras.idproveedor')
+           -> select('p.nombre','co.referencia','compras.num_comprobante','co.idbanco','co.idpago','co.idrecibo','co.monto','co.recibido','co.fecha_comp as fecha')
+			-> where('compras.estatus','=',0)
+            -> whereBetween('co.fecha_comp', [$query, $query2])
+            ->get();
+			//dd($pagos);
+			$gastos=DB::table('comprobante as co')
+			->join('gastos','gastos.idgasto','=','co.idgasto' )
+			->join('proveedores as p','p.idproveedor','=','gastos.idpersona')
+           -> select('p.nombre','co.referencia','gastos.documento','co.idbanco','co.idpago','co.idrecibo','co.monto','co.recibido','co.fecha_comp as fecha')
+            -> whereBetween('co.fecha_comp', [$query, $query2])
+            ->get();
+			$pagond=DB::table('comprobante as co')
+			->join('notasadmp as not','not.idnota','=','co.idnota' )
+			->join('proveedores as p','p.idproveedor','=','not.idproveedor')
+           -> select('p.nombre','not.referencia','not.ndocumento as documento','co.idbanco','co.idpago','co.idrecibo','co.monto','co.recibido','co.fecha_comp as fecha')
+            -> whereBetween('co.fecha_comp', [$query, $query2])
+            ->get();
+			 $desglosep=DB::table('comprobante')->select(DB::raw('sum(recibido) as recibido'),DB::raw('sum(monto) as monto'),'idbanco')
+            -> whereBetween('fecha_comp', [$query, $query2])
+            ->groupby('idpago','idbanco')
+            ->get();
+        return view('reportes.balance.balance.index',["pagond"=>$pagond,"ingresos"=>$ingresos,"desglosep"=>$desglosep,"pagos"=>$pagos,"gastos"=>$gastos,"nd"=>$nd,"cobranza"=>$cobranza,"apartado"=>$apartado,"empresa"=>$empresa,"rol"=>$rol,"searchText"=>$query,"searchText2"=>$query2]);
 	}
 
 }

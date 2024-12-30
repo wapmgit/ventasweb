@@ -182,6 +182,7 @@ Route::post('abonarcxp', [CxpagarController::class, 'store'])->name('abonarcxp')
 Route::get('retcompra', [CxpagarController::class, 'retencion'])->name('retcompra');
 Route::get('retgasto', [CxpagarController::class, 'retenciongasto'])->name('retgasto');
 Route::get('pagocxp', [CxpagarController::class, 'pago'])->name('pagocxp');
+
 //informes de ventas
 Route::get('resumenventas', [ReportesventasController::class, 'ventas'])->name('resumenventas');
 Route::get('cortecaja', [ReportesventasController::class, 'corte'])->name('cortecaja');
@@ -262,6 +263,7 @@ Route::get('acercade', [SistemaController::class, 'info'])->name('acercade');
 Route::get('sininternet', [SistemaController::class, 'sininternet'])->name('sininternet');
 Route::get('empresa', [SistemaController::class, 'empresa'])->name('empresa');
 Route::post('updatempresa', [SistemaController::class, 'updatempresa'])->name('updatempresa');
+Route::get('balance', [SistemaController::class, 'balance'])->name('balance');
 // monedas
 Route::get('monedas', [MonedasController::class, 'index'])->name('monedas');
 Route::get('newmoneda', [MonedasController::class, 'create'])->name('newmoneda');
