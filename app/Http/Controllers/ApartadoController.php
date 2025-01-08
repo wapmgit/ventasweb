@@ -512,6 +512,7 @@ catch(\Exception $e)
      $kar->save();  
                   //actualizo stock   
     $articulo=Articulos::findOrFail($idarticulo[$cont]);
+	$articulo->apartado=$articulo->apartado-$cantidad[$cont];
     $articulo->stock=$articulo->stock-$cantidad[$cont];
     $articulo->update();
         $cont=$cont+1;
