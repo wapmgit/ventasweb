@@ -56,13 +56,13 @@
 							@foreach ($lista as $q)
 							   <?php $i++; ?>
 							<tr <?php if (($i%2)==0){ echo "style='background-color: #D4E6F1 !important'";}?>> <?php $count++; 
-								$costoacum=$q->stock+$costoacum;
-								$costo=$costo+($q->costo*$q->stock);
-								$precioacum=$q->stock*$q->precio1+$precioacum;
+								$costoacum=($q->stock-$q->apartado)+$costoacum;
+								$costo=$costo+($q->costo*($q->stock-$q->apartado));
+								$precioacum=$q->((stock-$q->apartado)*$q->precio1)+$precioacum;
 								?> 
 								<td>{{ $q->nombre}} <?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)";*/ } ?></td>
 								<td>{{ $q->unidad}}</td>
-								<td class="filap3">{{ $q->stock}}</td>
+								<td class="filap3">{{ $q->stock-$q->apartado}}</td>
 								<td class="filap1"><?php echo number_format( $q->precio1, 2,',','.'); ?></td>	
 								<td class="filap2"><?php echo number_format( $q->precio2, 2,',','.'); ?></td>  
 							</tr>

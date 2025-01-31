@@ -58,7 +58,7 @@ class PedidosController extends Controller
          $contador=DB::table('pedidos')->select('idpedido')->limit('1')->orderby('idpedido','desc')->get();
       //dd($contador);
         $articulos =DB::table('articulos as art')
-        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo','art.stock','art.costo','art.precio1 as precio_promedio','art.precio2 as precio2')
+        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2')
         -> where('art.estado','=','Activo')
         ->groupby('articulo','art.idarticulo')
         -> get();
@@ -139,13 +139,13 @@ public function show(Request $request,$id){
 
     $detalles=DB::table('detalle_pedido as dv')
     -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-    -> select('a.nombre as articulo','dv.cantidad','dv.descuento','dv.iddetalle_pedido','a.idarticulo','a.iva','dv.precio_venta','a.costo','a.stock')
+    -> select('a.nombre as articulo','dv.cantidad','dv.descuento','dv.iddetalle_pedido','a.idarticulo','a.iva','dv.precio_venta','a.costo',DB::raw('(a.stock-a.apartado) as stock'))
     -> where ('dv.idpedido','=',$id)
     ->get();
 	$articulos =DB::table('articulos as art')
-	-> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo','art.stock','art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva')
+	-> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva')
 	-> where('art.estado','=','Activo')
-	-> where ('art.stock','>','0')
+	-> where (DB::raw('(art.stock-art.apartado) as stockd'),'>','0')
 	->groupby('articulo','art.idarticulo')
 	-> get();
 	//dd($detalles);

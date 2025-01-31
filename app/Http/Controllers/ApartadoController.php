@@ -61,7 +61,7 @@ class ApartadoController extends Controller
          $contador=DB::table('apartado')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
       //dd($contador);
         $articulos =DB::table('articulos as art')
-        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo','art.stock','art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial')
+        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial')
         -> where('art.estado','=','Activo')
         -> where ('art.stock','>','0')
         ->groupby('articulo','art.idarticulo')
@@ -189,7 +189,7 @@ class ApartadoController extends Controller
 			
                       //actualizo stock   
         $articulo=Articulos::findOrFail($idarticulo[$cont]);
-        $articulo->stock=$articulo->stock-$cantidad[$cont];
+        //$articulo->stock=$articulo->stock-$cantidad[$cont];
         $articulo->apartado=$articulo->apartado+$cantidad[$cont];
         $articulo->update();
             $cont=$cont+1;
@@ -312,7 +312,7 @@ catch(\Exception $e)
 			}
 		for ($i=0;$i<$longitud;$i++){		
 			$articulo=Articulos::findOrFail($arraycod[$i]);
-			$articulo->stock=($articulo->stock+$arraycan[$i]);
+			//$articulo->stock=($articulo->stock+$arraycan[$i]);
 			$articulo->apartado=($articulo->apartado-$arraycan[$i]);
 			$articulo->update();
 		}
@@ -461,7 +461,7 @@ catch(\Exception $e)
 			if(($request->get('convertir')=="on")){
 			$venta->flibre=1;
 			}
-		$venta->saldo=$dpedido->total_venta;
+		$venta->saldo=0;
 		$venta->estado='Contado';
 		$venta->devolu='0';
 		$venta->comision=$dpedido->comision;

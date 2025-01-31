@@ -39,7 +39,8 @@
 
 					<th>Codigo</th>
 					<th>Nombre</th>
-					<th>Existencia</th>
+					<th>Stock</th>
+					<th>Apart.</th>
 					<th>Costo</th>
 					<th>Iva</th>
 					<th>Utilidad</th>
@@ -47,9 +48,10 @@
 					<th>Utilidad 2</th>
 					<th>Precio 2</th>
 					
-				</thead><?php $count=0; $costo=0;$costoacum=0; $precioacum=0;?>
+				</thead><?php $count=0; $apart=0;$costo=0;$costoacum=0; $precioacum=0;?>
                @foreach ($lista as $q)
 				<tr> <?php $count++; 
+				$apart=$apart+$q->apartado;
 					$costoacum=$q->stock+$costoacum;
 					$costo=$costo+($q->costo*$q->stock);
 					$precioacum=$q->stock*$q->precio1+$precioacum;
@@ -58,6 +60,7 @@
 					<td>{{ $q->codigo}}</td>
 					<td>{{ $q->nombre}}</td>
 					<td>{{ $q->stock}}</td>
+					<td>{{ $q->apartado}}</td>
 					<td><?php echo number_format( $q->costo, 2,',','.'); ?></td>
 					<td>{{ $q->iva}}</td>
 					<td>{{$q->utilidad}} %</td>
@@ -69,7 +72,8 @@
 				@endforeach
 				<tr style="background-color: #E6E6E6" >
 				  <td colspan="2"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
-				  <td><?php echo "<strong>existencias : ".$costoacum."</strong>"; ?></td>
+				  <td><?php echo "<strong>".$costoacum."</strong>"; ?></td>
+				  <td><?php echo "<strong>".$apart."</strong>"; ?></td>
 				  <td ><?php echo "<strong>".$costo." $</strong>"; ?></td>
 				  <td></td>
 				  <td></td>
