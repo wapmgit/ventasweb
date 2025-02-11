@@ -58,7 +58,7 @@
 							<tr <?php if (($i%2)==0){ echo "style='background-color: #D4E6F1 !important'";}?>> <?php $count++; 
 								$costoacum=($q->stock-$q->apartado)+$costoacum;
 								$costo=$costo+($q->costo*($q->stock-$q->apartado));
-								$precioacum=$q->((stock-$q->apartado)*$q->precio1)+$precioacum;
+								$precioacum=(($q->stock-$q->apartado)*$q->precio1)+$precioacum;
 								?> 
 								<td>{{ $q->nombre}} <?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)";*/ } ?></td>
 								<td>{{ $q->unidad}}</td>
