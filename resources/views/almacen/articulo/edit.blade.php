@@ -50,14 +50,19 @@
                     </div>
                   </div>
             </div>
-          <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+         <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
 			
             	 <div class="form-group">
             			<label for="codigo">Codigo</label>
-            			<input type="text" name="codigo" required value="{{$articulo->codigo}}" class="form-control" placeholder="Codigo...">
+            			<input type="text" name="codigo" required value="{{$articulo->codigo}}" class="form-control">
             		</div>
             </div>
- 			
+ 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            	 <div class="form-group">
+            			<label for="codigo">Fraccion</label>
+            			<input type="number" name="fraccion"  min="0.1" required value="{{$articulo->fraccion}}" class="form-control">
+            		</div>
+            </div>
 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Stock </label>

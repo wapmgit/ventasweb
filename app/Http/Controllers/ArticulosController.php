@@ -9,6 +9,7 @@ use App\Models\Articulos;
 use Carbon\Carbon;
 use DB;
 use Auth;
+use Dompdf\Dompdf;
 
 
 class ArticulosController extends Controller
@@ -17,9 +18,10 @@ class ArticulosController extends Controller
 	{
 		$this->middleware('auth');
 	}
+
     public function index(Request $request)
     {
-        if ($request)
+   if ($request)
         {
 			$rol=DB::table('roles')-> select('newarticulo','editarticulo','web')->where('iduser','=',$request->user()->id)->first();
             $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
@@ -34,7 +36,7 @@ class ArticulosController extends Controller
             ->paginate(25);
 			//dd($articulos);
             return view('almacen.articulo.index',["rol"=>$rol,"articulos"=>$articulos,"empresa"=>$empresa,"searchText"=>$query]);
-        }
+        } 
     }
 	public function create(Request $request)
     {
@@ -68,6 +70,7 @@ class ArticulosController extends Controller
         $articulo->descripcion=$request->get('descripcion');
         $articulo->estado='Activo';
         $articulo->unidad=$request->get('unidad');
+        $articulo->fraccion=$request->get('fraccion');
         $articulo->volumen=$request->get('volumen');
         $articulo->grados=$request->get('grados');
         $articulo->utilidad=$request->get('utilidad');
@@ -122,6 +125,7 @@ class ArticulosController extends Controller
         $articulo->descripcion=$request->get('descripcion');
         $articulo->estado='Activo';
 		$articulo->unidad=$request->get('unidad');
+		$articulo->fraccion=$request->get('fraccion');
         $articulo->volumen=$request->get('volumen');
         $articulo->grados=$request->get('grados');
         $articulo->utilidad=$request->get('utilidad');

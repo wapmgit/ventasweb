@@ -49,32 +49,38 @@ $idv=0;
                     </div>
                   </div>
             </div>
-            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+            	<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
             			<label for="codigo">Codigo</label> <i class="fa fa-fw fa-exchange" title="Generar Codigo" id="generar"></i>
             			<input type="text" name="codigo" id="codigo" required value="{{old('codigo')}}" class="form-control" placeholder="Codigo...">
 						@if($errors->first('codigo'))<P class='text-danger'>{{$errors->first('codigo')}}</p>@endif
 					</div>
             </div>
- 						<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            	 <div class="form-group">
+            			<label for="codigo">Fraccion</label>
+            			<input type="number" name="fraccion"  min="0.1" required value="{{old('fraccion')}}" class="form-control" placeholder="1,0.25,0.5">
+            		</div>
+            </div>
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Stock</label>
             			<input type="text" name="stock" disabled   value="0" class="form-control" placeholder="stock...">
             		</div>
             </div>
-			 				<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Unidad </label>          
                   <input type="text" name="unidad"  value="{{old('unidad')}}" class="form-control" placeholder="Und, Caja, Bto...">         			
             		</div>
             </div>
-			 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Volumen</label>
             			<input type="text" name="volumen"   id="volumen" disabled  value="0" class="form-control" placeholder="volumen...">
             		</div>
             </div>
- 				<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Grados </label>          
                   <input type="text" name="grados"  value="{{old('grados')}}" id="grados" disabled class="form-control" placeholder="grados...">         			
@@ -87,61 +93,60 @@ $idv=0;
             			<input type="text" name="descripcion" required value="{{old('descripcion')}}" class="form-control" placeholder="Descripcion..">
             		</div>
             </div>
-              <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
+            <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
             	 <div class="form-group">
             			<label for="imagen">Imagen</label>
             			<input type="file" name="imagen"  class="form-control">
             		</div>
             </div>
-                 <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
                  <div class="form-group">
                               <label for="costo">Costo</label>
                               <input type="number" min="0.01" step="0.01"  name="costo"   value="{{old('costo')}}" class="form-control" id="costo" placeholder="Costo">
 						@if($errors->first('costo'))<P class='text-danger'>{{$errors->first('costo')}}</p>@endif
-				</div>         </div>
-                 <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+				</div>        
+			</div>
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
                  <div class="form-group">
                               <label for="impuesto">Impuesto</label>
                               <input type="text" value="{{old('impuesto')}}" placeholder="Impuesto" name="impuesto" id="impuesto"  class="form-control">
 							@if($errors->first('impuesto'))<P class='text-danger'>{{$errors->first('impuesto')}}</p>@endif
-						</div>         </div>
+						</div>       
+			</div>
                  
-                     <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
                    <div class="form-group">
                               <label for="utilidad">Utilidad 1</label>
                               <input type="text" name="utilidad" id="utilidad" onchange="calculo();" class="form-control" value="{{old('utilidad')}}" placeholder="% Utilidad">
                         @if($errors->first('utilidad'))<P class='text-danger'>{{$errors->first('utilidad')}}</p>@endif
 						</div>
-                        </div>
+			</div>
             <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
                         <div class="form-group">
                               <label for="precio1">Precio 1</label>
                               <input type="text" name="precio1" id="precio1"  class="form-control" value="{{old('precio1')}}" placeholder="Precio">
 								@if($errors->first('precio1'))<P class='text-danger'>{{$errors->first('precio1')}}</p>@endif
 						</div> 
-                 </div><div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+			</div>
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
                  <div class="form-group">
                               <label for="util2">Utilidad 2</label>
                               <input type="text" value="" name="util2" id="util2"   placeholder="% Utilidad" class="form-control">
-                 </div>         </div>
-                 <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+                 </div>         
+			</div>
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
                  <div class="form-group">
                               <label for="precio2">Precio 2</label>
                               <input type="text" value="" name="precio2"  id="precio2"   placeholder="Precio 2" class="form-control">
-                 </div>         </div>
-                        
-            </div> 
-                   
-          
+                 </div>         
+			</div>                        
+            </div>                           
  			<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" align="center" <?php if ($cntcat=0){?>  style="display: none" <?php } ?>>
             	 <div class="form-group">
 					<button class="btn btn-danger btn-sm" type="reset" id="btncancelar">Cancelar</button>
 				<button class="btn btn-primary btn-sm" type="button" id="btnguardar">Guardar</button>
 			    <div style="display: none" id="loading">  <img src="{{asset('img/sistema/loading30.gif')}}"></div>	
-            		</div>
-       
-
-        
+            		</div>              
             </div>
             
             </form>	 	
