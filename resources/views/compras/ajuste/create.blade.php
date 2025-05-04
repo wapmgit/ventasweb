@@ -56,7 +56,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 			<label>Cod - Articulo - existencia</label> <a href="" data-target="#modalarticuloid" data-toggle="modal"><span class="label label-success"><i class="fa  fa-plus-circle"> </i></span></a>
 			<select name="pidarticulo" id="pidarticulo" class="form-control selectpicker" data-live-search="true">
 			@foreach ($articulos as $articulo)
-			<option value="{{$articulo -> idarticulo}} - {{$articulo -> costo}}">{{$articulo -> articulo}}</option> 
+			<option value="{{$articulo -> idarticulo}} - {{$articulo -> costo}} - {{ $articulo -> fraccion}}">{{$articulo -> articulo}}</option> 
 			@endforeach
 			</select>
 			</div>
@@ -161,8 +161,9 @@ $(document).ready(function(){
         var nombre=resultado[0].articulo;  
         var id=resultado[0].idarticulo;
 		var costo=resultado[0].costo;		
+		var fraccion=resultado[0].fraccion;		
 	$("#pidarticulo")
-	.append( '<option value="'+id+' - '+costo+'">'+nombre+'</option>')
+	.append( '<option value="'+id+' - '+costo+' - '+fraccion+'">'+nombre+'</option>')
 	.selectpicker('refresh');
 alert('Articulo Registrado con exito');
      $("#formarticulo")[0].reset();
@@ -284,8 +285,16 @@ $("#guardar").hide();
          dato=document.getElementById('pidarticulo').value.split('-'); 
           st1=dato[1]; 
          $("#pcosto").val(st1*1);
-        
+		var fraccion_art=dato[2];
+		
+		var cntventa=$("#pcantidad").val();
+		if(Number.isInteger(cntventa/fraccion_art) == false ){
+		  alert('La Cantidad indicada no es divisible en la Fraccion del Articulo');
+		  $("#pcantidad").val(parseFloat(fraccion_art));
+		   $("#pcantidad").focus();
         }
+
+	  }
 
       }
 </script>

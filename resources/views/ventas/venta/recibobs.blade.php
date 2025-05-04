@@ -32,16 +32,16 @@ return $insertar_ceros = $recibo.$numero;
                           <th width="15%"><font size="1"><small><small>Subt.</small></small></font></th>
                       </thead>
                       <tfoot>                      
-                          <th colspan="2" align="center"><small><small>Bs: <?php echo number_format(($venta->total_venta*$empresa->tc), 2,',','.'); ?> </small></small></th>
-                          <th colspan="2" align="center"><small><small>$: <?php echo number_format($venta->total_venta, 2,',','.'); ?> </small></small></th>
+                          <th colspan="4"><div align="center"><small><small>Bs: <?php echo number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> </small></small></div></th>
+                         
                           </tfoot>
                       <tbody>
                         @foreach($detalles as $det)
                         <tr height="10px"> 
 						  <td><font size="1"><small><small>{{$det->cantidad}}</small></small></font></td>
-                          <td><font size="1"><small><small><small><?php echo strtolower($det->articulo);?><?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?></small></small></small></font></td>                       
-                          <td><font size="1"><small><small><?php echo number_format( $det->precio_venta, 2,',','.'); ?></small></small></font></td>
-                          <td><font size="1"><small><small><?php echo number_format( (($det->cantidad*$det->precio_venta)), 2,',','.'); ?></small></small></font></td>
+                          <td><font size="1"><small><small><small><?php echo strtolower($det->articulo);?></small></small></small></font></td>                       
+                          <td><font size="1"><small><small><?php echo number_format( ($det->precio_venta*$venta->tasa), 2,',','.'); ?></small></small></font></td>
+                          <td><font size="1"><small><small><?php echo number_format( ((($det->cantidad*$det->precio_venta)*$venta->tasa)), 2,',','.'); ?></small></small></font></td>
                         </tr>
                         @endforeach
                       </tbody>

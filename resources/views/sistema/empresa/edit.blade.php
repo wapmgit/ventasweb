@@ -169,6 +169,22 @@
                   </tr>
                 </thead>
                 <tbody>
+				  <tr>
+                    <td>Formato defecto de impresion
+					</div></td>     
+                    <td>
+						<div class="form-group">
+							<select name="formato" class="form-control">
+							<option value="tcarta" <?php if($empresa->formatofac=="tcarta"){ echo "Selected";} ?>>Carta</option>
+							<option value="tnotabs" <?php if($empresa->formatofac=="tnotabs"){ echo "Selected";} ?>>Nota Bs</option>
+							<option value="tnotads" <?php if($empresa->formatofac=="tnotads"){ echo "Selected";} ?>>Nota $</option>
+							<option value="recibo" <?php if($empresa->formatofac=="recibo"){ echo "Selected";} ?>>Tikect $</option>
+							<option value="recibobs" <?php if($empresa->formatofac=="recibobs"){ echo "Selected";} ?>>Tikect Bs</option>
+							</select>
+										
+						</div>
+                    </td>
+				</tr>
                  <tr>
                     <td>Lineas por Documento
 					</div></td>     

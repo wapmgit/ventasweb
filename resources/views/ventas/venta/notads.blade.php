@@ -17,14 +17,26 @@ function truncar($numero, $digitos)
     return intval($numero * $truncar) / $truncar;
 }
 ?>
-            <div class="invoice p-3 mb-3">
-<div id="areaimprimir" >
-<div id="margen">
-<p id="encabezado" style="display:none"></br></br></br></br></p>
+
+<div class="invoice p-3 mb-3">
 <div class="row">
+	<div class="col-sm-6 invoice-col">
+		{{$empresa->nombre}}
+			<address>
+			<strong>{{$empresa->rif}}</strong><br>
+					{{$empresa->direccion}}<br>
+					Tel: {{$empresa->telefono}}<br>
+			</address>
+	</div>
+                <!-- /.col -->
+	<div class="col-sm-3 invoice-col">		
+	</div>	
+	<div class="col-sm-3 invoice-col" align="center">
+<img src="{{ asset('dist/img/'.$empresa->logo)}}" width="50%" height="80%" title="NKS">
+	</div>
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	<table width="100%" BORDER="0">
-	<tr><td><small><b>FACTURA N° : </small>*</b><?php if($empresa->usaserie==1){ echo "Serie".$empresa->serie; } ?><?php  $idv=$venta->idventa; echo add_ceros($idv,$ceros); ?></td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo date("d-m-Y",strtotime($venta->fecha_emi)); ?></td><td><small><b>CONDICION: </small></b>Contado</td></tr>
+	<tr><td><small><b>DOCUMENTO: </small></b><?php  $idv=$venta->idventa; echo "NOT".add_ceros($idv,$ceros); ?></td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo date("d-m-Y",strtotime($venta->fecha_emi)); ?></td><td><small><b>CONDICION: </small></b>Contado</td></tr>
 	<tr><td colspan="4"><small><b>NOMBRE Y APELLIDO O RAZON SOCIAL: </b> </small>{{$venta->nombre}} <b>RIF: </b> {{$venta->cedula}}</td></tr>
 	<tr><td colspan="4"  width="50%"><small><b>DOMICILIO FISCAL: </b> {{$venta->direccion}} </small><b>TELF: </b> {{$venta->telefono}}</td></tr>
 	</table>
@@ -50,28 +62,17 @@ function truncar($numero, $digitos)
                  
                       <tbody>
                         @foreach($detalles as $det)
-						<?php $cntline++; ?>
+						<?php $cntline++; $acumsub=$acumsub+($det->precio_venta*$det->cantidad);?>
                         <tr >
-						     <td>{{$det->codigo}}-{{$det->idarticulo}}</td>
-                          <td>{{$det->articulo}} <?php if($det->iva>0){echo "(G)"; 
-						  $aux=($det->precio_venta/(($det->iva/100)+1));
-						  $aux=truncar($aux,2);
-						  $cto=truncar(($aux*$venta->tasa),2);						
-						  //$des=truncar(($det->descuento*$venta->tasa),2);
-						   $subbs=($cto*$det->cantidad);
-						   $acumsub=$acumsub+$subbs;
-						  }else { echo "(E)"; $cto=truncar(($det->precio_venta*$venta->tasa),2); 
-						    //$des=truncar(($det->descuento*$venta->tasa),2);
-						    $subbs=($cto*$det->cantidad);
-						   $acumsub=$acumsub+$subbs;
-						  } ?></td>
+						     <td>{{$det->codigo}}</td>
+                          <td>{{$det->articulo}}</td>
                           <td>{{$det->cantidad}}</td>
                           <td>{{$det->unidad}}</td>
-						     <td><?php echo number_format( ($det->precio*$venta->tasa), 2,',','.'); ?></td>
+						     <td><?php echo number_format( ($det->precio), 2,',','.'); ?></td>
                           <td>{{$det->descuento}}%</td>
                           
-                          <td><?php echo number_format( ($cto), 2,',','.'); ?></td>
-                          <td><?php echo number_format( ($subbs), 2,',','.'); ?></td>
+                          <td><?php echo number_format( ($det->precio_venta), 2,',','.'); ?></td>
+                          <td><?php echo number_format( ($det->precio_venta*$det->cantidad), 2,',','.'); ?></td>
                         </tr>
 								<?php if ($seriales <> NULL){?>
 									@foreach($seriales as $ser) 
@@ -91,24 +92,15 @@ function truncar($numero, $digitos)
                       </tbody>
 					       <tfoot>                      
                           <th colspan="7">TOTAL:</th>
-                          <th ><b><font size="4"><?php echo "Bs ".number_format(($acumsub), 2,',','.'); ?> </b></font></th>
+                          <th ><b><font size="4"><?php echo "$ ".number_format(($acumsub), 2,',','.'); ?> </b></font></th>
                           </tfoot>
             </table>
-
-										  <table width="100%"><tr>
-	<td align="right"><b>Exento Bs: </b></td><td><b><font size="3"  align="center"><?php echo number_format(($venta->texe), 2,',','.'); ?> </b></td>			  
-	<td align="right"><b>Base Imponible Bs:  </b></td><td><b><font size="3"  align="center"><?php echo number_format(($venta->base), 2,',','.'); ?> </b></td>	
-	<td align="right"><b>Iva(16%) Bs: </b></td><td><b><font size="3"  align="center"><?php echo number_format(($venta->total_iva), 2,',','.'); ?> </b></td>
-	<td  align="right"><b>Total Bs: </b></td><td><b><font size="3"  align="center"><?php echo number_format((($venta->texe+$venta->base+$venta->total_iva)), 2,',','.'); ?> </b></td>
-	</tr>
-	<tr><td colspan="4"><small></small></td></tr>
-	</table>
         </div>                   
 		@if(Auth::user()->nivel=="A")
 			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
                     <div class="form-group" align="center">
 					 <button type="button" id="regresar" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
-                     <button type="button" id="imprimir" onclick="printdiv('areaimprimir');" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
+                     <button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
                     </div>
 			</div>  
 		@else
@@ -119,8 +111,6 @@ function truncar($numero, $digitos)
                     </div>
 			</div> 
 			@endif
-        </div>
-        </div>
         </div>
 	</div>
 @push ('scripts')
@@ -143,18 +133,15 @@ $('#regresarvc').on("click",function(){
   window.location="{{route('ventacaja')}}";
   
 });
+    $('#imprimir').click(function(){
+  //  alert ('si');
+  document.getElementById('imprimir').style.display="none";
+  document.getElementById('regresar').style.display="none";
+  window.print(); 
+ 
+  window.location="{{route('ventas')}}";
+    });
 });
-function printdiv(divname){
-		document.getElementById('imprimir').style.display="none";
-		document.getElementById('regresar').style.display="none";
-		document.getElementById('encabezado').style.display="";
-	 	var printcontenido =document.getElementById(divname).innerHTML;
-		var originalcontenido = document.body.innerHTML;
-		document.body.innerHTML =printcontenido;
-	  	window.print();
-		 window.location="{{route('ventas')}}";
-	  	document.body.innerHTML=originalcontenido;
-  }
 </script>
 @endpush
 @endsection

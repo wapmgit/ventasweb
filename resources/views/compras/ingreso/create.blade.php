@@ -447,7 +447,7 @@ $("#guardar").hide();
              $("#pexento").val(texe.toFixed(2));
 			 if(mserial==1){ $("#modalseriales").modal("show");
 			for(m=0;m<cantidad;m++){
-			var fila2='<tr class="selected"><td><input type="hidden" name="artserial[]" value="'+idarticulo+'"><input type="text" name="chasis[]" value=""></td><td><input type="text" name="motor[]" value=""></td><td><input type="text" name="placa[]" style="width: 70px" value=""></td><td><input type="text" name="color[]" style="width: 70px" value=""></td><td><input type="text" name="ano[]" style="width: 50px" value=""></td></tr>';
+			var fila2='<tr class="selected"><td><input type="hidden" name="artserial[]" value="'+idarticulo+'"><input type="text" name="chasis[]" value=""></td><td><input type="text" name="motor[]" value=""></td><td><input type="text" name="placa[]" style="width: 70px" value=""></td><td><input type="text" name="color[]" style="width: 70px" value=""></td><td><input type="number" name="ano[]" style="width: 50px" maxlength="4" value=""></td></tr>';
 			$('#tableseriales').append(fila2);
 				}
 			 }

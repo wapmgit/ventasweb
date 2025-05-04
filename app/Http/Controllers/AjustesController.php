@@ -43,7 +43,7 @@ class AjustesController extends Controller
 			$categorias=DB::table('categoria')->where('condicion','=','1')->get();
 			$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
 			$articulos =DB::table('articulos as art')
-			-> select(DB::raw('CONCAT(art.codigo,"-",art.nombre," - ",art.stock," - ",art.costo,"-",art.iva) as articulo'),'art.idarticulo','art.stock','art.costo')
+			-> select(DB::raw('CONCAT(art.codigo,"-",art.nombre," - ",art.stock," - ",art.costo,"-",art.iva) as articulo'),'art.idarticulo','art.stock','art.costo','art.fraccion')
 			-> where('art.estado','=','Activo')
 			-> get();
 			//dd($contador->idarticulo);

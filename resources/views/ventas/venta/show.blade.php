@@ -14,36 +14,32 @@ return $insertar_ceros = $recibo.$numero;
 $cntser=0;
 $cntline=$cntser=0;
 ?>
-            <div class="invoice p-3 mb-3">
-			
-              <!-- title row -->
-              <div class="row">
-                <div class="col-12">
-                  <h4>
+	<div class="invoice p-3 mb-3">		
+		<!-- title row -->
+		<div class="row">
+			<div class="col-12">
+			<h4>
                     <img src="{{asset('dist/img/iconosistema.png')}}" title="NKS"> SysVent@s
                     <small class="float-right"></small>
-                  </h4>
-                </div>
-                <!-- /.col -->
-              </div>
-              <!-- info row -->
-              <div class="row invoice-info">
+			</h4>
+			</div>
+			<!-- /.col -->
+		</div>
+			<!-- info row -->
+		<div class="row invoice-info">
 			@include('ventas.venta.empresa')
-              </div>
-<div class="row">
-	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-		<table width="100%"><tr><td width="30%"><strong>Cliente</strong></td><td width="20%"><strong>Telefono</strong></td><td width="30%"><strong>Direccion</strong></td><td width="20%"><strong># Control</strong></td>
-			</tr>
-			<tr><td>{{$venta->cedula}} -> {{$venta->nombre}}</td><td>{{$venta->telefono}}</td><td>{{$venta->direccion}}</td><td>{{$venta->control}}</td>
-			</tr>
-		</table></br>
+		</div>
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<table width="100%"><tr><td width="30%"><strong>Cliente</strong></td><td width="20%"><strong>Telefono</strong></td><td width="30%"><strong>Direccion</strong></td><td width="20%"><strong># Control</strong></td>
+				</tr>
+				<tr><td>{{$venta->cedula}} -> {{$venta->nombre}}</td><td>{{$venta->telefono}}</td><td>{{$venta->direccion}}</td><td>{{$venta->control}}</td>
+				</tr>
+			</table></br>
+		</div>
 	</div>
-
-</div>
-<div class ="row">
-                                              
-        <div class="col-md-12">
-	
+	<div class ="row">                                           
+        <div class="col-md-12">	
             <table id="detalles" width="100%">
                       <thead style="background-color: #A9D0F5">                    
                           <th width="7%">Codigo</th>
@@ -51,6 +47,8 @@ $cntline=$cntser=0;
                           <th>Cantidad</th>
                           <th>Unidad</th>
                           <th>Precio</th>
+                          <th>Dscto.</th>
+                          <th>P. Venta</th>
                           <th>Subtotal</th>
                       </thead>
                       <tbody>
@@ -62,8 +60,10 @@ $cntline=$cntser=0;
                           <td>{{$det->articulo}} <?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?></td>
                           <td>{{$det->cantidad}}</td>
                           <td>{{$det->unidad}}</td>
-                          <td><?php echo number_format( $det->precio_venta*$venta->tasa, 2,',','.'); ?></td>
-                          <td><?php echo number_format( ((($det->cantidad*$det->precio_venta)-$det->descuento)*$venta->tasa), 2,',','.'); ?></td>
+                          <td><?php echo number_format( $det->precio*$venta->tasa, 2,',','.'); ?></td>
+                          <td>{{$det->descuento}}%</td>
+						   <td><?php echo number_format( $det->precio_venta*$venta->tasa, 2,',','.'); ?></td>
+                          <td><?php echo number_format( ((($det->cantidad*$det->precio_venta))*$venta->tasa), 2,',','.'); ?></td>
                         </tr>	<?php if ($seriales <> NULL){?>
 									@foreach($seriales as $ser) 
 									<?php  if ($det->idarticulo == $ser->idarticulo){ $cntser++;?>
@@ -83,7 +83,7 @@ $cntline=$cntser=0;
                       </tbody>
 					       <tfoot>  
 						<th>Codigo <?php echo " :".number_format(($venta->total_venta), 2,',','.'); ?></th>						   
-                          <th colspan="4"><div align="right">TOTAL: </div></th>
+                          <th colspan="6"><div align="right">TOTAL: </div></th>
                           <th align="center"><b><font size="4"><?php echo " Bs ".number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> </b></font></th>
                           </tfoot>
             </table>
@@ -175,6 +175,7 @@ $cntline=$cntser=0;
                     <div class="form-group" align="center">
 					 <button type="button" id="regresarvc" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
                      <button type="button" id="imprimirvc" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
+    <a href="{{route('facpdf',['id'=>$venta->idventa])}}"><button class="btn btn-success btn-xs"> kardex</button></a>                                          
                     </div>
 			</div> 
 			@endif
@@ -186,22 +187,22 @@ $cntline=$cntser=0;
 <script>
 $(document).ready(function(){
     $('#imprimir').click(function(){
-  //  alert ('si');
-  document.getElementById('imprimir').style.display="none";
-  document.getElementById('regresar').style.display="none";
-  window.print(); 
-window.location.href="/{{$ruta}}";
+	//  alert ('si');
+	document.getElementById('imprimir').style.display="none";
+	document.getElementById('regresar').style.display="none";
+	window.print(); 
+	window.location.href="/{{$ruta}}";
     });
-$('#regresar').on("click",function(){
-window.location.href="/{{$ruta}}";
-  
-});
+	$('#regresar').on("click",function(){
+	window.location.href="/{{$ruta}}";
+	  
+	});
     $('#imprimirvc').click(function(){
-  //  alert ('si');
-  document.getElementById('imprimirvc').style.display="none";
-  document.getElementById('regresarvc').style.display="none";
-  window.print(); 
-window.location.href="/{{$ruta}}";
+	//  alert ('si');
+	document.getElementById('imprimirvc').style.display="none";
+	document.getElementById('regresarvc').style.display="none";
+	window.print(); 
+	window.location.href="/{{$ruta}}";
     });
 $('#regresarvc').on("click",function(){
 window.location.href="/{{$ruta}}";

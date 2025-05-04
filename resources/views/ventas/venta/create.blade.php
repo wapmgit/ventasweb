@@ -122,7 +122,7 @@ $idv=0;
 						 <select name="pidarticulo" id="pidarticulo" class="form-control selectpicker" data-live-search="true" >
 						  <option value="5000" selected="selected">Seleccione Articulo..</option>
 						 @foreach ($articulos as $articulo)
-						  <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}">{{$articulo -> articulo}}</option>
+						  <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}">{{$articulo -> articulo}}</option>
 						 @endforeach
 						  </select>
                     </div>
@@ -141,13 +141,13 @@ $idv=0;
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                     <div class="form-group">
-                        <label for="precio_venta">Precio venta</label>
+                        <label for="precio_venta">Precio venta <?php if ($nivel=="A"){?><i class="fa-solid fa-money-check-dollar" style="display: none" id="changeprice"></i> <?php }  ?></label>
                         <input type="number" name="pprecio_venta" id="pprecio_venta"  min="0.01" class ="form-control" placeholder="Precio de Venta" <?php if ($nivel=="L"){?> disabled <?php }  ?> >
                     </div>
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                     <div class="form-group">
-                        <label for="descuento">Descuento</label>
+                        <label for="descuento">Descto. %</label>
                         <input type="number" value="0" name="pdescuento" id="pdescuento" class ="form-control" placeholder="Descuento" min="0">
                         <input type="hidden" value="0" name="pcostoarticulo" id="pcostoarticulo"  class ="form-control" >
                     </div>
@@ -164,16 +164,17 @@ $idv=0;
 					<div class="table-responsive">
 					  <table id="detalles" width="100%">
 						  <thead style="background-color: #A9D0F5">
-							  <th>Supr</th>
-							  <th>Articulo</th>
-							  <th>Cantidad</th>
-							  <th>Precio Venta</th>
-							   <th>Descuento</th>
-							  <th>SubTotal</th>
+								<th>Supr</th>
+								<th>Articulo</th>
+								<th>Cantidad</th>
+								<th align="center">Precio</th>
+								<th>Descto. %</th>
+								<th>Precio Venta</th> 
+								<th>SubTotal</th>
 							
 						  </thead>
 						  <tfoot style="background-color: #A9D0F5"> 
-						  <th colspan="2">Total items: <span id="item">0</span> </th>
+						  <th colspan="3">Total items: <span id="item">0</span> </th>
 	
 							  <th>Exe:<input type="number" style="width: 70px" readonly  name="totalexe" id="texe">Bs</th>
 							  <th>Iva:<input type="number" style="width: 70px" readonly  name="total_iva" id="total_iva">Bs</th> 
@@ -249,10 +250,13 @@ $idv=0;
 		
 
 					<div class="col-lg-4 ol-md-4 col-sm-6 col-xs-6"  align="left" id="formato">
-						<select name="formato" class="form-control">
-						<option value="tnotabs" selected="selected">Formato Por Defecto</option>
-						<option  value="tcarta">Diseño Carta</option>				
-						</select>						
+						<select name="formato"  class="form-control">
+												<option value="tcarta" <?php if($empresa->formatofac=="tcarta"){ echo "Selected";} ?>>Carta</option>
+							<option value="tnotabs" <?php if($empresa->formatofac=="tnotabs"){ echo "Selected";} ?>>Nota Bs</option>
+							<option value="tnotads" <?php if($empresa->formatofac=="tnotads"){ echo "Selected";} ?>>Nota $</option>
+							<option value="recibo" <?php if($empresa->formatofac=="recibo"){ echo "Selected";} ?>>Tikect $</option>
+							<option value="recibobs" <?php if($empresa->formatofac=="recibobs"){ echo "Selected";} ?>>Tikect Bs</option>
+							</select>					
 								</div>
 					<div  class="col-lg-4 ol-md-4 col-sm-6 col-xs-6" align="right" style="display: none" id="cfl">
 								¿ Forma Libre ? <input type="checkbox" id="convertir" name="convertir" />							
@@ -272,6 +276,7 @@ $idv=0;
 @push ('scripts')
 <script>
 $(document).ready(function(){
+
 	$('[data-mask]').inputmask();
 	document.getElementById('pcantidad').addEventListener('keypress',function(e){ validar(e); });	
 	document.getElementById('pprecio_venta').addEventListener('keypress',function(e){ validarno(e); });	
@@ -307,6 +312,15 @@ $(document).ready(function(){
       $("#comision").val(comi);
 	  $("#nvendedor").val(dato[0]);
 	});
+	$("#pcantidad").change(function(){	  
+	   datosarticulo=document.getElementById('pidarticulo').value.split('_');
+	  var fraccion_art=datosarticulo[7];
+	  var cntventa=$("#pcantidad").val();
+	  if(Number.isInteger(cntventa/fraccion_art) == false ){
+		  alert('La Cantidad indicada no es divisible en la Fraccion del Articulo');
+		  $("#pcantidad").val(fraccion_art);
+	  }
+    });
 	$('#pasapago').click(function(){
 		datosbanco=$("#pidpago").val();
 		if(datosbanco==100){
@@ -478,29 +492,41 @@ function trunc (x, posiciones = 0) {
 	totalexe=0;
 	var cont=0;
 	var contl=0;
+	var preopt="";
 	total=0;
 	totaliva=0;totalbase=0;
 	subtotal=[];
 	subiva=[];
 	base=[];
 	subexe=[];
+	
 	$("#botones").hide();
 	$("#pidarticulo").change(mostrarvalores);
 	$("#id_cliente").change(mostrarcomision);
 
     function mostrarvalores(){      
       tipo_precio=document.getElementById('id_cliente').value.split('_');
-      var tpc= tipo_precio[1];
-      if (tpc==1){ tpc=2;}else {tpc=3;}
+      tpc= tipo_precio[1];
+      if (tpc==1){  preopt="P1"; tpc=2;}else {  preopt="P2"; tpc=3;}
       //de los articulos
+	
 	    document.getElementById('pcantidad').focus();
       datosarticulo=document.getElementById('pidarticulo').value.split('_');
       $("#pprecio_venta").val(datosarticulo[tpc]);
       $("#pstock").val(datosarticulo[1]);
 	  $("#pcostoarticulo").val(datosarticulo[4]);
-      $("#pcantidad").val("1");
+      $("#pcantidad").val(datosarticulo[7]);
+      $("#pcantidad").attr("step",datosarticulo[7]);
       $("#pdescuento").val("0");
     }
+	$("#changeprice").on("click",function(){
+	  datosarticulo=document.getElementById('pidarticulo').value.split('_');
+	var  p1=datosarticulo[2]; 
+	  var p2=datosarticulo[3]; 
+	  if($("#pprecio_venta").val()==p1){  preopt="P2"; $("#pprecio_venta").val(p2);  }else{
+		 preopt="P1";  $("#pprecio_venta").val(p1); 
+	  }
+	});
 	function mostrarcomision(){  
 			var formc= $('#formventa');
 			var urlc = '{{route("ventacxc")}}';
@@ -529,8 +555,10 @@ function trunc (x, posiciones = 0) {
 		if ($("#tipocli").val()==1){		
 		document.getElementById('procesa').style.display="none"; }else{document.getElementById('procesa').style.display=""; }
 		$("#id_cliente option[value="+cli+"]").attr("selected",true);   
+		document.getElementById('changeprice').style.display="";
   }
     function agregar(){
+	
 		vdolar=$("#valortasa").val();
 		nlineas=$("#nlineas").val();
       var cantidad=0; var stock=0;
@@ -539,7 +567,10 @@ function trunc (x, posiciones = 0) {
         articulo= $("#pidarticulo option:selected").text();
         cantidad= $("#pcantidad").val();
         descuento=$("#pdescuento").val();
-        precio_venta=$("#pprecio_venta").val();
+		pdesc=((descuento/100)+1);
+        var precio=$("#pprecio_venta").val();       
+		precondesc= trunc((precio/pdesc),2);
+		precio_venta=precondesc;
         stock=$("#pstock").val();
 		costoarticulo=datosarticulo[4];
 		alicuota=datosarticulo[5];
@@ -574,10 +605,10 @@ function trunc (x, posiciones = 0) {
 					
 				totaliva=trunc((totaliva+subiva[cont]),2);
 				totalexe=parseFloat(totalexe)+parseFloat(subexe[cont]);
-                subtotal[cont]=((cantidad*precio_venta)-descuento);
+                subtotal[cont]=((cantidad*precio_venta));
                 total=parseFloat(total)+parseFloat(subtotal[cont].toFixed(2));
 
-              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td><input type="number" readonly="true"  style="width: 80px" name="precio_venta[]" value="'+precio_venta+'"></td><td><input type="number"  name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td>'+subtotal[cont].toFixed(2)+'<input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
+              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number"  name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" name="precio_venta[]" value="'+precio_venta+'"></td><td>'+subtotal[cont].toFixed(2)+'<input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
 				cont++;
 				contl++;
               limpiar();

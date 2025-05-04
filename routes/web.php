@@ -52,7 +52,7 @@ Route::get('detallecompra/{id}', [ArticulosController::class, 'detallecompra'])-
 Route::get('showarticulo/{id}', [ArticulosController::class, 'show'])->name('showarticulo');
 Route::post('updatearticulo', [ArticulosController::class, 'update'])->name('updatearticulo');
 Route::post('validart', [ArticulosController::class, 'validar'])->name('validart');
-//clientes
+
 Route::get('clientes', [ClientesController::class, 'index'])->name('clientes');
 Route::get('newcliente', [ClientesController::class, 'create'])->name('newcliente');
 Route::post('guardarcliente', [ClientesController::class, 'store'])->name('guardarcliente');
@@ -108,7 +108,9 @@ Route::get('facventa/{id}', [VentasController::class, 'facturar'])->name('facven
 Route::post('devolucion', [VentasController::class, 'devolucion'])->name('devolucion');
 Route::post('refrescar', [VentasController::class, 'refrescar'])->name('refrescar');
 Route::get('recibo/{id}', [ventasController::class, 'recibo'])->name('recibo');
+Route::get('recibobs/{id}', [ventasController::class, 'recibobs'])->name('recibobs');
 Route::get('tnotabs/{id}', [ventasController::class, 'notabs'])->name('tnotabs');
+Route::get('tnotads/{id}', [ventasController::class, 'notads'])->name('tnotads');
 Route::get('tcarta/{id}', [ventasController::class, 'show'])->name('tcarta');
 Route::get('fbs/{id}', [ventasController::class, 'fbs'])->name('fbs');
 Route::post('anulforma', [ventasController::class, 'anulforma'])->name('anulforma');

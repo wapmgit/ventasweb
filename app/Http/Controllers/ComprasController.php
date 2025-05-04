@@ -41,7 +41,7 @@ class ComprasController extends Controller
             -> select ('i.idcompra as idingreso','i.fecha_hora','i.emision','p.nombre','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion as estado','i.estatus',DB::raw('sum(di.subtotal)as total'))
             -> where ('p.nombre','LIKE','%'.$query.'%')
             -> orwhere('i.num_comprobante','LIKE','%'.$query.'%')
-        //    -> orderBy('i.idcompra','desc')
+           -> orderBy('i.idcompra','desc')
             -> groupBy('i.idcompra','i.fecha_hora','p.nombre','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion')
 			->paginate(20);
      return view ('compras.ingreso.index',["empresa"=>$empresa,"rol"=>$rol,"ingresos"=>$ingresos,"searchText"=>$query]);
@@ -221,6 +221,7 @@ class ComprasController extends Controller
 			   }
 catch(\Exception $e)
 {
+	dd($e->getMessage()); 
     DB::rollback();
 }
 
@@ -387,6 +388,7 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
         $articulo->estado='Activo';
 		$articulo->unidad=$request->get('unidad');
         $articulo->volumen=$request->get('volumen');
+        $articulo->fraccion=$request->get('fraccion');
         $articulo->grados=$request->get('grados');
         $articulo->utilidad=$request->get('utilidad');
         $articulo->precio1=$request->get('precio1');
@@ -403,7 +405,7 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 		$articulo->save();
 
 		$articulos =DB::table('articulos as art')
-        -> select(DB::raw('CONCAT(art.codigo,"-",art.nombre," - ",stock," - ",costo,"-",iva) as articulo'),'art.idarticulo','art.costo','art.serial')
+        -> select(DB::raw('CONCAT(art.codigo,"-",art.nombre," - ",stock," - ",costo,"-",iva) as articulo'),'art.idarticulo','art.costo','art.serial','art.fraccion')
         -> where('art.codigo','=',$request->get('codigo'))
         -> get();
            return response()->json($articulos);

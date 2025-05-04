@@ -31,6 +31,7 @@
 				if ($arrayidcliente[$k]==$arrayndidcliente[$m]){
 					$arrayndidcliente[$m]=0;
 				};
+				//echo $arrayndidcliente[$m];
 				}
 			}			
 			?>
@@ -102,7 +103,7 @@
 					} ?>
 				@endforeach
 					 @foreach ($notasnd as $not)
-				 	<?php for ($i=0;$i<$longitudn;$i++){
+				 	<?php for ($i=0;$i<$longitudnd;$i++){
 						if ($not->idproveedor==$arrayndidcliente[$i]){?>
 				<tr>
 					<td><small>{{$not->nombre}}</small></td>

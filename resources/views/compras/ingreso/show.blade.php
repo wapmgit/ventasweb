@@ -36,6 +36,7 @@ $cntser=0;
 			</table></br>
 		</div>
 	</div>
+	@include('compras.ingreso.modalactprecios')
             <div class ="row">
                 <div class="panel panel-primary">
                 <div class="panel-body">                                                       
@@ -44,7 +45,7 @@ $cntser=0;
                   <table id="detalles" width="100%">
                       <thead style="background-color: #A9D0F5">
                      
-                          <th>Articulo</th>
+                          <th>Articulo <!--<a href="" data-target="#modalact-{{$ingreso->idingreso}}" data-toggle="modal" ><i class="fa-solid fa-percent"></i></a>--></th>
                           <th>Cantidad</th>
                           <th>Precio Compra</th>
                           <th>Descuento</th>

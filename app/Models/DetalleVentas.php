@@ -20,6 +20,7 @@ class DetalleVentas extends Model
     	'costoarticulo',
     	'cantidad',
     	'precio_venta',
+    	'precio',
     	'descuento',
 		'fecha_emi',
 		'fecha'

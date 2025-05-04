@@ -56,10 +56,16 @@ $idv=0;
                     </div>
                   </div>
             </div>
-            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+            <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
             			<label for="codigo">Codigo</label><i class="fa fa-fw fa-exchange" title="Generar Codigo" id="generar"></i>
             			<input type="text" name="codigo" id="codigo" required value="{{old('codigo')}}" class="form-control" placeholder="Codigo...">
+            		</div>
+            </div>
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            	 <div class="form-group">
+            			<label for="codigo">Fraccion</label>
+            			<input type="number" name="fraccion"  min="0.1" required value="{{old('fraccion')}}" class="form-control" placeholder="1,0.25,0.5">
             		</div>
             </div>
  			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">

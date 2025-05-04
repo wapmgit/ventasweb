@@ -56,12 +56,12 @@ function truncar($numero, $digitos)
 						  $aux=($det->precio_venta/(($det->iva/100)+1));
 						  $aux=truncar($aux,2);
 						  $cto=truncar(($aux*$venta->tasa),2);						
-						  $des=truncar(($det->descuento*$venta->tasa),2);
-						   $subbs=($cto*$det->cantidad)-$des;
+						  //$des=truncar(($det->descuento*$venta->tasa),2);
+						   $subbs=($cto*$det->cantidad);
 						   $acumsub=$acumsub+$subbs;
 						  }else { echo "(E)"; $cto=truncar(($det->precio_venta*$venta->tasa),2); 
-						    $des=truncar(($det->descuento*$venta->tasa),2);
-						    $subbs=($cto*$det->cantidad)-$des;
+						    //$des=truncar(($det->descuento*$venta->tasa),2);
+						    $subbs=($cto*$det->cantidad);
 						   $acumsub=$acumsub+$subbs;
 						  } ?></td>
                           <td>{{$det->cantidad}}</td>

@@ -48,7 +48,7 @@ $this->middleware('auth');
 			->groupby('c.id_cliente','not.tipo')
 			->where('not.pendiente','>',0)
 			->paginate(20);
-//dd($notas);
+
 			$notasnd=DB::table('notasadm as not')
 			->join('clientes as c','c.id_cliente','=','not.idcliente')
 			//->join('venta as v','v.idcliente','=','c.id_cliente')
