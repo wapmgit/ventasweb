@@ -33,9 +33,9 @@
 
               <!-- Table row -->
               <div class="row">
-                <div class="col-12 table-responsive">
+                <div class="col-12 table-responsive" id="PuntosCanjeados">
 					<table width="100%">
-					 <thead style="background-color: #E6E6E6">
+					 <thead >
 
 					<th>Codigo</th>
 					<th>Nombre</th>
@@ -70,7 +70,7 @@
 				</tr>
 
 				@endforeach
-				<tr style="background-color: #E6E6E6" >
+				<tr >
 				  <td colspan="2"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
 				  <td><?php echo "<strong>".$costoacum."</strong>"; ?></td>
 				  <td><?php echo "<strong>".$apart."</strong>"; ?></td>
@@ -91,7 +91,8 @@
 				<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
                     <div class="form-group" align="center">
                      <button type="button" id="imprimir" class="btn btn-primary bn-sm" data-dismiss="modal">Imprimir</button>
-                    </div>
+					<button onclick="htmlExcel('PuntosCanjeados', 'Nks_Inventario')" class="btn btn-warning bn-sm">XLS</button>                   
+				   </div>
                 </div>
               </div>
 			</div>
@@ -104,6 +105,36 @@ $(document).ready(function(){
 	window.location="{{route('reportearticulos')}}";
     });
 });
+	function htmlExcel(idTabla, nombreArchivo = '') {
+	  let linkDescarga;
+	  let tipoDatos = 'application/vnd.ms-excel';
+	  let tablaDatos = document.getElementById(idTabla);
+	  let tablaHTML = tablaDatos.outerHTML.replace(/ /g, '%20');
+
+	  // Nombre del archivo
+	  nombreArchivo = nombreArchivo ? nombreArchivo + '.xls' : 'Nks_Inventario.xls';
+
+	  // Crear el link de descarga
+	  linkDescarga = document.createElement("a");
+
+	  document.body.appendChild(linkDescarga);
+
+	  if (navigator.msSaveOrOpenBlob) {
+		let blob = new Blob(['\ufeff', tablaHTML], {
+		  type: tipoDatos
+		});
+		navigator.msSaveOrOpenBlob(blob, nombreArchivo);
+	  } else {
+		// Crear el link al archivo
+		linkDescarga.href = 'data:' + tipoDatos + ', ' + tablaHTML;
+
+		// Setear el nombre de archivo
+		linkDescarga.download = nombreArchivo;
+
+		//Ejecutar la función
+		linkDescarga.click();
+	  }
+	}
 </script>
 @endpush       
 @endsection
