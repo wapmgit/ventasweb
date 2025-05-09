@@ -61,13 +61,13 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                 <div class="form-group">
                     <label for="serie_comprobante">Numero Documento</label>
-                    <input type="text" name="serie_comprobante" value="{{old('serie_comprobante')}}" class="form-control"placeholder="Numero del Documento" > 
+                    <input type="text" name="serie_comprobante" maxlength="15" value="{{old('serie_comprobante')}}" class="form-control"placeholder="Numero del Documento" > 
                 </div>
 				</div>
 				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                 <div class="form-group">
                     <label for="num_comprobante">Numero Control</label>
-                    <input type="text" required name="num_comprobante" id="num_comprobante" value="{{old('num_comprobante')}}" class="form-control" placeholder="Numero de Control">
+                    <input type="text" required name="num_comprobante" maxlength="15" id="num_comprobante" value="{{old('num_comprobante')}}" class="form-control" placeholder="Numero de Control">
                 </div>
 				
 				</div>

@@ -19,6 +19,7 @@ use App\Models\Devolucion;
 use App\Models\Detalledevolucion;
 use App\Models\Formalibre;
 use App\Models\Clientes;
+use App\clase\Errores;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use DB;
@@ -82,8 +83,8 @@ class VentasController extends Controller
 		//dd($request);
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$user=Auth::user()->name;
-  // try{
-   //DB::beginTransaction();
+   try{
+   DB::beginTransaction();
    $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->first();
    if ($contador==NULL){$numero=0;}else{$numero=$contador->idventa;}
 
@@ -230,12 +231,15 @@ class VentasController extends Controller
 		$cli=Clientes::findOrFail($idcliente[0]);
         $cli->lastfact=$mytime->toDateTimeString();
         $cli->update();
-	/*DB::commit();
+	DB::commit();
 }
 catch(\Exception $e)
 {
+	$logsc=new Errores();
+	$mensaje=$logsc->logs($e->getMessage(),$user);
     DB::rollback();
-} */
+	return view("reportes.mensajes.msgerror",["mensaje"=>$mensaje]);
+} 
 	if($request->get('convertir')=="on"){
 	  return Redirect::to('fbs/'.$venta->idventa);
 	}

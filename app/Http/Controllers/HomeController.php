@@ -77,7 +77,7 @@ class HomeController extends Controller
          $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
       //dd($contador);
         $articulos =DB::table('articulos as art')
-        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo','art.stock','art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial')
+        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo','art.stock','art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion')
         -> where('art.estado','=','Activo')
         -> where ('art.stock','>','0')
         ->groupby('articulo','art.idarticulo')

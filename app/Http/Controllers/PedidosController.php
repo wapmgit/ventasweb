@@ -58,7 +58,7 @@ class PedidosController extends Controller
          $contador=DB::table('pedidos')->select('idpedido')->limit('1')->orderby('idpedido','desc')->get();
       //dd($contador);
         $articulos =DB::table('articulos as art')
-        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2')
+        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','fraccion')
         -> where('art.estado','=','Activo')
         ->groupby('articulo','art.idarticulo')
         -> get();

@@ -1,6 +1,7 @@
 @extends ('layouts.master')
 @section ('contenido')
 		  <!-- Main content -->
+		  
 	<div class="invoice p-3 mb-3">
               <!-- title row -->
               <div class="row">
@@ -32,8 +33,8 @@
               <!-- /.row -->
 
               <!-- Table row -->
-              <div class="row">
-                <div class="col-12 table-responsive">
+              <div class="row" >
+                <div class="col-12 table-responsive" >
 					<table width="100%">
 						<thead style="background-color: #E6E6E6">
 						<th>Codigo</th>
@@ -82,6 +83,7 @@
                     </div>
                 </div>
 </div>
+
 
 @push ('scripts')
 <script>

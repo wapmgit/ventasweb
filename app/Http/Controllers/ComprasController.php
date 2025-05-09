@@ -17,6 +17,7 @@ use App\Models\Notasadmp;
 use App\Models\Monedas;
 use App\Models\Articulos;
 use App\Models\Seriales;
+use App\clase\Errores;
 use App\Models\Kardex;
 use DB;
 use Auth;
@@ -220,9 +221,11 @@ class ComprasController extends Controller
             DB::commit();
 			   }
 catch(\Exception $e)
-{
-	dd($e->getMessage()); 
+{  
+	$logsc=new Errores();
+	$mensaje=$logsc->logs($e->getMessage(),$user);
     DB::rollback();
+	return view("reportes.mensajes.msgerror",["mensaje"=>$mensaje]);
 }
 
 return Redirect::to('showcompra/'.$ingreso->idcompra."-1");

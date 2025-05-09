@@ -123,7 +123,7 @@ $idv=0;
 						 <select name="pidarticulo" id="pidarticulo" class="form-control selectpicker" data-live-search="true" >
 						  <option value="5000" selected="selected">Seleccione Articulo..</option>
 						 @foreach ($articulos as $articulo)
-						  <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}">{{$articulo -> articulo}}</option>
+						  <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}">{{$articulo -> articulo}}</option>
 						 @endforeach
 						  </select>
                     </div>
@@ -308,6 +308,15 @@ $(document).ready(function(){
       $("#comision").val(comi);
 	  $("#nvendedor").val(dato[0]);
 	});
+	$("#pcantidad").change(function(){	  
+	   datosarticulo=document.getElementById('pidarticulo').value.split('_');
+	  var fraccion_art=datosarticulo[7];
+	  var cntventa=$("#pcantidad").val();
+	  if(Number.isInteger(cntventa/fraccion_art) == false ){
+		  alert('La Cantidad indicada no es divisible en la Fraccion del Articulo');
+		  $("#pcantidad").val(fraccion_art);
+	  }
+    });
 	$('#pasapago').click(function(){
 		datosbanco=$("#pidpago").val();
 		if(datosbanco==100){

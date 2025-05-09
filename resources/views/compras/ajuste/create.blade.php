@@ -30,13 +30,13 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 			<div class="form-group">
                     <label for="concepto">Concepto</label>
-                    <input type="text" name="concepto" id="concepto" value="{{old('concepto')}}" class="form-control"placeholder="Descripcion del Documento" > 
+                    <input type="text" name="concepto" id="concepto" value="{{old('concepto')}}" maxlength="80" class="form-control"placeholder="Descripcion del Documento" > 
 			</div>
 		</div>
 		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 			<div class="form-group">
 			<label for="responsable">Responsable</label>
-			<input type="text"  name="responsable" id="responsable" value="{{old('responsable')}}" class="form-control" placeholder="Responsable">
+			<input type="text"  name="responsable" id="responsable" value="{{old('responsable')}}" maxlength="30"  class="form-control" placeholder="Responsable">
 	<input type="hidden"  name="totalaj" id="totalaj" value="" class="form-control"> 
 			</div>
 		</div>

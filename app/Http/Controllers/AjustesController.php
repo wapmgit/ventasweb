@@ -9,6 +9,7 @@ use App\Models\Detalleajustes;
 use App\Models\Articulos;
 use App\Models\Kardex;
 use App\Models\Datacsv;
+use App\clase\Errores;
 use Carbon\Carbon;
 use DB;
 use Auth;
@@ -55,7 +56,7 @@ class AjustesController extends Controller
     public function store(Request $request){
 		//dd($request);
 		$user=Auth::user()->name;
-		//try{
+		try{
 			 $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			DB::beginTransaction();
 			$ajuste=new Ajustes;
@@ -113,11 +114,14 @@ class AjustesController extends Controller
 						$cont=$cont+1;
 					}
 				DB::commit();
-		//}
-		//catch(\Exception $e)
-		//{
-		//		DB::rollback();
-	//	}
+		}
+	catch(\Exception $e)
+		{
+			$logsc=new Errores();
+			$mensaje=$logsc->logs($e->getMessage(),$user);
+				DB::rollback();
+			return view("reportes.mensajes.msgerror",["mensaje"=>$mensaje]);
+	}
 	return Redirect::to('ajustes');
 	} 	
 	public function show($id){
