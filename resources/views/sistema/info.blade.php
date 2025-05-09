@@ -33,7 +33,6 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 				<span> <b>Dias para vencer:</b> </span><?php echo dias_transcurridos($fecha_a,$fserver); ?></br>
 			<span></br><b>Contacto Soporte:</b> 04169067104- 04247163726<span>
 		</p>
-		
 		</div>
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 			<p align="center">

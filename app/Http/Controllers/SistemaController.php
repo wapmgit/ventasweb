@@ -150,6 +150,10 @@ class SistemaController extends Controller
 	{		
 		return view('sistema.ayuda.index');	
 	}
+		public function logs()
+	{		$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
+		return view('sistema.logs',["empresa"=>$empresa]);	
+	}
 	function calculador(Request $request){
 			$ruta=$_SERVER["HTTP_REFERER"];
 			$c1= substr($ruta,29);

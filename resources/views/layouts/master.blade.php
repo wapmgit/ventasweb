@@ -687,16 +687,22 @@
                 Ayuda
                 <i class="fas fa-angle-left right"></i>
               </p>
-            </a>
+            </a>			
             <ul class="nav nav-treeview">
-
-  
               <li class="nav-item">
                 <a href="{{route('ayuda')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Sistema</p>
                 </a>
               </li>
+			  @if(Auth::user()->nivel=="A") 
+			    <li class="nav-item">
+                <a href="{{route('logs')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Logs</p>
+                </a>
+              </li>
+			  @endif
             </ul>
           </li>
         </ul>
