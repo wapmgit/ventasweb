@@ -23,7 +23,7 @@
             	<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
             		 <div class="form-group">
             			<label for="nombre">Nombre</label>
-            			<input type="text" name="nombre" onchange="conMayusculas(this)"  required value="{{$articulo->nombre}}" class="form-control" placeholder="Nombre...">
+            			<input type="text" name="nombre" id="nombre" onchange="conMayusculas(this)"  required value="{{$articulo->nombre}}" class="form-control" placeholder="Nombre...">
             		<input type="hidden" name="id"  value="{{$articulo->idarticulo}}" class="form-control">
 					</div>
             	</div>
@@ -150,7 +150,10 @@
        @push('scripts')
       <script>
 $(document).ready(function(){
-
+	var nuevo=$("#nombre").val();
+	var pin2=nuevo.replace('-','/');
+	$("#nombre").val(pin2);
+	  
 $("#costo").change(calculo); 
 $("#costo").change(calculo2); 
 $("#utilidad").change(calculo); 

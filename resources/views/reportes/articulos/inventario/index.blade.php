@@ -72,12 +72,12 @@
 				@endforeach
 				<tr >
 				  <td colspan="2"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
-				  <td><?php echo "<strong>".$costoacum."</strong>"; ?></td>
-				  <td><?php echo "<strong>".$apart."</strong>"; ?></td>
-				  <td ><?php echo "<strong>".$costo." $</strong>"; ?></td>
+				  <td><?php echo "<strong>".number_format($costoacum, 2,',','.')."</strong>"; ?></td>
+				  <td><?php echo "<strong>".number_format($apart, 2,',','.')."</strong>"; ?></td>
+				  <td ><?php echo "<strong>".number_format($costo, 2,',','.')." $</strong>"; ?></td>
 				  <td></td>
 				  <td></td>
-				  <td><?php echo "<strong>".$precioacum." $</strong>"; ?></td>
+				  <td><?php echo "<strong>".number_format($precioacum, 2,',','.')." $</strong>"; ?></td>
 				  <td></td>     
 					<td></td></tr>
 					</table>

@@ -98,7 +98,7 @@ $idv=0;
                 
 				<div  class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 					<table><tr><td>	<div class="form-group">
-						<label for="serie_comprobante">Fecha Emision</label>
+						<label for="serie_comprobante">Fecha Emision </label>
 							<input type="date" name="fecha_emi" <?php if ($nivel=="L"){?> readonly <?php }  ?>  id="fecha_emi" value="<?php echo $fserver;?>" class="form-control control-sm">
 							<input type="hidden" name="tipo_comprobante" class="form-control" value="FAC">
 						</div></td><td><div class="form-group">

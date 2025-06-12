@@ -36,7 +36,7 @@
 					
 					<td><small>{{ $cat->codigo}}</small></td>
 					<td><a href="{{route('showarticulo',['id'=>$cat->idarticulo])}}"><i class="fa fa-fw fa-line-chart"></i> 
-					</a><small>{{$cat->nombre}}</small></td>					
+					</a><small><?php echo substr( $cat->nombre, 0, 40 ); ?></small></td>					
 					<td><small><small>{{ $cat->categoria}}</small></small></td>
 					<td><small>{{ $cat->stock}}</small></td>
 						<td  > <?php if ($cat->imagen==""){?> <img src="{{ asset('/img/articulos/ninguna.jpg')}}" alt="{{$cat->nombre}}" height="20px" width="20px" class="img-thumbnail"><?php }else{ ?><img src="{{ asset('/img/articulos/'.$cat->imagen)}}" alt="{{$cat->nombre}}" height="15px" width="30px" class="img-thumbnail"><?php } ?> </td>
@@ -46,8 +46,9 @@
 						
 					@if($rol->editarticulo==1)	<a href="{{route('editarticulo',['id'=>$cat->idarticulo])}}"><button class="btn btn-warning btn-xs">Editar</button></a>@endif
 						<a href="" data-target="#modal-delete-{{$cat->idarticulo}}" data-toggle="modal"><button class="btn btn-danger btn-xs">Alta</button></a>
-						      <a href="{{route('kardexarticulo',['id'=>$cat->idarticulo])}}"><button class="btn btn-success btn-xs"> kardex</button></a>                                          
-					</td>
+						<a href="{{route('kardexarticulo',['id'=>$cat->idarticulo])}}"><button class="btn btn-success btn-xs"> kardex</button></a>                                          
+				
+				</td>
 				</tr>
 				@include('almacen.articulo.modal')
 				@endforeach
