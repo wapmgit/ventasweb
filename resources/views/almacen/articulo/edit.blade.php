@@ -48,6 +48,10 @@
                       <input type="checkbox" name="serial"  <?Php if($articulo->serial==1) echo "checked"; ?> class="custom-control-input" id="customSwitch3">
                       <label class="custom-control-label" for="customSwitch3">¿Usa Seriales?</label>
                     </div>
+					<div class="custom-control custom-switch  custom-switch-on-success custom-switch-off-danger">
+                      <input type="checkbox" name="showlista"  <?Php if($articulo->showlista==1) echo "checked"; ?> class="custom-control-input" id="customSwitch4">
+                      <label class="custom-control-label" for="customSwitch4">¿lista de Precios?</label>
+                    </div>
                   </div>
             </div>
          <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">

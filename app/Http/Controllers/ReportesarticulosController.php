@@ -94,6 +94,7 @@ class ReportesarticulosController extends Controller
 			if($request->order){
 			$lista=DB::table('articulos')
 				->where('stock','>',0)
+				->where('showlista','=',1)
 				->where('estado','=',"Activo")
 				->OrderBy('articulos.nombre')
 				->get();
@@ -102,6 +103,7 @@ class ReportesarticulosController extends Controller
 		}else{     
         $lista=DB::table('articulos')
 		->where('stock','>',0)
+		->where('showlista','=',1)
 		->where('estado','=',"Activo")
 		->OrderBy('articulos.nombre')
         ->get();

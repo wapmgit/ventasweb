@@ -140,6 +140,7 @@ class ArticulosController extends Controller
         $articulo->costo=$request->get('costo');
         $articulo->iva=$request->get('impuesto');
 		if($request->get('serial')=="on"){$articulo->serial=1;}	
+		if(!$request->get('showlista')){$articulo->showlista=0;}else{$articulo->showlista=1;}
 		if(!empty($request->file('imagen'))){
 			$file = $request->file('imagen');
 			$img = $file->getClientOriginalName();		
