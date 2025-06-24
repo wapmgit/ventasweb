@@ -77,8 +77,18 @@
             </div>
 			 				<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
-            			<label for="stock">Unidad </label>          
-                  <input type="text" name="unidad"  value="{{$articulo->unidad}}" class="form-control" placeholder="Und, Caja, Bto...">         			
+            			<label for="stock">Unidad </label>                      
+					<select name="unidad" class="form-control">          			            			
+            				<option <?php if($articulo->unid=="UND"){ echo "selected"; } ?> value="UND">Unidad</option>
+            				<option <?php if($articulo->unid=="BTO"){ echo "selected"; } ?> value="BTO">Bulto</option>
+            				<option <?php if($articulo->unid=="SCO"){ echo "Selected"; } ?> value="SCO">Saco</option>
+            				<option <?php if($articulo->unid=="CJA"){ echo "Selected"; } ?> value="CJA">Caja</option>
+            				<option <?php if($articulo->unid=="KIT"){ echo "Selected"; } ?> value="KIT">Kit</option>
+            				<option <?php if($articulo->unid=="KG"){ echo "selected"; } ?>  value="kG">Kg</option>
+            				<option <?php if($articulo->unid=="DISP"){ echo "selected"; } ?> value="DISP">Display</option>
+            				<option <?php if($articulo->unid=="PR"){ echo "selected"; } ?> value="PR">Par</option>
+            				<option <?php if($articulo->unid=="LTR"){ echo "selected"; } ?>  value="LTR">Litros</option>		
+            			</select>				
             		</div>
             </div>
 			 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">

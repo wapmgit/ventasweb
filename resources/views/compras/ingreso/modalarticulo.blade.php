@@ -77,7 +77,16 @@ $idv=0;
 			 				<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Unidad </label>          
-                  <input type="text" name="unidad"  value="{{old('unidad')}}" class="form-control" placeholder="Und, Caja, Bto...">         			
+						<select name="unidad" class="form-control">          			            			
+            				<option value="UND">Unidad</option>
+            				<option value="BTO">Bulto</option>
+            				<option value="SCO">Saco</option>
+            				<option value="CJA">Caja</option>
+            				<option value="kg">Kg</option>
+            				<option value="DISP">Display</option>
+            				<option value="PR">Par</option>
+            				<option value="LTR">Litros</option>           				
+            			</select>
             		</div>
             </div>
 			 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
