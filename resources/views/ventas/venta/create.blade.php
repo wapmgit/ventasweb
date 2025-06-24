@@ -523,6 +523,7 @@ function trunc (x, posiciones = 0) {
 	  datosarticulo=document.getElementById('pidarticulo').value.split('_');
 	var  p1=datosarticulo[2]; 
 	  var p2=datosarticulo[3]; 
+	
 	  if($("#pprecio_venta").val()==p1){  preopt="P2"; $("#pprecio_venta").val(p2);  }else{
 		 preopt="P1";  $("#pprecio_venta").val(p1); 
 	  }
@@ -569,8 +570,11 @@ function trunc (x, posiciones = 0) {
         descuento=$("#pdescuento").val();
 		pdesc=((descuento/100)+1);
         var precio=$("#pprecio_venta").val();       
+		if(descuento>0){
 		precondesc= trunc((precio/pdesc),2);
-		precio_venta=precondesc;
+		precio_venta=precondesc; }else{
+			precio_venta=precio;
+		}
         stock=$("#pstock").val();
 		costoarticulo=datosarticulo[4];
 		alicuota=datosarticulo[5];
