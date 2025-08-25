@@ -45,10 +45,11 @@
 
 <div class="wrapper">
 
-  <!-- Preloader -->
+  <!-- Preloader 
   <div class="preloader flex-column justify-content-center align-items-center">
     <img class="animation__shake img-circle" src="{{asset('dist/img/logosistema.png')}}"  alt="NKS sistemas" height="70" width="70">
   </div>
+  -->
 
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-primary navbar-dark">
@@ -164,7 +165,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{route('home')}}" class="brand-link">
-      <img src="{{asset('dist/img/logosistema.png')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="{{asset('dist/img/logosistemas.png')}}" alt="W&W" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">SysVent@s Web </span>
     </a>
 
