@@ -51,7 +51,7 @@ class VentasController extends Controller
             -> orwhere ('v.idventa','LIKE','%'.$query.'%')
             -> orderBy('v.idventa','desc')
             -> groupBy('v.idventa','v.fecha_hora','p.nombre','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado')
-                ->paginate(25);
+                ->paginate(50);
      
      return view ('ventas.venta.index',["rol"=>$rol,"ventas"=>$ventas,"searchText"=>$query,"empresa"=>$empresa]);
         }
