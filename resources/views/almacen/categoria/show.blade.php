@@ -66,18 +66,20 @@
                           <th>Codigo</th>
                           <th>Nombre</th>
                           <th>Costo</th>
-                          <th>Precio</th>
+                          <th>P1</th>
+                          <th>P2</th>
                           <th>Stock</th>
                           <th>Monto</th>
-              </thead><?php $acumcosto=0; $cont=0; $acumprecio=0; $acum=0; $monto=0;?>
+              </thead><?php $acumcosto=0; $cont=0; $acumprecio2=0; $acumprecio=0; $acum=0; $monto=0;?>
                       <tbody>
                         @foreach($articulos as $det) <?php $cont++; ?>
                         <tr > <?php $acumcosto=($acumcosto+($det->costo*$det->stock)); $acum=($acum+$det->stock);
-						$acumprecio=($acumprecio+$det->precio1); $monto=($monto+($det->stock*$det->precio1)); ?>
+						$acumprecio2=($acumprecio2+$det->precio2); $acumprecio=($acumprecio+$det->precio1); $monto=($monto+($det->stock*$det->precio1)); ?>
                           <td>{{$det->codigo}}</td>
                           <td>{{$det->nombre}}</td>
                           <td>{{$det->costo}}</td>
                           <td>{{$det->precio1}}</td>
+                          <td>{{$det->precio2}}</td>
                           <td>{{$det->stock}}</td>
                           <td>{{$det->stock*$det->precio1}}</td>
                           
@@ -86,6 +88,7 @@
                       </tbody>   {{$articulos->render()}}
 					  <tr style="background-color: #E6E6E6"><td colspan="2"><strong>Total: <?php echo $cont. " Articulos."; ?></strong></td><td><strong><?php echo number_format($acumcosto, 2,',','.');?></strong></td>
 					  <td><strong><?php echo number_format($acumprecio, 2,',','.');?></strong></td>
+					  <td><strong><?php echo number_format($acumprecio2, 2,',','.');?></strong></td>
 					  <td><strong><?php echo number_format($acum, 2,',','.');?></strong></td>
 					  <td><strong><?php echo number_format($monto, 2,',','.');?></strong></td></tr>
                   </table>

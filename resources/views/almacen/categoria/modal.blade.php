@@ -16,20 +16,31 @@ role="dialog" tabindex="-1" id="modal-calcular-{{$categoria->idcategoria}}">
 	    	</div>
 			<div class="modal-body">
 				<div class="row">
-				<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
+				<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
             		 <div class="form-group">
             			<label for="nombre">Porcentaje</label>
             			<input type="number" name="tasa" required value="" class="form-control" placeholder="%...">
 						<input type="hidden" name="categoria"  value="{{$categoria->idcategoria}}" >
             		</div>
             	</div>		
-				<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
+				<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
 			           <div class="form-group">
              <label for="modo">Modo</label><br>
         <label for="precio1"> Incremento P.v.</label> <input name="modo" type="radio" value="1" checked="checked">
          <label for="precio2"> Ajuste Utilidad</label> <input name="modo" type="radio" value="2">
            </div>
-		   </div>			
+		   </div>	
+         <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+            	 <div class="form-group">
+            			<label >Precio Ajuste</label>
+            			<select name="precio" class="form-control">
+						<option value="0">Ambos</option>
+						<option value="1">Precio1</option>
+						<option value="2">Precio2</option>
+            			</select>
+            	       				
+            		</div>
+            </div>		   
 
 				
 			    </div>  <!-- del row -->

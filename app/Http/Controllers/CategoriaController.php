@@ -59,7 +59,7 @@ class CategoriaController extends Controller
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
         $articulos=DB::table('articulos as a')
             -> join('categoria as c','a.idcategoria','=','c.idcategoria')
-            -> select ('a.idarticulo','a.nombre','a.codigo','a.costo','a.precio1','a.stock','c.nombre as categoria','a.descripcion','a.estado')
+            -> select ('a.idarticulo','a.nombre','a.codigo','a.costo','a.precio1','a.precio2','a.stock','c.nombre as categoria','a.descripcion','a.estado')
             ->where ('c.idcategoria','=',$id)
             ->where ('a.estado','=','Activo')
             ->orderBy('a.nombre','asc')
@@ -93,10 +93,17 @@ class CategoriaController extends Controller
 		    $nprecio=$articulo->precio1+(($tasa/100)*$articulos[$cont]->precio1);
 			$pt=($articulos[$cont]->costo + (($articulos[$cont]->iva/100)*$articulos[$cont]->costo));  
 			  $nutil=((($nprecio/$pt)*100)-100);
+			  if($request->get('precio')==0){
 			  $articulo->precio1=$nprecio;
 			  $articulo->utilidad=$nutil;
 			  $articulo->precio2=$nprecio;
-			 $articulo->util2=$nutil;
+			  $articulo->util2=$nutil; }
+			  if($request->get('precio')==1){
+			  $articulo->precio1=$nprecio;
+			  $articulo->utilidad=$nutil; }
+			   if($request->get('precio')==2){
+			  $articulo->precio2=$nprecio;
+			  $articulo->util2=$nutil; }
 			  $articulo->update();
             $cont=$cont+1;
             }     	
@@ -114,10 +121,19 @@ class CategoriaController extends Controller
 			$impuesto=$articulo->iva;
 			$costo=$articulo->costo;
 			$np=($costo + (($tasa/100)*$costo))+(($costo + (($tasa/100)*$costo))*($impuesto/100));
-			  $articulo->precio1=$np;
-			  $articulo->utilidad=$tasa;
-			  $articulo->precio2=$np;
-			 $articulo->util2=$tasa;
+			 if($request->get('precio')==0){
+				$articulo->precio1=$np;
+				$articulo->utilidad=$tasa;
+				$articulo->precio2=$np;
+				$articulo->util2=$tasa; }
+			if($request->get('precio')==1){
+				$articulo->precio1=$np;
+				$articulo->utilidad=$tasa;  
+			  }
+			if($request->get('precio')==2){
+				$articulo->precio2=$np;
+				$articulo->util2=$tasa;	
+				} 
 			  $articulo->update();
             $cont=$cont+1;
             }     	
