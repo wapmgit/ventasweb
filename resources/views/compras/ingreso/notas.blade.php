@@ -3,7 +3,7 @@
 <?php 
 $ceros=5;
 function add_ceros($numero,$ceros) {
-  $numero=$numero+1;
+  $numero=$numero;
 $digitos=strlen($numero);
   $recibo=" ";
   for ($i=0;$i<8-$digitos;$i++){

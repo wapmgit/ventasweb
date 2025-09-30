@@ -61,6 +61,7 @@ class VentasController extends Controller
 		if ($rol->crearventa==1){
 		$monedas=DB::table('monedas')->get();
 		$vendedor=DB::table('vendedores')->get();
+		$rutas=DB::table('rutas')->get();
         $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
         $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev')-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->get();
          $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
@@ -74,7 +75,7 @@ class VentasController extends Controller
 		//dd($articulos);
 		   $seriales =DB::table('seriales')->where('estatus','=',0)->get();
      if ($contador==""){$contador=0;}
-      return view("ventas.venta.create",["seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
+      return view("ventas.venta.create",["rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
     } else { 
 	return view("reportes.mensajes.noautorizado");
 	}
@@ -613,6 +614,7 @@ public function notads($id){
         $paciente->tipo_cliente=$request->get('ctipo_cliente');
         $paciente->tipo_precio=$request->get('cprecio');
 		 $paciente->vendedor=$request->get('idvendedor');
+		 $paciente->ruta=$request->get('idruta');
 		  $mytime=Carbon::now('America/Caracas');
 		$paciente->creado=$mytime->toDateTimeString();
         $paciente->save();

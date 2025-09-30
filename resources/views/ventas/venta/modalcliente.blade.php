@@ -80,13 +80,24 @@
             			</select>
             			
             		</div>
+					    
+			   </div>
+			 <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
 					  <div class="form-group">
+				     <label for="tipo_precio">Ruta </label><br>
+            			<select name="idruta" class="form-control selectpicker">
+            				@foreach ($rutas as $dat)
+            				<option value="{{$dat->idruta}}">{{$dat->nombre}}</option>
+            				@endforeach
+            			</select>
+			   </div>       </div>
+			   <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
+ <div class="form-group">
 				 <label for="tipo_precio">Tipo de Precio </label><br>
 				<label for="precio1"> Precio 1 </label> <input name="cprecio" type="radio" value="1" checked="checked">
 			 <label for="precio2"> Precio 2 </label> <input name="cprecio" type="radio" value="2">
-			   </div>     
-			   </div>
-			
+			   </div>  
+						</div>
 				</div> 
 			</div>
 			<div class="modal-footer justify-content-between">

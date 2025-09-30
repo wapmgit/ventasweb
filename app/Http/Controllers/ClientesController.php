@@ -38,7 +38,8 @@ class ClientesController extends Controller
 		$rol=DB::table('roles')-> select('newcliente')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->newcliente==1){
 		$vendedor=DB::table('vendedores')->get();	
-		return view("clientes.cliente.create",["vendedores"=>$vendedor]);
+		$rutas=DB::table('rutas')->get();	
+		return view("clientes.cliente.create",["rutas"=>$rutas,"vendedores"=>$vendedor]);
 		} else { 
 		return view("reportes.mensajes.noautorizado");
 		}
@@ -77,6 +78,7 @@ class ClientesController extends Controller
 		$paciente->retencion=$request->get('retencion');
 		}
 		$paciente->vendedor=$request->get('idvendedor');
+		$paciente->ruta=$request->get('idruta');
 		 $mytime=Carbon::now('America/Caracas');
 		$paciente->creado=$mytime->toDateTimeString();
         $paciente->save();
@@ -113,17 +115,19 @@ class ClientesController extends Controller
     }
 	public function edit($historia)
 	{
+	
 		$vendedor=DB::table('vendedores')->get();
+		$rutas=DB::table('rutas')->get();
 		 $datos=DB::table('clientes as c')
 			-> join('vendedores as v','c.vendedor','=','v.id_vendedor')
 			->select('v.nombre as vendedor')
 			-> where('c.id_cliente','=',$historia)
             ->first();
-		return view("clientes.cliente.edit",["cliente"=>Clientes::findOrFail($historia),"vendedores"=>$vendedor,"datos"=>$datos]);
+		return view("clientes.cliente.edit",["rutas"=>$rutas,"cliente"=>Clientes::findOrFail($historia),"vendedores"=>$vendedor,"datos"=>$datos]);
 	}
 	public function update(Request $request)
 	{
-		//dd($request);
+		//
 			$this->validate($request,[
             'nombre' => 'required',
 			'rif'=>'required',
@@ -154,6 +158,7 @@ class ClientesController extends Controller
 		}
         $paciente->tipo_precio=$request->get('precio');
 		 $paciente->vendedor=$request->get('idvendedor');
+		 $paciente->ruta=$request->get('idruta');
         $paciente->update();
         return Redirect::to('clientes');
 	}

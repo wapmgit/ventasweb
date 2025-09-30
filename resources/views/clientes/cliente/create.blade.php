@@ -1,8 +1,10 @@
 @extends ('layouts.master')
 @section ('contenido')
 <?php $cntvend=count($vendedores); ?>
+<?php $cntrut=count($rutas); ?>
 	<div class="row">
 		<h3>Nuevo Cliente</h3> <?php if($cntvend==0){ echo "<P class='text-danger'><span class='text-danger'>Debe Registrar Vendedor¡¡</span></p>";} ?>
+		 <?php if($cntrut==0){ echo "<P class='text-danger'><span class='text-danger'>Debe Registrar Ruta¡¡</span></p>";} ?>
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">			
 			<form action="{{route('guardarcliente')}}" id="formulario" method="POST" enctype="multipart/form-data" >         
 			{{csrf_field()}}
@@ -59,7 +61,7 @@
             @if($errors->first('direccion'))<P class='text-danger'>{{$errors->first('direccion')}}</p>@endif
 		   </div>
 		</div>
-		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">	
+		 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">	
            <div class="form-group">
              <label for="tipo_cliente" >Tipo cliente</label>
 			<select name="tipo_cliente" id="tipo_cliente" class="form-control">
@@ -68,7 +70,7 @@
             </select>
            </div>
 		</div>
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">	
+			 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">	
            <div class="form-group">
 				<label for="tipo_precio">Dias Credito </label><br>
 				  <input type="number" name="diascre"  id="diascre"  value="0" class="form-control">
@@ -76,7 +78,7 @@
            </div>
 		</div>
 
-		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">	
+		 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
            <div class="form-group">
 				<label for="tipo_precio">Tipo de Precio </label><br>
 				<label for="precio1"> Precio 1 </label> <input name="precio" type="radio" value="1" checked="checked">
@@ -84,7 +86,7 @@
            </div>
 		</div>
 
-		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">	
+		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">	
 		   	   <div class="form-group">
             			<label for="tipo_precio">Vendedor </label><br>
             			<select name="idvendedor" class="form-control">
@@ -94,6 +96,17 @@
             			</select>           			
             		</div>
 		</div>
+		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">			
+		   <div class="form-group">
+            			<label >Ruta</label>
+            			<select name="idruta" class="form-control">
+            				@foreach ($rutas as $dat)
+            				<option  value="{{$dat->idruta}}">{{$dat->nombre}}</option>
+            				@endforeach
+            			</select>
+            			
+            		</div>
+	</div>
 		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
            <div class="form-group">
              <label for="tipo_precio">Agente Retencion</label><br>

@@ -54,7 +54,7 @@
 		  </div>
 	</div>
 
-					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">		
+						 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
               <div class="form-group">
 			  <input type="hidden" name="tclient" id="tclient" value="{{$cliente->tipo_cliente}}">
              <label for="tipo_cliente">Tipo cliente: <?php if($cliente->tipo_cliente==1){ echo "Contado";} else{ echo "Credito";}?></label>
@@ -66,14 +66,14 @@
                        </select>
            </div>
 	</div>
-					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">	
+					 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">	
            <div class="form-group">
 				<label for="tipo_precio">Dias Credito </label><br>
 				  <input type="number" name="diascre"  id="diascre"  value="{{$cliente->diascredito}}" class="form-control">
 
            </div>
 		</div>
-<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">			
+	 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
            <div class="form-group">
              <label for="tipo_precio">Tipo de Precio </label><br>
         <label for="precio1"> Precio 1 </label> <input name="precio" type="radio" value="1" <?php if($cliente->tipo_precio==1){ echo "checked='checked'"; } ?>>
@@ -81,12 +81,23 @@
            </div>
 	</div>
 
-<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">			
+<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">			
 		   <div class="form-group">
             			<label >Vendedor: {{$datos->vendedor}}</label>
             			<select name="idvendedor" class="form-control">
             				@foreach ($vendedores as $cat)
             				<option value="{{$cat->id_vendedor}}">{{$cat->nombre}}</option>
+            				@endforeach
+            			</select>
+            			
+            		</div>
+	</div>
+	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">			
+		   <div class="form-group">
+            			<label >Ruta</label>
+            			<select name="idruta" class="form-control">
+            				@foreach ($rutas as $dat)
+            				<option <?php if($cliente->ruta==$dat->idruta){ echo "selected"; }?> value="{{$dat->idruta}}">{{$dat->nombre}}</option>
             				@endforeach
             			</select>
             			

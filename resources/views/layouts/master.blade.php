@@ -234,6 +234,12 @@
                   <p>Vendedores</p>
                 </a>
               </li>
+			   <li class="nav-item">
+                <a href="{{route('iruta')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Rutas</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a href="{{route('icategoria')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>

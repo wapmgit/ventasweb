@@ -22,6 +22,7 @@ use App\Http\Controllers\SistemaController;
 use App\Http\Controllers\BancoController;
 use App\Http\Controllers\CtasconController;
 use App\Http\Controllers\MonedasController;
+use App\Http\Controllers\RutasController;
 
 
 Route::get('/', function () {
@@ -83,7 +84,13 @@ Route::get('newvendedor', [VendedoresController::class, 'create'])->name('newven
 Route::post('guardarvendedor', [VendedoresController::class, 'store'])->name('guardarvendedor');
 Route::get('editarvendedor/{id}', [VendedoresController::class, 'edit'])->name('editarvendedor');
 Route::get('clientesvendedor/{id}', [VendedoresController::class, 'show'])->name('clientesvendedor');
-
+//rutas
+Route::get('iruta', [RutasController::class, 'index'])->name('iruta');
+Route::get('newruta', [RutasController::class, 'create'])->name('newruta');
+Route::post('saveruta', [RutasController::class, 'store'])->name('saveruta');
+Route::get('editruta/{id}', [RutasController::class, 'edit'])->name('editruta');
+Route::post('updateruta', [RutasController::class, 'update'])->name('updateruta');
+Route::get('showruta/{id}', [RutasController::class, 'show'])->name('showruta');
 //compras 
 Route::get('compras', [ComprasController::class, 'index'])->name('compras');
 Route::get('newcompra', [ComprasController::class, 'create'])->name('newcompra');
