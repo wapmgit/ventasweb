@@ -33,7 +33,7 @@ class ComprasController extends Controller
     {
 		
      if ($request)
-        {$rol=DB::table('roles')-> select('crearcompra','anularcompra')->where('iduser','=',$request->user()->id)->first();
+        {$rol=DB::table('roles')-> select('crearcompra','anularcompra','importarne')->where('iduser','=',$request->user()->id)->first();
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$query=trim($request->get('searchText'));
             $ingresos=DB::table('compras as i')
@@ -492,5 +492,63 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 			 }
 return Redirect::to('detallegresos');
 		
+}
+public function importarne($id){
+    $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+    $pago=DB::table('comprobante')
+        -> where('idcompra','=',$id)->get();
+   $ingreso=DB::table('compras as i')
+            -> join ('proveedores as p','i.idproveedor','=','p.idproveedor')
+            -> select ('i.idcompra','i.emision','i.fecha_hora','i.total','p.nombre','p.telefono','rif','direccion','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.estatus as estado','i.base','i.miva','i.exento','i.estatus')
+            ->where ('i.idcompra','=',$id)
+            -> first();
+
+            $detalles=DB::table('detalle_compras as d')
+            -> join('articulos as a','d.idarticulo','=','a.idarticulo')
+            -> select('a.nombre as articulo','d.cantidad','d.precio_compra','d.iddetalle_compra as iddetalle','a.iva','d.precio_venta','d.subtotal')
+            -> where ('d.idcompra','=',$id)
+            ->get();
+            return view("compras.ingreso.notas",["ingreso"=>$ingreso,"empresa"=>$empresa,"detalles"=>$detalles,"pago"=>$pago]);
+}
+	    public function almacenanota(Request $request){
+//	dd($request);
+	$user=Auth::user()->name;
+	//try{
+  // DB::beginTransaction(); 		
+      $ingreso=Compras::findOrFail($request->get('id'));
+    $ingreso->tipo_comprobante="FAC";
+    $ingreso->serie_comprobante=$request->get('serie_comprobante');
+    $ingreso->num_comprobante=$request->get('num_comprobante');
+    $ingreso->emision=$request->get('emision');
+    $ingreso->total=$request->get('tcompra');
+    $ingreso->saldo=$request->get('tcompra');
+    $ingreso->base=$request->get('tbase');
+    $ingreso->miva=$request->get('tiva');
+    $ingreso->exento=$request->get('texe');
+    $ingreso-> update();
+
+// carga detalles de compra
+        $detalle = $request -> get('detalle');
+        $precio_compra = $request -> get('precio');
+        $sub = $request -> get('subt');
+        
+        $impuesto=0; $utilidad=0; $costo=0; $util2=0;
+        $cont = 0; $cont2 = 0;
+            while($cont < count($detalle)){
+			$det=DetalleCompras::findOrFail($detalle[$cont]);
+            $det->precio_compra=$precio_compra[$cont];
+            $det->precio_tasa= $ingreso->tasa*$precio_compra[$cont];
+            $det->subtotal=$sub[$cont];
+            $det->update();			       
+			$cont=$cont+1;
+                    }
+                            
+        /*       DB::commit();
+}
+catch(\Exception $e)
+{
+    DB::rollback();
+} */
+return Redirect::to('compras');
 }
 }

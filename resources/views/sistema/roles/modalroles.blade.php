@@ -226,6 +226,12 @@
 					  <input type="checkbox" name="op63" class="minimal" @if($q->abonarapartado==1) checked @endif ></label>
 					</div>
 				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					 <div class="form-group">
+					 <label>Convertir NE en FAC: </label><label>
+					  <input type="checkbox" name="op66" class="minimal" @if($q->importarne==1) checked @endif ></label>
+					</div>
+				</div>
 				   </div>
                   </div>
                   <div class="tab-pane fade" id="custom-tabs-one-messages{{$q->id}}" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab{{$q->id}}">

@@ -139,6 +139,7 @@ class SistemaController extends Controller
 		if ($request->get('op63')){ $data->abonarapartado=1; }else{ $data->abonarapartado=0; }
 		if ($request->get('op64')){ $data->editserial=1; }else{ $data->editserial=0; }
 		if ($request->get('op65')){ $data->printcertificado=1; }else{ $data->printcertificado=0; }
+		if ($request->get('op66')){ $data->importarne=1; }else{ $data->importarne=0; }
 		$data ->update();
 			
 		$user=DB::table('users')->join('roles','users.id','=','roles.iduser')

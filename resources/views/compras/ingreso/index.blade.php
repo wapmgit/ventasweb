@@ -29,7 +29,10 @@
 					<td><?php echo $emi; ?></td>
 					<td><?php echo $newdate; ?></td>
 					<td>{{ $ing->nombre}}</td>
-					<td>{{ $ing->tipo_comprobante.':'.$ing->serie_comprobante}}</td>
+					<td> <?php if(($ing->tipo_comprobante=="N/E")and ($status=="0")){?>
+					@if($rol->importarne==1)<a  href="{{route('importarne',['id'=>$ing->idingreso])}}"><b> {{ $ing->tipo_comprobante}}</b></a>@else  {{ $ing->tipo_comprobante}} @endif
+					:{{$ing->serie_comprobante}}-{{$ing->num_comprobante}}<?php }else{ ?>
+					{{ $ing->tipo_comprobante.':'.$ing->serie_comprobante.'-'.$ing->num_comprobante}}<?php } ?></td>
 					<td><?php echo number_format( $ing->total, 2,',','.'); ?></td>
 					<td>{{ $ing->estado}}</td>			
 					<td>					

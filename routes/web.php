@@ -91,12 +91,14 @@ Route::post('guardarcompra', [ComprasController::class, 'store'])->name('guardar
 Route::get('showcompra/{id}', [ComprasController::class, 'show'])->name('showcompra');
 Route::get('faccompra/{id}', [ComprasController::class, 'facturar'])->name('faccompra');
 Route::get('etiquetascompra/{id}', [ComprasController::class, 'etiquetas'])->name('etiquetascompra');
+Route::get('importarne/{id}', [ComprasController::class, 'importarne'])->name('importarne');
 Route::post('anularcompra', [ComprasController::class, 'destroy'])->name('anularcompra');
 Route::post('almacenaproveedor', [ComprasController::class, 'almacena'])->name('almacenaproveedor');
 Route::post('almacenaarticulo', [ComprasController::class, 'almacenaart'])->name('almacenaarticulo');
 Route::post('validarif', [ComprasController::class, 'validar'])->name('validarif');
 Route::post('validarcodigo', [ComprasController::class, 'validarcod'])->name('validarcodigo');
 Route::post('anulareciboc', [ComprasController::class, 'anular'])->name('anulareciboc');
+Route::post('almacenanota', [ComprasController::class, 'almacenanota'])->name('almacenanota');
 //ventas
 Route::get('ventas', [VentasController::class, 'index'])->name('ventas');
 Route::get('newventa', [VentasController::class, 'create'])->name('newventa');
