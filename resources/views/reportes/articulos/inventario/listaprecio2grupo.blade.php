@@ -45,11 +45,13 @@
                 <div class="col-12 table-responsive">
 					<table width="100%" id="tablap">
 						<thead style="background-color: #A9CCE3 !important">
-						<th>Nombre</th>
-						<th>Unidad</th>
-						<th id="p3">Existencia  <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarst"></i></th>
+						<th>P. Unitario </th>
 						<th id="pd">Precio <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpd">1</i></th>  
 						<th id="p2">Precio <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp2">2</i></</th>
+						<th>Descripcion</th>
+						<th>Unidad</th>
+						<th id="p3">Existencia  <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarst"></i></th>
+
 						</thead><?php $count=0; $i=0;$costo=0;$costoacum=0; $precioacum=0; $order=1;?>
 						@foreach ($grupos as $g)<?php $i; ?>	<tr><td><strong>Grupo: {{$g->nombre}}</strong></td> 
 							@foreach ($lista as $q)
@@ -59,19 +61,22 @@
 								$costo=$costo+($q->costo*($q->stock-$q->apartado));
 								$precioacum=(($q->stock-$q->apartado)*$q->precio1)+$precioacum;
 								?> 
+								<td>{{ $q->descripcion}} <?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)";*/ } ?></td>
+								<td class="filap1"><?php echo number_format( $q->precio1, 2,',','.'); ?></td>	
+								<td class="filap2"><?php echo number_format( $q->precio2, 2,',','.'); ?></td>
 								<td>{{ $q->nombre}} <?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)"; */} ?></td>
 								<td>{{ $q->unidad}}</td>
 								<td class="filap3">{{ $q->stock-$q->apartado}}</td>
-								<td class="filap1"><?php echo number_format( $q->precio1, 2,',','.'); ?></td>	
-								<td class="filap2"><?php echo number_format( $q->precio2, 2,',','.'); ?></td>  
+								  
 							   </tr><?php } ?>
 							@endforeach
 							</tr>@endforeach
 							<tr style="background-color: #A9CCE3" >
-								<td colspan="2"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
-								<td class="filap3"><?php echo "<strong>Existencias : ".$costoacum."</strong>"; ?></td>
+								<td colspan="3"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
 								<td class="filap2"></td>
 								<td class="filap1"></td>
+								<td class="filap3"><?php echo "<strong>Existencias : ".$costoacum."</strong>"; ?></td>
+								
 							</tr>
 					</table>
 				</div>

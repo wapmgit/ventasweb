@@ -1,13 +1,14 @@
 @extends ('layouts.master')
 @section ('contenido')
+
 		  <!-- Main content -->
 	<div class="invoice p-3 mb-3">
-		  <style> 
+	  <style> 
    .cabecera { background: linear-gradient(to bottom, #B3E5FC, #FAFAFA); padding: 2px;}
    .pie { background: linear-gradient(to bottom,  #FAFAFA, #B3E5FC); padding: 2px;}
   </style> 
-  <div class="cabecera">
               <!-- title row -->
+			  <div class="cabecera">
               <div class="row">
                 <div class="col-12">
                   <h4>
@@ -30,11 +31,12 @@
                 <!-- /.col -->
 				<div class="col-sm-3 invoice-col">
 
-				  <h4>Lista de Precios Agrupado</h4>
+				  <h4>Lista de Precios</h4>
               
 				</div>
 					<div class="col-sm-3 invoice-col" align="center">
 <img src="{{ asset('dist/img/'.$empresa->logo)}}" width="50%" height="80%" title="NKS">
+
 	</div>
 	</div>
               </div>
@@ -45,33 +47,33 @@
                 <div class="col-12 table-responsive">
 					<table width="100%" id="tablap">
 						<thead style="background-color: #A9CCE3 !important">
-						<th>Nombre</th>
-						<th>Unidad</th>
-						<th id="p3">Existencia  <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarst"></i></th>
+						<th>P. Unitario</th>
 						<th id="pd">Precio <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpd">1</i></th>  
 						<th id="p2">Precio <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp2">2</i></</th>
+						<th>Descripcion</th>
+						<th>Unidad</th>
+						<th id="p3">Existencia  <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarst"></i></th>			
 						</thead><?php $count=0; $i=0;$costo=0;$costoacum=0; $precioacum=0; $order=1;?>
-						@foreach ($grupos as $g)<?php $i; ?>	<tr><td><strong>Grupo: {{$g->nombre}}</strong></td> 
 							@foreach ($lista as $q)
-							   <?php if($q->idcategoria==$g->idcategoria){?>
-							<tr <?php $i++; if (($i%2)==0){ echo "style='background-color: #D4E6F1 !important'";}?>> <?php $count++; 
+							   <?php $i++; ?>
+							<tr <?php if (($i%2)==0){ echo "style='background-color: #D4E6F1 !important'";}?>> <?php $count++; 
 								$costoacum=($q->stock-$q->apartado)+$costoacum;
 								$costo=$costo+($q->costo*($q->stock-$q->apartado));
 								$precioacum=(($q->stock-$q->apartado)*$q->precio1)+$precioacum;
 								?> 
-								<td>{{ $q->nombre}} <?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)"; */} ?></td>
+								<td>{{ $q->descripcion}} <?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)";*/ } ?></td>
+								<td class="filap1"><?php echo number_format( $q->precio1, 2,',','.'); ?></td>
+								<td class="filap2"><?php echo number_format( $q->precio2, 2,',','.'); ?></td> 
+								<td>{{ $q->nombre}} <?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)";*/ } ?></td>
 								<td>{{ $q->unidad}}</td>
-								<td class="filap3">{{ $q->stock-$q->apartado}}</td>
-								<td class="filap1"><?php echo number_format( $q->precio1, 2,',','.'); ?></td>	
-								<td class="filap2"><?php echo number_format( $q->precio2, 2,',','.'); ?></td>  
-							   </tr><?php } ?>
+								<td class="filap3">{{ $q->stock-$q->apartado}}</td>										 
+							</tr>						
 							@endforeach
-							</tr>@endforeach
 							<tr style="background-color: #A9CCE3" >
-								<td colspan="2"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
-								<td class="filap3"><?php echo "<strong>Existencias : ".$costoacum."</strong>"; ?></td>
-								<td class="filap2"></td>
+								<td colspan="3"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
 								<td class="filap1"></td>
+								<td class="filap2"></td>
+								<td class="filap3"><?php echo "<strong>Existencias : ".$costoacum."</strong>"; ?></td>												
 							</tr>
 					</table>
 				</div>
@@ -79,7 +81,7 @@
 			<div class="col-lg-12 col-md-12 csol-sm-6 col-xs-12 pie" id="botones">
                     <div class="form-group" align="center"></br>
                      <button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
-					 <a href="{{route('listaprecios')}}"><button class="btn btn-success btn-sm"> Ordenar por Nombre</button></a>
+					 <a href="{{route('listaprecios',['order'=>$order])}}"><button class="btn btn-success btn-sm"> Ordenar por Grupo</button></a>
 				  </div>
 			</div>
   </div>

@@ -192,6 +192,19 @@
 				<input type="number" min="1" size="5" class="form-control" name="nlineas"  value="{{$empresa->nlineas}}">			   
                     </td>
 				</tr>
+				  <tr>
+                    <td>Formato Lista de Precios
+					</div></td>     
+                    <td>
+						<div class="form-group">
+							<select name="formatolp" class="form-control">
+							<option value="listaprecio" <?php if($empresa->formatolp=="listaprecio"){ echo "Selected";} ?>>formato 1</option>
+							<option value="listaprecio2" <?php if($empresa->formatolp=="listaprecio2"){ echo "Selected";} ?>>formato 2</option>							
+							</select>
+										
+						</div>
+                    </td>
+				</tr>
 				<tr>
                     <td>¿Permitir Facturacion fiscal de ventas a credito?</td>
                  

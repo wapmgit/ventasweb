@@ -190,6 +190,7 @@ class SistemaController extends Controller
         $emp->telefono=$request->get('telefono');
         $emp->tasaespecial=$request->get('tasaajuste');
         $emp->formatofac=$request->get('formato');
+        $emp->formatolp=$request->get('formatolp');
         $emp->nlineas=$request->get('nlineas');
 		if($request->get('usaserie')){
         $emp->serie=$request->get('usaserie');}else{
