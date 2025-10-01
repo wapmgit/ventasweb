@@ -90,7 +90,7 @@ class ReportesarticulosController extends Controller
     {  
 		$rol=DB::table('roles')-> select('rlistap')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->rlistap==1){
-			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();	
+			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			if($request->order){
 			$lista=DB::table('articulos')
 				->where('stock','>',0)
@@ -99,7 +99,7 @@ class ReportesarticulosController extends Controller
 				->OrderBy('articulos.nombre')
 				->get();
 			$grupos=DB::table('categoria') ->where ('condicion','=','1')->get();
-			return view('reportes.articulos.inventario.listapreciogrupo',["grupos"=>$grupos,"lista"=>$lista,"empresa"=>$empresa]);
+			return view('reportes.articulos.inventario.'.$empresa->formatolp.'grupo',["grupos"=>$grupos,"lista"=>$lista,"empresa"=>$empresa]);
 		}else{     
         $lista=DB::table('articulos')
 		->where('stock','>',0)
@@ -107,7 +107,8 @@ class ReportesarticulosController extends Controller
 		->where('estado','=',"Activo")
 		->OrderBy('articulos.nombre')
         ->get();
-		return view('reportes.articulos.inventario.listaprecio',["lista"=>$lista,"empresa"=>$empresa]); }         
+		return view('reportes.articulos.inventario.'.$empresa->formatolp,["lista"=>$lista,"empresa"=>$empresa]);
+		}         
 
 		} else { 
 			return view("reportes.mensajes.noautorizado");
@@ -129,14 +130,16 @@ class ReportesarticulosController extends Controller
              $query=trim($request->get('grupo'));
              if (($query)==""){			
             $datos=DB::table('articulos')                
-            -> select('codigo','nombre','precio1','imagen')
+            -> select('codigo','nombre','precio1','imagen','unidad')
             ->where('imagen','<>',"ninguna.jpg")
+			-> where('stock','>',0)
 			->OrderBy('nombre')
             ->get(); 
 			 }else {							
             $datos=DB::table('articulos')                
-            -> select('codigo','nombre','precio1','imagen')
+            -> select('codigo','nombre','precio1','imagen','unidad')
 			-> where('idcategoria','=',$query)
+			-> where('stock','>',0)
             ->where('imagen','<>',"ninguna.jpg")
 			->OrderBy('nombre')
             ->get(); 	 
