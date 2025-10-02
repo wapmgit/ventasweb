@@ -53,10 +53,11 @@ function truncar($numero, $digitos)
                 <div class="col-12 table-responsive">
 					<table width="100%" id="tablap">
 						<thead style="background-color: #A9CCE3 !important">
-						<th>P.U. Bcv</th>
-						<th id="pd">P. <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpd">1</i></th>  
-						<th id="p2">P. <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp2">2</i></</th>
-						<?Php if($empresa->tdif==1){?> <th>P. $</th><?php }?>
+						<th id="pdu">P.U. Bcv</th>
+						<th id="pd">P.1 <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpd"></i></th>  
+						<th  id="p2u">P.U. P2</th>
+						<th id="p2">P.2 <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp2"></i></</th>
+						<?Php if($empresa->tdif==1){?> <th  id="p4u">P.U $</th> <th  id="p4">P. $ <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp3"></i></th><?php }?>
 						<th>Descripcion</th>
 						<th>Unidad</th>
 						<th id="p3">Existencia  <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarst"></i></th>			
@@ -68,20 +69,26 @@ function truncar($numero, $digitos)
 								$costo=$costo+($q->costo*($q->stock-$q->apartado));
 								$precioacum=(($q->stock-$q->apartado)*$q->precio1)+$precioacum;
 								?> 
-								<td>{{ $q->descripcion}} <?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)";*/ } ?></td>
+								<td class="filap1">{{ $q->descripcion}} <?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)";*/ } ?></td>
 								<td class="filap1"><?php echo number_format( $q->precio1, 2,',','.'); ?></td>
+								<td class="filap2"><?php echo number_format( ($q->precio2/$q->cntxund), 2,',','.'); ?></td> 
 								<td class="filap2"><?php echo number_format( $q->precio2, 2,',','.'); ?></td> 
-								<?Php if($empresa->tdif==1){?> <td ><?php echo number_format( truncar(($q->precio1*((100-$empresa->tasadif)/100)),2), 2,',','.'); ?></td> <?php }?>
+								<?Php if($empresa->tdif==1){?> 
+								<td class="filap4"><?php echo number_format( truncar((($q->precio1*((100-$empresa->tasadif)/100))/$q->cntxund),2), 2,',','.'); ?></td>
+								<td class="filap4"><?php echo number_format( truncar(($q->precio1*((100-$empresa->tasadif)/100)),2), 2,',','.'); ?></td>
+								<?php }?>
 								<td>{{ $q->nombre}} <?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)";*/ } ?></td>
 								<td>{{ $q->unidad}}</td>
 								<td class="filap3">{{ $q->stock-$q->apartado}}</td>										 
 							</tr>						
 							@endforeach
-							<tr style="background-color: #A9CCE3" >
-								<td colspan="3"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
+							<tr style="background-color: #A9CCE3" >					
+								<td colspan="2"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
+								<td class="filap1"></td>
 								<td class="filap1"></td>
 								<td class="filap2"></td>
-								<?Php if($empresa->tdif==1){?> <td></td> <?php } ?>
+								<td class="filap2"></td>
+								<?Php if($empresa->tdif==1){?> <td class="filap4"></td> <td class="filap4"></td> <?php } ?>
 								<td class="filap3"><?php echo "<strong>Existencias : ".$costoacum."</strong>"; ?></td>												
 							</tr>
 					</table>
@@ -99,13 +106,21 @@ function truncar($numero, $digitos)
 $(document).ready(function(){
 	$('#ocultarpd').click(function(){
 		document.getElementById('pd').style.display="none";
-		document.getElementById('ocultarp2').style.display="none";
+		document.getElementById('pdu').style.display="none";
+		//document.getElementById('ocultarp2').style.display="none";
 		$(".filap1").remove();
     });
 	$('#ocultarp2').click(function(){
 		document.getElementById('p2').style.display="none";
-		document.getElementById('ocultarpd').style.display="none";
+		document.getElementById('p2u').style.display="none";
+		//document.getElementById('ocultarpd').style.display="none";
 		$(".filap2").remove();
+    });
+		$('#ocultarp3').click(function(){
+		document.getElementById('p4').style.display="none";
+		document.getElementById('p4u').style.display="none";
+		//document.getElementById('ocultarpd').style.display="none";
+		$(".filap4").remove();
     });
 		$('#ocultarst').click(function(){
 		document.getElementById('p3').style.display="none";
@@ -115,6 +130,7 @@ $(document).ready(function(){
     $('#imprimir').click(function(){
   //  alert ('si');
   document.getElementById('botones').style.display="none";
+  document.getElementById('ocultarp3').style.display="none";
   document.getElementById('ocultarp2').style.display="none";
   document.getElementById('ocultarpd').style.display="none";
   document.getElementById('ocultarst').style.display="none";
