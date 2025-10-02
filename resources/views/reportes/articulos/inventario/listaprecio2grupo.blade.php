@@ -45,9 +45,9 @@
                 <div class="col-12 table-responsive">
 					<table width="100%" id="tablap">
 						<thead style="background-color: #A9CCE3 !important">
-						<th>P. Unitario </th>
-						<th id="pd">Precio <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpd">1</i></th>  
-						<th id="p2">Precio <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp2">2</i></</th>
+						<th>P.U. Bcv</th>
+						<th id="pd">P. Bcv <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpd">1</i></th>  
+						<th id="p2">P. $ <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp2">2</i></</th>
 						<th>Descripcion</th>
 						<th>Unidad</th>
 						<th id="p3">Existencia  <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarst"></i></th>
