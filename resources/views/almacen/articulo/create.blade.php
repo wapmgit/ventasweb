@@ -64,12 +64,6 @@ $idv=0;
             </div>
 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
-            			<label for="stock">Stock</label>
-            			<input type="text" name="stock" disabled   value="0" class="form-control" placeholder="stock...">
-            		</div>
-            </div>
-			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
-            	 <div class="form-group">
             			<label for="stock">Unidad </label>  
 						<select name="unidad" class="form-control">          			            			
             				<option value="UND">Unidad</option>
@@ -82,6 +76,13 @@ $idv=0;
             				<option value="PR">Par</option>
             				<option value="LTR">Litros</option>           				
             			</select>						       			
+            		</div>
+            </div>
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            	 <div class="form-group">
+            			<label for="stock">CantxUnd</label>
+            			<input type="number" name="cntxund" min="1"   value="1" class="form-control">
+            			<input type="hidden" name="stock" disabled   value="0" class="form-control" placeholder="stock...">
             		</div>
             </div>
 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">

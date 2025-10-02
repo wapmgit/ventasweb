@@ -189,6 +189,7 @@ class SistemaController extends Controller
         $emp->direccion=$request->get('direccion');
         $emp->telefono=$request->get('telefono');
         $emp->tasaespecial=$request->get('tasaajuste');
+        $emp->tasadif=$request->get('tasadif');
         $emp->formatofac=$request->get('formato');
         $emp->formatolp=$request->get('formatolp');
         $emp->nlineas=$request->get('nlineas');
@@ -206,6 +207,7 @@ class SistemaController extends Controller
 		if($request->get('tikect')=="on"){$emp->tikect=1;}else{$emp->tikect=0;}
 		if($request->get('web')=="on"){$emp->web=1;}else{$emp->web=0;}
 		if($request->get('tasaes')=="on"){$emp->tespecial=1;}else{$emp->tespecial=0;}
+		if($request->get('tdif')=="on"){$emp->tdif=1;}else{$emp->tdif=0;}
 		if($request->get('formal')=="on"){$emp->fl=1;}else{$emp->fl=0;}
 		if($request->get('actcosto')=="on"){$emp->actcosto=1;}else{$emp->actcosto=0;}
 		if($request->get('serie')=="on"){$emp->usaserie=1;}else{$emp->usaserie=0;}

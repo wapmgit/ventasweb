@@ -2,7 +2,7 @@
 @section ('contenido')
 	<div class="row">
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-			<h3>Editar articulo: {{ $articulo->nombre}}</h3>
+			<h3>Editar articulo: {{ $articulo->nombre}} -> Stock {{$articulo->stock}}</h3>
 						@if (count($errors)>0)
 			<div class="alert alert-danger">
 				<ul>
@@ -69,14 +69,6 @@
             </div>
 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
-            			<label for="stock">Stock </label>
-           
-                  <input type="text" name="stock1" disabled value="{{$articulo->stock}}" class="form-control" placeholder="stock...">
-            			<input type="hidden" name="stock" required value="{{$articulo->stock}}" class="form-control" placeholder="stock...">
-            		</div>
-            </div>
-			 				<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
-            	 <div class="form-group">
             			<label for="stock">Unidad </label>                      
 					<select name="unidad" class="form-control">          			            			
             				<option <?php if($articulo->unid=="UND"){ echo "selected"; } ?> value="UND">Unidad</option>
@@ -91,6 +83,15 @@
             			</select>				
             		</div>
             </div>
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            	 <div class="form-group">
+            			<label for="stock">CantxUnd </label>
+           
+                 <input type="number" name="cntxund" min="1"   value="{{$articulo->cntxund}}" class="form-control">
+            			<input type="hidden" name="stock" required value="{{$articulo->stock}}" class="form-control" placeholder="stock...">
+            		</div>
+            </div>
+
 			 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Volumen</label>

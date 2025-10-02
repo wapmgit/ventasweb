@@ -111,6 +111,16 @@
                       <label class="custom-control-label" for="customSwitch3"></label>
                     </div>
                     </td></tr>
+					                  <tr>
+                    <td>Maneja Tasa Diferencial (*Descuento por divisas %*)</td>
+                  
+                    <td class="text-right py-0 align-middle">
+   <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                      <input type="checkbox" name="tdif" <?Php if($empresa->tdif==1) echo "checked"; ?> class="custom-control-input" id="customSwitch1a">
+                      <label class="custom-control-label" for="customSwitch1a"></label>
+                    </div>
+					<input type="number" name="tasadif" id="tasadif"  <?php if ($empresa->tdif == 0){ echo "disabled"; }   ?> class="form-control" value="{{$empresa->tasadif}}">
+                    </td></tr>
                   <tr>
                     <td>Plataforma web</td>
              
@@ -280,6 +290,16 @@ $('#customSwitch3').on('change', function() {
  }else{ 
  $("#tespecial").val("");
 	 $("#tespecial").attr("disabled","true");	
+ }
+});
+$('#customSwitch1a').on('change', function() {
+   var dato= $(this).is(':checked');
+ if (dato==true){
+	 $("#tasadif").val(1);
+	 $("#tasadif").removeAttr("disabled"); 
+ }else{ 
+ $("#tasadif").val(0);
+	 $("#tasadif").attr("disabled","true");	
  }
 });
 $('#customSwitch6').on('change', function() {

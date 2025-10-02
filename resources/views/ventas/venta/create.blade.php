@@ -288,6 +288,7 @@ $(document).ready(function(){
 		var vendedor= dato[3];
 		$("#tipocli").val(dato[4]);
 		$("#comision").val(comi);
+		
 		$("#nvendedor").html("<strong>Vendedor:</strong> "+ vendedor);
 		$("#nvendedor").val(vendedor);
 				if ($("#tipocli").val()==1){		
@@ -474,7 +475,11 @@ function trunc (x, posiciones = 0) {
   var s = x.toString()
   var l = s.length
   var decimalLength = s.indexOf('.') + 1
+  if(decimalLength>0){
   var numStr = s.substr(0, decimalLength + posiciones)
+  }else{
+	  numStr = s
+  }
   return Number(numStr)
 }
 	function validar(e){
@@ -568,10 +573,10 @@ function trunc (x, posiciones = 0) {
         articulo= $("#pidarticulo option:selected").text();
         cantidad= $("#pcantidad").val();
         descuento=$("#pdescuento").val();
-		pdesc=((descuento/100)+1);
+		pdesc=((100-descuento)/100);
         var precio=$("#pprecio_venta").val();       
 		if(descuento>0){
-		precondesc= trunc((precio/pdesc),2);
+		precondesc= trunc((precio*pdesc),2);
 		precio_venta=precondesc; }else{
 			precio_venta=precio;
 		}

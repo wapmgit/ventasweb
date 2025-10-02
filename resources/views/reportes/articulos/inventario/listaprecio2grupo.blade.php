@@ -1,5 +1,12 @@
 @extends ('layouts.master')
 @section ('contenido')
+<?php
+function truncar($numero, $digitos)
+{
+    $truncar = 10**$digitos;
+    return intval($numero * $truncar) / $truncar;
+}
+?>
 		  <!-- Main content -->
 	<div class="invoice p-3 mb-3">
 		  <style> 
@@ -46,8 +53,9 @@
 					<table width="100%" id="tablap">
 						<thead style="background-color: #A9CCE3 !important">
 						<th>P.U. Bcv</th>
-						<th id="pd">P. Bcv <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpd">1</i></th>  
-						<th id="p2">P. $ <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp2">2</i></</th>
+						<th id="pd">P.<i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpd">1</i></th>  
+						<th id="p2">P.<i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp2">2</i></</th>
+						<?Php if($empresa->tdif==1){?> <th>P. $</th><?php }?>
 						<th>Descripcion</th>
 						<th>Unidad</th>
 						<th id="p3">Existencia  <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarst"></i></th>
@@ -64,6 +72,7 @@
 								<td>{{ $q->descripcion}} <?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)";*/ } ?></td>
 								<td class="filap1"><?php echo number_format( $q->precio1, 2,',','.'); ?></td>	
 								<td class="filap2"><?php echo number_format( $q->precio2, 2,',','.'); ?></td>
+								<?Php if($empresa->tdif==1){?> <td ><?php echo number_format( truncar(($q->precio1*((100-$empresa->tasadif)/100)),2), 2,',','.'); ?></td> <?php }?>
 								<td>{{ $q->nombre}} <?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)"; */} ?></td>
 								<td>{{ $q->unidad}}</td>
 								<td class="filap3">{{ $q->stock-$q->apartado}}</td>
@@ -75,6 +84,7 @@
 								<td colspan="3"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
 								<td class="filap2"></td>
 								<td class="filap1"></td>
+								<?Php if($empresa->tdif==1){?> <td></td> <?php } ?>
 								<td class="filap3"><?php echo "<strong>Existencias : ".$costoacum."</strong>"; ?></td>
 								
 							</tr>

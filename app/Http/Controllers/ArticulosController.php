@@ -70,6 +70,7 @@ class ArticulosController extends Controller
         $articulo->descripcion=$request->get('descripcion');
         $articulo->estado='Activo';
         $articulo->unidad=$request->get('unidad');
+        $articulo->cntxund=$request->get('cntxund');
         $articulo->fraccion=$request->get('fraccion');
         $articulo->volumen=$request->get('volumen');
         $articulo->grados=$request->get('grados');
@@ -125,6 +126,7 @@ class ArticulosController extends Controller
         $articulo->descripcion=$request->get('descripcion');
         $articulo->estado='Activo';
 		$articulo->unidad=$request->get('unidad');
+		$articulo->cntxund=$request->get('cntxund');
 		$articulo->fraccion=$request->get('fraccion');
         $articulo->volumen=$request->get('volumen');
         $articulo->grados=$request->get('grados');
