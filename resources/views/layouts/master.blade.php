@@ -405,7 +405,13 @@
                   <i class="far fa-circle nav-icon"></i>
                   <p>Utilidad en Ventas</p>
                 </a>
-              </li>	
+              </li>
+			 <li class="nav-item">
+                <a href="{{route('ventasdivisas')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Relacion Divisas</p>
+                </a>
+              </li>			  
 			  <li class="nav-item">
                 <a href="{{route('ventasarticulo')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>

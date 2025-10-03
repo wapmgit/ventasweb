@@ -689,7 +689,7 @@ class ReportesventasController extends Controller
 	return view("reportes.mensajes.noautorizado");
 	}
     }
-		    public function correlativo(Request $request)
+	public function correlativo(Request $request)
     {
         if ($request)
         {
@@ -717,10 +717,34 @@ class ReportesventasController extends Controller
             ->get(); 
 	  $query2=date("Y-m-d",strtotime($query2."- 1 days"));
         return view('reportes..ventas.ventasf.index',["datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);
-               } else { 
-	return view("reportes.mensajes.noautorizado");
+		} else { 
+			return view("reportes.mensajes.noautorizado");
+		}
+		}
 	}
-  }
-  
-}
+		public function ventasdivisas(Request $request)
+	{
+			$corteHoy = date("Y-m-d");
+            $query=trim($request->get('searchText'));
+			if (($query)==""){$query=$corteHoy; }
+             $query2=trim($request->get('searchText2'));
+           $query2 = date_create($query2);  
+	
+            date_add($query2, date_interval_create_from_date_string('1 day'));
+           $query2=date_format($query2, 'Y-m-d');
+		$rol=DB::table('roles')-> select('idrol')->where('iduser','=',$request->user()->id)->first();	
+		$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
+		$divisa=DB::table('detalle_venta as dv')
+			->join('venta','venta.idventa','=','dv.idventa' )
+			->join('clientes','clientes.id_cliente','=','venta.idcliente')
+			-> select('clientes.nombre','venta.tipo_comprobante','venta.num_comprobante','venta.tasa','venta.num_comprobante','dv.*')    
+			-> where('venta.devolu','=',0)
+			-> where('dv.descuento','>',0)
+            -> whereBetween('venta.fecha_emi', [$query, $query2])
+			-> groupby('dv.iddetalle_venta')
+            ->get();
+			//dd($divisa);
+
+        return view('reportes.ventas.relaciondivisas.index',["divisa"=>$divisa,"empresa"=>$empresa,"rol"=>$rol,"searchText"=>$query,"searchText2"=>$query2]);
+	}
 }
