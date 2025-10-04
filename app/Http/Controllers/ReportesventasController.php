@@ -732,8 +732,9 @@ class ReportesventasController extends Controller
 	
             date_add($query2, date_interval_create_from_date_string('1 day'));
            $query2=date_format($query2, 'Y-m-d');
-		$rol=DB::table('roles')-> select('idrol')->where('iduser','=',$request->user()->id)->first();	
+		$rol=DB::table('roles')-> select('idrol','rvdivisas')->where('iduser','=',$request->user()->id)->first();	
 		$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
+		if ($rol->rvdivisas==1){
 		$divisa=DB::table('detalle_venta as dv')
 			->join('venta','venta.idventa','=','dv.idventa' )
 			->join('clientes','clientes.id_cliente','=','venta.idcliente')
@@ -746,5 +747,8 @@ class ReportesventasController extends Controller
 			//dd($divisa);
 
         return view('reportes.ventas.relaciondivisas.index',["divisa"=>$divisa,"empresa"=>$empresa,"rol"=>$rol,"searchText"=>$query,"searchText2"=>$query2]);
+	} else { 
+			return view("reportes.mensajes.noautorizado");
+		}
 	}
 }

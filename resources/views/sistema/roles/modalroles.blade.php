@@ -236,112 +236,118 @@
                   </div>
                   <div class="tab-pane fade" id="custom-tabs-one-messages{{$q->id}}" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab{{$q->id}}">
 						<div class="row">
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Resumen de Ventas: </label><label>
 						<input type="checkbox" name="op23" class="minimal" @if($q->rventas==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Corte de Caja: </label><label>
 						<input type="checkbox" name="op32" class="minimal" @if($q->ccaja==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Detalle de Ingresos: </label><label>
 						<input type="checkbox" name="op24" class="minimal" @if($q->rdetallei==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Cuentas por Cobrar: </label><label>
 						<input type="checkbox" name="op25" class="minimal" @if($q->rcxc==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Resumen de Compras: </label><label>
 						<input type="checkbox" name="op26" class="minimal" @if($q->rcompras==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Detalle de Pagos: </label><label>
 						<input type="checkbox" name="op27" class="minimal" @if($q->rdetallec==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Cuentas por Pagar: </label><label>
 						<input type="checkbox" name="op28" class="minimal" @if($q->rcxp==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Reporte de Articulos: </label><label>
 						<input type="checkbox" name="op36" class="minimal" @if($q->rarti==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Lista de Precios: </label><label>
 						<input type="checkbox" name="op37" class="minimal" @if($q->rlistap==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Resumen Gerencial: </label><label>
 						<input type="checkbox" name="op38" class="minimal" @if($q->rlistap==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Analisis Cientes: </label><label>
 						<input type="checkbox" name="op39" class="minimal" @if($q->ranalisisc==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Utilidad en Ventas: </label><label>
 						<input type="checkbox" name="op42" class="minimal" @if($q->rutilventa==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Ventas de un Articulo: </label><label>
 						<input type="checkbox" name="op43" class="minimal" @if($q->rventasarti==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Resumen Gastos: </label><label>
 						<input type="checkbox" name="op44" class="minimal" @if($q->rgastos==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Retenciones: </label><label>
 						<input type="checkbox" name="op45" class="minimal" @if($q->retenciones==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Anular Retencion: </label><label>
 						<input type="checkbox" name="op47" class="minimal" @if($q->anularret==1) checked @endif ></label>
 						</div>
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
-						<label>Editar Correlativo Retencion: </label><label>
+						<label>Editar Correlativo Reten.: </label><label>
 						<input type="checkbox" name="op48" class="minimal" @if($q->editret==1) checked @endif ></label>
 						</div>
 						</div>						
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Compras de un Articulo: </label><label>
 						<input type="checkbox" name="op46" class="minimal" @if($q->rcompraarti==1) checked @endif ></label>
+						</div>
+						</div>
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+						<div class="form-group">
+						<label>Releacion Divisas: </label><label>
+						<input type="checkbox" name="op67" class="minimal" @if($q->rvdivisas==1) checked @endif ></label>
 						</div>
 						</div>
 						</div>
