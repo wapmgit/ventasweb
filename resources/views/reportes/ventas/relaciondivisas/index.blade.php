@@ -32,6 +32,7 @@ $acumpa=0; $countpa=0; $acumga=0; $countga=0; $tcobro=0; $tpagos=0; $countndp=0;
               <!-- Table row -->
               <div class="row">
 			   <div class="col-12 table-responsive">
+			  
 				<table width="100%">
 					<thead style="background-color: #E6E6E6">
 						<th colspan="8">Ingreso Divisas por Ventas</th>							
@@ -45,7 +46,7 @@ $acumpa=0; $countpa=0; $acumga=0; $countga=0; $tcobro=0; $tpagos=0; $countndp=0;
 						<th>Descuento</th>
 						<th>Monto $</th>								
 						<th>Tasa Referencial</th>															
-					</thead>
+					</thead> <?php if(count($divisa)>0){ ?>
 						@foreach ($divisa as $q)
 						<?php $countv++; 
 						$acumtasa=$acumtasa+$q->tasa;
@@ -75,7 +76,7 @@ $acumpa=0; $countpa=0; $acumga=0; $countga=0; $tcobro=0; $tpagos=0; $countndp=0;
 				<td></td>
 				<td><strong><?php echo number_format( $acumpdesc, 2,',','.')." $"; ?></strong></td>
 				<td><strong><?php echo number_format(( $acumtref/$countv), 2,',','.')." Bs"; ?></strong></td>
-				</tr>
+					</tr> <?php } ?>
 				</table></br>
 				<!-- de las nd -->
 				
