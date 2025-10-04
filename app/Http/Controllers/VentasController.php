@@ -496,10 +496,10 @@ public function recibo($id){
 public function show(Request $request, $id){
 
 			$ruta=$_SERVER["HTTP_REFERER"];
-			$c1= substr($ruta,34);		//modelo juancho
+			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			$c1= substr($ruta,$empresa->caracteres);				//modelo juancho
 			//$c1= substr($ruta,24); //base sistema		
 
-			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
             -> select ('v.idventa','v.tasa','v.fecha_hora','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
