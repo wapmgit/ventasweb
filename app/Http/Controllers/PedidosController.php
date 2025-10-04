@@ -144,9 +144,8 @@ public function show(Request $request,$id){
     ->get();
 	$articulos =DB::table('articulos as art')
 	-> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva')
-	-> where('art.estado','=','Activo')
-	-> where (DB::raw('(art.stock-art.apartado) as stockd'),'>','0')
-	->groupby('articulo','art.idarticulo')
+	-> where('art.estado','=',"Activo")
+	->groupby('art.idarticulo')
 	-> get();
 	//dd($detalles);
     return view("pedidos.pedido.show",["rol"=>$rol,"venta"=>$venta,"empresa"=>$empresa,"detalles"=>$detalles,"articulos"=>$articulos]);
