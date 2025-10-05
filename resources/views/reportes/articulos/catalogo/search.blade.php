@@ -1,5 +1,5 @@
 
-<div class="card">
+<div class="row">
         <div class="card-header">
           <h3 class="card-title">Seleccione Grupo</h3>
           <div class="card-tools">
