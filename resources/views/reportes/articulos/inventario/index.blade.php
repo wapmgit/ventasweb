@@ -30,56 +30,59 @@
 				</div>
               </div>
               <!-- /.row -->
-
+<?php $i=0; ?>
               <!-- Table row -->
               <div class="row">
                 <div class="col-12 table-responsive" id="PuntosCanjeados">
 					<table width="100%">
-					 <thead >
+					 <thead style="background-color: #A9CCE3 !important">
 
-					<th>Codigo</th>
+					<th id="pd">Codigo <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpd"></i></th>
 					<th>Nombre</th>
 					<th>Stock</th>
-					<th>Apart.</th>
+					<th id="ad">Apart. <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarad"></i></th>
 					<th>Costo</th>
 					<th>Iva</th>
 					<th>Utilidad</th>
 					<th>Precio 1</th>
-					<th>Utilidad 2</th>
-					<th>Precio 2</th>
+					<th id="p2a">Utilidad 2</th>
+					<th id="p2">Precio 2 <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp2"></i></th>
 					
 				</thead><?php $count=0; $apart=0;$costo=0;$costoacum=0; $precioacum=0;?>
                @foreach ($lista as $q)
-				<tr> <?php $count++; 
+			    <?php $i++; ?>
+				<tr <?php if (($i%2)==0){ echo "style='background-color: #D4E6F1 !important'";}?>> <?php $count++; 
 				$apart=$apart+$q->apartado;
 					$costoacum=$q->stock+$costoacum;
 					$costo=$costo+($q->costo*$q->stock);
 					$precioacum=$q->stock*$q->precio1+$precioacum;
 					?> 
 
-					<td>{{ $q->codigo}}</td>
+					<td class="filap1"><small>{{ $q->codigo}}</small></td>
 					<td>{{ $q->nombre}}</td>
 					<td>{{ $q->stock}}</td>
-					<td>{{ $q->apartado}}</td>
+					<td class="filaad">{{ $q->apartado}}</td>
 					<td><?php echo number_format( $q->costo, 2,',','.'); ?></td>
 					<td>{{ $q->iva}}</td>
 					<td>{{$q->utilidad}} %</td>
 					<td><?php echo number_format( $q->precio1, 2,',','.'); ?></td>	
-					<td>{{$q->util2}} %</td>
-					<td><?php echo number_format( $q->precio2, 2,',','.'); ?></td>  
+					<td class="filap2">{{$q->util2}} %</td>
+					<td class="filap2"><?php echo number_format( $q->precio2, 2,',','.'); ?></td>  
 				</tr>
 
 				@endforeach
 				<tr >
-				  <td colspan="2"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
-				  <td><?php echo "<strong>".number_format($costoacum, 2,',','.')."</strong>"; ?></td>
-				  <td><?php echo "<strong>".number_format($apart, 2,',','.')."</strong>"; ?></td>
-				  <td ><?php echo "<strong>".number_format($costo, 2,',','.')." $</strong>"; ?></td>
+				<td class="filap1"></td> 
+				  <td ><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
+				  <td><?php echo "".number_format($costoacum, 2,',','.').""; ?></td>
+				  <td class="filaad"><?php echo "".number_format($apart, 2,',','.').""; ?></td>
+				  <td ><?php echo "".number_format($costo, 2,',','.')." $"; ?></td>
+				  <td ></td>
 				  <td></td>
-				  <td></td>
-				  <td><?php echo "<strong>".number_format($precioacum, 2,',','.')." $</strong>"; ?></td>
-				  <td></td>     
-					<td></td></tr>
+				  <td><?php echo "".number_format($precioacum, 2,',','.')." $"; ?></td>
+				  <td class="filap2"></td>     
+				  <td class="filap2"></td>
+				  </tr>
 					</table>
                 </div>
 				
@@ -103,6 +106,19 @@ $(document).ready(function(){
 	document.getElementById('imprimir').style.display="none";
 	window.print(); 
 	window.location="{{route('reportearticulos')}}";
+    });
+	$('#ocultarpd').click(function(){
+		document.getElementById('pd').style.display="none";
+		$(".filap1").remove();
+    });
+		$('#ocultarad').click(function(){
+		document.getElementById('ad').style.display="none";
+		$(".filaad").remove();
+    });
+		$('#ocultarp2').click(function(){
+		document.getElementById('p2a').style.display="none";
+		document.getElementById('p2').style.display="none";
+		$(".filap2").remove();
     });
 });
 	function htmlExcel(idTabla, nombreArchivo = '') {
