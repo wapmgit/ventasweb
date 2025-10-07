@@ -43,8 +43,8 @@
 					<th id="ad">Apart. <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarad"></i></th>
 					<th>Costo</th>
 					<th>Iva</th>
-					<th>Utilidad</th>
-					<th>Precio 1</th>
+					<th id="p1a">Utilidad</th>
+					<th id="p1">Precio 1 <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp1"></th>
 					<th id="p2a">Utilidad 2</th>
 					<th id="p2">Precio 2 <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp2"></i></th>
 					
@@ -64,8 +64,8 @@
 					<td class="filaad">{{ $q->apartado}}</td>
 					<td><?php echo number_format( $q->costo, 2,',','.'); ?></td>
 					<td>{{ $q->iva}}</td>
-					<td>{{$q->utilidad}} %</td>
-					<td><?php echo number_format( $q->precio1, 2,',','.'); ?></td>	
+					<td class="filap11" >{{$q->utilidad}} %</td>
+					<td class="filap11" ><?php echo number_format( $q->precio1, 2,',','.'); ?></td>	
 					<td class="filap2">{{$q->util2}} %</td>
 					<td class="filap2"><?php echo number_format( $q->precio2, 2,',','.'); ?></td>  
 				</tr>
@@ -78,8 +78,8 @@
 				  <td class="filaad"><?php echo "".number_format($apart, 2,',','.').""; ?></td>
 				  <td ><?php echo "".number_format($costo, 2,',','.')." $"; ?></td>
 				  <td ></td>
-				  <td></td>
-				  <td><?php echo "".number_format($precioacum, 2,',','.')." $"; ?></td>
+				  <td class="filap11"></td>
+				  <td class="filap11"><?php echo "".number_format($precioacum, 2,',','.')." $"; ?></td>
 				  <td class="filap2"></td>     
 				  <td class="filap2"></td>
 				  </tr>
@@ -119,6 +119,11 @@ $(document).ready(function(){
 		document.getElementById('p2a').style.display="none";
 		document.getElementById('p2').style.display="none";
 		$(".filap2").remove();
+    });
+	$('#ocultarp1').click(function(){
+		document.getElementById('p1a').style.display="none";
+		document.getElementById('p1').style.display="none";
+		$(".filap11").remove();
     });
 });
 	function htmlExcel(idTabla, nombreArchivo = '') {
