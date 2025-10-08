@@ -76,25 +76,30 @@ $relleno = "."; // El carácter con el que se rellenará
 			
 	@foreach($datos as $det)
 	<?php $cnt=strlen($det->nombre);if($cnt < 25){$ajuste="</br>"; }else{$ajuste="";} ?>
-		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" >
+		<div class="col-lg-3 col-md-6 col-sm-6 col-xs-6" >
 			<div class="card">
 			<img align="center" src="{{ asset('/img/articulos/'.$det->imagen)}}" alt="{{$det->nombre}}" height="250px" width="250px">
-			<h3>{{str_pad($det->nombre,$longitud, $relleno, STR_PAD_RIGHT)}}</h3>
-			<p class="price">  {{$det->codigo}}</p>
+			<?php if($cnt < 31 ){?>
+			<h4>{{str_pad($det->nombre,$longitud, $relleno, STR_PAD_RIGHT)}}</h4>
+			<?php } ?>
+			<?php if($cnt > 30 ){?>
+			<h6>{{$det->nombre}}</h6>
+			<?php } ?>
 			<p></p>
-			<p><button>$ {{$det->precio1}} {{$det->unidad}}</button></p>
+			<p>			<div class="card card-dark cabecera"><h3>$ {{$det->precio1}} {{$det->unidad}} </h3></div></p>
 			</div>
 		</div>  
 	@endforeach	
-	</div>
-        <hr size="2px" color="black" />
-	<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12 pie">
+	
+        
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pie">
+	<hr size="2px" color="black" />
 		<label>Usuario: </label>  {{ Auth::user()->name }}  
 			<div class="form-group" align="center">
 				<button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button> 
 			</div>
 	</div>
-                   
+    </div>               
 <!-- /.box-body -->
 
 </div><!-- /.box -->
