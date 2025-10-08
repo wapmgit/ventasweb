@@ -43,7 +43,7 @@ padding:5px;
 }
   </style> 
  <!-- Main content -->
-            <div class="invoice p-3 mb-3">
+            <div class="invoice p-6 mb-6">
               <!-- title row -->
 			  <div class="cabecera">
               <div class="row">
@@ -76,7 +76,7 @@ $relleno = "."; // El carácter con el que se rellenará
 			
 	@foreach($datos as $det)
 	<?php $cnt=strlen($det->nombre);if($cnt < 25){$ajuste="</br>"; }else{$ajuste="";} ?>
-		<div class="col-lg-3 col-md-6 col-sm-6 col-xs-6" >
+		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-6" >
 			<div class="card">
 			<img align="center" src="{{ asset('/img/articulos/'.$det->imagen)}}" alt="{{$det->nombre}}" height="250px" width="250px">
 			<?php if($cnt < 31 ){?>
