@@ -204,7 +204,7 @@ class VentasController extends Controller
 
 				$kar=new Kardex;
 		$kar->fecha=$mytime->toDateTimeString();
-		$kar->documento="VENT-".($numero+1);
+		$kar->documento="VENT-".$venta->idventa;
 		$kar->idarticulo=$idarticulo[$cont];
 		$kar->cantidad=$cantidad[$cont];
 		$kar->costo=$costoarticulo[$cont];
