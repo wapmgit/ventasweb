@@ -54,6 +54,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
                           <th>Articulo <a href="" data-target="#modalaggart" data-toggle="modal"><span class="label label-success"><i class="fa-solid fa-square-plus"></i></span></a></th>
                           <th>Cantidad</th>
                           <th>Stock</th>
+						  <th>Precio</th>
                           <th>Descuento</th>
                           <th>precio venta</th>
                           <th>subtotal</th>
@@ -71,7 +72,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
 						  $aux=truncar($aux,2);
 						  $cto=truncar(($aux*$tasa),2);						
 						  $des=truncar(($det->descuento*$tasa),2);
-						   $subbs=($cto*$det->cantidad)-$des;
+						   $subbs=($cto*$det->cantidad);
 						   $subbs=truncar($subbs,2);
 						   $subiva=truncar(($subbs*($det->iva/100)), 2);	
 						   $acumbase=$acumbase+$subbs;
@@ -79,7 +80,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
 						   $acumiva=$acumiva+  $subiva;
 						  }else { echo "(E)"; $cto=truncar(($det->precio_venta*$tasa),2); 
 						    $des=truncar(($det->descuento*$tasa),2);
-						    $subbs=($cto*$det->cantidad)-$des;
+						    $subbs=($cto*$det->cantidad);
 						   $acumsub=$acumsub+$subbs;
 						   $acumexe=$acumexe+$subbs;
 						  } ?>
@@ -91,6 +92,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
 						  <?php } else { echo $det->cantidad;} ?> 
 						  </td> 
                           <td>{{$det->stock}}</td>
+                          <td>{{$det->precio}}</td>
                           <td>{{$det->descuento}}</td>
                           <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
                           <td><?php echo number_format( ($det->cantidad*$det->precio_venta), 2,',','.'); ?></td>
@@ -99,7 +101,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
                         @endforeach
                       </tbody>
 						    <tfoot style="background-color: #A9D0F5"> 
-						  <th colspan="2">Total</th>
+						  <th colspan="3">Total</th>
 							  <th></th>
 							  <th>Exe:<input type="number" style="width: 70px" readonly  name="totalexe" value="<?php echo $acumexe; ?>"  id="texe">Bs</th>
 							  <th>Iva:<input type="number" style="width: 70px" readonly  name="total_iva" value="<?php echo $acumiva; ?>" id="total_iva">Bs</th> 
@@ -136,6 +138,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
 @push ('scripts')
 <script>
 $(document).ready(function(){
+	 document.getElementById('bt_pago').style.display="none";
     $('#imprimir').click(function(){
 	//  alert ('si');
 	  document.getElementById('imprimir').style.display="none";
@@ -143,6 +146,18 @@ $(document).ready(function(){
 	  window.print(); 
 	  window.location="{{route('pedidos')}}";
     });
+		$('#pasapago').click(function(){
+		datosbanco=$("#pidpago").val();
+		if(datosbanco==100){
+		alert('¡Debe seleccionar un tipo de Pago!');}
+		else{ $("#pmonto").val($("#resta").val());
+		document.getElementById('bt_pago').style.display=""; 
+		$("#preferencia").focus();}
+	});
+	$("#pidpago").change(mediopago);
+	$('#bt_pago').click(function(){		
+		agregarpago();
+	});
 	$("#pidarticulo").change(function(){
 		document.getElementById('pcantidad').focus();
 		datosarticulo=document.getElementById('pidarticulo').value.split('_');
@@ -155,6 +170,9 @@ $(document).ready(function(){
 	});
 	$('#btnsubmit').click(function(){
 		document.getElementById('btnsubmit').style.display="none";
+		});	
+		$('#sendpedido').click(function(){
+		document.getElementById('sendpedido').style.display="none";
 		});
 	$('#btncerrar').click(function(){
       $("#pprecio_venta").val(0);
@@ -165,7 +183,129 @@ $(document).ready(function(){
 		});
 
 });
+ function mediopago(){
+	   	document.getElementById('bt_pago').style.display="";		
+	   var pesoresta =$("#resta").val();  
+       var pesototal =$("#divtotal").val();
+	   var tabono=$("#totala").val();
+	   var debe=(pesototal-tabono);
 
+	     moneda= $("#pidpago").val();
+		 tm=moneda.split('_');
+		 var idmoneda=tipom=tm[0];
+		  tipom=tm[1];
+		  valort=tm[2];
+		   moneda= $("#pidpago option:selected").text();
+		   //alert(tipom);
+		   	if (tipom==0){   
+				$("#resta").val(pesototal-tabono); 		
+				$("#preferencia").val(""); 				
+				}  
+			if (tipom==1){ 
+				$("#resta").val((debe*valort).toFixed(2));  
+				$("#preferencia").val('Tc: '+valort);
+			}
+			if (tipom==2){   
+				$("#resta").val((debe/valort).toFixed(2));  
+				$("#preferencia").val('Tc: '+valort); 
+				}  
+				$("#pmonto").attr('placeholder','Monto '+moneda);
+		t_pago=$("#pidpago").val();	   
+    }
+	var pagototal=0;
+	acumpago=[];var contp=0; var tresta=0;
+	function agregarpago(){ 
+	
+        vresta=$("#resta").val();    
+		idpago=$("#pidpago").val();
+        tpago= $("#pidpago option:selected").text();
+        pmonto= $("#pmonto").val();
+        pref= $("#preferencia").val();
+
+		moneda= $("#pidpago").val();
+		 tm=moneda.split('_');
+		  tipom=tm[1];
+		  valort=tm[2];
+		idpago=tm[0];
+		 
+		if(parseFloat(pmonto)<=parseFloat(vresta)){
+			var denomina=pmonto;
+			acumpago[contp]=(pmonto);
+			//	alert(acumpago[contp]);
+		
+			if (tipom==1){ 
+			    var pesoresta =$("#resta").val();  
+					//$("#resta").val(pesoresta/valort);  
+					$("#total_abono").text(pagototal/valort);
+				    denomina=pmonto;
+					pmonto=(pmonto/valort);		
+					acumpago[contp]=(pmonto.toFixed(2)); 
+			}  
+				if (tipom==2){ 
+			    var pesoresta =$("#resta").val();   
+				$("#resta").val(pesoresta*valort);  
+				$("#total_abono").text(pagototal*valort);
+				    denomina=pmonto;
+					pmonto=pmonto*valort;		
+					acumpago[contp]=(pmonto.toFixed(2)); 
+			}            
+			pagototal=parseFloat(pagototal)+parseFloat(acumpago[contp]); 
+		
+			tventa=$("#divtotal").val();
+			tresta=(parseFloat(tventa)-parseFloat(pagototal));
+            $("#resta").val(tresta.toFixed(2));
+            $("#tdeuda").val(tresta.toFixed(2));	
+			
+            var fila='<tr  id="filapago'+contp+'"><td align="center"><span onclick="eliminarpago('+contp+');"><i class="fa fa-fw fa-eraser"></i></span></td><td><input type="hidden" name="tidpago[]" value="'+idpago+'"><input type="hidden" name="tidbanco[]" value="'+tpago+'">'+tpago+'</td><td><input type="hidden" name="denominacion[]" value="'+denomina+'">'+denomina+'</td><td><input type="hidden" name="tmonto[]" value="'+pmonto+'">'+pmonto.toLocaleString('de-DE', { style: 'decimal',  decimal: '2' })+'</td><td><input type="hidden" name="tref[]" value="'+pref+'">'+pref+'</td></tr>';
+            contp++;
+            document.getElementById('bt_pago').style.display="none";
+			$("#pidpago").val('100');
+			$("#pmonto").attr('placeholder','Esperando Seleccion');
+			$("#total_abono").text(pagototal.toFixed(2));
+			$("#totala").val(pagototal.toFixed(2));
+			// alert($("#totala").val());
+           limpiarpago();		
+			$("#pidpago").focus();		   
+            $('#det_pago').append(fila);
+			if($("#faccredito").val()==0){		
+			if(($("#tdeuda").val()==0) && ($("#usafl").val()==1)){
+				document.getElementById('cfl').style.display="";
+				}
+			}else{
+					document.getElementById('cfl').style.display="";
+			}
+		}else { alert('¡El monto indicado no debe se mayor al saldo pendiente!');
+			limpiarpago();		
+			}
+	}
+	function limpiarpago(){
+        $("#pmonto").val("");
+        $("#preferencia").val("");
+    }
+	function eliminarpago(index){
+	    $("#pidpago").val('100');
+        total=acumpago[index];
+		tventa=$("#divtotal").val();
+        var1=$("#total_abono").text();
+		resta=parseFloat(tventa)-parseFloat(var1);
+        nv=(parseFloat(resta)+parseFloat(total));
+        nc=(parseFloat(var1)-parseFloat(total));
+        $("#resta").val(nv);   
+        $("#tdeuda").val(nv);  
+		$("#totala").val(nc);
+        pagototal=(parseFloat(pagototal)-parseFloat(total));
+        $("#filapago" + index).remove();
+        $("#total_abono").text(nc.toFixed(2));
+		$("#totala").val(nc.toFixed(2));
+		document.getElementById('procesa').style.display="none"; 
+		if($("#tdeuda").val()==0){
+				document.getElementById('cfl').style.display="";
+				
+				}else{ 
+				//	$("#convertir").attr("checked",false);
+					document.getElementById('convertir').checked=false; 
+					document.getElementById('cfl').style.display="none"; } 
+    }
 </script>
 
 @endpush

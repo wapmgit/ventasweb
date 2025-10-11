@@ -140,13 +140,13 @@ $idv=0;
 
                       <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                     <div class="form-group">
-                        <label for="precio_venta">Precio venta</label>
+                        <label for="precio_venta">Precio venta <?php if ($nivel=="A"){?><i class="fa-solid fa-money-check-dollar" style="display: none" id="changeprice"></i> <?php }  ?></label>
                         <input type="number" name="pprecio_venta" id="pprecio_venta"  class ="form-control" placeholder="Precio de Venta" <?php if ($nivel=="L"){?> disabled <?php }  ?> >
                     </div>
                     </div>
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                     <div class="form-group">
-                        <label for="descuento">Descuento</label>
+                        <label for="descuento">Descto. %</label>
                         <input type="number" value="0" name="pdescuento" id="pdescuento" class ="form-control" placeholder="Descuento" min="0">
                         <input type="hidden" value="0" name="pcostoarticulo" id="pcostoarticulo"  class ="form-control" >
                     </div>
@@ -168,13 +168,15 @@ $idv=0;
                           <th>Supr</th>
                           <th>Articulo</th>
                           <th>Cantidad</th>
-                          <th>Precio Venta</th>
+                          <th align="center">Precio</th>
                            <th>Descuento</th>
+						   	<th>Precio Venta</th> 
                           <th>SubTotal</th>
 						
                       </thead>
                       <tfoot style="background-color: #A9D0F5"> 
                       <th>Total</th>
+                          <th></th>
                           <th></th>
                           <th></th>
                           <th></th>
@@ -281,6 +283,7 @@ $(document).ready(function(){
 		for(var i=0;i<cont;i++){
 		$("#fila" + i).remove(); subtotal[i]=0; }
     })
+
 	// registro el cliente nuevo
 	document.getElementById('Cenviar').style.display="none";
 	
@@ -335,6 +338,17 @@ $(document).ready(function(){
 		});
 	});
 });
+function trunc (x, posiciones = 0) {
+  var s = x.toString()
+  var l = s.length
+  var decimalLength = s.indexOf('.') + 1
+  if(decimalLength>0){
+  var numStr = s.substr(0, decimalLength + posiciones)
+  }else{
+	  numStr = s
+  }
+  return Number(numStr)
+}
 	function validar(e){
 		let tecla = (document.all) ? e.keyCode : e.which;
 			if(tecla==13) { 
@@ -368,6 +382,15 @@ $(document).ready(function(){
       $("#pcantidad").val("1");
       $("#pdescuento").val("0");
     }
+	$("#changeprice").on("click",function(){
+	  datosarticulo=document.getElementById('pidarticulo').value.split('_');
+	var  p1=datosarticulo[2]; 
+	  var p2=datosarticulo[3]; 
+	
+	  if($("#pprecio_venta").val()==p1){  preopt="P2"; $("#pprecio_venta").val(p2);  }else{
+		 preopt="P1";  $("#pprecio_venta").val(p1); 
+	  }
+	});
 	function mostrarcomision(){  
        //alert();
 	   var cli=$("#id_cliente").val();
@@ -380,6 +403,7 @@ $(document).ready(function(){
 	  //$('select[name=vpedido]').change();
 	  $("#tipocli").val(dato[4]);
       $("#nvendedor").html("Vendedor:"+vendedor);
+	  document.getElementById('changeprice').style.display="";
   }
     function agregar(){
 		vdolar=$("#valortasa").val();
@@ -388,17 +412,23 @@ $(document).ready(function(){
         idarticulo=datosarticulo[0];
         articulo= $("#pidarticulo option:selected").text();
         cantidad= $("#pcantidad").val();
-        descuento=$("#pdescuento").val();
-        precio_venta=$("#pprecio_venta").val();
+		descuento=$("#pdescuento").val();
+		pdesc=((100-descuento)/100);
+        var precio=$("#pprecio_venta").val();       
+		if(descuento>0){
+		precondesc= trunc((precio*pdesc),2);
+		precio_venta=precondesc; }else{
+			precio_venta=precio;
+		}
         stock=$("#pstock").val();
 		costoarticulo=datosarticulo[4];
 		cantidad=cantidad*1;
         if (idarticulo!="" && cantidad != "" && cantidad > "0" &&  precio_venta!=""){
 
-                subtotal[cont]=((cantidad*precio_venta)-descuento);
+                subtotal[cont]=((cantidad*precio_venta));
                 total=parseFloat(total)+parseFloat(subtotal[cont].toFixed(2));
 
-              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td><input type="number" readonly="true"  style="width: 80px" name="precio_venta[]" value="'+precio_venta+'"></td><td><input type="number"  name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td>'+subtotal[cont].toFixed(2)+'<input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
+              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td><input type="number" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number"  name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" name="precio_venta[]" value="'+precio_venta+'"></td><td>'+subtotal[cont].toFixed(2)+'<input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
               cont++;
               limpiar();
 			 // alert(total);

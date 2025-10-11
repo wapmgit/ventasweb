@@ -147,6 +147,12 @@ Route::post('devolucionpedido', [PedidosController::class, 'devolucionpedido'])-
 Route::post('addarticulo', [PedidosController::class, 'addart'])->name('addarticulo');
 Route::get('pdescargados', [PedidosController::class, 'descargados'])->name('pdescargados');
 Route::get('bajarpedido/{id}', [PedidosController::class, 'bajarpedido'])->name('bajarpedido');
+Route::get('recibop/{id}', [PedidosController::class, 'recibo'])->name('recibop');
+Route::get('recibobsp/{id}', [PedidosController::class, 'recibobs'])->name('recibobsp');
+Route::get('tnotabsp/{id}', [PedidosController::class, 'notabs'])->name('tnotabsp');
+Route::get('tnotadsp/{id}', [PedidosController::class, 'notads'])->name('tnotadsp');
+Route::get('tcartap/{id}', [PedidosController::class, 'tcartap'])->name('tcartap');
+Route::get('fbsp/{id}', [PedidosController::class, 'fbs'])->name('fbsp');
 // apartados
 Route::get('apartado', [ApartadoController::class, 'index'])->name('apartado');
 Route::get('newapartado', [ApartadoController::class, 'create'])->name('newapartado');

@@ -15,6 +15,9 @@ use App\Models\Articulos;
 use App\Models\Devolucion;
 use App\Models\Detalledevolucion;
 use App\Models\Clientes;
+use App\Models\Recibos;
+use App\Models\Monedas;
+use App\Models\MovBancos;
 use Carbon\Carbon;
 use DB;
 use Auth;
@@ -71,6 +74,7 @@ class PedidosController extends Controller
 	}	
 	public function store(Request $request){
 	
+	//dd($request);
 		$user=Auth::user()->name;
  try{
   DB::beginTransaction(); 
@@ -102,6 +106,7 @@ class PedidosController extends Controller
         $cantidad = $request -> get('cantidad');
         $descuento = $request -> get('descuento');
         $precio_venta = $request -> get('precio_venta');
+        $precio = $request -> get('precio');
         $costoarticulo = $request -> get('costoarticulo');
 
         $cont = 0;
@@ -113,6 +118,7 @@ class PedidosController extends Controller
             $detalle->cantidad=$cantidad[$cont];
             $detalle->descuento=$descuento[$cont];
             $detalle->precio_venta=$precio_venta[$cont];
+            $detalle->precio=$precio[$cont];
 			 $detalle->fecha_emi=$mytime->toDateTimeString();	
             $detalle->save();
             $cont=$cont+1;
@@ -126,6 +132,7 @@ catch(\Exception $e)
   return Redirect::to('pedidos');
 }
 public function show(Request $request,$id){
+	//dd($id);
 	$rol=DB::table('roles')-> select('importarpedido','editpedido')->where('iduser','=',$request->user()->id)->first();	
     $user=Auth::user()->name;
     $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
@@ -133,13 +140,13 @@ public function show(Request $request,$id){
     $venta=DB::table('pedidos as pe')
     -> join ('clientes as p','pe.idcliente','=','p.id_cliente')
 	->join('vendedores as v','v.id_vendedor','=','pe.idvendedor')
-    -> select ('v.nombre as nombrev','pe.idpedido','pe.fecha_hora','p.nombre','p.telefono','p.cedula','p.direccion','pe.tipo_comprobante','pe.serie_comprobante','pe.num_comprobante','pe.impuesto','pe.estado','pe.total_venta','pe.devolu')
+    -> select ('v.nombre as nombrev','pe.idcliente','pe.idpedido','pe.fecha_hora','p.nombre','p.telefono','p.cedula','p.direccion','pe.tipo_comprobante','pe.serie_comprobante','pe.num_comprobante','pe.impuesto','pe.estado','pe.total_venta','pe.devolu')
     ->where ('pe.idpedido','=',$id)
     -> first();
 
     $detalles=DB::table('detalle_pedido as dv')
     -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-    -> select('a.nombre as articulo','dv.cantidad','dv.descuento','dv.iddetalle_pedido','a.idarticulo','a.iva','dv.precio_venta','a.costo',DB::raw('(a.stock-a.apartado) as stock'))
+    -> select('a.nombre as articulo','dv.cantidad','dv.descuento','dv.iddetalle_pedido','a.idarticulo','a.iva','dv.precio_venta','dv.precio','a.costo',DB::raw('(a.stock-a.apartado) as stock'))
     -> where ('dv.idpedido','=',$id)
     ->get();
 	$articulos =DB::table('articulos as art')
@@ -147,8 +154,10 @@ public function show(Request $request,$id){
 	-> where('art.estado','=',"Activo")
 	->groupby('art.idarticulo')
 	-> get();
-	//dd($detalles);
-    return view("pedidos.pedido.show",["rol"=>$rol,"venta"=>$venta,"empresa"=>$empresa,"detalles"=>$detalles,"articulos"=>$articulos]);
+	$personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev')-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->get();
+	$monedas=DB::table('monedas')->get();
+	//dd($personas);
+    return view("pedidos.pedido.show",["monedas"=>$monedas,"personas"=>$personas,"rol"=>$rol,"venta"=>$venta,"empresa"=>$empresa,"detalles"=>$detalles,"articulos"=>$articulos]);
 }
 	public function ajuste(Request $request){
 	//	dd($request);
@@ -183,6 +192,7 @@ public function show(Request $request,$id){
 	}
 	function facturar(Request $request){
 		//dd($request);
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$user=Auth::user()->name;
 		//correlativo de ventas
 		  $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->first();
@@ -208,17 +218,85 @@ public function show(Request $request,$id){
 		$venta->fecha_hora=$mytime->toDateTimeString();
 		$venta->fecha_emi=$request->get('fecha_emi');
 		$venta->impuesto='16';
-		$venta->saldo=$dpedido->total_venta;
-		$venta->estado='Credito';
+		if(($request->get('convertir')=="on")){
+			$venta->flibre=1;
+			}
+		if($request->get('tdeuda') != NULL){  $venta->saldo=$request->get('tdeuda');}
+		else {  $venta->saldo=$dpedido->total_venta; }
+		if ($venta->saldo > 0){
+		$venta->estado='Credito';} else { $venta->estado='Contado';}
 		$venta->devolu='0';
 		$venta->comision=$dpedido->comision;
 		$venta->montocomision=$dpedido->montocomision;
 		$venta->user=$user;
    $venta-> save();
+   if(($request->get('convertir')=="on")){
+			$pnro=DB::table('formalibre')
+			->select(DB::raw('MAX(idforma) as pnum'))
+			->first();				
+			$fl=new Formalibre;
+			$fl->idventa=$venta->idventa;
+			$fl->nrocontrol=($pnro->pnum+1);
+			$fl->save();
+		}
    //de la venta
-   
+   // inserta el recibo
+          $idpago=$request->get('tidpago');
+           $idbanco=$request->get('tidbanco');
+		   $denomina=$request->get('denominacion');
+           $tmonto=$request->get('tmonto');
+           $tref=$request->get('tref');		 
+           $contp=0;
+		   if($request->get('totala')>0){
+              while($contp < count($idpago)){
+				$recibo=new Recibos;
+				$recibo->idventa=$venta->idventa;
+				if($request->get('tdeuda')>0){
+				$recibo->tiporecibo='A'; }else{$recibo->tiporecibo='P'; }
+				$recibo->monto=$request->get('total_venta');
+				$pago=explode("_",$idbanco[$contp]);
+				$recibo->idpago=$idpago[$contp]; // bbanco
+				$recibo->idnota=0;
+				$recibo->id_banco=0;
+				$recibo->idbanco=$idbanco[$contp]; 
+				$recibo->recibido=$denomina[$contp];			
+				$recibo->monto=$tmonto[$contp]; 
+				$recibo->referencia=$tref[$contp];
+				$recibo->tasap=$request->get('peso');
+				$recibo->tasab=$request->get('tc');
+				$recibo->aux=$request->get('tdeuda');
+				$recibo->fecha=$mytime->toDateTimeString();		
+				$recibo->usuario=$user;					
+				$recibo->save();
+						$mon=Monedas::findOrFail($idpago[$contp]);
+							if($mon->idbanco>0){
+								    $mov=new MovBancos;
+									$mov->idbanco=$mon->idbanco;
+									$mov->clasificador=1;
+									$mov->tipodoc="FAC";
+									$mov->docrelacion=$venta->idventa;
+									$mov->iddocumento=$recibo->idrecibo;
+									$mov->tipo_mov="N/C";
+									$mov->numero="FAC-".$recibo->idventa." Rec-".$recibo->idrecibo;
+									$mov->concepto="Ventas";
+									$mov->idbeneficiario=$request -> get('idcliente');	
+									$mov->identificacion="";
+									$mov->ced="";
+									$mov->tipo_per="C";
+									$mov->monto=$denomina[$contp];
+									$mov->tasadolar=$request->get('tc');
+									$mytime=Carbon::now('America/Caracas');
+									$mov->fecha_mov=$mytime->toDateTimeString();	
+									$mov->user=Auth::user()->name;
+									$mov->save();
+							}			
+				 $contp=$contp+1;
+			  }  
+		   }
+		    
     $idarticulo = $request -> get('idarticulo');
     $cantidad = $request -> get('cantidad');
+    $precio = $request -> get('preciop');
     $precio_venta = $request -> get('precio');
     $costoarticulo = $request -> get('costo');
     $descuento = $request -> get('descuento');
@@ -234,6 +312,7 @@ public function show(Request $request,$id){
         $detalle->idarticulo=$idarticulo[$cont];
         $detalle->costoarticulo=$costoarticulo[$cont];
         $detalle->cantidad=$cantidad[$cont];
+		$detalle->precio=$precio[$cont];
         $detalle->descuento=$descuento[$cont];
         $detalle->precio_venta=$precio_venta[$cont];
          $detalle->fecha=$mytime->toDateTimeString();	
@@ -255,7 +334,17 @@ public function show(Request $request,$id){
         $cont=$cont+1;
         }
 		}
-        return Redirect::to('pedidos');
+		$cli=Clientes::findOrFail($request -> get('idcliente'));
+        $cli->lastfact=$mytime->toDateTimeString();
+        $cli->update();
+        if($request->get('convertir')=="on"){
+	  return Redirect::to('fbsp/'.$venta->idventa);
+	}
+	if($empresa->tikect==1){
+		  return Redirect::to('recibop/'.$venta->idventa);
+	}else{
+	return Redirect::to($request->get('formato').'/'.$venta->idventa);
+	}
 	}
 	public function destroy(Request $request){
 		//dd($request);
@@ -468,4 +557,146 @@ public function show(Request $request,$id){
 
 			  return Redirect::to('pedidos');
 	}
+	public function recibo($id){
+		
+			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			$venta=DB::table('venta as v')
+            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
+            -> select ('v.idventa','v.fecha_hora','p.nombre','p.cedula','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            ->where ('v.idventa','=',$id)
+            -> first();
+            $detalles=DB::table('detalle_venta as dv')
+            -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
+            -> select('a.nombre as articulo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta')
+            -> where ('dv.idventa','=',$id)
+            ->get();
+			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
+            ->get();
+			$recibonc=DB::table('mov_notas as mov')-> where ('mov.iddoc','=',$id)-> where ('mov.tipodoc','=',"FAC")
+            ->get();
+
+            return view("pedidos.pedido.recibo",["venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
+}public function recibobs($id){
+			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			$venta=DB::table('venta as v')
+            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
+            -> select ('v.tasa','v.idventa','v.fecha_hora','p.nombre','p.cedula','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            ->where ('v.idventa','=',$id)
+            -> first();
+            $detalles=DB::table('detalle_venta as dv')
+            -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
+            -> select('a.nombre as articulo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta')
+            -> where ('dv.idventa','=',$id)
+            ->get();
+			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
+            ->get();
+			$recibonc=DB::table('mov_notas as mov')-> where ('mov.iddoc','=',$id)-> where ('mov.tipodoc','=',"FAC")
+            ->get();
+
+            return view("pedidos.pedido.recibobs",["venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
+}
+public function tcartap(Request $request, $id){
+
+			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+
+			$venta=DB::table('venta as v')
+            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
+            -> select ('v.idventa','v.tasa','v.fecha_hora','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            ->where ('v.idventa','=',$id)
+            -> first();
+			
+            $detalles=DB::table('detalle_venta as dv')
+            -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
+            -> select('a.idarticulo','a.nombre as articulo','a.iva','a.unidad','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
+            -> where ('dv.idventa','=',$id)
+            ->get();
+			
+			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
+            ->get();
+			$seriales=DB::table('seriales as se')-> where ('se.idventa','=',$id)
+            ->get();
+			$retencion=DB::table('retencionventas')-> where ('idFactura','=',$id)
+            ->first();
+			//dd($detalles);
+			$recibonc=DB::table('mov_notas as mov')-> where ('mov.iddoc','=',$id)-> where ('mov.tipodoc','=',"FAC")
+            ->get();
+
+            return view("pedidos.pedido.showp",["retencion"=>$retencion,"seriales"=>$seriales,"venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
+}
+public function fbs($id){
+	//dd($id);
+			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			$venta=DB::table('venta as v')
+			->join('formalibre as fl','fl.idventa','v.idventa')
+            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
+            -> select ('v.idventa','fl.idforma','v.fecha_hora','v.fecha_emi','v.tasa','v.tasa','v.texe','v.base','v.total_iva','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            ->where ('v.idventa','=',$id)
+            -> first();
+			//dd($venta);
+            $detalles=DB::table('detalle_venta as dv')
+            -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
+            -> select('a.idarticulo','dv.idarticulo','a.nombre as articulo','a.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
+            -> where ('dv.idventa','=',$id)
+            ->get();
+			
+			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
+            ->get();
+			$seriales=DB::table('seriales as se')-> where ('se.idventa','=',$id)
+            ->get();
+			//dd($seriales);
+			$recibonc=DB::table('mov_notas as mov')-> where ('mov.iddoc','=',$id)-> where ('mov.tipodoc','=',"FAC")
+            ->get();
+
+            return view("pedidos.pedido.formatobs",["seriales"=>$seriales,"venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
+}
+public function notabs($id){
+
+			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			$venta=DB::table('venta as v')
+            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
+            -> select ('v.idventa','v.fecha_hora','v.fecha_emi','v.tasa','v.tasa','v.texe','v.base','v.total_iva','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            ->where ('v.idventa','=',$id)
+            -> first();
+			//dd($venta);
+            $detalles=DB::table('detalle_venta as dv')
+            -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
+            -> select('a.idarticulo','dv.idarticulo','a.nombre as articulo','a.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','dv.precio')
+            -> where ('dv.idventa','=',$id)
+            ->get();
+			
+			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
+            ->get();
+			$seriales=DB::table('seriales as se')-> where ('se.idventa','=',$id)
+            ->get();
+			//dd($seriales);
+			$recibonc=DB::table('mov_notas as mov')-> where ('mov.iddoc','=',$id)-> where ('mov.tipodoc','=',"FAC")
+            ->get();
+
+            return view("ventas.venta.notabs",["seriales"=>$seriales,"venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
+}
+public function notads($id){
+
+			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			$venta=DB::table('venta as v')
+            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
+            -> select ('v.idventa','v.fecha_hora','v.fecha_emi','v.tasa','v.tasa','v.texe','v.base','v.total_iva','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            ->where ('v.idventa','=',$id)
+            -> first();
+			//dd($venta);
+            $detalles=DB::table('detalle_venta as dv')
+            -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
+            -> select('a.idarticulo','dv.idarticulo','a.nombre as articulo','a.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','dv.precio')
+            -> where ('dv.idventa','=',$id)
+            ->get();
+			
+			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
+            ->get();
+			$seriales=DB::table('seriales as se')-> where ('se.idventa','=',$id)
+            ->get();
+			//dd($seriales);
+			$recibonc=DB::table('mov_notas as mov')-> where ('mov.iddoc','=',$id)-> where ('mov.tipodoc','=',"FAC")
+            ->get();
+
+            return view("pedidos.pedido.notads",["seriales"=>$seriales,"venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
+}
 }
