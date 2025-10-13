@@ -11,7 +11,7 @@
                     <div class="form-group" align="center">
 					 <p id="<?php echo "code".$v1; ?>" style="color: black; font-size: 20px;" align="center">{{$det->codigo}} </p>
 					 <p id="<?php echo "name".$v1; ?>" style="color: black; font-size: 20px;" align="center" > {{$det->articulo}} </p>
-						 <p id="<?php echo "price".$v1; ?>" style="color: black; font-size: 20px;" align="center" > {{$det->precio1}} $ </p>
+						 <p id="<?php echo "price".$v1; ?>" style="color: black; font-size: 20px;" align="center" >REF: {{$det->precio1}} </p>
 </bR>                   
 				   </div>
                 </div>  
