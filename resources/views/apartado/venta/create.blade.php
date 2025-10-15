@@ -312,7 +312,9 @@ $(document).ready(function(){
 	   datosarticulo=document.getElementById('pidarticulo').value.split('_');
 	  var fraccion_art=datosarticulo[7];
 	  var cntventa=$("#pcantidad").val();
-	  if(Number.isInteger(cntventa/fraccion_art) == false ){
+	  var nf=parseFloat(fraccion_art*100);
+	var ncnt=parseFloat(cntventa*100);
+	  if(Number.isInteger(ncnt/nf) == false ){
 		  alert('La Cantidad indicada no es divisible en la Fraccion del Articulo');
 		  $("#pcantidad").val(fraccion_art);
 	  }
@@ -506,7 +508,8 @@ function trunc (x, posiciones = 0) {
       $("#pprecio_venta").val(datosarticulo[tpc]);
       $("#pstock").val(datosarticulo[1]);
 	  $("#pcostoarticulo").val(datosarticulo[4]);
-      $("#pcantidad").val("1");
+      $("#pcantidad").val(datosarticulo[7]);
+      $("#pcantidad").attr("step",datosarticulo[7]);
       $("#pdescuento").val("0");
     }
 	function mostrarcomision(){  
@@ -827,7 +830,7 @@ function trunc (x, posiciones = 0) {
 				.append('<option value="1000" selected="selected">Seleccione..</option>');
 				for (j=0;j<rows;j++){
 				$("#pidarticulo")
-				.append( '<option value="'+r3[j].idarticulo+'_'+r3[j].stock+'_'+r3[j].precio_promedio+'_'+r3[j].precio2+'_'+r3[j].costo+'">'+r3[j].articulo+'</option>');
+				.append( '<option value="'+r3[j].idarticulo+'_'+r3[j].stock+'_'+r3[j].precio_promedio+'_'+r3[j].precio2+'_'+r3[j].costo+'_'+r3[j].iva+'_'+r3[j].serial+'_'+r3[j].fraccion+'">'+r3[j].articulo+'</option>');
 				}
 				$("#pidarticulo").selectpicker('refresh');
 				$("#pidarticulo").selectpicker('toggle');

@@ -245,7 +245,9 @@ $(document).ready(function(){
 	   datosarticulo=document.getElementById('pidarticulo').value.split('_');
 	  var fraccion_art=datosarticulo[7];
 	  var cntventa=$("#pcantidad").val();
-	  if(Number.isInteger(cntventa/fraccion_art) == false ){
+	var nf=parseFloat(fraccion_art*100);
+	var ncnt=parseFloat(cntventa*100);
+	  if(Number.isInteger(ncnt/nf) == false ){
 		  alert('La Cantidad indicada no es divisible en la Fraccion del Articulo');
 		  $("#pcantidad").val(fraccion_art);
 	  }
@@ -379,7 +381,8 @@ function trunc (x, posiciones = 0) {
       $("#pprecio_venta").val(datosarticulo[tpc]);
       $("#pstock").val(datosarticulo[1]);
 	  $("#pcostoarticulo").val(datosarticulo[4]);
-      $("#pcantidad").val("1");
+		$("#pcantidad").val(datosarticulo[7]);
+      $("#pcantidad").attr("step",datosarticulo[7]);
       $("#pdescuento").val("0");
     }
 	$("#changeprice").on("click",function(){
