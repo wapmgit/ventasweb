@@ -193,6 +193,7 @@ class SistemaController extends Controller
         $emp->tasadif=$request->get('tasadif');
         $emp->formatofac=$request->get('formato');
         $emp->formatolp=$request->get('formatolp');
+        $emp->calc_util=$request->get('calc_util');
         $emp->nlineas=$request->get('nlineas');
 		if($request->get('usaserie')){
         $emp->serie=$request->get('usaserie');}else{
@@ -233,6 +234,7 @@ class SistemaController extends Controller
 			$articulo->costo=(($articulo->costo*$tasa)/$request->get('tasaajuste'));
 			$articulo->precio1=(($articulo->utilidad/100)*$articulo->costo)+$articulo->costo;
 			$articulo->precio2=(($articulo->util2/100)*$articulo->costo)+$articulo->costo;
+			$articulo->precio3=(($articulo->util3/100)*$articulo->costo)+$articulo->costo;
 			$articulo->update();
 		}
 		 }

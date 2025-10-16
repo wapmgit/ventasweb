@@ -88,11 +88,24 @@
                     <td>Actualizar Costo/Precio en Ajuste</td>
                  
                     <td class="text-right py-0 align-middle">
-   <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+					<div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                       <input type="checkbox" name="actcosto" <?Php if($empresa->actcosto==1) echo "checked"; ?> class="custom-control-input" id="customSwitch1">
                       <label class="custom-control-label" for="customSwitch1"></label>
                     </div>
                     </td></tr>
+						  <tr>
+                    <td>Metodo calculo de Utilidad
+					</div></td>     
+                    <td>
+						<div class="form-group">
+							<select name="calc_util"  class="form-control">
+							<option value="1" <?php if($empresa->calc_util==1){ echo "Selected";} ?>>Sobre el Costo</option>
+							<option value="2" <?php if($empresa->calc_util==2){ echo "Selected";} ?>>Sobre Precio Venta</option>							
+							</select>
+										
+						</div>
+                    </td>
+				</tr>
                   <tr>
                     <td>Usa forma Libre</td>
                   
@@ -310,7 +323,6 @@ $('#customSwitch6').on('change', function() {
 	 $("#usaserie").attr("disabled","true");	
  }
 });
-
 	   
 	   });
 	    function conMayusculas(field) {

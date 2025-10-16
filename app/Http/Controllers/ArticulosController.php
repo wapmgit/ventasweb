@@ -106,10 +106,11 @@ class ArticulosController extends Controller
     }
 	public function edit($id)
     {
-			 $articulos=Articulos::find($id);
-			 $categorias=DB::table('categoria')->where('condicion','=','1')->get();
+		$articulos=Articulos::find($id);
+		$categorias=DB::table('categoria')->where('condicion','=','1')->get();
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			return view('almacen.articulo.edit')
-			->with(["articulo"=>$articulos,"categorias"=>$categorias]);
+			->with(["articulo"=>$articulos,"categorias"=>$categorias,"empresa"=>$empresa]);
 
     }
 	public function update(Request $request)
