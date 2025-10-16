@@ -39,6 +39,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
 					<table width="100%"><tr><td width="30%"><strong>Cliente</strong></td><td width="13%"><strong>Telefono</strong></td><td width="27%"><strong>Direccion</strong></td><td width="15%"><strong>Documento</strong></td><td width="15%"><strong>Vendedor</strong></td>
 						</tr>
 						<tr><td>{{$venta->cedula}} -> {{$venta->nombre}}</td><td>{{$venta->telefono}}</td><td>{{$venta->direccion}}</td><td>{{$venta->tipo_comprobante}} <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); $tasa=$empresa->tc; ?></td><td width="20%">{{$venta->nombrev}}</td>
+							<input type="hidden" value="{{$venta->tipo_precio}}" name="tp" id="tp">
 						</tr>
 					</table></br>
 				</div>
@@ -48,7 +49,8 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
                 <div class="panel panel-primary">
                 <div class="panel-body">
                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                  <table id="detalles" class="table table-striped table-bordered table-condensed table-hover">
+				  <div class="table-responsive">
+                  <table id="detalles" width="100%">
                       <thead style="background-color: #A9D0F5">
 						<th>Edit.</yh>
                           <th>Articulo <a href="" data-target="#modalaggart" data-toggle="modal"><span class="label label-success"><i class="fa-solid fa-square-plus"></i></span></a></th>
@@ -91,7 +93,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
 						 {{$det->cantidad}}
 						  <?php } else { echo $det->cantidad;} ?> 
 						  </td> 
-                          <td>{{$det->stock}}</td>
+                          <td align="center">{{$det->stock}}</td>
                           <td>{{$det->precio}}</td>
                           <td>{{$det->descuento}}</td>
                           <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
@@ -110,6 +112,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
 							 
 							  </tfoot>
                   </table>
+                    </div>
                     </div>
  
                 </div>
@@ -159,12 +162,18 @@ $(document).ready(function(){
 		agregarpago();
 	});
 	$("#pidarticulo").change(function(){
+		 var tp= $("#tp").val();
+		if (tp==1){  tpc=2;}
+		if (tp==2) {   tpc=3;}	 
+		else {   tpc=8;}
 		document.getElementById('pcantidad').focus();
 		datosarticulo=document.getElementById('pidarticulo').value.split('_');
-      $("#pprecio_venta").val(datosarticulo[2]);
-      $("#pf").val(datosarticulo[3]);
+	   $("#pprecio_venta").val(datosarticulo[tpc]);
+      $("#pf").val(datosarticulo[tpc]);
 	  $("#pcostoarticulo").val(datosarticulo[4]);
-      $("#pcantidad").val("1");
+     $("#pcantidad").attr("step",datosarticulo[7]);
+     $("#pcantidad").attr("min",datosarticulo[7]);
+	 $("#pcantidad").val(datosarticulo[7]);
       $("#idarticulo").val(datosarticulo[0]);
 		  document.getElementById('btnsubmit').style.display="";
 	});

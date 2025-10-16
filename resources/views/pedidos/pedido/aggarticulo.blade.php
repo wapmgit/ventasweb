@@ -19,11 +19,11 @@
 			<select name="pidarticulo" id="pidarticulo" class="form-control selectpicker" data-live-search="true" >
                               <option value="1000" selected="selected">Seleccione..</option>
                              @foreach ($articulos as $articulo)
-                              <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}">{{$articulo -> articulo}}</option>
+                              <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}_{{$articulo->precio3}}">{{$articulo -> articulo}}</option>
                              @endforeach
                               </select></td></tr>
 			<tr><td><label>Cantidad:</label>
-			<input type="number" name="pcantidad" id="pcantidad" class ="form-control" placeholder="Cantidad"></td>
+			<input type="number" name="pcantidad" id="pcantidad" class ="form-control" placeholder="Cantidad" min=""></td>
 			<td><label>Precio:</label> <input type="number" name="pprecio_venta" id="pprecio_venta" step="0.001" class ="form-control" placeholder="Precio de Venta" ></td></tr>
 			</table>
 					</div>

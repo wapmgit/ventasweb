@@ -56,18 +56,20 @@ class PedidosController extends Controller
 		if ($rol->crearpedido==1){
 		$monedas=DB::table('monedas')->get();
 		$vendedor=DB::table('vendedores')->get();
+		$rutas=DB::table('rutas')->get();
         $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
         $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev')-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->get();
          $contador=DB::table('pedidos')->select('idpedido')->limit('1')->orderby('idpedido','desc')->get();
       //dd($contador);
         $articulos =DB::table('articulos as art')
-        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','fraccion')
+        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','fraccion','art.precio3')
         -> where('art.estado','=','Activo')
         ->groupby('articulo','art.idarticulo')
         -> get();
 		//dd($articulos);
+		   $seriales =DB::table('seriales')->where('estatus','=',0)->get();
      if ($contador==""){$contador=0;}
-      return view("pedidos.pedido.create",["rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
+      return view("pedidos.pedido.create",["rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
     } else { 
 	return view("reportes.mensajes.noautorizado");
 	}
@@ -132,7 +134,7 @@ catch(\Exception $e)
   return Redirect::to('pedidos');
 }
 public function show(Request $request,$id){
-	//dd($id);
+	
 	$rol=DB::table('roles')-> select('importarpedido','editpedido')->where('iduser','=',$request->user()->id)->first();	
     $user=Auth::user()->name;
     $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
@@ -140,7 +142,7 @@ public function show(Request $request,$id){
     $venta=DB::table('pedidos as pe')
     -> join ('clientes as p','pe.idcliente','=','p.id_cliente')
 	->join('vendedores as v','v.id_vendedor','=','pe.idvendedor')
-    -> select ('v.nombre as nombrev','pe.idcliente','pe.idpedido','pe.fecha_hora','p.nombre','p.telefono','p.cedula','p.direccion','pe.tipo_comprobante','pe.serie_comprobante','pe.num_comprobante','pe.impuesto','pe.estado','pe.total_venta','pe.devolu')
+    -> select ('v.nombre as nombrev','pe.idcliente','pe.idpedido','pe.fecha_hora','p.nombre','p.telefono','p.cedula','p.direccion','p.tipo_precio','pe.tipo_comprobante','pe.serie_comprobante','pe.num_comprobante','pe.impuesto','pe.estado','pe.total_venta','pe.devolu')
     ->where ('pe.idpedido','=',$id)
     -> first();
 
@@ -150,7 +152,7 @@ public function show(Request $request,$id){
     -> where ('dv.idpedido','=',$id)
     ->get();
 	$articulos =DB::table('articulos as art')
-	-> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva')
+	-> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3')
 	-> where('art.estado','=',"Activo")
 	->groupby('art.idarticulo')
 	-> get();

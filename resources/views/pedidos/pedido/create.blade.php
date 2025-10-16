@@ -120,7 +120,7 @@ $idv=0;
                              <select name="pidarticulo" id="pidarticulo" class="form-control selectpicker" data-live-search="true" >
                               <option value="5000" selected="selected">Seleccione..</option>
                              @foreach ($articulos as $articulo)
-                              <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}">{{$articulo -> articulo}}</option>
+                              <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}_{{$articulo->precio3}}">{{$articulo -> articulo}}</option>
                              @endforeach
                               </select>
                         </div>
@@ -374,7 +374,9 @@ function trunc (x, posiciones = 0) {
     function mostrarvalores(){      
       tipo_precio=document.getElementById('id_cliente').value.split('_');
       var tpc= tipo_precio[1];
-      if (tpc==1){ tpc=2;}else {tpc=3;}
+      if (tpc==1){  preopt="P1"; tpc=2;}
+	  if (tpc==2) {  preopt="P2"; tpc=3;}	 
+	  else {  preopt="P3"; tpc=8;}
       //de los articulos
 	    document.getElementById('pcantidad').focus();
       datosarticulo=document.getElementById('pidarticulo').value.split('_');
@@ -387,11 +389,14 @@ function trunc (x, posiciones = 0) {
     }
 	$("#changeprice").on("click",function(){
 	  datosarticulo=document.getElementById('pidarticulo').value.split('_');
-	var  p1=datosarticulo[2]; 
-	  var p2=datosarticulo[3]; 
-	
-	  if($("#pprecio_venta").val()==p1){  preopt="P2"; $("#pprecio_venta").val(p2);  }else{
-		 preopt="P1";  $("#pprecio_venta").val(p1); 
+		var  p1=datosarticulo[2]; 
+		var p2=datosarticulo[3]; 
+		var p3=datosarticulo[8]; 
+	  if(preopt==="P1"){  preopt="P2"; $("#pprecio_venta").val(p2);  }
+	  else{
+	  if(preopt==="P2"){  preopt="P3"; $("#pprecio_venta").val(p3);  }else{
+	  if(preopt==="P3"){  preopt="P1"; $("#pprecio_venta").val(p1); }
+	  }
 	  }
 	});
 	function mostrarcomision(){  
