@@ -56,6 +56,8 @@ function truncar($numero, $digitos)
 						<th id="pd">P.1 <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpd"></i></th>  
 						<th  id="p2u">P.U. P2</th>
 						<th id="p2">P.2 <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp2"></i></</th>
+						<th id="p3u">P.u. P3</th>
+						<th id="p3">P3 <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpv"></i></th>
 						<?Php if($empresa->tdif==1){?> <th  id="p4u">P.U $</th> <th  id="p4">P. $ <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp3"></i></th><?php }?>
 						<th>Descripcion</th>
 						<th>Unidad</th>
@@ -74,6 +76,8 @@ function truncar($numero, $digitos)
 								<td class="filap1"><?php echo number_format( $q->precio1, 2,',','.'); ?></td>	
 								<td class="filap2"><?php echo number_format( ($q->precio2/$q->cntxund), 2,',','.'); ?></td> 
 								<td class="filap2"><?php echo number_format( $q->precio2, 2,',','.'); ?></td>
+								<td class="filapv"><?php echo number_format( ($q->precio3/$q->cntxund), 2,',','.'); ?></td> 
+								<td class="filapv"><?php echo number_format( $q->precio3, 2,',','.'); ?></td>
 								<?Php if($empresa->tdif==1){?> 
 								<td class="filap4"><?php echo number_format( truncar((($q->precio1*((100-$empresa->tasadif)/100))/$q->cntxund),2), 2,',','.'); ?></td>
 								<td class="filap4"><?php echo number_format( truncar(($q->precio1*((100-$empresa->tasadif)/100)),2), 2,',','.'); ?></td>
@@ -91,6 +95,8 @@ function truncar($numero, $digitos)
 								<td class="filap1"></td>
 								<td class="filap2"></td>
 								<td class="filap2"></td>
+								<td class="filapv"></td>
+								<td class="filapv"></td>
 								<?Php if($empresa->tdif==1){?> <td class="filap4"></td> <td class="filap4"></td> <?php } ?>
 								<td class="filap3"><?php echo "<strong>Existencias : ".$costoacum."</strong>"; ?></td>												
 							</tr>
@@ -125,6 +131,12 @@ $(document).ready(function(){
 		//document.getElementById('ocultarpd').style.display="none";
 		$(".filap4").remove();
     });
+		$('#ocultarpv').click(function(){
+		document.getElementById('p3').style.display="none";
+		document.getElementById('p3u').style.display="none";
+		//document.getElementById('ocultarpd').style.display="none";
+		$(".filapv").remove();
+    });
 		$('#ocultarst').click(function(){
 		document.getElementById('p3').style.display="none";
 		document.getElementById('ocultarst').style.display="none";
@@ -137,6 +149,7 @@ $(document).ready(function(){
   document.getElementById('ocultarp2').style.display="none";
   document.getElementById('ocultarpd').style.display="none";
   document.getElementById('ocultarst').style.display="none";
+  document.getElementById('ocultarpv').style.display="none";
   window.print(); 
   window.location="{{route('listaprecios')}}";
     });

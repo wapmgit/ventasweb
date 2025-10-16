@@ -230,7 +230,7 @@ $("#nombre").change(revisar);
 $("#costo").change(actprecio); 
 $("#impuesto").change(actprecio); 
 
-		function actprecio(){
+	function actprecio(){
 			var costo= $("#costo").val();
 			var iva= $("#impuesto").val();   
 			var util= $("#utilidad").val();   
@@ -241,8 +241,8 @@ $("#impuesto").change(actprecio);
 				pf=parseFloat(pneto) + parseFloat(piva*pneto);			
 				$("#precio1").val(pf.toFixed(2));
 			}
-		}
-      function calculo(){
+	}
+	function calculo(){
       $("#precio1").val("");
     	var  p1 =0;
     	var costo= $("#costo").val();
@@ -253,8 +253,8 @@ $("#impuesto").change(actprecio);
         iva=p2*(impuesto/100);
         pt=(parseFloat(p2)+parseFloat(iva));
     	$("#precio1").val(pt.toFixed(2));
-      }
-      function calculo2(){
+	}
+	function calculo2(){
       $("#precio2").val("");
       var  p1 =0;
       var costo= $("#costo").val();
@@ -265,8 +265,8 @@ $("#impuesto").change(actprecio);
         iva=p2*(impuesto/100);
         pt=(parseFloat(p2)+parseFloat(iva));
       $("#precio2").val(pt.toFixed(2));
-      }	
-	  	function calculo3(){
+	}	
+	function calculo3(){
       $("#precio3").val("");
       var  p1 =0;
       var costo= $("#costo").val();
@@ -278,42 +278,42 @@ $("#impuesto").change(actprecio);
         pt=(parseFloat(p2)+parseFloat(iva));
 		
       $("#precio3").val(pt);
-      } 
-        function reverso(){
+	} 
+	function reverso(){
         var  p30 =0;  
        p30= $("#precio1").val();
-      var costo= $("#costo").val();
-      var utilidad= $("#impuesto").val();       
-    var    p31=parseFloat((utilidad/100));  
-    var    p32=parseFloat(costo) + parseFloat(p31*costo);     
+		var costo= $("#costo").val();
+		var utilidad= $("#impuesto").val();       
+		var    p31=parseFloat((utilidad/100));  
+		var    p32=parseFloat(costo) + parseFloat(p31*costo);     
         iva=(p30/p32);
         var util=((iva-1)*100);
         pt=(parseFloat(util));
         var nv=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt));
   //      alert(nv);
       $("#utilidad").val(parseFloat(nv));
-      }
-	  	function reverso3(){		
+	}
+	function reverso3(){		
         var  p302 =0;  
        p302= $("#precio3").val();
       var costo= $("#costo").val();
       var utilidad= $("#impuesto").val();       
-    var    p312=parseFloat((utilidad/100));  
-    var    p322=parseFloat(costo) + parseFloat(p312*costo);     
+		var    p312=parseFloat((utilidad/100));  
+		var    p322=parseFloat(costo) + parseFloat(p312*costo);     
         iva=(p302/p322);
         var util2=((iva-1)*100);		
         pt2=(parseFloat(util2));		
         var nv2=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt2));      
       $("#util3").val(parseFloat(nv2));
-      }
-	  function revisar(){
+	}
+	function revisar(){
 	var nuevo=$("#nombre").val();
 	 var pin2=nuevo.replace('-','/');
 	$("#nombre").val(pin2);
-	  }
-  function conMayusculas(field) {
+	}
+	function conMayusculas(field) {
             field.value = field.value.toUpperCase()
-}
- 		</script>
-			@endpush  
+	}
+	</script>
+	@endpush  
 @endsection
