@@ -58,7 +58,7 @@ function truncar($numero, $digitos)
 						<th  id="p2u">P.u. P2</th>
 						<th id="p2">P2 <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp2"></i></th>
 						<th id="p3u">P.u. P3</th>
-						<th id="p3">P3 <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpv"></i></th>
+						<th id="p33">P3 <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpv"></i></th>
 						<?Php if($empresa->tdif==1){?> <th  id="p4u">P.u $</th> <th  id="p4">P. $ <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarp3"></i></th><?php }?>
 					
 						<th>Descripcion</th>
@@ -130,7 +130,7 @@ $(document).ready(function(){
 		$(".filap4").remove();
     });
 	$('#ocultarpv').click(function(){
-		document.getElementById('p3').style.display="none";
+		document.getElementById('p33').style.display="none";
 		document.getElementById('p3u').style.display="none";
 		//document.getElementById('ocultarpd').style.display="none";
 		$(".filapv").remove();
