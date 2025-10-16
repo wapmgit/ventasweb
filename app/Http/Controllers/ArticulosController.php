@@ -82,6 +82,12 @@ class ArticulosController extends Controller
 			if($request->get('util2')==NULL){
 			$articulo->util2=$request->get('utilidad');}else{
 			$articulo->util2=$request->get('util2');}
+			if($request->get('precio3')==NULL){
+			$articulo->precio3=$request->get('precio1');}else{
+			$articulo->precio3=$request->get('precio3');}
+			if($request->get('util2')==NULL){
+			$articulo->util3=$request->get('utilidad');}else{
+			$articulo->util3=$request->get('util3');}
         $articulo->costo=$request->get('costo');
         //validar iva vacio
         $articulo->iva=$request->get('impuesto');
@@ -139,6 +145,12 @@ class ArticulosController extends Controller
 			if($request->get('util2')==NULL){
 			$articulo->util2=$request->get('utilidad');}else{
 			$articulo->util2=$request->get('util2');}
+			if($request->get('util3')==NULL){
+			$articulo->util3=$request->get('utilidad');}else{
+			$articulo->util3=$request->get('util3');}
+			if($request->get('precio3')==NULL){
+			$articulo->precio3=$request->get('precio1');}else{
+			$articulo->precio3=$request->get('precio3');}
         $articulo->costo=$request->get('costo');
         $articulo->iva=$request->get('impuesto');
 		if($request->get('serial')=="on"){$articulo->serial=1;}	

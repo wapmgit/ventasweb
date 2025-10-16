@@ -104,13 +104,13 @@
                   <input type="text" name="grados"  value="{{$articulo->grados}}" id="grados" <?php if($articulo->grados==0) echo "disabled "; ?> class="form-control" placeholder="grados...">         			
             		</div>
             </div>
-             <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
+             <div class="col-lg-4 col-sm-4 col-md-6 col-xs-12">
             	 <div class="form-group">
             			<label for="descripcion">Descripcion</label>
             			<input type="text" name="descripcion" required value="{{$articulo->descripcion}}" class="form-control" placeholder="descripcion..">
             		</div>
             </div>
-              <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
+              <div class="col-lg-4 col-sm-4 col-md-6 col-xs-12">
             	 <div class="form-group">
             			<label for="imagen">Imagen</label>
             			<input type="file" name="imagen"  class="form-control">
@@ -141,13 +141,23 @@
                  </div> 
                  </div><div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
                  <div class="form-group">
-                              <label for="util2">utilidad 2</label>
+                              <label for="util2">Utilidad 2</label>
                               <input type="number" value="{{$articulo->util2}}"  name="util2" id="util2" step="0.01" class="form-control">
                  </div>         </div>
                  <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
                  <div class="form-group">
                               <label for="precio2">Precio 2</label>
                               <input type="text" value="{{$articulo->precio2}}" name="precio2" step="0.01"  id="precio2" class="form-control">
+                 </div>         </div>
+				 <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+                 <div class="form-group">
+                              <label for="util2">Utilidad 3</label>
+                              <input type="number" value="{{$articulo->util3}}"  name="util3" id="util3" step="0.01" class="form-control">
+                 </div>         </div>
+                 <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+                 <div class="form-group">
+                              <label for="precio2">Precio 3</label>
+                              <input type="text" value="{{$articulo->precio3}}" name="precio3" step="0.01"  id="precio3" class="form-control">
                  </div>         </div>
  			<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" align="center">
             	 <div class="form-group">
@@ -174,8 +184,10 @@ $("#costo").change(calculo2);
 $("#utilidad").change(calculo); 
 $("#impuesto").change(calculo); 
 $("#util2").change(calculo2); 
+$("#util3").change(calculo3); 
 $("#precio1").change(reverso); 
 $("#precio2").change(reverso2); 
+$("#precio3").change(reverso3); 
 		 $('#btnguardar').click(function(){   
 		document.getElementById('loading').style.display=""; 
 		document.getElementById('btnguardar').style.display="none"; 
@@ -235,6 +247,19 @@ function trunc (x, posiciones = 0) {
 		pt=trunc(pt,2);
       $("#precio2").val(pt);
       } 
+	function calculo3(){
+      $("#precio3").val("");
+      var  p1 =0;
+      var costo= $("#costo").val();
+      var impuesto= $("#impuesto").val();
+      var utilidad= $("#util3").val();
+        p1=parseFloat((utilidad/100));
+        p2=parseFloat(costo) + parseFloat(p1*costo);
+        iva=p2*(impuesto/100);
+        pt=(parseFloat(p2)+parseFloat(iva));
+		pt=trunc(pt,2);
+      $("#precio3").val(pt);
+      } 
           function reverso(){
         var  p30 =0;  
        p30= $("#precio1").val();
@@ -264,6 +289,23 @@ function trunc (x, posiciones = 0) {
   //      alert(nv);
   nv=trunc(nv,2)
       $("#util2").val(parseFloat(nv2));
+      }
+	function reverso3(){
+		alert();
+        var  p302 =0;  
+       p302= $("#precio3").val();
+      var costo= $("#costo").val();
+      var utilidad= $("#impuesto").val();       
+    var    p312=parseFloat((utilidad/100));  
+	alert(p302);
+    var    p322=parseFloat(costo) + parseFloat(p312*costo);     
+        iva=(p302/p322);
+        var util2=((iva-1)*100);
+		alert(p322);
+        pt2=(parseFloat(util2));
+		alert(pt2);
+        var nv2=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt2));      
+      $("#util3").val(parseFloat(nv2));
       }
 	function conMayusculas(field) {
             field.value = field.value.toUpperCase()

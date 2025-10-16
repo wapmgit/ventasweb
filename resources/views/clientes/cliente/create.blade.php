@@ -81,8 +81,9 @@
 		 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
            <div class="form-group">
 				<label for="tipo_precio">Tipo de Precio </label><br>
-				<label for="precio1"> Precio 1 </label> <input name="precio" type="radio" value="1" checked="checked">
-				<label for="precio2"> Precio 2 </label> <input name="precio" type="radio" value="2">
+				<label for="precio1"> P 1 </label> <input name="precio" type="radio" value="1" checked="checked">
+				<label for="precio2"> P 2 </label> <input name="precio" type="radio" value="2">
+				<label for="precio2"> P 3 </label> <input name="precio" type="radio" value="3">
            </div>
 		</div>
 

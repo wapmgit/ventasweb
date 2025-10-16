@@ -67,7 +67,7 @@ class ComprasController extends Controller
 	}   
    }
     public function store(Request $request){
-		//dd($request);
+	//	dd($request);
 	$user=Auth::user()->name;
 	try{
    DB::beginTransaction();
@@ -88,7 +88,7 @@ class ComprasController extends Controller
 	else { $ingreso->saldo=$request->get('tdeuda');}
     if ($ingreso->saldo > 0){
     $ingreso->condicion='Credito';} else { $ingreso->condicion='Contado';}
-    $ingreso->tasa=$request->get('vtasa');
+    $ingreso->tasa=$request->get('tasacompra');
     $ingreso->user=$user;
     $ingreso-> save();	
 		
@@ -110,7 +110,7 @@ class ComprasController extends Controller
 				$recibo->monto=$tmonto[$contp]; 
 				$recibo->referencia=$tref[$contp];
 				$recibo->tasap=$request->get('peso');
-				$recibo->tasab=$request->get('tc');
+				$recibo->tasab=$request->get('tasacompra');
 				$recibo->aux=$request->get('tdeuda');
 				$mytime=Carbon::now('America/Caracas');
 				$recibo->fecha_comp=$mytime->toDateTimeString();						
@@ -131,7 +131,7 @@ class ComprasController extends Controller
 									$mov->ced="";
 									$mov->tipo_per="P";
 									$mov->monto=$denomina[$contp];
-									$mov->tasadolar=$request->get('tc');
+									$mov->tasadolar=$request->get('tasacompra');
 									$mytime=Carbon::now('America/Caracas');
 									$mov->fecha_mov=$mytime->toDateTimeString();	
 									$mov->user=Auth::user()->name;
@@ -402,9 +402,17 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 			if($request->get('util2')==NULL){
 			$articulo->util2=$request->get('utilidad');}else{
 			$articulo->util2=$request->get('util2');}
+			if($request->get('precio3')==NULL){
+			$articulo->precio3=$request->get('precio1');}else{
+			$articulo->precio3=$request->get('precio3');}
+			if($request->get('util3')==NULL){
+			$articulo->util3=$request->get('utilidad');}else{
+			$articulo->util3=$request->get('util3');}
         $articulo->costo=$request->get('costo');
         $articulo->iva=$request->get('impuesto');
 		if($request->get('serial')=="on"){$articulo->serial=1;}	
+		$mytime=Carbon::now('America/Caracas');
+		$articulo->created_at=$mytime->toDateTimeString();
 		$articulo->save();
 
 		$articulos =DB::table('articulos as art')

@@ -89,18 +89,6 @@ $idv=0;
             			</select>
             		</div>
             </div>
-			 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
-            	 <div class="form-group">
-            			<label for="stock">Volumen</label>
-            			<input type="text" name="volumen"   id="volumen" disabled  value="0" class="form-control" placeholder="volumen...">
-            		</div>
-            </div>
- 				<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
-            	 <div class="form-group">
-            			<label for="stock">Grados </label>          
-                  <input type="text" name="grados"  value="{{old('grados')}}" id="grados" disabled class="form-control" placeholder="grados...">         			
-            		</div>
-            </div>
                  <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
                  <div class="form-group">
                               <label for="costo">Costo</label>
@@ -133,6 +121,22 @@ $idv=0;
                               <label for="precio2">Precio 2</label>
                               <input type="text" value="" name="precio2"  id="precio2" class="form-control">
                  </div>         </div>
+				  <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+                 <div class="form-group">
+                              <label for="util2">Utilidad 3</label>
+                              <input type="number" value=""  name="util3" id="util3"   placeholder="% Utilidad" step="0.01" class="form-control">
+                 </div>         </div>
+                 <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+                 <div class="form-group">
+                              <label for="precio2">Precio 3</label>
+                              <input type="text" value="" name="precio3" step="0.01"  id="precio3" placeholder="Precio 3"  class="form-control">
+                 
+			 	
+            			<input type="hidden" name="volumen"   id="volumen" disabled  value="0" class="form-control" placeholder="volumen...">
+                  
+                  <input type="hidden" name="grados"  value="{{old('grados')}}" id="grados" disabled class="form-control" placeholder="grados...">         			
+         
+				 </div>         </div>	
                         
             </div> 
 
@@ -156,10 +160,12 @@ $(document).ready(function(){
 document.getElementById('Nenviar').style.display="none";
 $("#costo").change(calculo); 
 $("#costo").change(calculo2); 
+$("#util3").change(calculo3);
 $("#utilidad").change(calculo); 
 $("#impuesto").change(calculo); 
 $("#util2").change(calculo2); 
 $("#precio1").change(reverso); 
+$("#precio3").change(reverso3); 
 $("#nombre").change(revisar); 
 //$("#codigo").change(activar); 
       $("#codigo").on("change",function(){
@@ -233,6 +239,19 @@ if (costo!="" && impuesto != "" && utilidad!=""){
 	 document.getElementById('Nenviar').style.display="";
 }
       }
+	  	  	function calculo3(){
+      $("#precio3").val("");
+      var  p1 =0;
+      var costo= $("#costo").val();
+      var impuesto= $("#impuesto").val();
+      var utilidad= $("#util3").val();
+        p1=parseFloat((utilidad/100));
+        p2=parseFloat(costo) + parseFloat(p1*costo);
+        iva=p2*(impuesto/100);
+        pt=(parseFloat(p2)+parseFloat(iva));
+		
+      $("#precio3").val(pt);
+      }
         function reverso(){
         var  p30 =0;  
        p30= $("#precio1").val();
@@ -248,6 +267,19 @@ if (costo!="" && impuesto != "" && utilidad!=""){
       $("#utilidad").val(parseFloat(nv));
 
       }	  
+	    	function reverso3(){		
+        var  p302 =0;  
+       p302= $("#precio3").val();
+      var costo= $("#costo").val();
+      var utilidad= $("#impuesto").val();       
+    var    p312=parseFloat((utilidad/100));  
+    var    p322=parseFloat(costo) + parseFloat(p312*costo);     
+        iva=(p302/p322);
+        var util2=((iva-1)*100);		
+        pt2=(parseFloat(util2));		
+        var nv2=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt2));      
+      $("#util3").val(parseFloat(nv2));
+      }
 	function revisar(){
 	var nuevo=$("#nombre").val();
 	 var pin2=nuevo.replace('-','/');

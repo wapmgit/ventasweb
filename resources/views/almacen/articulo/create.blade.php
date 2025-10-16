@@ -98,13 +98,13 @@ $idv=0;
             		</div>
             </div>
 
-             <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
+             <div class="col-lg-4 col-sm-4 col-md-6 col-xs-12">
             	 <div class="form-group">
             			<label for="descripcion">Descripcion</label>
             			<input type="text" name="descripcion" required value="{{old('descripcion')}}" class="form-control" placeholder="Descripcion..">
             		</div>
             </div>
-            <div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
+            <div class="col-lg-4 col-sm-4 col-md-6 col-xs-12">
             	 <div class="form-group">
             			<label for="imagen">Imagen</label>
             			<input type="file" name="imagen"  class="form-control">
@@ -150,7 +150,17 @@ $idv=0;
                               <label for="precio2">Precio 2</label>
                               <input type="text" value="" name="precio2"  id="precio2"   placeholder="Precio 2" class="form-control">
                  </div>         
-			</div>                        
+			</div>  
+ <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+                 <div class="form-group">
+                              <label for="util2">Utilidad 3</label>
+                              <input type="number" value=""  name="util3" id="util3"   placeholder="% Utilidad" step="0.01" class="form-control">
+                 </div>         </div>
+                 <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+                 <div class="form-group">
+                              <label for="precio2">Precio 3</label>
+                              <input type="text" value="" name="precio3" step="0.01"  id="precio3" placeholder="Precio 3"  class="form-control">
+                 </div>         </div>			
             </div>                           
  			<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" align="center" <?php if ($cntcat=0){?>  style="display: none" <?php } ?>>
             	 <div class="form-group">
@@ -213,7 +223,9 @@ $(document).ready(function(){
 })
 $("#utilidad").change(calculo);
 $("#util2").change(calculo2);
+$("#util3").change(calculo3);
 $("#precio1").change(reverso); 
+$("#precio3").change(reverso3); 
 $("#nombre").change(revisar); 
 $("#costo").change(actprecio); 
 $("#impuesto").change(actprecio); 
@@ -254,6 +266,19 @@ $("#impuesto").change(actprecio);
         pt=(parseFloat(p2)+parseFloat(iva));
       $("#precio2").val(pt.toFixed(2));
       }	
+	  	function calculo3(){
+      $("#precio3").val("");
+      var  p1 =0;
+      var costo= $("#costo").val();
+      var impuesto= $("#impuesto").val();
+      var utilidad= $("#util3").val();
+        p1=parseFloat((utilidad/100));
+        p2=parseFloat(costo) + parseFloat(p1*costo);
+        iva=p2*(impuesto/100);
+        pt=(parseFloat(p2)+parseFloat(iva));
+		
+      $("#precio3").val(pt);
+      } 
         function reverso(){
         var  p30 =0;  
        p30= $("#precio1").val();
@@ -267,6 +292,19 @@ $("#impuesto").change(actprecio);
         var nv=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt));
   //      alert(nv);
       $("#utilidad").val(parseFloat(nv));
+      }
+	  	function reverso3(){		
+        var  p302 =0;  
+       p302= $("#precio3").val();
+      var costo= $("#costo").val();
+      var utilidad= $("#impuesto").val();       
+    var    p312=parseFloat((utilidad/100));  
+    var    p322=parseFloat(costo) + parseFloat(p312*costo);     
+        iva=(p302/p322);
+        var util2=((iva-1)*100);		
+        pt2=(parseFloat(util2));		
+        var nv2=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt2));      
+      $("#util3").val(parseFloat(nv2));
       }
 	  function revisar(){
 	var nuevo=$("#nombre").val();
