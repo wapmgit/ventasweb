@@ -44,8 +44,9 @@ class ArticulosController extends Controller
 		if ($rol->newarticulo==1){
 			$contador=DB::table('articulos')->select('idarticulo')->limit('1')->orderby('idarticulo','desc')->first();		
 			$categorias=DB::table('categoria')->where('condicion','=','1')->get();
+			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 //dd($contador);
-			return view("almacen.articulo.create",["categorias"=>$categorias,"cnt"=>$contador]);
+			return view("almacen.articulo.create",["categorias"=>$categorias,"cnt"=>$contador,"empresa"=>$empresa]);
 		} else { 
 		return view("reportes.mensajes.noautorizado");
 		}

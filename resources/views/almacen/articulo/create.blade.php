@@ -29,6 +29,7 @@ $idv=0;
             			<input type="text" name="nombre" id="nombre" required value="{{old('nombre')}}" onchange="conMayusculas(this)" class="form-control" placeholder="Nombre...">
 						@if($errors->first('nombre'))<P class='text-danger'>{{$errors->first('nombre')}}</p>@endif
 					</div>
+					<input type="hidden" name="mutil" id="mutil" required value="{{$empresa->calc_util}}" class="form-control">
             	</div>
             <div class="col-lg-3 col-sm-3 col-md-3 col-xs-6">
             	 <div class="form-group">
@@ -242,38 +243,60 @@ $("#impuesto").change(actprecio);
 				$("#precio1").val(pf.toFixed(2));
 			}
 	}
+	function trunc (x, posiciones = 0) {
+  var s = x.toString()
+  var l = s.length
+  var decimalLength = s.indexOf('.') + 1
+  var numStr = s.substr(0, decimalLength + posiciones)
+  return Number(numStr)
+}
 	function calculo(){
       $("#precio1").val("");
+	  var mutil= $("#mutil").val();
     	var  p1 =0;
     	var costo= $("#costo").val();
     	var impuesto= $("#impuesto").val();
     	var utilidad= $("#utilidad").val();
         p1=parseFloat((utilidad/100));
+       if(mutil==1){
         p2=parseFloat(costo) + parseFloat(p1*costo);
+		}else{
+		p2=(costo/((100-utilidad)/100));
+		}
         iva=p2*(impuesto/100);
         pt=(parseFloat(p2)+parseFloat(iva));
     	$("#precio1").val(pt.toFixed(2));
 	}
 	function calculo2(){
       $("#precio2").val("");
+	   var mutil= $("#mutil").val();
       var  p1 =0;
       var costo= $("#costo").val();
       var impuesto= $("#impuesto").val();
       var utilidad= $("#util2").val();
         p1=parseFloat((utilidad/100));
+         	if(mutil==1){
         p2=parseFloat(costo) + parseFloat(p1*costo);
+		}else{
+		p2=(costo/((100-utilidad)/100));
+		}
         iva=p2*(impuesto/100);
         pt=(parseFloat(p2)+parseFloat(iva));
       $("#precio2").val(pt.toFixed(2));
 	}	
 	function calculo3(){
       $("#precio3").val("");
+	  var mutil= $("#mutil").val();
       var  p1 =0;
       var costo= $("#costo").val();
       var impuesto= $("#impuesto").val();
       var utilidad= $("#util3").val();
         p1=parseFloat((utilidad/100));
+        if(mutil==1){
         p2=parseFloat(costo) + parseFloat(p1*costo);
+		}else{
+		p2=(costo/((100-utilidad)/100));
+		}
         iva=p2*(impuesto/100);
         pt=(parseFloat(p2)+parseFloat(iva));
 		
@@ -281,14 +304,21 @@ $("#impuesto").change(actprecio);
 	} 
 	function reverso(){
         var  p30 =0;  
+		var mutil= $("#mutil").val();
        p30= $("#precio1").val();
 		var costo= $("#costo").val();
 		var utilidad= $("#impuesto").val();       
 		var    p31=parseFloat((utilidad/100));  
+		if(mutil==1){
 		var    p32=parseFloat(costo) + parseFloat(p31*costo);     
         iva=(p30/p32);
         var util=((iva-1)*100);
         pt=(parseFloat(util));
+		}else{
+		var  p32=parseFloat(costo) + parseFloat(p31*costo);    
+		util=(100-((p32*100)/p30));
+		 pt=(parseFloat(util));
+		}
         var nv=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt));
   //      alert(nv);
       $("#utilidad").val(parseFloat(nv));
@@ -296,13 +326,20 @@ $("#impuesto").change(actprecio);
 	function reverso3(){		
         var  p302 =0;  
        p302= $("#precio3").val();
+	    var mutil= $("#mutil").val();
       var costo= $("#costo").val();
       var utilidad= $("#impuesto").val();       
 		var    p312=parseFloat((utilidad/100));  
-		var    p322=parseFloat(costo) + parseFloat(p312*costo);     
+	if(mutil==1){	
+    var    p322=parseFloat(costo) + parseFloat(p312*costo);     
         iva=(p302/p322);
-        var util2=((iva-1)*100);		
-        pt2=(parseFloat(util2));		
+        var util2=((iva-1)*100);
+		  pt2=(parseFloat(util2));
+		  	}else{
+		var  p32=parseFloat(costo) + parseFloat(p312*costo);    
+		util=(100-((p32*100)/p302));
+		 pt2=(parseFloat(util));
+		}		
         var nv2=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt2));      
       $("#util3").val(parseFloat(nv2));
 	}
