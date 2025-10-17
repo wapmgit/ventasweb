@@ -72,7 +72,7 @@ function truncar($numero, $digitos)
 								$costo=$costo+($q->costo*($q->stock-$q->apartado));
 								$precioacum=(($q->stock-$q->apartado)*$q->precio1)+$precioacum;
 								?> 
-								<td class="filap1">{{ $q->descripcion}} <?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)";*/ } ?></td>
+								<td class="filap1"><?php echo number_format( ($q->precio1/$q->cntxund), 2,',','.'); ?><?php if($q->iva>0){ /*echo "(G)"; }else { echo "(E)";*/ } ?></td>
 								<td class="filap1"><?php echo number_format( $q->precio1, 2,',','.'); ?></td>	
 								<td class="filap2"><?php echo number_format( ($q->precio2/$q->cntxund), 2,',','.'); ?></td> 
 								<td class="filap2"><?php echo number_format( $q->precio2, 2,',','.'); ?></td>
