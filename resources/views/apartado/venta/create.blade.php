@@ -37,7 +37,7 @@ $idv=0;
 		<option style="display: none">{{$p -> idventa}} </option> 
 	@endforeach
 		
-	<div class="row" style="background-color:#f3f4f4"> 
+	<div class="row" style="background-color:#D4D4D8"> 
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
 			<h3>Nuevo Apartado</h3>
 			@include('ventas.venta.modal_tasas')
@@ -79,7 +79,7 @@ $idv=0;
     </div>
 	<form action="{{route('guardarapartado')}}" method="POST" id="formventa" enctype="multipart/form-data" >         
         {{csrf_field()}}
-            <div class="row" style="background-color:#edefef">
+            <div class="row" style="background-color:#D4D4D8">
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <div class="form-group">
 						<input type="hidden" value="{{$empresa->tc}}" id="valortasa" name="tc" class="form-control">

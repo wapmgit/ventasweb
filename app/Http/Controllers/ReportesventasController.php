@@ -463,7 +463,7 @@ class ReportesventasController extends Controller
 				$datos=DB::table('venta as v')
 				-> join('detalle_venta as dv','v.idventa','=','dv.idventa')
 				-> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.total_venta','v.fecha_hora','a.idarticulo',DB::raw('dv.cantidad*0 as cantidad'),DB::raw('a.costo*0 as costo'),'a.iva',DB::raw('dv.precio_venta*0 as precio_venta'),DB::raw('sum(dv.cantidad * dv.costoarticulo) as costoneto'),DB::raw('sum(dv.cantidad*dv.precio_venta)as ventaneta'))
+				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.total_venta','v.fecha_hora','dv.precio','a.idarticulo',DB::raw('dv.cantidad*0 as cantidad'),DB::raw('a.costo*0 as costo'),'a.iva',DB::raw('dv.precio_venta*0 as precio_venta'),DB::raw('sum(dv.cantidad * dv.costoarticulo) as costoneto'),DB::raw('sum(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('(dv.cantidad*dv.precio)as ventad'))
 				-> whereBetween('v.fecha_hora', [$query, $query2])
 				-> Groupby('dv.idventa')      
 				->get();
@@ -471,7 +471,7 @@ class ReportesventasController extends Controller
 				$datos=DB::table('venta as v')
 				-> join('detalle_venta as dv','v.idventa','=','dv.idventa')
 				-> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.total_venta','v.fecha_hora','a.idarticulo','dv.cantidad as cantidad','a.costo','a.iva','dv.precio_venta',DB::raw('(dv.cantidad * dv.costoarticulo) as costoneto'),DB::raw('(dv.cantidad*dv.precio_venta)as ventaneta'))  
+				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.total_venta','v.fecha_hora','a.idarticulo','dv.cantidad as cantidad','a.costo','a.iva','dv.precio','dv.precio_venta',DB::raw('(dv.cantidad * dv.costoarticulo) as costoneto'),DB::raw('(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('(dv.cantidad*dv.precio)as ventad'))  
 				-> whereBetween('v.fecha_hora', [$query, $query2])
 				->get();
 				}

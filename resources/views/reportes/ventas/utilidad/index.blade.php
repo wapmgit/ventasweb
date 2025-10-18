@@ -32,21 +32,22 @@
 					  <th>Cantidad</th>
 					  <th>Costo Neto</th>
 					  <th>Venta Neta</th>
+					  <th>v. Dif.</th>
 					  <th>Utilidad</th>
 					</thead>
-						<?php $tcosto= 0; $tutil=0; $tvn=0; $tcn=0; $tcant=0; $tpv=0;?>
-						@foreach ($datos as $q)            
+						<?php $codempresa=$empresa->codigo; $tcosto= 0; $pventa=0; $pventaneta=0; $tutil=0; $tvn=0; $tcn=0; $tcant=0; $tpv=0;?>
+						@foreach ($datos as $q)  
+						<?php if ($codempresa==300){ $pventa=$q->precio; $pventaneta=$q->ventad; }
+						else{ $pventa=$q->precio_venta;  $pventaneta=$q->ventaneta;}?>						
 						<tr> 
 						  <td>{{ $q->tipo_comprobante.':'.$q->serie_comprobante.'-'.$q->num_comprobante}}</td>
 						  <td><?php $tcosto=$tcosto+$q->costo; echo number_format($q->costo, 2,',','.'); ?></td>
-						  <td><?php $tpv=$tpv+$q->precio_venta; echo number_format($q->precio_venta, 2,',','.'); ?></td>
-						  <td>
-							 <?php $tcant=$tcant+$q->cantidad; echo number_format($q->cantidad, 2,',','.'); ?></td>
-						  <td>
-							 <?php $tcn=$tcn+$q->costoneto; echo number_format($q->costoneto, 2,',','.'); ?></td>
-						  <td>
-							 <?php $tvn=$tvn+$q->ventaneta;  echo number_format($q->ventaneta, 2,',','.'); ?></td>
-							<td> <?php  echo number_format(($q->ventaneta-$q->costoneto), 2,',','.'); ?></td>						
+						  <td><?php $tpv=$tpv+$pventa; echo number_format($pventa, 2,',','.'); ?></td>
+						  <td><?php $tcant=$tcant+$q->cantidad; echo number_format($q->cantidad, 2,',','.'); ?></td>
+						  <td><?php $tcn=$tcn+$q->costoneto; echo number_format($q->costoneto, 2,',','.'); ?></td>
+						  <td><?php $tvn=$tvn+$pventaneta;  echo number_format($pventaneta, 2,',','.'); ?></td>
+						  <td><?php  echo number_format($q->precio_venta, 2,',','.'); ?></td>
+						 <td> <?php  echo number_format(($pventaneta-$q->costoneto), 2,',','.'); ?></td>						
 						</tr>  
 						@endforeach 
 						<tr style="background-color: #E6E6E6" >
@@ -56,6 +57,7 @@
 						  <td><strong><?php echo number_format($tcant, 2,',','.')." $"; ?></strong></td>
 						  <td><strong><?php echo number_format($tcn, 2,',','.')." $"; ?></strong></td>
 						  <td><strong><?php echo number_format($tvn, 2,',','.')." $"; ?></strong></td>
+						  <td></td>
 						  <td><strong><?php echo number_format(($tvn-$tcn), 2,',','.')." $"; ?></strong></td>
         
 						</tr>

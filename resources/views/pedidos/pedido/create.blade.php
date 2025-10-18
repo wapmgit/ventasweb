@@ -34,8 +34,8 @@ $idv=0;
               <option style="display: none">{{$p -> idpedido}} </option> 
           @endforeach
 		
-	<div class="row" style="background-color:#f3f4f4"> 
-		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+	<div class="row" style="background-color:#8EC5FF"> 
+		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
 			<h3>Nuevo Pedido</h3>
 
 			<button type="button" > <a id="calculo" href="" data-target="#modal_tasas" data-toggle="modal"> Referencia Monetaria </a></button>
@@ -44,7 +44,7 @@ $idv=0;
 			<input type="hidden" value="{{$empresa->tc}}" id="valortasa" name="tc"></input>
 		  <input type="hidden" value="{{$empresa->peso}}" id="valortasap" name="peso"></input>
         </div>
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
 		<h4 id="nombrevendedor"></h4>
 							    <div class="form-group">
             			             <label for="tipo_precio">Vendedor </label><br>
@@ -56,7 +56,10 @@ $idv=0;
             			
             		</div>
 		</div>
-		
+			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12" align="center">	
+			<label for="tipo_precio">Saldo </label> </br>
+			<span class="badge bg-yellow"><label id="cxc" style="font-size: 20px" >0</label></span>
+			</div>
 		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
 		<div class="small-box bg-green">
 		<div class="inner">
@@ -74,9 +77,9 @@ $idv=0;
             </div>
 		</div>
     </div>
-	<form action="{{route('guardarpedido')}}" method="POST" enctype="multipart/form-data" >         
+	<form action="{{route('guardarpedido')}}" method="POST" id="formventa" enctype="multipart/form-data" >         
         {{csrf_field()}}
-            <div class="row" style="background-color:#edefef">
+            <div class="row" style="background-color:#8EC5FF">
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <div class="form-group">
 						<input type="hidden" value="{{$empresa->tc}}" id="valortasa" name="tc" class="form-control">
@@ -400,6 +403,20 @@ function trunc (x, posiciones = 0) {
 	  }
 	});
 	function mostrarcomision(){  
+		var formc= $('#formventa');
+			var urlc = '{{route("ventacxc")}}';
+			var datac = formc.serialize();
+    //     alert(data1);
+    $.post(urlc,datac,function(result){  
+      var resultadoc=result;
+          console.log(resultadoc);
+		  		rows=resultadoc.length; 			
+			if(rows>0){
+				var ms=resultadoc[0].monto.toFixed(2);
+        $("#cxc").html("$: " + ms);
+			}else{ $("#cxc").html("$: 0");
+}
+            });
        //alert();
 	   var cli=$("#id_cliente").val();
       dato=document.getElementById('id_cliente').value.split('_');
