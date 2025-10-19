@@ -75,15 +75,25 @@ $(document).ready(function(){
 	$("#filtro").on("change",function(){
 		var variable=$("#filtro").val();							
 		if( variable==1){
+			document.getElementById('divopt').style.display=""; 
 			document.getElementById('divend').style.display=""; 
 			document.getElementById('divcli').style.display="none"; 
+			document.getElementById('divrv').style.display="none"; 	
 			$("#idcliente").val(0);
 		}
 		if( variable==2){
-			document.getElementById('divend').style.display="none"; 
+			document.getElementById('divopt').style.display=""; 
+			document.getElementById('divend').style.display="none";
+			document.getElementById('divrv').style.display="none"; 			
 			document.getElementById('divcli').style.display=""; 
 			$("#idvendedor").val(0);
 		}
+		if( variable==3){
+			document.getElementById('divopt').style.display="none"; 
+			document.getElementById('divrv').style.display=""; 
+			$("#idvendedor").val(0);
+		}
+		
 	});
 });
 

@@ -507,6 +507,7 @@ class ReportesventasController extends Controller
 		if ($rol->rventasarti==1){
 		$vendedores=DB::table('vendedores')->get();  
 		$clientes=DB::table('clientes')->get();  
+		$rutas=DB::table('rutas')->get();  
         $corteHoy = date("Y-m-d");
         $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
              $query=trim($request->get('searchText'));
@@ -555,9 +556,28 @@ class ReportesventasController extends Controller
 			->OrderBy('a.nombre')
             ->get();	
 			}
+			if($request->get('opcion')==3){
+				$vende=DB::table('vendedores')->where('id_vendedor','=',$request->get('vendedorr'))->first();  
+				$ru=DB::table('rutas')->where('idruta','=',$request->get('ruta'))->first();
+				$nvendedor=$vende->nombre. " ".$ru->nombre;
+			$datos=DB::table('detalle_venta as dv')            
+             ->join ('venta as ve', 've.idventa','=','dv.idventa') 
+			->join ('clientes as cli', 'cli.id_cliente','=','ve.idcliente') 
+             ->join ('articulos as a', 'a.idarticulo','=','dv.idarticulo') 
+             ->join ('categoria as ca','ca.idcategoria','=','a.idcategoria')      
+            -> select(DB::raw('avg(dv.precio_venta) as vpromedio'),DB::raw('sum(dv.cantidad) as vendido'),'a.nombre','a.precio1 as pventa','a.idarticulo','ca.nombre as grupo')
+			->where('ve.idvendedor','=',$request->get('vendedorr'))
+			->where('cli.ruta','=',$request->get('ruta'))
+			->where('ve.devolu','=',0)
+            ->whereBetween('dv.fecha', [$query, $query2])
+            ->groupby('dv.idarticulo','a.nombre')
+			->OrderBy('a.nombre')
+            ->get();	
+			
+			   }
 			   }
 			$query2=date("Y-m-d",strtotime($query2."- 1 days"));
-			return view('reportes.ventas.ventasarticulo.index',["clientes"=>$clientes,"persona"=>$nvendedor,"vendedores"=>$vendedores,"datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2,"opc"=>$request->get('opcion')]);
+			return view('reportes.ventas.ventasarticulo.index',["rutas"=>$rutas,"clientes"=>$clientes,"persona"=>$nvendedor,"vendedores"=>$vendedores,"datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2,"opc"=>$request->get('opcion')]);
        	}
 		else { 
 	return view("reportes.mensajes.noautorizado");

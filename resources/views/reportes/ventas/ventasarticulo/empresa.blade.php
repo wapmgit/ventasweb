@@ -14,6 +14,7 @@
                 <?php echo date("d-m-Y",strtotime($searchText)); ?> al <?php echo date("d-m-Y",strtotime($searchText2)); 
 				if (($opc)==1){ echo "</br> Vendedor: ".$persona; }
 				if (($opc)==2){ echo "</br> Cliente: ".$persona; }
+				if (($opc)==3){ echo "</br> Cliente: ".$persona; }
 				
 				?>
 	</div>

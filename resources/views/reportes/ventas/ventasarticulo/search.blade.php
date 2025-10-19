@@ -36,12 +36,13 @@
                             <option value="0">Filtrar por:</option> 
                             <option value="1">Vendedor</option> 
                             <option value="2">Cliente</option> 
+                            <option value="3">Vendedor + Ruta</option> 
                         </select>
            </div>
 
 	</div>	
 	</div>
-	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" id="divopt">
 		<div id="divend" style="display:none">
 			<div class="form-group">
 				<div class="input-group">
@@ -69,6 +70,33 @@
 			</div>
 		</div>				
 	</div>
+		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" id="divrv" style="display:none">
+		<div id="divendr" >
+			<div class="form-group">
+				<div class="input-group"><b>Vendedor</b>
+					<select name="vendedorr" class="form-control selectpicker" data-live-search="true">
+						   @foreach ($vendedores as $per)
+                           <option value="{{$per -> id_vendedor}}">{{$per -> nombre}}</option> 
+                           @endforeach
+					</select>
+				</div>
+			</div>	
+		</div>
+		<div id="divclir">
+			<div class="form-group">
+				<div class="input-group"><b>Ruta</b>
+					<span class="input-group-btn">
+						<select name="ruta" id="idruta" class="form-control selectpicker" data-live-search="true">
+						   @foreach ($rutas as $ru)
+                           <option value="{{$ru -> idruta}}">{{$ru -> nombre}}</option> 
+                           @endforeach
+                        </select>
+					</span>
+				</div>
+			</div>
+		</div>				
+	</div>
+	
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 				<div class="form-group">
 				<div class="input-group">
