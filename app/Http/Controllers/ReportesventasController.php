@@ -462,7 +462,7 @@ class ReportesventasController extends Controller
 				if ($resumen=="on"){    
 				$datos=DB::table('venta as v')
 				-> join('detalle_venta as dv','v.idventa','=','dv.idventa')
-				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante',DB::raw('avg(dv.costoarticulo) as costo'),DB::raw('avg(dv.precio) as precio'),DB::raw('avg(dv.precio_venta) as precio_venta'),DB::raw('sum(dv.cantidad) as cantidad'),DB::raw('sum(dv.cantidad) * avg(dv.costoarticulo) as costoneto'),DB::raw('sum(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('sum(dv.cantidad*dv.precio)as ventad'))
+				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante',DB::raw('avg(dv.costoarticulo) as costo'),DB::raw('avg(dv.precio) as precio'),DB::raw('avg(dv.precio_venta) as precio_venta'),DB::raw('sum(dv.cantidad) as cantidad'),DB::raw('sum(dv.cantidad*dv.costoarticulo) as costoneto'),DB::raw('sum(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('sum(dv.cantidad*dv.precio) as ventad'))
 				-> whereBetween('dv.fecha_emi', [$query, $query2])
 				-> Groupby('dv.idventa')      
 				->get();
