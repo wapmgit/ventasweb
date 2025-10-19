@@ -9,5 +9,5 @@
                 <!-- /.col -->
 	<div class="col-sm-4 invoice-col">
 
-				  <h4>Cuentas por Cobrar</h4><span><?php if ($vendedor <> ""){ echo "Vendedor: ".$vendedor->nombre; } ?></span>
+				  <h4>Cuentas por Cobrar</h4><span><?php echo $filtro;  ?></span>
 	</div>

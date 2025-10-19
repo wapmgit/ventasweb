@@ -374,6 +374,7 @@ class ReportesventasController extends Controller
 		if ($rol->rcxc==1){
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();		
 		$vendedores=DB::table('vendedores')->get();  
+		$rutas=DB::table('rutas')->get();  
 			if($request->get('vendedor')==NULL){
 			$clientes=DB::table('venta as v')
 			->join('clientes as c','c.id_cliente','=','v.idcliente')
@@ -391,14 +392,24 @@ class ReportesventasController extends Controller
 			->where('n.tipo','=',1)->where('n.pendiente','>',0)
 			->groupby('n.idcliente')
 			->get(); 
-			
+			$filtro="Todos los vendedores, Todas las rutas.";
 			$vendedor="";
 			}else{
-				$clientes=DB::table('venta as v')
+				if($request->get('ruta')==0){
+				$vendedor=DB::table('vendedores')->where('id_vendedor','=',$request->get('vendedor'))->select('nombre')->first();
+				$filtro=$vendedor->nombre." Todas las Rutas";
+				$c=">";$v=0;
+				}else{ 
+				$vendedor=DB::table('vendedores')->where('id_vendedor','=',$request->get('vendedor'))->select('nombre')->first();
+				$ruta=DB::table('rutas')->where('idruta','=',$request->get('ruta'))->select('nombre')->first();
+				$filtro=$vendedor->nombre." Ruta ".$ruta->nombre;
+				$c="=";$v=$request->get('ruta');}	
+			$clientes=DB::table('venta as v')
 			->join('clientes as c','c.id_cliente','=','v.idcliente')
 			->join('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
 			->select(DB::raw('sum(v.saldo) as acumulado'),'c.nombre','c.cedula','c.telefono','c.id_cliente')
 			->where('v.idvendedor','=',$request->get('vendedor'))
+			-> where ('c.ruta',$c,$v)
 			->where('v.saldo','>',0)
 			->where('v.devolu','=',0)
 			->groupby('c.id_cliente')
@@ -409,14 +420,15 @@ class ReportesventasController extends Controller
 			->join('clientes as c','c.id_cliente','=','n.idcliente')
 			->select(DB::raw('sum(n.pendiente) as acumulado'),'c.nombre','c.cedula','c.telefono','c.id_cliente')
 			->where('c.vendedor','=',$request->get('vendedor'))
+			-> where ('c.ruta',$c,$v)
 			->where('n.tipo','=',1)->where('n.pendiente','>',0)
 			->groupby('n.idcliente')
 			->get(); 
 			//dd($clientes);
-			$vendedor=DB::table('vendedores')->where('id_vendedor','=',$request->get('vendedor'))->select('nombre')->first();
+			
 			}
 			
-			return view('reportes.ventas.cobrar.index',["vendedor"=>$vendedor,"notas"=>$q2,"pacientes"=>$clientes,"vendedores"=>$vendedores,"empresa"=>$empresa]);
+			return view('reportes.ventas.cobrar.index',["filtro"=>$filtro,"rutas"=>$rutas,"vendedor"=>$vendedor,"notas"=>$q2,"pacientes"=>$clientes,"vendedores"=>$vendedores,"empresa"=>$empresa]);
 			   } else { 
 			return view("reportes.mensajes.noautorizado");
 			}
