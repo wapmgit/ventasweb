@@ -15,7 +15,7 @@ class ClientsApiController extends Controller
 
     public function sendData()
     {
-   //try {
+   try {
 		$empresa=DB::table('empresa')->first();
 
 	   $clients = DB::table('clientes as cli')
@@ -104,14 +104,14 @@ class ClientsApiController extends Controller
 				'recibos' => $recibosjs,
 				'detalleventas' => $detalleventasjs				
             ]);
-		return $response->getBody();
+		//return $response->getBody();
 			
-	/*		
+			
      } catch (Exception $e) {
 		
 	    return Redirect::to('sininternet');
      }
-	 */
+	
 			 return Redirect::to('clientes');
 	
     }
