@@ -21,7 +21,7 @@ class PedidosApiController extends Controller
 	 $empresa=DB::table('empresa')->first();
         try {
 		$user="Administracion";
-            $response = Http::post('http://pedidos.nks-sistemas.net/api/enviar-pedidos', [
+            $response = Http::post('http://creciven.com/api/enviar-pedidos', [
                    'empresa' => $empresa->codigo
             ]);
 		$datos= $response->getBody();

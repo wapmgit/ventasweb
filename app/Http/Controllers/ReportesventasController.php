@@ -783,4 +783,140 @@ class ReportesventasController extends Controller
 			return view("reportes.mensajes.noautorizado");
 		}
 	}
+	public function reportecxcvencida(Request $request)
+ {
+		$rol=DB::table('roles')-> select('rventasarti')->where('iduser','=',$request->user()->id)->first();	
+		if ($rol->rventasarti==1){
+		$vendedores=DB::table('vendedores')->get();  
+		$clientes=DB::table('clientes')->get();  
+		$rutas=DB::table('rutas')->get();  
+        $corteHoy = date("Y-m-d");
+        $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		
+			$datos=DB::table('venta as v')
+			->join('clientes as c','c.id_cliente','=','v.idcliente')
+			-> join ('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
+			->select('v.saldo as acumulado','v.idventa as tipo_comprobante','serie_comprobante','num_comprobante','v.fecha_emi as fecha_hora','v.user','c.nombre','c.diascredito as diascre','ve.nombre as vendedor','c.cedula','c.telefono','c.id_cliente')
+			->where('v.saldo','>',0)
+			->where('v.tipo_comprobante','=','FAC')
+			->where('v.devolu','=',0)
+			->orderby('c.nombre','ASC')
+			->get();
+			$notasnd=DB::table('notasadm as not')
+			->join('clientes as c','c.id_cliente','=','not.idcliente')
+			->select('not.pendiente as tnotas','c.id_cliente','c.nombre','not.idnota','c.cedula','not.fecha')
+			->where('not.tipo','=',1)
+			->where('not.pendiente','>',0)			
+			->get();
+			$nc=DB::table('notasadm as not')
+			->join('clientes as c','c.id_cliente','=','not.idcliente')
+			->select(DB::raw('SUM(not.pendiente) as tnc'),'c.id_cliente')
+			->where('not.tipo','=',2)
+			->where('not.pendiente','>',0)					
+			->groupby('c.id_cliente')
+			->get();
+			$nvendedor="";
+			
+		if($request->get('opcion')>0){	
+			if($request->get('opcion')==1){		
+			$vende=DB::table('vendedores')->where('id_vendedor','=',$request->get('vendedor'))->first();  
+			$nvendedor=$vende->nombre;
+			$datos=DB::table('venta as v')
+			->join('clientes as c','c.id_cliente','=','v.idcliente')
+			-> join ('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
+			->select('v.saldo as acumulado','v.idventa as tipo_comprobante','serie_comprobante','num_comprobante','v.fecha_emi as fecha_hora','v.user','c.nombre','c.diascredito as diascre','ve.nombre as vendedor','c.cedula','c.telefono','c.id_cliente')
+			->where('v.idvendedor','=',$request->get('vendedor'))
+			->where('v.saldo','>',0)
+			->where('v.tipo_comprobante','=','FAC')
+			->where('v.devolu','=',0)
+			->orderby('c.nombre','ASC')
+			->get();
+			$notasnd=DB::table('notasadm as not')
+			->join('clientes as c','c.id_cliente','=','not.idcliente')
+			->select('not.pendiente as tnotas','c.id_cliente','c.nombre','not.idnota','c.cedula','not.fecha')
+			->where('c.vendedor','=',$request->get('vendedor'))
+			->where('not.tipo','=',1)
+			->where('not.pendiente','>',0)			
+			->get();	
+			$nc=DB::table('notasadm as not')
+			->join('clientes as c','c.id_cliente','=','not.idcliente')
+			->select(DB::raw('SUM(not.pendiente) as tnc'),'c.id_cliente')
+			->where('c.vendedor','=',$request->get('vendedor'))
+			->where('not.tipo','=',2)
+			->where('not.pendiente','>',0)					
+			->groupby('c.id_cliente')
+			->get();			
+			}
+		if($request->get('opcion')==2){ 
+				$cli=DB::table('clientes')->where('id_cliente','=',$request->get('cliente'))->first();
+				$nvendedor=$cli->nombre;
+			$datos=DB::table('venta as v')
+			->join('clientes as c','c.id_cliente','=','v.idcliente')
+			-> join ('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
+			->select('v.saldo as acumulado','v.idventa as tipo_comprobante','serie_comprobante','num_comprobante','v.fecha_emi as fecha_hora','v.user','c.nombre','c.diascredito as diascre','ve.nombre as vendedor','c.cedula','c.telefono','c.id_cliente')
+			->where('v.idcliente','=',$request->get('cliente'))
+			->where('v.saldo','>',0)
+			->where('v.tipo_comprobante','=','FAC')
+			->where('v.devolu','=',0)
+			->orderby('c.nombre','ASC')
+			->get();	
+			$notasnd=DB::table('notasadm as not')
+			->join('clientes as c','c.id_cliente','=','not.idcliente')
+			->select('not.pendiente as tnotas','c.id_cliente','c.nombre','not.idnota','c.cedula','not.fecha')
+			->where('not.idcliente','=',$request->get('cliente'))
+			->where('not.tipo','=',1)
+			->where('not.pendiente','>',0)			
+			->get();	
+			$nc=DB::table('notasadm as not')
+			->join('clientes as c','c.id_cliente','=','not.idcliente')
+			->select(DB::raw('SUM(not.pendiente) as tnc'),'c.id_cliente')
+			->where('not.idcliente','=',$request->get('cliente'))
+			->where('not.tipo','=',2)
+			->where('not.pendiente','>',0)					
+			->groupby('c.id_cliente')
+			->get();
+			}
+			if($request->get('opcion')==3){
+				
+				$vende=DB::table('vendedores')->where('id_vendedor','=',$request->get('vendedorr'))->first();  
+				$ru=DB::table('rutas')->where('idruta','=',$request->get('ruta'))->first();
+				$nvendedor=$vende->nombre. " Ruta: ".$ru->nombre;
+			$datos=DB::table('venta as v')
+			->join('clientes as c','c.id_cliente','=','v.idcliente')
+			-> join ('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
+			->select('v.saldo as acumulado','v.idventa as tipo_comprobante','serie_comprobante','num_comprobante','v.fecha_emi as fecha_hora','v.user','c.nombre','c.diascredito as diascre','ve.nombre as vendedor','c.cedula','c.telefono','c.id_cliente')
+			->where('v.idvendedor','=',$request->get('vendedorr'))
+			->where('c.ruta','=',$request->get('ruta'))
+			->where('v.saldo','>',0)
+			->where('v.tipo_comprobante','=','FAC')
+			->where('v.devolu','=',0)
+			->orderby('c.nombre','ASC')
+			->get();
+			$notasnd=DB::table('notasadm as not')
+			->join('clientes as c','c.id_cliente','=','not.idcliente')
+			->select('not.pendiente as tnotas','c.id_cliente','c.nombre','not.idnota','c.cedula','not.fecha')
+			->where('c.vendedor','=',$request->get('vendedorr'))
+			->where('c.ruta','=',$request->get('ruta'))
+			->where('not.tipo','=',1)
+			->where('not.pendiente','>',0)			
+			->get();	
+			$nc=DB::table('notasadm as not')
+			->join('clientes as c','c.id_cliente','=','not.idcliente')
+			->select(DB::raw('SUM(not.pendiente) as tnc'),'c.id_cliente')
+			->where('c.vendedor','=',$request->get('vendedorr'))
+			->where('c.ruta','=',$request->get('ruta'))
+			->where('not.tipo','=',2)
+			->where('not.pendiente','>',0)					
+			->groupby('c.id_cliente')
+			->get();
+			   }
+			   }
+
+			return view('reportes.ventas.venci_cobro.index',["rutas"=>$rutas,"clientes"=>$clientes,"persona"=>$nvendedor,"vendedores"=>$vendedores,"datos"=>$datos,"notasnd"=>$notasnd,"nc"=>$nc,"empresa"=>$empresa,"opc"=>$request->get('opcion')]);
+       	}
+		else { 
+	return view("reportes.mensajes.noautorizado");
+	}     
+    }
+	
 }

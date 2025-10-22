@@ -15,21 +15,19 @@ class ArticulosApiController extends Controller
 
 	public function sendData()
     {
-			
-			//dd($empresa->codigo);
-       try {
-		  
+   try {	  
 			$article = DB::table('articulos')->join('categoria as cat','cat.idcategoria','=','articulos.idcategoria')
 			->select ('articulos.idarticulo','articulos.codigo','articulos.nombre','articulos.costo','articulos.precio1','articulos.precio2','articulos.stock')
-			->where('articulos.stock','>',0)
+			->where('articulos.estado','=',"Activo")
 			->get(); 
 			$articlejs=json_encode($article);
 		$empresa=DB::table('empresa')->first();
-		//	dd($article);
-            $response = Http::post('http://pedidos.nks-sistemas.net/api/recibir-articulos', [
+
+            $response = Http::post('http://creciven.com/api/recibir-articulos', [
                 'empresa' => $empresa->codigo,
                 'articulos' => $articlejs,
             ]);
+			
 
        } catch (Exception $e) {
 		   

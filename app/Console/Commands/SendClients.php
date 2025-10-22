@@ -43,7 +43,7 @@ class SendClients extends Command
     public function handle()
     {
     	$empresa=DB::table('empresa')->first();
-	   $clients = DB::table('clientes as cli')
+	    $clients = DB::table('clientes as cli')
 		  ->join('vendedores as vend','vend.id_vendedor','=','cli.vendedor')	
 		 ->select(DB::raw('(space(12)*0) as cxc'),'cli.id_cliente','cli.nombre','cli.cedula','cli.cedula as rif','cli.direccion','cli.telefono','cli.diascredito as dias_credito','cli.vendedor','vend.comision')
 		 ->orderby('id_cliente','desc')
@@ -57,6 +57,15 @@ class SendClients extends Command
 			->where('v.saldo','>',0)
 			->groupby('v.idcliente')
 			->get();
+		$detalleventas=DB::table('venta as v')
+			->join('detalle_venta as dv','dv.idventa','=','v.idventa')
+			->join('articulos as art','art.idarticulo','=','dv.idarticulo')
+			->select('dv.idventa','art.nombre','dv.cantidad','dv.precio_venta')
+			->where('v.tipo_comprobante','=','FAC')
+			->where('v.devolu','=',0)
+			->where('v.saldo','>',0)
+			->get();
+		
 		$longitudc = count($clients);
 			$longitudn = count($ventas);	
 			for ($i=0;$i<$longitudc;$i++){
@@ -110,13 +119,15 @@ class SendClients extends Command
 		$clientesjs=json_encode($clients);		
 		$ventasjs=json_encode($ventascxc);
 		$recibosjs=json_encode($recibos);
+		$detalleventasjs=json_encode($detalleventas);
 		
-		
-            $response = Http::post('http://pedidos.nks-sistemas.net/api/recibir-clientes', [      	
+            $response = Http::post('http://creciven.com/api/recibir-clientes', [      	
 				'empresa' =>$empresa->codigo,
+				'tasa' => $empresa->tc,
 				'clientes' => $clientesjs,
 				'ventas' => $ventasjs,			
-				'recibos' => $recibosjs								
+				'recibos' => $recibosjs,
+				'detalleventas' => $detalleventasjs								
             ]);
     }
 }
