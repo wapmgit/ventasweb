@@ -53,6 +53,7 @@ Route::get('detallecompra/{id}', [ArticulosController::class, 'detallecompra'])-
 Route::get('showarticulo/{id}', [ArticulosController::class, 'show'])->name('showarticulo');
 Route::post('updatearticulo', [ArticulosController::class, 'update'])->name('updatearticulo');
 Route::post('validart', [ArticulosController::class, 'validar'])->name('validart');
+Route::get('reporteetiquetas', [ArticulosController::class, 'reporteetiquetas'])->name('reporteetiquetas');
 
 Route::get('clientes', [ClientesController::class, 'index'])->name('clientes');
 Route::get('newcliente', [ClientesController::class, 'create'])->name('newcliente');
@@ -228,6 +229,7 @@ Route::get('comprasarticulo', [ReportescomprasController::class, 'comprasarticul
 Route::get('librocompras', [ReportescomprasController::class, 'libroc'])->name('librocompras');
 Route::get('repseriales', [ReportescomprasController::class, 'seriales'])->name('repseriales');
 Route::get('editserial', [ReportescomprasController::class, 'editserial'])->name('editserial');
+
 // informes articulos
 Route::get('reportearticulos', [ReportesarticulosController::class, 'articulos'])->name('reportearticulos');
 Route::get('valorizado', [ReportesarticulosController::class, 'valorizado'])->name('valorizado');

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 use App\Models\Articulos;
+use App\Models\Categoria;
 use Carbon\Carbon;
 use DB;
 use Auth;
@@ -300,4 +301,23 @@ class ArticulosController extends Controller
 		$ret=DB::table('retenciones')-> where('idcompra','=',$ingreso->idingreso)->get();
 		return view("almacen.articulo.detallecompra",["articulo"=>$art,"ret"=>$ret,"ser"=>$ser,"ingreso"=>$ingreso,"empresa"=>$empresa,"detalles"=>$detalles,"pago"=>$pago]);
 	}
+	public function reporteetiquetas(Request $request)
+	{	 
+		$categorias=DB::table('categoria')->where('condicion','=','1')->get();
+		if ($request->get('grupo') != "")
+        {
+		$datos=DB::table('articulos as art')
+		->where('art.idcategoria','=',$request->get('grupo'))
+		->where('art.stock','>',0)
+		->where('art.estado','=',"Activo")
+		->get();	
+		}else{				 
+		$datos=DB::table('articulos as art')
+		->where('art.stock','>',0)
+		->where('art.estado','=',"Activo")
+		->get();	
+		}
+	 
+	       return view("reportes.articulos.etiquetas.index",["datos"=>$datos,"categorias"=>$categorias]);
+    }
 }
