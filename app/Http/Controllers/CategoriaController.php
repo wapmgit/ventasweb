@@ -76,6 +76,7 @@ class CategoriaController extends Controller
     }
 	public function recalcular( Request $request)
     {
+		 $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		//dd($request);
 			$nutil=0;$nprecio=0;$pt=0;
 			$modo=$request->get('modo');
@@ -87,9 +88,10 @@ class CategoriaController extends Controller
             ->where ('a.idcategoria','=',$categoria)
 			->get();
 			 $cont = 0;
-			while($cont < count($articulos)){
-                      //actualizo stock   
-			$articulo=Articulos::findOrFail($articulos[$cont]->idarticulo); 
+			
+			 if($empresa->calc_util==1){
+			while($cont < count($articulos)){ 
+			$articulo=Articulos::findOrFail($articulos[$cont]->idarticulo); 			
 		    $nprecio=$articulo->precio1+(($tasa/100)*$articulos[$cont]->precio1);
 			$pt=($articulos[$cont]->costo + (($articulos[$cont]->iva/100)*$articulos[$cont]->costo));  
 			  $nutil=((($nprecio/$pt)*100)-100);
@@ -107,16 +109,41 @@ class CategoriaController extends Controller
 			  $articulo->update();
             $cont=$cont+1;
             }     	
+			 }else{
+			while($cont < count($articulos)){ 
+			$articulo=Articulos::findOrFail($articulos[$cont]->idarticulo); 			
+				$nprecio=($articulo->precio1/((100-$tasa)/100)); 
+				$nutil=($nprecio/(($articulos[$cont]->iva/100)+1)/$articulos[$cont]->costo);
+				$nutil= ($nutil-1)*100;
+				 $nprecio2=($articulo->precio2/((100-$tasa)/100)); 
+				$nutil2=($nprecio2/(($articulos[$cont]->iva/100)+1)/$articulos[$cont]->costo);
+				$nutil2= ($nutil2-1)*100;
+			  if($request->get('precio')==0){
+			  $articulo->precio1=$nprecio;
+			  $articulo->utilidad=$nutil;
+			  $articulo->precio2=$nprecio2;
+			  $articulo->util2=$nutil2; }
+			  if($request->get('precio')==1){
+			  $articulo->precio1=$nprecio;
+			  $articulo->utilidad=$nutil; }
+			   if($request->get('precio')==2){
+			  $articulo->precio2=$nprecio2;
+			  $articulo->util2=$nutil2; }
+			  $articulo->update();
+            $cont=$cont+1;
+            }   
+			 }
 			}
 			if ($modo == 2){
 			$articulos=DB::table('articulos as a')
             -> select ('a.idarticulo','a.utilidad','a.util2','iva','a.costo','a.precio1','a.precio2')
             ->where ('a.idcategoria','=',$categoria)
-			->get();
+			->get();  
+			
 			 $cont = 0;
-			while($cont < count($articulos)){
-                      //actualizo stock   
-         $articulo=Articulos::findOrFail($articulos[$cont]->idarticulo); 
+			  if($empresa->calc_util==1){
+			while($cont < count($articulos)){ 
+			$articulo=Articulos::findOrFail($articulos[$cont]->idarticulo);
 			$articulo->utilidad=$tasa;
 			$impuesto=$articulo->iva;
 			$costo=$articulo->costo;
@@ -136,7 +163,31 @@ class CategoriaController extends Controller
 				} 
 			  $articulo->update();
             $cont=$cont+1;
-            }     	
+            }     
+			  }else{
+			while($cont < count($articulos)){ 
+			$articulo=Articulos::findOrFail($articulos[$cont]->idarticulo);
+			$articulo->utilidad=$tasa;
+			$impuesto=$articulo->iva;
+			$costo=$articulo->costo;
+			$np=($costo / ((100-$tasa)/100))+(($impuesto/100)*$costo);
+			 if($request->get('precio')==0){
+				$articulo->precio1=$np;
+				$articulo->utilidad=$tasa;
+				$articulo->precio2=$np;
+				$articulo->util2=$tasa; }
+			if($request->get('precio')==1){
+				$articulo->precio1=$np;
+				$articulo->utilidad=$tasa;  
+			  }
+			if($request->get('precio')==2){
+				$articulo->precio2=$np;
+				$articulo->util2=$tasa;	
+				} 
+			  $articulo->update();
+            $cont=$cont+1;
+            }  	  
+			  }			
 			}
      // 	dd($articulo);
        return Redirect::to('icategoria');
