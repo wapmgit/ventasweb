@@ -67,7 +67,7 @@ class ComprasController extends Controller
 	}   
    }
     public function store(Request $request){
-	//	dd($request);
+	$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 	$user=Auth::user()->name;
 	try{
    DB::beginTransaction();
@@ -185,17 +185,27 @@ class ComprasController extends Controller
         $impuesto= $articulo->iva;
         $utilidad= $articulo->utilidad;
         $util2= $articulo->util2;
-
-           $pt=($costo + (($utilidad/100)*$costo))+($costo + (($utilidad/100)*$costo))*($impuesto/100);
-            $pt2=($costo + (($util2/100)*$costo))+($costo + (($util2/100)*$costo))*($impuesto/100);
-//dd($costot);
+        $util3= $articulo->util3;
+	if($empresa->calc_util==1){
+		$pt=($costo + (($utilidad/100)*$costo))+($costo + (($utilidad/100)*$costo))*($impuesto/100);
+		$pt2=($costo + (($util2/100)*$costo))+($costo + (($util2/100)*$costo))*($impuesto/100);
+		$pt3=($costo + (($util3/100)*$costo))+($costo + (($util3/100)*$costo))*($impuesto/100);
         $articulo->precio1=$pt;
         $articulo->precio2=$pt2;
+        $articulo->precio3=$pt3;
         $articulo->precio_t=($costot + (($utilidad/100)*$costot))+($costot + (($utilidad/100)*$costot))*($impuesto/100);
-
-                $articulo->update();
-                    $cont=$cont+1;
-                    }
+	}else{
+		$pt=($costo*(($impuesto/100)+1))/((100-$utilidad)/100);
+		$pt2=($costo*(($impuesto/100)+1))/((100-$util2)/100);
+		$pt3=($costo*(($impuesto/100)+1))/((100-$util3)/100);
+        $articulo->precio1=$pt;
+        $articulo->precio2=$pt2;
+        $articulo->precio3=$pt3;
+        $articulo->precio_t=($costot*(($impuesto/100)+1))/((100-$util2)/100);
+	}
+		$articulo->update();
+		$cont=$cont+1;
+	}
 			if(!empty($request->get('chasis'))){
 			$art = $request -> get('artserial');		
 			$cha = $request -> get('chasis');		

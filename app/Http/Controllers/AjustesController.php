@@ -89,12 +89,25 @@ class AjustesController extends Controller
 				$impuesto= $articulo->iva;
 				$utilidad= $articulo->utilidad;
 				$util2= $articulo->util2;
-				$pt=($costop + (($utilidad/100)*$costop))+($costop + (($utilidad/100)*$costop))*($impuesto/100);
-				$pt2=($costop + (($util2/100)*$costop))+($costop + (($util2/100)*$costop))*($impuesto/100);
+				$util3= $articulo->util3;
 				if ($empresa->actcosto==1){
+						if($empresa->calc_util==1){
+							$pt=($costop + (($utilidad/100)*$costop))+($costop + (($utilidad/100)*$costop))*($impuesto/100);
+							$pt2=($costop + (($util2/100)*$costop))+($costop + (($util2/100)*$costop))*($impuesto/100);
+							$pt3=($costop + (($util3/100)*$costop))+($costop + (($util3/100)*$costop))*($impuesto/100);
+							$articulo->precio1=$pt;
+							$articulo->precio2=$pt2;
+							$articulo->precio3=$pt3;
+							
+						}else{
+							$pt=($costop*(($impuesto/100)+1))/((100-$utilidad)/100);
+							$pt2=($costop*(($impuesto/100)+1))/((100-$util2)/100);
+							$pt3=($costop*(($impuesto/100)+1))/((100-$util3)/100);
+							$articulo->precio1=$pt;
+							$articulo->precio2=$pt2;
+							$articulo->precio3=$pt3;
+						}
 				$articulo->costo=$costo[$cont];
-				$articulo->precio1=$pt;
-				$articulo->precio2=$pt2;
 				}
 				if($valida=="Cargo"){ $tipom=1;
 					$articulo->stock=($articulo->stock+$cantidad[$cont]);
