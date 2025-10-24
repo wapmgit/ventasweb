@@ -46,13 +46,13 @@ $acumpa=0; $countpa=0; $acumga=0; $countga=0; $tcobro=0; $tpagos=0; $countndp=0;
 				<table width="100%">
 					<thead >
 						<th colspan="4" style="background-color: #E6E6E6">Ventas</th>	
-						<th colspan="<?php echo count($monedas);?>" style="background-color: #E6E6E6">Medios de Pago</th>
+						<th colspan="<?php echo count($monedas);?>" style="background-color: #E6E6E6">Medios de Cobro</th>
 						
 					</thead>
 					<thead >
 						<th>Fecha</th>
 						<th>Facturado</th>
-						<th>Pagado</th>
+						<th>Cobrado</th>
 						<th>Pendiente</th>
 						@foreach ($monedas as $m)
 						<th><small>{{$m->nombre}}</small></th>
