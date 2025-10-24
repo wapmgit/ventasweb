@@ -376,6 +376,12 @@
                   <p>Resumen de Ventas</p>
                 </a>
               </li>
+			   <li class="nav-item">
+                <a href="{{route('resumendiario')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Resumen de Diario</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a href="{{route('cortecaja')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>

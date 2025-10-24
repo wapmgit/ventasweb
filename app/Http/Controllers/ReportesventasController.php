@@ -918,5 +918,42 @@ class ReportesventasController extends Controller
 	return view("reportes.mensajes.noautorizado");
 	}     
     }
+	public function resumendiario(Request $request)
+	{
+		//dd($request);
+			$corteHoy = date("Y-m-d");
+            $query=trim($request->get('searchText'));
+			if (($query)==""){$query=$corteHoy; }
+             $query2=trim($request->get('searchText2'));
+           $query2 = date_create($query2);  
 	
+            date_add($query2, date_interval_create_from_date_string('1 day'));
+           $query2=date_format($query2, 'Y-m-d');
+		$rol=DB::table('roles')-> select('idrol','rventas')->where('iduser','=',$request->user()->id)->first();	
+		$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
+		if ($rol->rventas==1){
+			$datos=DB::table('venta as v')
+			->select('fecha_emi as fecha',DB::raw('sum(v.total_venta) as monto'),DB::raw('sum(v.saldo) as deuda'))
+			->where('v.devolu','=',0)
+			-> whereBetween('v.fecha_emi', [$query, $query2])
+			-> groupby('v.fecha_emi')
+            ->get();
+			// pagos
+			//dd($datos);
+			$pagos=DB::table('recibos as re')
+			->join('venta as v','v.idventa','=','re.idventa')
+			->join('monedas as mo','mo.idmoneda','=','re.idpago')
+			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago','v.fecha_emi')
+			->where('re.monto','>',0)
+			->where('v.devolu','=',0)
+            -> whereBetween('v.fecha_emi', [$query, $query2])
+			-> groupby('v.fecha_emi','re.idpago','re.idbanco')
+            ->get();	
+			
+			$monedas=DB::table('monedas')->get();//	dd($monedas);	;	
+        return view('reportes.ventas.resumendiario.index',["datos"=>$datos,"pagos"=>$pagos,"monedas"=>$monedas,"empresa"=>$empresa,"rol"=>$rol,"searchText"=>$query,"searchText2"=>$query2]);
+	} else { 
+			return view("reportes.mensajes.noautorizado");
+		}
+	}
 }
