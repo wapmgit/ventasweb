@@ -56,7 +56,7 @@ $cntline=$cntser=0;
 						<?php $cntline++; 
 						if ($det->cantidad>0){?>
                         <tr >
-						  <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
+						  <td><?php echo $det->codigo; ?></td>
                           <td>{{$det->articulo}} <?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?></td>
                           <td>{{$det->cantidad}}</td>
                           <td>{{$det->unidad}}</td>
