@@ -126,18 +126,30 @@ class ReportesarticulosController extends Controller
     }
 	public function catalogo(Request $request)
     {
+		//dd($request);
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+             $precio=trim($request->get('precio'));
+			   if (($precio)==""){	$p="precio1"; }else{ $p="precio".$request->get('precio')." as precio1";}
              $query=trim($request->get('grupo'));
              if (($query)==""){			
             $datos=DB::table('articulos')                
-            -> select('codigo','nombre','precio1','imagen','unidad')
+            -> select('codigo','nombre',$p,'imagen','unidad')
             ->where('imagen','<>',"ninguna.jpg")
 			-> where('stock','>',0)
 			->OrderBy('nombre')
             ->get(); 
-			 }else {							
+			 }
+			  if (($query)==0){							
             $datos=DB::table('articulos')                
-            -> select('codigo','nombre','precio1','imagen','unidad')
+            -> select('codigo','nombre',$p,'imagen','unidad')
+			-> where('stock','>',0)
+            ->where('imagen','<>',"ninguna.jpg")
+			->OrderBy('nombre')
+            ->get(); 	 
+			 }
+			if (($query)>0){							
+            $datos=DB::table('articulos')                
+            -> select('codigo','nombre',$p,'imagen','unidad')
 			-> where('idcategoria','=',$query)
 			-> where('stock','>',0)
             ->where('imagen','<>',"ninguna.jpg")
@@ -145,7 +157,7 @@ class ReportesarticulosController extends Controller
             ->get(); 	 
 			 }
 			 $grupo=DB::table('categoria')->get();
-        return view('reportes.articulos.catalogo.index',["datos"=>$datos,"empresa"=>$empresa,"grupo"=>$grupo,"searchText"=>$query]);
+        return view('reportes.articulos.catalogo.index',["precio"=>$precio,"datos"=>$datos,"empresa"=>$empresa,"grupo"=>$grupo,"searchText"=>$query]);
             
     }
 	public function resumen(Request $request)

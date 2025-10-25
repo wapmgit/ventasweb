@@ -17,14 +17,22 @@
 		
 			<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
 				<select name="grupo" class="form-control selectpicker" data-live-search="true">
-                            <option value="0">Seleccione..</option> 
+                            <option value="0">Todos...</option> 
 						   @foreach ($grupo as $per)
                            <option value="{{$per -> idcategoria}}">{{$per -> nombre}}</option> 
                            @endforeach
                         </select>
 			</div>
+			 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
+           <div class="form-group">
+				<label for="tipo_precio">Tipo de Precio </label><br>
+				<label for="precio1"> P 1 </label> <input name="precio" type="radio" <?php  if( $precio==1){ echo "checked='checked'"; } ?> value="1">
+				<label for="precio2"> P 2 </label> <input name="precio" type="radio" <?php  if( $precio==2){ echo "checked='checked'"; } ?>  value="2">
+				<label for="precio2"> P 3 </label> <input name="precio" type="radio" <?php  if( $precio==3){ echo "checked='checked'"; } ?>  value="3">
+           </div>
+		</div>
 
-			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">	
 				<div class="form-group">
 				<div class="input-group">
 					<span class="input-group-btn">
