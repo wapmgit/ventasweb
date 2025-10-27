@@ -127,6 +127,7 @@ Route::post('anulforma', [ventasController::class, 'anulforma'])->name('anulform
 Route::post('anularecibo', [ventasController::class, 'anular'])->name('anularecibo');
 Route::post('validarcventa', [ventasController::class, 'validar'])->name('validarcventa');
 Route::post('ventacxc', [ventasController::class, 'vcxc'])->name('ventacxc');
+
 //gastos
 Route::get('gastos', [GastosController::class, 'index'])->name('gastos');
 Route::get('newgasto', [GastosController::class, 'create'])->name('newgasto');
@@ -216,6 +217,7 @@ Route::get('correlativof', [ReportesventasController::class, 'correlativo'])->na
 Route::get('ventasdivisas', [ReportesventasController::class, 'ventasdivisas'])->name('ventasdivisas');
 Route::get('reportecxcvencida', [ReportesventasController::class, 'reportecxcvencida'])->name('reportecxcvencida');
 Route::get('resumendiario', [ReportesventasController::class, 'resumendiario'])->name('resumendiario');
+Route::get('ventasproveedor', [ReportesventasController::class, 'ventasproveedor'])->name('ventasproveedor');
 //informes compras
 Route::get('resumencompras', [ReportescomprasController::class, 'compras'])->name('resumencompras');
 Route::get('resumengastos', [ReportescomprasController::class, 'gastos'])->name('resumengastos');

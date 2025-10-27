@@ -956,4 +956,66 @@ class ReportesventasController extends Controller
 			return view("reportes.mensajes.noautorizado");
 		}
 	}
+		public function ventasproveedor(Request $request)
+    {
+		$rol=DB::table('roles')-> select('rventasarti')->where('iduser','=',$request->user()->id)->first();	
+		if ($rol->rventasarti==1){
+		$proveedores=DB::table('proveedores')->get();  
+
+        $corteHoy = date("Y-m-d");
+        $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+             $query=trim($request->get('searchText'));
+             $query2=trim($request->get('searchText2'));
+             if (($query)==""){$query=$corteHoy; }
+			$query2 = date_create($query2);
+            date_add($query2, date_interval_create_from_date_string('1 day'));
+            $query2=date_format($query2, 'Y-m-d');
+		$datos = DB::table('compras as co')
+		  ->join('detalle_compras as dc','dc.idcompra','=','co.idcompra')	
+		  ->join('articulos as art','art.idarticulo','=','dc.idarticulo')	
+		// ->select(DB::raw('(space(12)*0) as cxc'),'cli.id_cliente','cli.nombre','cli.cedula','cli.cedula as rif','cli.direccion','cli.telefono','cli.diascredito as dias_credito','cli.vendedor','vend.comision')
+		    -> select(DB::raw('sum(dc.cantidad) as comprado'),'art.nombre','art.idarticulo')
+		 ->whereBetween('co.fecha_hora', [$query, $query2])	 
+		  ->groupby('art.idarticulo')
+		  ->get(); 
+ 
+			$nvendedor="";
+		 $ventas = DB::table('venta as co')
+		  ->join('detalle_venta as dc','dc.idventa','=','co.idventa')	
+		  ->join('articulos as art','art.idarticulo','=','dc.idarticulo')	
+		// ->select(DB::raw('(space(12)*0) as cxc'),'cli.id_cliente','cli.nombre','cli.cedula','cli.cedula as rif','cli.direccion','cli.telefono','cli.diascredito as dias_credito','cli.vendedor','vend.comision')
+			-> select(DB::raw('sum(dc.cantidad) as vendido'),'art.idarticulo')
+		 ->whereBetween('co.fecha_emi', [$query, $query2])	 
+		  ->groupby('art.idarticulo')
+		  ->get();
+	if($request->get('proveedor')){		
+	
+		 $datos = DB::table('compras as co')
+		  ->join('detalle_compras as dc','dc.idcompra','=','co.idcompra')	
+		  ->join('articulos as art','art.idarticulo','=','dc.idarticulo')	
+		// ->select(DB::raw('(space(12)*0) as cxc'),'cli.id_cliente','cli.nombre','cli.cedula','cli.cedula as rif','cli.direccion','cli.telefono','cli.diascredito as dias_credito','cli.vendedor','vend.comision')
+		    -> select(DB::raw('sum(dc.cantidad) as comprado'),'art.nombre','art.idarticulo')
+		->where('co.idproveedor','=',$request->get('proveedor'))
+		 ->whereBetween('co.fecha_hora', [$query, $query2])	 
+		  ->groupby('art.idarticulo')
+		  ->get(); 
+
+		$vende=DB::table('proveedores')->where('idproveedor','=',$request->get('proveedor'))->first();  
+			$nvendedor=$vende->nombre;
+		 $ventas = DB::table('venta as co')
+		  ->join('detalle_venta as dc','dc.idventa','=','co.idventa')	
+		  ->join('articulos as art','art.idarticulo','=','dc.idarticulo')	
+		// ->select(DB::raw('(space(12)*0) as cxc'),'cli.id_cliente','cli.nombre','cli.cedula','cli.cedula as rif','cli.direccion','cli.telefono','cli.diascredito as dias_credito','cli.vendedor','vend.comision')
+			-> select(DB::raw('sum(dc.cantidad) as vendido'),'art.idarticulo')
+		 ->whereBetween('co.fecha_emi', [$query, $query2])	 
+		  ->groupby('art.idarticulo')
+		  ->get(); 
+	}
+			$query2=date("Y-m-d",strtotime($query2."- 1 days"));
+			return view('reportes.ventas.ventasproveedor.index',["ventas"=>$ventas,"proveedores"=>$proveedores,"persona"=>$nvendedor,"datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);
+       	}
+		else { 
+	return view("reportes.mensajes.noautorizado");
+	}     
+    }
 }

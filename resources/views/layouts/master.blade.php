@@ -430,6 +430,12 @@
                   <p>Ventas de un Articulo</p>
                 </a>
               </li>
+			  			  <li class="nav-item">
+                <a href="{{route('ventasproveedor')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ventas Por Proveedor</p>
+                </a>
+              </li>
             </ul>
           </li>
           <li class="nav-item">
