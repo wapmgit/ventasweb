@@ -17,7 +17,7 @@ class ArticulosApiController extends Controller
     {
    try {	  
 			$article = DB::table('articulos')->join('categoria as cat','cat.idcategoria','=','articulos.idcategoria')
-			->select ('articulos.idarticulo','articulos.codigo','articulos.nombre','articulos.costo','articulos.precio2 as precio1','articulos.precio2','articulos.stock')
+			->select ('articulos.idarticulo','articulos.codigo','articulos.nombre','articulos.costo','articulos.precio2 as precio1','articulos.precio3 as precio2','articulos.stock')
 			->where('articulos.estado','=',"Activo")
 			->get(); 
 			$articlejs=json_encode($article);

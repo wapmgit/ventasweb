@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
 use App\Models\Articulo;
+use DB;
 
 class SendArticle extends Command
 {
@@ -12,7 +14,7 @@ class SendArticle extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'enviarArticulos';
 
     /**
      * The console command description.
@@ -39,18 +41,15 @@ class SendArticle extends Command
     public function handle()
     {
 		$empresa=DB::table('empresa')->first();
-      $article = DB::table('articulo')->join('categoria as cat','cat.idcategoria','=','articulo.idcategoria')
-			->select ('articulo.idarticulo','articulo.codigo','articulo.nombre','articulo.costo','articulo.precio1','articulo.precio2','articulo.stock')
-			->where('cat.servicio','=',0)
-			->where('articulo.estado','=',"Activo")
+		$article = DB::table('articulos')->join('categoria as cat','cat.idcategoria','=','articulos.idcategoria')
+			->select ('articulos.idarticulo','articulos.codigo','articulos.nombre','articulos.costo','articulos.precio2 as precio1','articulos.precio3 as precio2','articulos.stock')
+			->where('articulos.estado','=',"Activo")
 			->get(); 
+			$articlejs=json_encode($article);
 
-		$articlejs=json_encode($article);
-		  $response = Http::post('http://creciven.com/api/recibir-articulos',[
-			'form_params' => [
-				'empresa' =>$empresa->codigo,
-				'articulos' => $articlejs 
-				]
-			]);
+            $response = Http::post('http://creciven.com/api/recibir-articulos', [
+                'empresa' => $empresa->codigo,
+                'articulos' => $articlejs,
+            ]);
     }
 }
