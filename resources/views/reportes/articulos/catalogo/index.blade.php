@@ -2,7 +2,7 @@
 <?php $mostrar=0; ?>
 @section ('contenido')
 <?php $mostrar=1; ?>
-<div class="row">
+<div class="row" id="search">
 		@include('reportes.articulos.catalogo.search')
 </div>           
   <style> 
@@ -113,7 +113,9 @@ $(document).ready(function(){
   window.print(); 
   window.location="{{route('catalogo')}}";
     });
-
+    $('#remove').click(function(){
+  document.getElementById('search').style.display="none";
+    });
 });
 
 </script>

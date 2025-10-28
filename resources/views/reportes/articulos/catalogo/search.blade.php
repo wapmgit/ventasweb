@@ -1,12 +1,8 @@
-
 <div class="row">
         <div class="card-header">
           <h3 class="card-title">Seleccione Grupo</h3>
           <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-              <i class="fas fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+            <button type="button" class="btn btn-tool" id="remove"  data-card-widget="remove" title="Remove">
               <i class="fas fa-times"></i>
             </button>
           </div>
@@ -45,3 +41,4 @@
 	</div>
 		</form>
 	</div>
+
