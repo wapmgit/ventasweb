@@ -60,8 +60,7 @@ class PedidosApiController extends Controller
 				$venta->montocomision=(($arraymonto[$i])*($arraycomi[$i]/100));
 				$venta->user=$user;
 				$venta->pweb=1;
-				$venta-> save();
-				
+				$venta-> save();				
 				$arr=json_decode( $arrayarticulos[$i],TRUE);  
 				$longart=count($arr);
 							for ($j=0;$j<$longart;$j++){
