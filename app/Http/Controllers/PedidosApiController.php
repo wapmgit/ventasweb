@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Pedidos;
-use App\Models\Detallespedidos;
+use App\Models\DetallesPedidos;
 use Carbon\Carbon;
 use DB;
 use Exception;
