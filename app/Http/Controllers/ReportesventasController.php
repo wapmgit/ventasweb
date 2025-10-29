@@ -258,6 +258,72 @@ class ReportesventasController extends Controller
 			//dd($ingresosnd);
 			$query2=date("Y-m-d",strtotime($query2."- 1 days"));			  
 				  }
+	  if($request->get('usuario') == "0"){
+			$filtro="Todas las Cajas";
+            $datos=DB::table('venta as v')										
+			-> whereBetween('v.fecha_hora', [$query, $query2])
+			-> groupby('v.idventa')
+            ->get();
+				//dd($corteHoy);     
+				//ventas impuestos
+			$impuestos=DB::table('detalle_venta as dv')
+			-> join('venta as ve','ve.idventa','=','dv.idventa')
+			-> join('articulos as art','art.idarticulo','=','dv.idarticulo')
+			-> select(DB::raw(('sum(((dv.precio_venta*dv.cantidad)/((art.iva/100)+1))) as gravado')),'art.iva',DB::raw('sum(dv.precio_venta*dv.cantidad) as montoventa'))
+			-> whereBetween('dv.fecha', [$query, $query2])
+			->where('ve.devolu','=',0)
+			-> groupby('art.iva')
+			->get();
+		//dd($impuestos);
+        //datos devolucion     
+             $devolucion=DB::table('notasadm as d')
+            -> select(DB::raw('sum(monto) as totaldev'))
+			->where('pordevolucion','=',1)
+            ->whereBetween('fecha', [$query, $query2])
+            ->get();
+			//dd($devolucion);
+			//cobros directos
+			$pagos=DB::table('recibos as re')
+			-> join('venta as v','v.idventa','=','re.idventa')
+			-> select('re.idpago','re.idbanco',DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'))
+            -> whereBetween('re.fecha', [$query, $query2])
+			-> where ('re.tiporecibo','=',"P")
+			->where('v.devolu','=',0)
+			-> groupby('re.idpago','idbanco')
+            ->get();
+			//  
+			$cobranza=DB::table('recibos as re')
+			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco')
+            -> whereBetween('re.fecha', [$query, $query2])
+			-> where ('re.tiporecibo','=',"A")
+			-> groupby('re.idpago','re.idbanco')
+            ->get();
+			$papartado=DB::table('recibos as re')
+			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco')
+            -> whereBetween('re.fecha', [$query, $query2])
+			-> where ('re.tiporecibo','=',"AP")
+			-> groupby('re.idpago','re.idbanco')
+            ->get();
+			$ingresos=DB::table('recibos as re')
+			 -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco')
+            -> whereBetween('re.fecha', [$query, $query2])
+			-> groupby('re.idpago','re.idbanco')
+            ->get();	
+				//dd($cobranza); 
+			$comisiones=DB::table('reciboscomision as re')
+			-> select(DB::raw('sum(re.monto) as monto'))
+            -> whereBetween('re.fecha', [$query, $query2])
+            ->first();
+			//dd($comisiones);
+			
+			$ingresosnd=DB::table('mov_notas as n')
+			->join('venta','venta.idventa','=','n.iddoc')
+            -> select(DB::raw('sum(n.monto) as recibido'))
+            -> whereBetween('n.fecha', [$query, $query2])
+			-> groupby('n.tipodoc')
+            ->first();
+			$query2=date("Y-m-d",strtotime($query2."- 1 days"));
+				  }			  
 		} }else { 
 	return view("reportes.mensajes.noautorizado");
 	}
