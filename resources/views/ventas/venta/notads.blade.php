@@ -35,7 +35,7 @@ function truncar($numero, $digitos)
 <img src="{{ asset('dist/img/'.$empresa->logo)}}" width="50%" height="80%" title="NKS">
 	</div>
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-	<table width="100%" BORDER="0">
+	<table width="100%" border="1">
 	<tr><td><small><b>DOCUMENTO: </small></b><?php  $idv=$venta->idventa; echo "NOT".add_ceros($idv,$ceros); ?></td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo date("d-m-Y",strtotime($venta->fecha_emi)); ?></td><td><small><b>CONDICION: </small></b>Contado</td></tr>
 	<tr><td colspan="4"><small><b>NOMBRE Y APELLIDO O RAZON SOCIAL: </b> </small>{{$venta->nombre}} <b>RIF: </b> {{$venta->cedula}}</td></tr>
 	<tr><td colspan="4"  width="50%"><small><b>DOMICILIO FISCAL: </b> {{$venta->direccion}} </small><b>TELF: </b> {{$venta->telefono}}</td></tr>
@@ -48,7 +48,7 @@ function truncar($numero, $digitos)
                                               
         <div class="col-md-12">
 	
-            <table id="detalles" width="100%">
+            <table id="detalles" width="100%" border="1">
                       <thead>                    
 							<th>Codigo</th>
                           <th>Descripcion</th>
@@ -90,11 +90,13 @@ function truncar($numero, $digitos)
                         @endforeach
 						<?php for($i=($cntline+$cntser);$i<16;$i++){ echo "<tr><td>&nbsp;</td></tr>"; }?>
                       </tbody>
-					       <tfoot>                      
-                          <th colspan="7">TOTAL:</th>
-                          <th ><b><font size="4"><?php echo "$ ".number_format(($acumsub), 2,',','.'); ?> </b></font></th>
-                          </tfoot>
             </table>
+			  <table id="detalles" width="100%" border="1">
+			               <tr>      
+					<td ><b>TOTAL:</b></td>
+					<td colspan="7" align="right"><b><font size="4"><?php echo "$ ".number_format(($acumsub), 2,',','.')." "; ?>&nbsp;</b></font></td>
+		</tr>
+			</table>
         </div>                   
 		@if(Auth::user()->nivel=="A")
 			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
