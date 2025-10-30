@@ -113,8 +113,8 @@ class ReportesventasController extends Controller
 			if (($query)==""){$query=$corteHoy; }
              $query2=trim($request->get('searchText2'));
            $query2 = date_create($query2);  	
-            date_add($query2, date_interval_create_from_date_string('1 day'));
-           $query2=date_format($query2, 'Y-m-d');
+          date_add($query2, date_interval_create_from_date_string('1 day'));
+          $query2=date_format($query2, 'Y-m-d');
 		  $user=$request->get('usuario');
 		 // dd($user);
 		 //datos v
@@ -182,7 +182,7 @@ class ReportesventasController extends Controller
             -> whereBetween('n.fecha', [$query, $query2])
 			-> groupby('n.tipodoc')
             ->first();
-			$query2=date("Y-m-d",strtotime($query2."- 1 days"));
+			//$query2=date("Y-m-d",strtotime($query2."- 1 days"));
 				  } else {
 			$filtro=$request->get('usuario');
 		    $datos=DB::table('venta as v')
@@ -255,8 +255,7 @@ class ReportesventasController extends Controller
             -> whereBetween('n.fecha', [$query, $query2])
 			-> groupby('n.tipodoc')
             ->first();
-			//dd($ingresosnd);
-			$query2=date("Y-m-d",strtotime($query2."- 1 days"));			  
+			//dd($ingresosnd);	  
 				  }
 	  if($request->get('usuario') == "0"){
 			$filtro="Todas las Cajas";
@@ -264,7 +263,7 @@ class ReportesventasController extends Controller
 			-> whereBetween('v.fecha_hora', [$query, $query2])
 			-> groupby('v.idventa')
             ->get();
-				//dd($corteHoy);     
+			//	dd($datos);     
 				//ventas impuestos
 			$impuestos=DB::table('detalle_venta as dv')
 			-> join('venta as ve','ve.idventa','=','dv.idventa')
@@ -322,8 +321,9 @@ class ReportesventasController extends Controller
             -> whereBetween('n.fecha', [$query, $query2])
 			-> groupby('n.tipodoc')
             ->first();
-			$query2=date("Y-m-d",strtotime($query2."- 1 days"));
-				  }			  
+			
+				  }		
+				  $query2=date("Y-m-d",strtotime($query2."- 1 days"));	  
 		} }else { 
 	return view("reportes.mensajes.noautorizado");
 	}
