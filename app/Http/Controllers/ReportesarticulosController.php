@@ -129,14 +129,17 @@ class ReportesarticulosController extends Controller
 		//dd($request);
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
              $precio=trim($request->get('precio'));
+             $orden=trim($request->get('orden'));
 			   if (($precio)==""){	$p="precio1"; }else{ $p="precio".$request->get('precio')." as precio1";}
-             $query=trim($request->get('grupo'));
+               if (($orden)==""){ $ord="nombre";}else{$ord=$request->get('orden'); }
+			   //dd($ord);
+			$query=trim($request->get('grupo'));
              if (($query)==""){			
             $datos=DB::table('articulos')                
             -> select('codigo','nombre',$p,'imagen','unidad')
             ->where('imagen','<>',"ninguna.jpg")
 			-> where('stock','>',0)
-			->OrderBy('nombre')
+			->OrderBy('nombre','asc')
             ->get(); 
 			 }
 			  if (($query)==0){							
@@ -144,7 +147,7 @@ class ReportesarticulosController extends Controller
             -> select('codigo','nombre',$p,'imagen','unidad')
 			-> where('stock','>',0)
             ->where('imagen','<>',"ninguna.jpg")
-			->OrderBy('nombre')
+			->OrderBy($ord,'asc')
             ->get(); 	 
 			 }
 			if (($query)>0){							
@@ -153,11 +156,11 @@ class ReportesarticulosController extends Controller
 			-> where('idcategoria','=',$query)
 			-> where('stock','>',0)
             ->where('imagen','<>',"ninguna.jpg")
-			->OrderBy('nombre')
+			->OrderBy($ord,'asc')
             ->get(); 	 
 			 }
 			 $grupo=DB::table('categoria')->get();
-        return view('reportes.articulos.catalogo.index',["precio"=>$precio,"datos"=>$datos,"empresa"=>$empresa,"grupo"=>$grupo,"searchText"=>$query]);
+        return view('reportes.articulos.catalogo.index',["orden"=>$orden,"precio"=>$precio,"datos"=>$datos,"empresa"=>$empresa,"grupo"=>$grupo,"searchText"=>$query]);
             
     }
 	public function resumen(Request $request)
