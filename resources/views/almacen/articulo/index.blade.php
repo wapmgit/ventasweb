@@ -34,9 +34,9 @@
                @foreach ($articulos as $cat)
 				<tr>
 					
-					<td><small>{{ $cat->codigo}}</small></td>
+					<td><small><small>{{ $cat->codigo}}</small></small></td>
 					<td><a href="{{route('showarticulo',['id'=>$cat->idarticulo])}}"><i class="fa fa-fw fa-line-chart"></i> 
-					</a><small><?php echo substr( $cat->nombre, 0, 40 ); ?></small></td>					
+					</a><small><?php //echo substr( $cat->nombre, 0, 40 ); ?>{{$cat->nombre}}</small></td>					
 					<td><small><small>{{ $cat->categoria}}</small></small></td>
 					<td><small>{{ $cat->stock}}</small></td>
 						<td  > <?php if ($cat->imagen==""){?> <img src="{{ asset('/img/articulos/ninguna.jpg')}}" alt="{{$cat->nombre}}" height="20px" width="20px" class="img-thumbnail"><?php }else{ ?><img src="{{ asset('/img/articulos/'.$cat->imagen)}}" alt="{{$cat->nombre}}" height="15px" width="30px" class="img-thumbnail"><?php } ?> </td>
@@ -44,10 +44,27 @@
 					<td><small><?php echo number_format(($cat->precio1*$empresa->tc), 2,',','.'); ?></small></td>
 					<td>
 						
-					@if($rol->editarticulo==1)	<a href="{{route('editarticulo',['id'=>$cat->idarticulo])}}"><button class="btn btn-warning btn-xs">Editar</button></a>@endif
-						<a href="" data-target="#modal-delete-{{$cat->idarticulo}}" data-toggle="modal"><button class="btn btn-danger btn-xs">Alta</button></a>
-						<a href="{{route('kardexarticulo',['id'=>$cat->idarticulo])}}"><button class="btn btn-success btn-xs"> kardex</button></a>                                          
+
+						
+						                                         
+				<div class="btn-group">
+                    <button type="button" class="btn btn-primary btn-xs">Opc.</button>
+                    <button type="button" class="btn btn-primary dropdown-toggle btn-xs" data-toggle="dropdown">
+                      <span class="sr-only"></span>
+                    </button>
+                    <div class="dropdown-menu" role="menu">
+					
+				<div class="color-palette-set">			
+                 @if($rol->editarticulo==1) <div class="bg-warning color-palette" align="center"><a  href="{{route('editarticulo',['id'=>$cat->idarticulo])}}">Editar</a></div>	@endif
+                  <div class="bg-danger color-palette" align="center">	<a  href=""  data-target="#modal-delete-{{$cat->idarticulo}}" data-toggle="modal">Alta</a></div>
+                  <div class="bg-success color-palette" align="center"><a  href="{{route('kardexarticulo',['id'=>$cat->idarticulo])}}"> kardex</a> </div>
+                </div> 						
 				
+				
+					
+			                  
+				   </div>
+                  </div>
 				</td>
 				</tr>
 				@include('almacen.articulo.modal')

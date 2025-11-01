@@ -46,14 +46,14 @@ return $insertar_ceros = $recibo.$numero;
 		<h3 align="center"><u>  Estado de Cuenta </u></h3>		
 	</div>	
 	<div class="col-sm-3 invoice-col" align="center">
-<img src="{{asset('dist/img/logoempresa.png')}}" width="50%" height="80%" title="NKS">
+<img src="{{ asset('dist/img/'.$empresa->logo)}}" width="50%" height="80%" title="NKS">
 	</div>
               </div>
 <div class="row"><?php $acummonto=0; ?>
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			<table width="100%"><tr><td width="30%"><strong>Rif -> Proveedor</strong></td><td width="20%"><strong>Telefono</strong></td><td width="30%"><strong>Direccion</strong></td><td width="20%"><strong>Vendedor</strong></td>
+			<table width="100%" border="1"><tr><td width="30%"><strong>Rif -> Cliente</strong></td><td width="20%"><strong>Telefono</strong></td><td width="30%"><strong>Direccion</strong></td><td width="20%"><strong>Vendedor</strong></td>
 			</tr>
-			<tr><td>{{$cliente->cedula}} -> {{$cliente->nombre}}</td><td>{{$cliente->telefono}}</td><td>{{$cliente->direccion}}</td><td>{{$cliente->vendedor}} </td>
+			<tr><td>{{$cliente->cedula}} -> {{$cliente->nombre}}</td><td>{{$cliente->telefono}}</td><td><small>{{$cliente->direccion}}</small></td><td>{{$cliente->vendedor}} </td>
 			</tr>
 			</table></br>
 		</div>
@@ -77,7 +77,7 @@ return $insertar_ceros = $recibo.$numero;
 	<div id="capac">
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<table width="100%">
-				<thead>
+				<thead style="background-color: #D4E6F1">
 				<th class="filap1"></th>
 					<th>Documento</th>
 					<th>Ref.</th>
