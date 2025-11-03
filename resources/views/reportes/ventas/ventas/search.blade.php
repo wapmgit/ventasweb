@@ -15,14 +15,14 @@
         <div class="card-body p-0"></br>
 		<div class="row">
 		
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
 				<div class="form-group">
 				<div class="input-group">
 					<input type="date" class="form-control" name="searchText"  value="{{$searchText}}">
 				</div>
 				</div>
 			</div>
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
 				<div class="form-group">
 				<div class="input-group">
 					<input type="date" class="form-control" name="searchText2" value="{{$searchText2}}">
@@ -33,7 +33,7 @@
 				<div class="form-group">
 				<div class="input-group">
 					<select name="vendedor" class="form-control selectpicker" data-live-search="true">
-                            <option value="0">Seleccione..</option> 
+                            <option value="0">Seleccione Vendedor</option> 
 						   @foreach ($vendedores as $per)
                            <option value="{{$per -> id_vendedor}}">{{$per -> nombre}}</option> 
                            @endforeach
@@ -41,7 +41,19 @@
 				</div>
 				</div>		
 			</div>
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+				<div class="form-group">
+				<div class="input-group">
+					<select name="ruta" class="form-control selectpicker" data-live-search="true">
+                            <option value="0">Seleccione Ruta</option> 
+						   @foreach ($rutas as $r)
+                           <option value="{{$r -> idruta}}">{{$r -> nombre}}</option> 
+                           @endforeach
+					</select>
+				</div>
+				</div>		
+			</div>
+			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
 				<div class="form-group">
 				<div class="input-group">
 					<span class="input-group-btn">

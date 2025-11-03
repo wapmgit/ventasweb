@@ -20,9 +20,13 @@ class ReportesventasController extends Controller
         if ($request)
         {
 			$vendedores=DB::table('vendedores')->get();    
+			$rutas=DB::table('rutas')->get();    
 			$corteHoy = date("Y-m-d");
             $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
             $query=trim($request->get('searchText'));
+            $vende=trim($request->get('vendedor'));
+            $ruta=trim($request->get('ruta'));
+	
 			if (($query)==""){$query=$corteHoy; }
              $query2=trim($request->get('searchText2'));
             $query2 = date_create($query2);  
@@ -30,39 +34,53 @@ class ReportesventasController extends Controller
             date_add($query2, date_interval_create_from_date_string('1 day'));
             $query2=date_format($query2, 'Y-m-d');
          //datos venta
-	
+		if(($vende=="")or($vende==0))	{$c=">";$v=0;	$filtro="Todos los Vendedores"; 
+						}else{ $c="=";$v=$request->get('vendedor'); $busca=DB::table('vendedores')->select('nombre')-> where('id_vendedor','=',$request->get('vendedor'))->first(); $filtro="Vendedor: ".$busca->nombre;}
+		if(($ruta=="")or($ruta==0))	{$cr=">";$r=0;	$filtro=$filtro.", Todas las Rutas";
+						}else{ $cr="=";$r=$request->get('ruta');  $busca=DB::table('rutas')->select('nombre')-> where('idruta','=',$request->get('ruta'))->first(); $filtro=$filtro.", ".$busca->nombre;}
          if($request->get('vendedor')==0){
             $datos=DB::table('venta as v')
 			-> join('clientes as c','v.idcliente','=','c.id_cliente')
-			-> join ('vendedores as ven','ven.id_vendedor','=','c.vendedor')
+			-> join ('vendedores as ven','ven.id_vendedor','=','v.idvendedor')
 			->select('v.idventa','c.nombre','v.tipo_comprobante','v.num_comprobante','v.estado','v.total_venta','v.fecha_hora','v.fecha_emi','v.saldo','v.devolu','ven.nombre as vendedor','v.user')
+			-> where ('v.idvendedor',$c,$v)
+			-> where ('c.ruta',$cr,$r)
 			-> whereBetween('v.fecha_hora', [$query, $query2])
 			-> groupby('v.idventa')
             ->get();
-				
+			//dd($datos);	
 			// pagos
 			$pagos=DB::table('recibos as re')
 			->join('venta as v','v.idventa','=','re.idventa')
+			->join('clientes as cli','cli.id_cliente','=','v.idcliente')
 			->join('monedas as mo','mo.idmoneda','=','re.idpago')
 			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
 			->where('re.monto','>',0)
 			->where('v.devolu','=',0)
+			-> where ('v.idvendedor',$c,$v)
+			-> where ('cli.ruta',$cr,$r)
             -> whereBetween('re.fecha', [$query, $query2])
 			-> groupby('re.idpago','re.idbanco')
             ->get();
 			//datos devolucion     
              $devolucion=DB::table('venta as d')
+			 ->join('vendedores as ve','ve.id_vendedor','=','d.idvendedor')
+			->join('clientes as cli','cli.id_cliente','=','d.idcliente')
             -> select(DB::raw('sum(d.total_venta) as totaldev'))
 			->where('d.devolu','=',1)
+			-> where ('d.idvendedor',$c,$v)
+			-> where ('cli.ruta',$cr,$r)
             ->whereBetween('d.fecha_hora', [$query, $query2])
             ->get();
-		 //dd($devolucion);   
+		// dd($devolucion);   
 		 }else{
+			 
 			$datos=DB::table('venta as v')
 			-> join('clientes as c','v.idcliente','=','c.id_cliente')
 			-> join ('vendedores as ven','ven.id_vendedor','=','c.vendedor')
 			->select('v.idventa','c.nombre','v.tipo_comprobante','v.num_comprobante','v.estado','v.total_venta','v.fecha_hora','v.fecha_emi','v.saldo','v.devolu','ven.nombre as vendedor','v.user')
-			-> where('ven.id_vendedor','=',$request->get('vendedor'))
+			-> where ('v.idvendedor',$c,$v)
+			-> where ('c.ruta',$cr,$r)
 			-> whereBetween('v.fecha_hora', [$query, $query2])
 			-> groupby('v.idventa')
             ->get(); 
@@ -72,7 +90,8 @@ class ReportesventasController extends Controller
 			->join('clientes as cli','cli.id_cliente','=','v.idcliente')
 			->join('vendedores as ve','ve.id_vendedor','=','cli.vendedor')
 			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
-			-> where('ve.id_vendedor','=',$request->get('vendedor'))
+			-> where ('v.idvendedor',$c,$v)
+			-> where ('cli.ruta',$cr,$r)
 			->where('re.monto','>',0)
 			->where('v.devolu','=',0)
             -> whereBetween('re.fecha', [$query, $query2])
@@ -81,14 +100,16 @@ class ReportesventasController extends Controller
 		//dd($pagos);	
 			$devolucion=DB::table('venta as d')
 			->join('vendedores as ve','ve.id_vendedor','=','d.idvendedor')
+			->join('clientes as cli','cli.id_cliente','=','d.idcliente')
             -> select(DB::raw('sum(d.total_venta) as totaldev'))
 			->where('d.devolu','=',1)
-			-> where('d.idvendedor','=',$request->get('vendedor'))
+			-> where ('d.idvendedor',$c,$v)
+			-> where ('cli.ruta',$cr,$r)
             ->whereBetween('d.fecha_hora', [$query, $query2])
             ->get();
 		 }
 			$query2=date("Y-m-d",strtotime($query2."- 1 days"));
-			return view('reportes.ventas.ventas.index',["datos"=>$datos,"devolucion"=>$devolucion,"empresa"=>$empresa,"pagos"=>$pagos,"vendedores"=>$vendedores,"searchText"=>$query,"searchText2"=>$query2]);
+			return view('reportes.ventas.ventas.index',["filtro"=>$filtro,"rutas"=>$rutas,"datos"=>$datos,"devolucion"=>$devolucion,"empresa"=>$empresa,"pagos"=>$pagos,"vendedores"=>$vendedores,"searchText"=>$query,"searchText2"=>$query2]);
        
 		} 
 		}

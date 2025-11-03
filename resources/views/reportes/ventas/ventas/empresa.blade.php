@@ -11,4 +11,5 @@
 
 				  <h4>Resumen de Ventas</h4>
                 <?php echo date("d-m-Y",strtotime($searchText)); ?> al <?php echo date("d-m-Y",strtotime($searchText2)); ?>
+				<h6>{{$filtro}}</h6>
 	</div>

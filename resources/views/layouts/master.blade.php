@@ -379,7 +379,7 @@
 			   <li class="nav-item">
                 <a href="{{route('resumendiario')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Resumen de Diario</p>
+                  <p>Resumen Diario</p>
                 </a>
               </li>
               <li class="nav-item">
