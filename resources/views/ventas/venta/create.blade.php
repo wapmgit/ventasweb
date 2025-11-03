@@ -141,7 +141,7 @@ $idv=0;
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                     <div class="form-group">
-                        <label for="precio_venta">Precio venta <?php if ($nivel=="A"){?><i class="fa-solid fa-money-check-dollar" style="display: none" id="changeprice"></i> <?php }  ?></label>
+                        <label for="precio_venta">Precio venta <?php if ($nivel=="A"){?><i class="fa-solid fa-money-check-dollar" style="display: none" id="changeprice"></i> <?php }  ?><span id="nprecioventa"></span></label>
                         <input type="number" name="pprecio_venta" id="pprecio_venta"  min="0.01" class ="form-control" placeholder="Precio de Venta" <?php if ($nivel=="L"){?> disabled <?php }  ?> >
                     </div>
 				</div>
@@ -174,7 +174,19 @@ $idv=0;
 							
 						  </thead>
 						  <tfoot style="background-color: #A9D0F5"> 
-						  <th colspan="3">Total items: <span id="item">0</span> </th>
+						  <th colspan="3">Total items: <span id="item">0</span> 
+						 <!--  <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-flat">
+                         <a href="javascript:recalcularfac('3');">P1</a>
+                        </button>
+                        <button type="button" class="btn btn-default btn-flat">
+                         <a href="javascript:recalcularfac('4');">P2</a>
+                        </button>
+                        <button type="button" class="btn btn-default btn-flat">
+                         <a href="javascript:recalcularfac('8');">P3</a>
+                        </button>
+                      </div> -->
+						  </th>
 	
 							  <th>Exe:<input type="number" style="width: 70px" readonly  name="totalexe" id="texe">Bs</th>
 							  <th>Iva:<input type="number" style="width: 70px" readonly  name="total_iva" id="total_iva">Bs</th> 
@@ -514,9 +526,11 @@ function trunc (x, posiciones = 0) {
     function mostrarvalores(){      
       tipo_precio=document.getElementById('id_cliente').value.split('_');
       tpc= tipo_precio[1];
-      if (tpc==1){  preopt="P1"; tpc=2;}
-	  if (tpc==2) {  preopt="P2"; tpc=3;}	 
-	  else {  preopt="P3"; tpc=8;}
+	    if (tpc==3){  preopt="P3"; tpc=8;}
+		if (tpc==2){  preopt="P2"; tpc=3;}
+		if (tpc==1){  preopt="P1"; tpc=2;}
+	
+	  $("#nprecioventa").html(preopt);
       //de los articulos	
 	    document.getElementById('pcantidad').focus();
       datosarticulo=document.getElementById('pidarticulo').value.split('_');
@@ -538,6 +552,8 @@ function trunc (x, posiciones = 0) {
 	  if(preopt==="P3"){  preopt="P1"; $("#pprecio_venta").val(p1); }
 	  }
 	  }
+	  $("#nprecioventa").html(preopt);
+	  
 	});
 	function mostrarcomision(){  
 			var formc= $('#formventa');
@@ -623,7 +639,7 @@ function trunc (x, posiciones = 0) {
                 subtotal[cont]=((cantidad*precio_venta));
                 total=parseFloat(total)+parseFloat(subtotal[cont].toFixed(2));
 
-              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number"  name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" name="precio_venta[]" value="'+precio_venta+'"></td><td>'+subtotal[cont].toFixed(2)+'<input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
+              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" id="varticulo'+cont+'" name="articulo[]" value="'+articulo+'"><input type="hidden"  name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" id="vcantidad'+cont+'" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" id="precio'+cont+'" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number"  name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" id="pventa'+cont+'" name="precio_venta[]" value="'+precio_venta+'"></td><td><span id="subt'+cont+'">'+subtotal[cont].toFixed(2)+'</span><input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
 				cont++;
 				contl++;
               limpiar();
@@ -871,6 +887,67 @@ function trunc (x, posiciones = 0) {
 				$("#pidarticulo").selectpicker('toggle');
 			});
 	});
+	function recalcularfac(tpc){
+			vdolar=$("#valortasa").val();
+			const numeroDeFilas = $('#detalles tr').length;
+	var sele=document.getElementById('pidarticulo');
+		total=0;totalexe=0;totaliva=0;totalbase=0;
+	for(var i=0;i<(numeroDeFilas-2);i++){
+		item_name="";pnew=0;
+		for (var pss=sele.length-1;pss>=0;pss--)
+			{
+			if (sele.options[pss].text == $("#varticulo"+i).val()){
+			item_name=sele.options[pss].value; 				}		
+			} 
+		datosarticulo=item_name.split('_');
+		var pnew=datosarticulo[tpc];
+		precio_venta=pnew;
+		alicuota=datosarticulo[5];
+		$("#precio"+i).val(pnew);
+		$("#pventa"+i).val(pnew);
+		cantidad=$("#vcantidad"+i).val();
+		if(alicuota>0){ 
+						base[i]=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
+						auxc=parseFloat((base[i]*vdolar));
+							if(Number.isInteger(auxc)==true){
+								auxb=auxc;
+								base[i]=(cantidad*auxb);	
+								totalbase=(totalbase+base[i]);							
+								}else{
+									auxb=trunc(auxc,2);	
+									base[i]=trunc((cantidad*auxb),2);	
+									totalbase=trunc((totalbase+base[i]),2);
+							}; 
+							
+						subiva[i]=trunc((base[i]*(alicuota/100)), 2);											
+						subiva[i]=trunc(subiva[i],2);
+						}else{					
+							auxd=(precio_venta*vdolar);
+							if(Number.isInteger(auxd)==true){
+							subexe[i]=(precio_venta*vdolar*cantidad);
+							}else{subexe[i]=trunc((auxd*cantidad),2);}
+							
+						}
+			totaliva=trunc((totaliva+subiva[i]),2);
+			totalexe=parseFloat(totalexe)+parseFloat(subexe[i]);
+			subtotal[i]=((cantidad*precio_venta));
+			total=parseFloat(total)+parseFloat(subtotal[i].toFixed(2));
+			
+		$("#subt"+i).html(subtotal[i]);
+		 var auxmbs=(parseFloat(total)*parseFloat(vdolar));
+				$("#total").html(" $  : " + total.toFixed(2));			  
+				$("#muestramonto").html(" $  : " + total.toFixed(2));
+				$("#muestramontobs").html(" Bs  : " + auxmbs.toFixed(2));
+				$("#divtotal").val(total);
+				$("#tdeuda").val(total);
+				$("#resta").val(total);
+				$("#total_iva").val(totaliva);
+				$("#totalbase").val(totalbase);
+				$("#texe").val(totalexe.toFixed(2));
+				$("#total_venta").val(total);
+		}
+		alert('Cambio de precio Realizado.');
+	}
 </script>
 @endpush
 @endsection
