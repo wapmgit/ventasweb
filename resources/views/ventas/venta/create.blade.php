@@ -170,7 +170,7 @@ $idv=0;
 								<th>Articulo</th>
 								<th>Cantidad</th>
 								<th align="center">Precio</th>
-								<th>Descto. <i id="vdescuento" alt="Aplicar descuento" class="fa-solid fa-percent"></i></th>
+								<th>Descto. <?php if ($rol->cambiarprecioventa==1){?><i style="display: none" id="vdescuento" alt="Aplicar descuento" class="fa-solid fa-percent"></i><?php } ?></th>
 								<th>Precio Venta</th> 
 								<th>SubTotal</th>
 							
@@ -659,11 +659,11 @@ function trunc (x, posiciones = 0) {
 								totalbase=(totalbase+base[cont]);							
 								}else{									
 									auxc=parseFloat((base[cont]*cantidad));
-									auxb=trunc(auxc,2);																	
+									auxb=trunc(auxc,2);										
 									base[cont]=trunc((vdolar*auxb),2);										
 									totalbase=trunc((totalbase+base[cont]),2);
 							}; 
-						baseimp=((precio_venta-baseimp)*cantidad);	
+						baseimp=((precio_venta-baseimp)*cantidad).toFixed(2);	
 						baseimp=trunc(baseimp,2);
 						calciva=trunc((baseimp*vdolar),2);
 						subiva[cont]=calciva;											
@@ -673,7 +673,7 @@ function trunc (x, posiciones = 0) {
 							if(Number.isInteger(auxd)==true){
 							subexe[cont]=(precio_venta*vdolar*cantidad);
 							}else{
-								auxd=trunc((precio_venta*cantidad),2);
+								auxd=trunc((precio_venta*cantidad).toFixed(2),2);
 								subexe[cont]=trunc((auxd*vdolar),2);}
 							subiva[cont]=0; base[cont]=0; 
 						}				
@@ -715,7 +715,8 @@ function trunc (x, posiciones = 0) {
 					if(contl >= nlineas){
 					alert('¡Limite de lineas por Documento alcanzado!')
 					document.getElementById('bt_add').style.display="none";
-				  }					
+				  }
+			document.getElementById('vdescuento').style.display="";	  
 				}else{
               alert("cantidad *"+cantidad+"* supera stock *"+stock+"*");
 			  $("#pcantidad").val(1);
@@ -734,19 +735,20 @@ function trunc (x, posiciones = 0) {
         total=(total-subtotal[index]).toFixed(2);
         $("#total").html(total);
 		//alert(totalexe);
-        $("#texe").val(totalexe);
         $("#divtotal").val(total);
 		$("#resta").val(total);
+		
+		if(total <= 0){total=0; document.getElementById('vdescuento').style.display="none"; totaliva=0;	totalbase=0; totalexe=0;}
 		var mon_tasad=(total);
 		$("#muestramonto").html("$  : " + mon_tasad.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' }));
 		$("#muestramontobs").html("Bs  : " + (mon_tasad*vdolar).toLocaleString('de-DE', { style: 'decimal',  decimal: '2' }));
-		if(total<0){total=0;}
         $("#total_venta").val(total);
         $("#total_iva").val(totaliva.toFixed(2));
         $("#totalbase").val(totalbase.toFixed(2));
+		$("#texe").val(totalexe.toFixed(2));
         $("#tdeuda").val(total);
         $("#fila" + index).remove();
-			contl--;
+		contl--;
 		$("#item").html(contl);
 		if(parseFloat(contl) < parseFloat(nlineas)){
 				document.getElementById('bt_add').style.display="";
@@ -960,15 +962,12 @@ function trunc (x, posiciones = 0) {
 								base[i]=(cantidad*auxb);	
 								totalbase=(totalbase+base[i]);							
 								}else{
-									alert(base[i]);
 									auxc=parseFloat((base[i]*cantidad));
-									auxb=trunc(auxc,2);
-									alert(auxb);									
+									auxb=trunc(auxc,2);									
 									base[i]=trunc((vdolar*auxb),2);	
-									alert(base[i]);
 									totalbase=trunc((totalbase+base[i]),2);
 							}; 
-						baseimp=((precio_venta-baseimp)*cantidad);	
+						baseimp=((precio_venta-baseimp)*cantidad).toFixed(2);	
 						baseimp=trunc(baseimp,2);
 						calciva=trunc((baseimp*vdolar),2);
 						subiva[i]=calciva;											
@@ -978,7 +977,7 @@ function trunc (x, posiciones = 0) {
 							if(Number.isInteger(auxd)==true){
 							subexe[i]=(precio_venta*vdolar*cantidad);
 							}else{
-								auxd=trunc((precio_venta*cantidad),2);
+								auxd=trunc((precio_venta*cantidad).toFixed(2),2);
 								subexe[i]=trunc((auxd*vdolar),2);}
 							subiva[i]=0; base[i]=0; 
 						}
@@ -1038,12 +1037,9 @@ function trunc (x, posiciones = 0) {
 								base[i]=(cantidad*auxb);	
 								totalbase=(totalbase+base[i]);							
 								}else{
-									alert(base[i]);
 									auxc=parseFloat((base[i]*cantidad));
-									auxb=trunc(auxc,2);
-									alert(auxb);									
+									auxb=trunc(auxc,2);															
 									base[i]=trunc((vdolar*auxb),2);	
-									alert(base[i]);
 									totalbase=trunc((totalbase+base[i]),2);
 							}; 
 						baseimp=((precio_venta-baseimp)*cantidad);	
@@ -1056,7 +1052,7 @@ function trunc (x, posiciones = 0) {
 							if(Number.isInteger(auxd)==true){
 							subexe[i]=(precio_venta*vdolar*cantidad);
 							}else{
-								auxd=trunc((precio_venta*cantidad),2);
+								auxd=trunc((precio_venta*cantidad).toFixed(2),2);
 								subexe[i]=trunc((auxd*vdolar),2);}
 							subiva[i]=0; base[i]=0; 
 						}	
