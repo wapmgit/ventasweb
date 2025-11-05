@@ -17,7 +17,6 @@ function truncar($numero, $digitos)
     return intval($numero * $truncar) / $truncar;
 }
 ?>
-
 <div class="invoice p-3 mb-3">
 <div class="row">
 	<div class="col-sm-6 invoice-col">

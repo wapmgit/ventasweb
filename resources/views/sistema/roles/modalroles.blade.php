@@ -232,6 +232,18 @@
 					  <input type="checkbox" name="op66" class="minimal" @if($q->importarne==1) checked @endif ></label>
 					</div>
 				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="form-group">
+						<label>Cambiar Precio de Venta: </label><label>
+						<input type="checkbox" name="op68" class="minimal" @if($q->cambiarprecioventa==1) checked @endif ></label>
+						</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="form-group">
+						<label>Ajustar Fecha de Venta: </label><label>
+						<input type="checkbox" name="op69" class="minimal" @if($q->editfecha==1) checked @endif ></label>
+						</div>
+				</div>
 				   </div>
                   </div>
                   <div class="tab-pane fade" id="custom-tabs-one-messages{{$q->id}}" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab{{$q->id}}">

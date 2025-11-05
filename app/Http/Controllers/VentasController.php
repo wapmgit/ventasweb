@@ -57,7 +57,7 @@ class VentasController extends Controller
         }
     }
     public function create(Request $request){
-		$rol=DB::table('roles')-> select('crearventa')->where('iduser','=',$request->user()->id)->first();	
+		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->crearventa==1){
 		$monedas=DB::table('monedas')->get();
 		$vendedor=DB::table('vendedores')->get();
@@ -250,12 +250,14 @@ catch(\Exception $e)
 	return Redirect::to($request->get('formato').'/'.$venta->idventa);
 	}
 	}
- public function showdevolucion($id)
-    {   
+ public function showdevolucion(Request $request, $id)
+    {  
+		$rol=DB::table('roles')-> select('editfecha','anularventa')->where('iduser','=',$request->user()->id)->first();	
 	     $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
-		$venta=DB::table('venta as v')
+		if ($rol->anularventa==1){
+			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select ('v.tasa','v.idventa','v.fecha_hora','v.devolu','p.cedula','p.nombre','p.telefono','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta')
+            -> select ('v.fecha_emi','v.tasa','v.idventa','v.fecha_hora','v.devolu','p.cedula','p.nombre','p.telefono','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta')
             ->where ('v.idventa','=',$id)
             -> first();
 
@@ -267,11 +269,22 @@ catch(\Exception $e)
 			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
             ->get();
 		
-            return view("ventas.venta.devolucion",["venta"=>$venta,"detalles"=>$detalles,"recibo"=>$recibo,"empresa"=>$empresa]);
-      
+            return view("ventas.venta.devolucion",["rol"=>$rol,"venta"=>$venta,"detalles"=>$detalles,"recibo"=>$recibo,"empresa"=>$empresa]);
+		} else { 
+			return view("reportes.mensajes.noautorizado");
+		}
+    }
+	 public function ajusfechafac(Request $request)
+    {   
+	 $venta=Ventas::findOrFail($request->get('vidventa'));
+    $venta->fecha_emi=$request->get('vfecha_emi');
+    $venta->update();
+	$detalle = DetalleVentas::where('idventa','=',$request->get('vidventa'))->get();
+	$detalle->toQuery()->update([
+		'fecha_emi' => $request->get('vfecha_emi')]);
+	return Redirect::to('showdevolucion/'.$request->get('vidventa'));      
     }
 public function devolucion(Request $request){
-
 
 //registra la devolucion
 	$user=Auth::user()->name;

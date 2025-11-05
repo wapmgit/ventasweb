@@ -113,6 +113,7 @@ Route::get('newventa', [VentasController::class, 'create'])->name('newventa');
 Route::post('guardarventa', [VentasController::class, 'store'])->name('guardarventa');
 Route::post('almacenacliente', [VentasController::class, 'almacena'])->name('almacenacliente');
 Route::get('showdevolucion/{id}', [VentasController::class, 'showdevolucion'])->name('showdevolucion');
+Route::post('ajusfechafac', [VentasController::class, 'ajusfechafac'])->name('ajusfechafac');
 Route::post('devoluparcial', [VentasController::class, 'devoluparcial'])->name('devoluparcial');
 Route::get('facventa/{id}', [VentasController::class, 'facturar'])->name('facventa');
 Route::post('devolucion', [VentasController::class, 'devolucion'])->name('devolucion');

@@ -39,16 +39,17 @@ return $insertar_ceros = $recibo.$numero;
 					<h4 align="center"><u>  DEVOLUCION VENTA </u></h4>	
 				</div>	
 				<div class="col-sm-3 invoice-col" align="center">
-					<img src="{{asset('dist/img/logoempresa.png')}}" width="50%" height="80%" title="NKS">
+					<img src="{{ asset('dist/img/'.$empresa->logo)}}" width="50%" height="80%" title="NKS">
 				</div>
 			</div>
+			@include('ventas.venta.modalfecha') 
 	<div class="row">
 		<form action="{{route('devolucion')}}" method="POST" id="formdevolucion" enctype="multipart/form-data" >         
         {{csrf_field()}}
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			<table width="100%"><tr><td width="30%"><strong>Cliente</strong></td><td width="20%"><strong>Telefono</strong></td><td width="30%"><strong>Direccion</strong></td><td width="20%"><strong>Documento</strong></td>
+			<table width="100%"><tr><td width="30%"><strong>Cliente</strong></td><td width="15%"><strong>Telefono</strong></td><td width="30%"><strong>Direccion</strong></td><td width="15%"><strong>Documento</strong></td><td width="20%"><strong>Emision</strong></td>
 				</tr>
-				<tr><td>{{$venta->cedula}} -> {{$venta->nombre}}</td><td>{{$venta->telefono}}</td><td>{{$venta->direccion}}</td><td>{{$venta->tipo_comprobante}} {{$venta->serie_comprobante}} <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); ?></td>
+				<tr><td>{{$venta->cedula}} -> {{$venta->nombre}}</td><td>{{$venta->telefono}}</td><td>{{$venta->direccion}}</td><td>{{$venta->tipo_comprobante}} {{$venta->serie_comprobante}} <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); ?></td><td><small>@if($rol->editfecha==1)<a href="" data-target="#modalfecha" data-toggle="modal"><?php echo date("d-m-Y",strtotime($venta->fecha_emi)); ?></a> @else <?php echo date("d-m-Y",strtotime($venta->fecha_emi)); ?> @endif</small></td>
 				</tr>
 			</table>
 			  <input type="hidden" name="idventa" value="{{$venta->idventa}}">
@@ -123,10 +124,10 @@ return $insertar_ceros = $recibo.$numero;
 	</div>
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<div class="form-group">
-			<label for="num_comprobante">Fecha:</label>
-			<p><?php echo date("d-m-Y h:i:s a",strtotime($venta->fecha_hora)); ?></p>
+			<label for="num_comprobante">Fecha Facturacion:<?php echo date("d-m-Y h:i:s a",strtotime($venta->fecha_hora)); ?></label>
 		</div>
-	</div>      
+	</div>  
+   
 	<div class="modal-footer">		
 		<div class="col-lg-12 ol-md-12 col-sm-12 col-xs-12" align="center">	
        <a href="{{route('ventas')}}"> <button type="button" class="btn btn-danger btn-sm" id="regresar" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Cancelar</button></a>

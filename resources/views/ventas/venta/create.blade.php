@@ -48,6 +48,7 @@ $idv=0;
 			<input type="hidden" value="{{$empresa->fl}}" id="usafl" ></input>
 			<input type="hidden" value="{{$empresa->nlineas}}" id="nlineas" ></input>
 			<input type="hidden" value="{{$empresa->facfiscalcredito}}" id="faccredito" ></input>
+			<input type="hidden" value="{{$empresa->tasadif}}" id="tasadif" ></input>
         </div>
 			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
 			<h4 id="nombrevendedor"></h4>
@@ -122,7 +123,8 @@ $idv=0;
 						 <select name="pidarticulo" id="pidarticulo" class="form-control selectpicker" data-live-search="true" >
 						  <option value="5000" selected="selected">Seleccione Articulo..</option>
 						 @foreach ($articulos as $articulo)
-						  <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}_{{$articulo->precio3}}">{{$articulo -> articulo}}</option>
+						 <?Php if($empresa->tasadif > 0){ $preciom=number_format(($articulo -> precio_promedio *((100-$empresa -> tasadif)/100)), 2,',','.');}else{ $preciom=$articulo -> precio2;} ?>
+						  <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}_{{$articulo->precio3}}">{{$articulo -> articulo}} | {{$articulo -> precio_promedio}} | {{$preciom}}</option>
 						 @endforeach
 						  </select>
                     </div>
@@ -141,8 +143,8 @@ $idv=0;
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                     <div class="form-group">
-                        <label for="precio_venta">Precio venta <?php if ($nivel=="A"){?><i class="fa-solid fa-money-check-dollar" style="display: none" id="changeprice"></i> <?php }  ?><span id="nprecioventa"></span></label>
-                        <input type="number" name="pprecio_venta" id="pprecio_venta"  min="0.01" class ="form-control" placeholder="Precio de Venta" <?php if ($nivel=="L"){?> disabled <?php }  ?> >
+                        <label for="precio_venta">Precio venta <?php if ($rol->cambiarprecioventa==1){?><i class="fa-solid fa-money-check-dollar" style="display: none" id="changeprice"></i> <?php }  ?><span id="nprecioventa"></span></label>
+                        <input type="number" name="pprecio_venta" id="pprecio_venta"  min="0.01" class ="form-control" placeholder="Precio de Venta" <?php if ($rol->cambiarprecioventa==0){?> echo "disabled" <?php }  ?> >
                     </div>
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
@@ -168,7 +170,7 @@ $idv=0;
 								<th>Articulo</th>
 								<th>Cantidad</th>
 								<th align="center">Precio</th>
-								<th>Descto. %</th>
+								<th>Descto. <i id="vdescuento" alt="Aplicar descuento" class="fa-solid fa-percent"></i></th>
 								<th>Precio Venta</th> 
 								<th>SubTotal</th>
 							
@@ -484,6 +486,40 @@ $(document).ready(function(){
 			}   
 		});
 	});
+	// confirm
+	 $("#vdescuento").click(function(){
+		 let age = prompt ('¿Aplicar Descuento %?', 30);
+		if (isNaN(age)){ alert('Valor Incorrecto');}else{
+		 if(age){
+			 ajustedescuento(age);
+					let timerInterval;
+					Swal.fire({
+					  title: "Actualizando datos!",
+					  html: "Esta Ventana se cerrara en <b></b> milliseconds.",
+					  timer: 2000,
+					  timerProgressBar: true,
+					  didOpen: () => {
+						Swal.showLoading();
+						const timer = Swal.getPopup().querySelector("b");
+						timerInterval = setInterval(() => {
+						  timer.textContent = `${Swal.getTimerLeft()}`;
+						}, 100);
+					  },
+					  willClose: () => {
+						clearInterval(timerInterval);
+					  }
+					}).then((result) => {
+					  /* Read more about handling dismissals below */
+					  if (result.dismiss === Swal.DismissReason.timer) {
+						console.log("I was closed by the timer");
+					  }
+					});
+			
+		 }else{
+			 alert('ProcesoCancelado');
+		 }
+		}
+	 })
 });
 function trunc (x, posiciones = 0) {
   var s = x.toString()
@@ -592,7 +628,9 @@ function trunc (x, posiciones = 0) {
       var cantidad=0; var stock=0;
         datosarticulo=document.getElementById('pidarticulo').value.split('_');
         idarticulo=datosarticulo[0];
-        articulo= $("#pidarticulo option:selected").text();
+        artext= $("#pidarticulo option:selected").text();
+		articulo=artext.split('|');
+		articulo=articulo[0];
         cantidad= $("#pcantidad").val();
         descuento=$("#pdescuento").val();
 		pdesc=((100-descuento)/100);
@@ -613,24 +651,30 @@ function trunc (x, posiciones = 0) {
 						
 					if(alicuota>0){subexe[cont]=0;
 						base[cont]=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
+						baseimp=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
 						auxc=parseFloat((base[cont]*vdolar));
 							if(Number.isInteger(auxc)==true){
 								auxb=auxc;
 								base[cont]=(cantidad*auxb);	
 								totalbase=(totalbase+base[cont]);							
-								}else{
-									auxb=trunc(auxc,2);	
-									base[cont]=trunc((cantidad*auxb),2);	
+								}else{									
+									auxc=parseFloat((base[cont]*cantidad));
+									auxb=trunc(auxc,2);																	
+									base[cont]=trunc((vdolar*auxb),2);										
 									totalbase=trunc((totalbase+base[cont]),2);
 							}; 
-							
-						subiva[cont]=trunc((base[cont]*(alicuota/100)), 2);											
+						baseimp=((precio_venta-baseimp)*cantidad);	
+						baseimp=trunc(baseimp,2);
+						calciva=trunc((baseimp*vdolar),2);
+						subiva[cont]=calciva;											
 						subiva[cont]=trunc(subiva[cont],2);
 						}else{					
 							auxd=(precio_venta*vdolar);
 							if(Number.isInteger(auxd)==true){
 							subexe[cont]=(precio_venta*vdolar*cantidad);
-							}else{subexe[cont]=trunc((auxd*cantidad),2);}
+							}else{
+								auxd=trunc((precio_venta*cantidad),2);
+								subexe[cont]=trunc((auxd*vdolar),2);}
 							subiva[cont]=0; base[cont]=0; 
 						}				
 					
@@ -639,7 +683,7 @@ function trunc (x, posiciones = 0) {
                 subtotal[cont]=((cantidad*precio_venta));
                 total=parseFloat(total)+parseFloat(subtotal[cont].toFixed(2));
 
-              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" id="varticulo'+cont+'" name="articulo[]" value="'+articulo+'"><input type="hidden"  name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" id="vcantidad'+cont+'" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" id="precio'+cont+'" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number"  name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" id="pventa'+cont+'" name="precio_venta[]" value="'+precio_venta+'"></td><td><span id="subt'+cont+'">'+subtotal[cont].toFixed(2)+'</span><input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
+              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" id="varticulo'+cont+'" name="articulo[]" value="'+articulo+'"><input type="hidden"  name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" id="vcantidad'+cont+'" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" id="precio'+cont+'" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number" id="vdescuento'+cont+'" name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" id="pventa'+cont+'" name="precio_venta[]" value="'+precio_venta+'"></td><td><span id="subt'+cont+'">'+subtotal[cont].toFixed(2)+'</span><input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
 				cont++;
 				contl++;
               limpiar();
@@ -880,8 +924,9 @@ function trunc (x, posiciones = 0) {
 				   $("#pidarticulo")
 				.append('<option value="1000" selected="selected">Seleccione..</option>');
 				for (j=0;j<rows;j++){
+					if($("#tasadif").val()>0){preciom=r3[j].precio_promedio*((100-$("#tasadif").val())/100);}else{preciom=r3[j].precio2;}
 				$("#pidarticulo")
-				.append( '<option value="'+r3[j].idarticulo+'_'+r3[j].stock+'_'+r3[j].precio_promedio+'_'+r3[j].precio2+'_'+r3[j].costo+'_'+r3[j].iva+'_'+r3[j].serial+'_'+r3[j].fraccion+'">'+r3[j].articulo+'</option>');
+				.append( '<option value="'+r3[j].idarticulo+'_'+r3[j].stock+'_'+r3[j].precio_promedio+'_'+r3[j].precio2+'_'+r3[j].costo+'_'+r3[j].iva+'_'+r3[j].serial+'_'+r3[j].fraccion+'">'+r3[j].articulo+' | '+r3[j].precio_promedio+' | '+preciom+'</option>');
 				}
 				$("#pidarticulo").selectpicker('refresh');
 				$("#pidarticulo").selectpicker('toggle');
@@ -906,27 +951,36 @@ function trunc (x, posiciones = 0) {
 		$("#precio"+i).val(pnew);
 		$("#pventa"+i).val(pnew);
 		cantidad=$("#vcantidad"+i).val();
-		if(alicuota>0){ 
+		if(alicuota>0){subexe[i]=0;
 						base[i]=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
+						baseimp=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
 						auxc=parseFloat((base[i]*vdolar));
 							if(Number.isInteger(auxc)==true){
 								auxb=auxc;
 								base[i]=(cantidad*auxb);	
 								totalbase=(totalbase+base[i]);							
 								}else{
-									auxb=trunc(auxc,2);	
-									base[i]=trunc((cantidad*auxb),2);	
+									alert(base[i]);
+									auxc=parseFloat((base[i]*cantidad));
+									auxb=trunc(auxc,2);
+									alert(auxb);									
+									base[i]=trunc((vdolar*auxb),2);	
+									alert(base[i]);
 									totalbase=trunc((totalbase+base[i]),2);
 							}; 
-							
-						subiva[i]=trunc((base[i]*(alicuota/100)), 2);											
+						baseimp=((precio_venta-baseimp)*cantidad);	
+						baseimp=trunc(baseimp,2);
+						calciva=trunc((baseimp*vdolar),2);
+						subiva[i]=calciva;											
 						subiva[i]=trunc(subiva[i],2);
 						}else{					
 							auxd=(precio_venta*vdolar);
 							if(Number.isInteger(auxd)==true){
 							subexe[i]=(precio_venta*vdolar*cantidad);
-							}else{subexe[i]=trunc((auxd*cantidad),2);}
-							
+							}else{
+								auxd=trunc((precio_venta*cantidad),2);
+								subexe[i]=trunc((auxd*vdolar),2);}
+							subiva[i]=0; base[i]=0; 
 						}
 			totaliva=trunc((totaliva+subiva[i]),2);
 			totalexe=parseFloat(totalexe)+parseFloat(subexe[i]);
@@ -947,6 +1001,84 @@ function trunc (x, posiciones = 0) {
 				$("#total_venta").val(total);
 		}
 		alert('Cambio de precio Realizado.');
+	}
+	function ajustedescuento(desc){
+		vdolar=$("#valortasa").val();
+		const numeroDeFilas = $('#detalles tr').length;
+		var sele=document.getElementById('pidarticulo');
+		total=0;totalexe=0;totaliva=0;totalbase=0;
+			for(var i=0;i<(numeroDeFilas-2);i++){
+				item_name="";pnew=0;
+				for (var pss=sele.length-1;pss>=0;pss--)
+					{
+					if (sele.options[pss].text == $("#varticulo"+i).val()){
+					item_name=sele.options[pss].value; 				}		
+					} 
+			datosarticulo=item_name.split('_');
+			pdesc=((100-desc)/100);
+		
+		   var precio=$("#precio"+i).val();       
+		if(desc>0){
+			
+			precondesc= trunc((precio*pdesc),2);
+			precio_venta=precondesc; }else{
+			desc=0;
+			precio_venta=precio;
+		}				
+		alicuota=datosarticulo[5];
+		$("#pventa"+i).val(precio_venta);
+		$("#vdescuento"+i).val(desc);
+		cantidad=$("#vcantidad"+i).val();
+		if(alicuota>0){subexe[i]=0;
+						base[i]=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
+						baseimp=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
+						auxc=parseFloat((base[i]*vdolar));
+							if(Number.isInteger(auxc)==true){
+								auxb=auxc;
+								base[i]=(cantidad*auxb);	
+								totalbase=(totalbase+base[i]);							
+								}else{
+									alert(base[i]);
+									auxc=parseFloat((base[i]*cantidad));
+									auxb=trunc(auxc,2);
+									alert(auxb);									
+									base[i]=trunc((vdolar*auxb),2);	
+									alert(base[i]);
+									totalbase=trunc((totalbase+base[i]),2);
+							}; 
+						baseimp=((precio_venta-baseimp)*cantidad);	
+						baseimp=trunc(baseimp,2);
+						calciva=trunc((baseimp*vdolar),2);
+						subiva[i]=calciva;											
+						subiva[i]=trunc(subiva[i],2);
+						}else{					
+							auxd=(precio_venta*vdolar);
+							if(Number.isInteger(auxd)==true){
+							subexe[i]=(precio_venta*vdolar*cantidad);
+							}else{
+								auxd=trunc((precio_venta*cantidad),2);
+								subexe[i]=trunc((auxd*vdolar),2);}
+							subiva[i]=0; base[i]=0; 
+						}	
+			totaliva=trunc((totaliva+subiva[i]),2);
+			totalexe=parseFloat(totalexe)+parseFloat(subexe[i]);
+			subtotal[i]=((cantidad*precio_venta));
+			total=parseFloat(total)+parseFloat(subtotal[i].toFixed(2));
+			
+		$("#subt"+i).html(subtotal[i]);
+		 var auxmbs=(parseFloat(total)*parseFloat(vdolar));
+				$("#total").html(" $  : " + total.toFixed(2));			  
+				$("#muestramonto").html(" $  : " + total.toFixed(2));
+				$("#muestramontobs").html(" Bs  : " + auxmbs.toFixed(2));
+				$("#divtotal").val(total);
+				$("#tdeuda").val(total);
+				$("#resta").val(total);
+				$("#total_iva").val(totaliva);
+				$("#totalbase").val(totalbase);
+				$("#texe").val(totalexe.toFixed(2));
+				$("#total_venta").val(total);
+		}
+
 	}
 </script>
 @endpush
