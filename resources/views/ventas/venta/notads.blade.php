@@ -98,14 +98,14 @@ function truncar($numero, $digitos)
 			</table>
         </div>                   
 		@if(Auth::user()->nivel=="A")
-			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
+			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12"></br>
                     <div class="form-group" align="center">
 					 <button type="button" id="regresar" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
                      <button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
                     </div>
 			</div>  
 		@else
-			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
+			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12"></br>
                     <div class="form-group" align="center">
 					 <button type="button" id="regresarvc" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
                      <button type="button" id="imprimirvc" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>

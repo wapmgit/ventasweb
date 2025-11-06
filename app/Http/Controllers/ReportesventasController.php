@@ -1061,9 +1061,10 @@ class ReportesventasController extends Controller
 		  ->join('detalle_compras as dc','dc.idcompra','=','co.idcompra')	
 		  ->join('articulos as art','art.idarticulo','=','dc.idarticulo')	
 		// ->select(DB::raw('(space(12)*0) as cxc'),'cli.id_cliente','cli.nombre','cli.cedula','cli.cedula as rif','cli.direccion','cli.telefono','cli.diascredito as dias_credito','cli.vendedor','vend.comision')
-		    -> select(DB::raw('sum(dc.cantidad) as comprado'),'art.nombre','art.idarticulo')
-		 ->whereBetween('co.fecha_hora', [$query, $query2])	 
-		  ->groupby('art.idarticulo')
+		-> select(DB::raw('sum(dc.cantidad) as comprado'),'art.nombre','art.idarticulo')
+		->where('co.estatus','0')
+		->whereBetween('co.fecha_hora', [$query, $query2])	 
+		->groupby('art.idarticulo')
 		  ->get(); 
  
 			$nvendedor="";
@@ -1072,6 +1073,7 @@ class ReportesventasController extends Controller
 		  ->join('articulos as art','art.idarticulo','=','dc.idarticulo')	
 		// ->select(DB::raw('(space(12)*0) as cxc'),'cli.id_cliente','cli.nombre','cli.cedula','cli.cedula as rif','cli.direccion','cli.telefono','cli.diascredito as dias_credito','cli.vendedor','vend.comision')
 			-> select(DB::raw('sum(dc.cantidad) as vendido'),'art.idarticulo')
+		 ->where('co.devolu','0')
 		 ->whereBetween('co.fecha_emi', [$query, $query2])	 
 		  ->groupby('art.idarticulo')
 		  ->get();
@@ -1083,7 +1085,8 @@ class ReportesventasController extends Controller
 		// ->select(DB::raw('(space(12)*0) as cxc'),'cli.id_cliente','cli.nombre','cli.cedula','cli.cedula as rif','cli.direccion','cli.telefono','cli.diascredito as dias_credito','cli.vendedor','vend.comision')
 		    -> select(DB::raw('sum(dc.cantidad) as comprado'),'art.nombre','art.idarticulo')
 		->where('co.idproveedor','=',$request->get('proveedor'))
-		 ->whereBetween('co.fecha_hora', [$query, $query2])	 
+			->where('co.estatus','0')		
+		->whereBetween('co.fecha_hora', [$query, $query2])	 
 		  ->groupby('art.idarticulo')
 		  ->get(); 
 
@@ -1094,6 +1097,7 @@ class ReportesventasController extends Controller
 		  ->join('articulos as art','art.idarticulo','=','dc.idarticulo')	
 		// ->select(DB::raw('(space(12)*0) as cxc'),'cli.id_cliente','cli.nombre','cli.cedula','cli.cedula as rif','cli.direccion','cli.telefono','cli.diascredito as dias_credito','cli.vendedor','vend.comision')
 			-> select(DB::raw('sum(dc.cantidad) as vendido'),'art.idarticulo')
+		 ->where('co.devolu','0')
 		 ->whereBetween('co.fecha_emi', [$query, $query2])	 
 		  ->groupby('art.idarticulo')
 		  ->get(); 
