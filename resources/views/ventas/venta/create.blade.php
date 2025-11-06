@@ -738,7 +738,7 @@ function trunc (x, posiciones = 0) {
         $("#divtotal").val(total);
 		$("#resta").val(total);
 		
-		if(total <= 0){total=0; document.getElementById('vdescuento').style.display="none"; totaliva=0;	totalbase=0; totalexe=0;}
+		if(total <= 0){total=0; cont=0; document.getElementById('vdescuento').style.display="none"; totaliva=0;	totalbase=0; totalexe=0;}
 		var mon_tasad=(total);
 		$("#muestramonto").html("$  : " + mon_tasad.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' }));
 		$("#muestramontobs").html("Bs  : " + (mon_tasad*vdolar).toLocaleString('de-DE', { style: 'decimal',  decimal: '2' }));
@@ -953,7 +953,7 @@ function trunc (x, posiciones = 0) {
 		$("#precio"+i).val(pnew);
 		$("#pventa"+i).val(pnew);
 		cantidad=$("#vcantidad"+i).val();
-		if(alicuota>0){subexe[i]=0;
+	if(alicuota>0){subexe[i]=0;
 						base[i]=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
 						baseimp=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
 						auxc=parseFloat((base[i]*vdolar));
@@ -963,11 +963,11 @@ function trunc (x, posiciones = 0) {
 								totalbase=(totalbase+base[i]);							
 								}else{
 									auxc=parseFloat((base[i]*cantidad));
-									auxb=trunc(auxc,2);									
+									auxb=trunc(auxc,2);															
 									base[i]=trunc((vdolar*auxb),2);	
 									totalbase=trunc((totalbase+base[i]),2);
 							}; 
-						baseimp=((precio_venta-baseimp)*cantidad).toFixed(2);	
+						baseimp=((precio_venta-baseimp)*cantidad);	
 						baseimp=trunc(baseimp,2);
 						calciva=trunc((baseimp*vdolar),2);
 						subiva[i]=calciva;											
@@ -980,12 +980,11 @@ function trunc (x, posiciones = 0) {
 								auxd=trunc((precio_venta*cantidad).toFixed(2),2);
 								subexe[i]=trunc((auxd*vdolar),2);}
 							subiva[i]=0; base[i]=0; 
-						}
+						}	
 			totaliva=trunc((totaliva+subiva[i]),2);
 			totalexe=parseFloat(totalexe)+parseFloat(subexe[i]);
 			subtotal[i]=((cantidad*precio_venta));
 			total=parseFloat(total)+parseFloat(subtotal[i].toFixed(2));
-			
 		$("#subt"+i).html(subtotal[i]);
 		 var auxmbs=(parseFloat(total)*parseFloat(vdolar));
 				$("#total").html(" $  : " + total.toFixed(2));			  
@@ -1014,16 +1013,14 @@ function trunc (x, posiciones = 0) {
 					item_name=sele.options[pss].value; 				}		
 					} 
 			datosarticulo=item_name.split('_');
-			pdesc=((100-desc)/100);
-		
-		   var precio=$("#precio"+i).val();       
-		if(desc>0){
-			
+			pdesc=((100-desc)/100);		
+		   var precio=$("#precio"+i).val();  	   
+		if(desc>0){			
 			precondesc= trunc((precio*pdesc),2);
 			precio_venta=precondesc; }else{
 			desc=0;
 			precio_venta=precio;
-		}				
+		}					
 		alicuota=datosarticulo[5];
 		$("#pventa"+i).val(precio_venta);
 		$("#vdescuento"+i).val(desc);
@@ -1060,7 +1057,6 @@ function trunc (x, posiciones = 0) {
 			totalexe=parseFloat(totalexe)+parseFloat(subexe[i]);
 			subtotal[i]=((cantidad*precio_venta));
 			total=parseFloat(total)+parseFloat(subtotal[i].toFixed(2));
-			
 		$("#subt"+i).html(subtotal[i]);
 		 var auxmbs=(parseFloat(total)*parseFloat(vdolar));
 				$("#total").html(" $  : " + total.toFixed(2));			  
