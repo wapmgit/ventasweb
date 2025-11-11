@@ -683,7 +683,7 @@ function trunc (x, posiciones = 0) {
                 subtotal[cont]=((cantidad*precio_venta));
                 total=parseFloat(total)+parseFloat(subtotal[cont].toFixed(2));
 
-              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" id="varticulo'+cont+'" name="articulo[]" value="'+articulo+'"><input type="hidden"  name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" id="vcantidad'+cont+'" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" id="precio'+cont+'" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number" id="vdescuento'+cont+'" name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" id="pventa'+cont+'" name="precio_venta[]" value="'+precio_venta+'"></td><td><span id="subt'+cont+'">'+subtotal[cont].toFixed(2)+'</span><input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
+              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" id="varticulo'+cont+'" name="articulo[]" value="'+articulo+'"><input type="hidden"  name="idarticulo[]" value="'+idarticulo+'">'+articulo+'-'+cont+'</td><td><input type="number" id="vcantidad'+cont+'" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" id="precio'+cont+'" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number" id="vdescuento'+cont+'" name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" id="pventa'+cont+'" name="precio_venta[]" value="'+precio_venta+'"></td><td><span id="subt'+cont+'">'+subtotal[cont].toFixed(2)+'</span><input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
 				cont++;
 				contl++;
               limpiar();
@@ -727,6 +727,7 @@ function trunc (x, posiciones = 0) {
         }
     }
     function eliminar(index){
+		alert(index);
 		nlineas=$("#nlineas").val();
 		vdolar=$("#valortasa").val();
 		totaliva=(parseFloat(totaliva) - parseFloat(subiva[index]));
@@ -749,6 +750,7 @@ function trunc (x, posiciones = 0) {
         $("#tdeuda").val(total);
         $("#fila" + index).remove();
 		contl--;
+		
 		$("#item").html(contl);
 		if(parseFloat(contl) < parseFloat(nlineas)){
 				document.getElementById('bt_add').style.display="";
@@ -937,6 +939,7 @@ function trunc (x, posiciones = 0) {
 	function recalcularfac(tpc){
 			vdolar=$("#valortasa").val();
 			const numeroDeFilas = $('#detalles tr').length;
+		
 	var sele=document.getElementById('pidarticulo');
 		total=0;totalexe=0;totaliva=0;totalbase=0;
 	for(var i=0;i<(numeroDeFilas-2);i++){
@@ -1002,11 +1005,12 @@ function trunc (x, posiciones = 0) {
 	}
 	function ajustedescuento(desc){
 		vdolar=$("#valortasa").val();
-		const numeroDeFilas = $('#detalles tr').length;
 		var sele=document.getElementById('pidarticulo');
+	
 		total=0;totalexe=0;totaliva=0;totalbase=0;
-			for(var i=0;i<(numeroDeFilas-2);i++){
-				item_name="";pnew=0;
+			for(var i=0;i<(cont);i++){
+				item_name="";pnew=0;    var precio=$("#precio"+i).val();  
+				if (precio !== undefined) {
 				for (var pss=sele.length-1;pss>=0;pss--)
 					{
 					if (sele.options[pss].text == $("#varticulo"+i).val()){
@@ -1014,7 +1018,7 @@ function trunc (x, posiciones = 0) {
 					} 
 			datosarticulo=item_name.split('_');
 			pdesc=((100-desc)/100);		
-		   var precio=$("#precio"+i).val();  	   
+
 		if(desc>0){			
 			precondesc= trunc((precio*pdesc),2);
 			precio_venta=precondesc; }else{
@@ -1070,7 +1074,7 @@ function trunc (x, posiciones = 0) {
 				$("#texe").val(totalexe.toFixed(2));
 				$("#total_venta").val(total);
 		}
-
+			}
 	}
 </script>
 @endpush
