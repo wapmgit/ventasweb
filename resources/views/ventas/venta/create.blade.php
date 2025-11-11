@@ -727,7 +727,6 @@ function trunc (x, posiciones = 0) {
         }
     }
     function eliminar(index){
-		alert(index);
 		nlineas=$("#nlineas").val();
 		vdolar=$("#valortasa").val();
 		totaliva=(parseFloat(totaliva) - parseFloat(subiva[index]));
@@ -737,8 +736,7 @@ function trunc (x, posiciones = 0) {
         $("#total").html(total);
 		//alert(totalexe);
         $("#divtotal").val(total);
-		$("#resta").val(total);
-		
+		$("#resta").val(total);		
 		if(total <= 0){total=0; cont=0; document.getElementById('vdescuento').style.display="none"; totaliva=0;	totalbase=0; totalexe=0;}
 		var mon_tasad=(total);
 		$("#muestramonto").html("$  : " + mon_tasad.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' }));
@@ -937,12 +935,10 @@ function trunc (x, posiciones = 0) {
 			});
 	});
 	function recalcularfac(tpc){
-			vdolar=$("#valortasa").val();
-			const numeroDeFilas = $('#detalles tr').length;
-		
+			vdolar=$("#valortasa").val();		
 	var sele=document.getElementById('pidarticulo');
 		total=0;totalexe=0;totaliva=0;totalbase=0;
-	for(var i=0;i<(numeroDeFilas-2);i++){
+	for(var i=0;i<(cont);i++){
 		item_name="";pnew=0;
 		for (var pss=sele.length-1;pss>=0;pss--)
 			{
