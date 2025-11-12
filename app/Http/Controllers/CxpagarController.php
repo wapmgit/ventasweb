@@ -107,7 +107,8 @@ $this->middleware('auth');
            $idbanco=$request->get('tidbanco');
 		   $denomina=$request->get('denominacion');
            $tmonto=$request->get('tmonto');
-           $tref=$request->get('tref');		 
+           $tref=$request->get('tref');	
+			$fecha=$request->get('fecha');			   
            $contp=0;
               while($contp < count($idpago)){
 				$recibo=new Comprobantes;
@@ -144,7 +145,7 @@ $this->middleware('auth');
 				$recibo->tasab=$request->get('tc');
 				$recibo->aux=$request->get('tdeuda');
 				$mytime=Carbon::now('America/Caracas');
-				$recibo->fecha_comp=$mytime->toDateTimeString();						
+				$recibo->fecha_comp=$fecha[$contp];							
 				$recibo->save();
 						$mon=Monedas::findOrFail($idpago[$contp]);
 							if($mon->idbanco>0){
@@ -164,7 +165,7 @@ $this->middleware('auth');
 									$mov->monto=$denomina[$contp];
 									$mov->tasadolar=$request->get('tc');
 									$mytime=Carbon::now('America/Caracas');
-									$mov->fecha_mov=$mytime->toDateTimeString();	
+									$mov->fecha_mov=$fecha[$contp];		
 									$mov->user=Auth::user()->name;
 									$mov->save();
 							}
