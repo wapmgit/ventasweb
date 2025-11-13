@@ -23,7 +23,7 @@ $idv=0;
      <form action="{{route('guardararticulo')}}" method="POST" id="formulario" enctype="multipart/form-data" >         
         {{csrf_field()}}
         <div class="row">
-            	<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
+            	<div class="col-lg-6 col-sm-6 col-md-6 col-xs-4">
             		 <div class="form-group">
             			<label for="nombre">Nombre</label>
             			<input type="text" name="nombre" id="nombre" required value="{{old('nombre')}}" onchange="conMayusculas(this)" class="form-control" placeholder="Nombre...">
@@ -31,7 +31,7 @@ $idv=0;
 					</div>
 					<input type="hidden" name="mutil" id="mutil" required value="{{$empresa->calc_util}}" class="form-control">
             	</div>
-            <div class="col-lg-3 col-sm-3 col-md-3 col-xs-6">
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-4">
             	 <div class="form-group">
             			<label >Categoria</label><?php if ($cntcat=0){?><span class='text-danger'> <a href="{{route('newcategoria')}}">Debe Registrar Categoria¡¡ </a></span> <?php } ?>
             			<select name="idcategoria" id="idcategoria" class="form-control">
@@ -42,22 +42,20 @@ $idv=0;
             	       				
             		</div>
             </div>
-			<div class="col-lg-3 col-sm-3 col-md-3 col-xs-6">
-                  <div class="form-group"></br>
-                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                      <input type="checkbox" name="serial" class="custom-control-input" id="customSwitch3">
-                      <label class="custom-control-label" for="customSwitch3">¿Usa Seriales?</label>
-                    </div>
-                  </div>
-            </div>
-            	<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-4">
             	 <div class="form-group">
             			<label for="codigo">Codigo</label> <i class="fa fa-fw fa-exchange" title="Generar Codigo" id="generar"></i>
             			<input type="text" name="codigo" id="codigo" required value="{{old('codigo')}}" class="form-control" placeholder="Codigo...">
 						@if($errors->first('codigo'))<P class='text-danger'>{{$errors->first('codigo')}}</p>@endif
 					</div>
             </div>
-			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-6"> 
+            	 <div class="form-group">
+            			<label for="stock">Cod. Web</label>          
+                  <input type="text" name="codweb"  id="cod2" placeholder="Barcode" class="form-control">         			
+            		</div>
+            </div>
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
             	 <div class="form-group">
             			<label for="codigo">Fraccion</label>
             			<input type="number" name="fraccion"  min="0.1" required value="{{old('fraccion')}}" class="form-control" placeholder="1,0.25,0.5">
@@ -92,20 +90,33 @@ $idv=0;
             			<input type="text" name="volumen"   id="volumen" disabled  value="0" class="form-control" placeholder="volumen...">
             		</div>
             </div>
-			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12" style="display:none">
             	 <div class="form-group">
             			<label for="stock">Grados </label>          
                   <input type="text" name="grados"  value="{{old('grados')}}" id="grados" disabled class="form-control" placeholder="grados...">         			
             		</div>
             </div>
-
+			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            	 <div class="form-group">
+            			<label for="stock">Peso Unidad(Kg) </label>          
+                  <input type="number" name="peso"  id="peso" required value="0.01" min="0.01" class="form-control">         			
+            		</div>
+            </div>
+						<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+                  <div class="form-group"></br>
+                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                      <input type="checkbox" name="serial" class="custom-control-input" id="customSwitch3">
+                      <label class="custom-control-label" for="customSwitch3">¿Usa Seriales?</label>
+                    </div>
+                  </div>
+            </div>
              <div class="col-lg-4 col-sm-4 col-md-6 col-xs-12">
             	 <div class="form-group">
             			<label for="descripcion">Descripcion</label>
             			<input type="text" name="descripcion" required value="{{old('descripcion')}}" class="form-control" placeholder="Descripcion..">
             		</div>
             </div>
-            <div class="col-lg-4 col-sm-4 col-md-6 col-xs-12">
+            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
             	 <div class="form-group">
             			<label for="imagen">Imagen</label>
             			<input type="file" name="imagen"  class="form-control">
@@ -162,7 +173,8 @@ $idv=0;
                               <label for="precio2">Precio 3</label>
                               <input type="text" value="" name="precio3" step="0.01"  id="precio3" placeholder="Precio 3"  class="form-control">
                  </div>         </div>			
-            </div>                           
+            </div> 
+			
  			<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" align="center" <?php if ($cntcat=0){?>  style="display: none" <?php } ?>>
             	 <div class="form-group">
 					<button class="btn btn-danger btn-sm" type="reset" id="btncancelar">Cancelar</button>

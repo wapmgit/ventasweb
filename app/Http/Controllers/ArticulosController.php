@@ -67,6 +67,7 @@ class ArticulosController extends Controller
 		$articulo=new Articulos;
         $articulo->idcategoria=$cat[0];
         $articulo->codigo=$request->get('codigo');
+        $articulo->codweb=$request->get('codweb');
         $articulo->nombre=$request->get('nombre');
         $articulo->stock=0;
         $articulo->descripcion=$request->get('descripcion');
@@ -75,6 +76,7 @@ class ArticulosController extends Controller
         $articulo->cntxund=$request->get('cntxund');
         $articulo->fraccion=$request->get('fraccion');
         $articulo->volumen=$request->get('volumen');
+        $articulo->peso=$request->get('peso');
         $articulo->grados=$request->get('grados');
         $articulo->utilidad=$request->get('utilidad');
         $articulo->precio1=$request->get('precio1');
@@ -130,6 +132,7 @@ class ArticulosController extends Controller
         $articulo=Articulos::findOrFail($request->get('id'));
         $articulo->idcategoria=$cat[0];
         $articulo->codigo=$request->get('codigo');
+		$articulo->codweb=$request->get('codweb');
         $articulo->nombre=$request->get('nombre');
         $articulo->stock=$request->get('stock');
         $articulo->descripcion=$request->get('descripcion');
@@ -138,9 +141,10 @@ class ArticulosController extends Controller
 		$articulo->cntxund=$request->get('cntxund');
 		$articulo->fraccion=$request->get('fraccion');
         $articulo->volumen=$request->get('volumen');
+		$articulo->peso=$request->get('peso');
         $articulo->grados=$request->get('grados');
         $articulo->utilidad=$request->get('utilidad');
-        $articulo->utilidad=$request->get('utilidad');
+
         $articulo->precio1=$request->get('precio1');
 			if($request->get('precio2')==NULL){
 			$articulo->precio2=$request->get('precio1');}else{
