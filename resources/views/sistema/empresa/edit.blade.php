@@ -258,6 +258,15 @@
                     </div>
                     </td>
 				</tr>
+				<tr>
+                    <td>¿Imprimir Items y Peso en Factura?</td>                
+                    <td class="text-right py-0 align-middle">
+					<div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                      <input type="checkbox" name="printpeso" <?Php if($empresa->printpeso==1) echo "checked"; ?> class="custom-control-input" id="customSwitch1b">
+                      <label class="custom-control-label" for="customSwitch1b"></label>
+                    </div>
+                    </td>
+				</tr>
                 </tbody>
               </table>
             </div>

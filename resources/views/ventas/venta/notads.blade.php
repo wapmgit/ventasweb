@@ -97,7 +97,9 @@ function truncar($numero, $digitos)
 					<td ><b>TOTAL:</b></td>
 					<td colspan="7" align="right"><b><font size="4"><?php echo "$ ".number_format(($acumsub), 2,',','.')." "; ?>&nbsp;</b></font></td>
 				</tr>
+				<?php if($empresa->printpeso ==1){?> 
 				<tr><td colspan="7"><b>Items:</b> <?php echo $cntline;  ?>, <b>Peso Total: </b> <?php echo $acumpeso; ?> Kg.</td></tr>
+			<?php } ?>
 			</table>
         </div>                   
 		@if(Auth::user()->nivel=="A")

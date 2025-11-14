@@ -93,8 +93,10 @@ function truncar($numero, $digitos)
                           <th colspan="7">TOTAL:</th>
                           <th ><b><font size="4"><?php echo "Bs ".number_format(($acumsub), 2,',','.'); ?> </b></font></th>
                           </tfoot>
+						  <?php if($empresa->printpeso ==1){?> 
 						  <tr><td colspan="7"><b>Items:</b> <?php echo $cntline;  ?>, <b>Peso Total: </b> <?php echo $acumpeso; ?> Kg.</td></tr>
-            </table>
+           <?php } ?>
+		   </table>
 
 										  <table width="100%"><tr>
 	<td align="right"><b>Exento Bs: </b></td><td><b><font size="3"  align="center"><?php echo number_format(($venta->texe), 2,',','.'); ?> </b></td>			  
