@@ -139,6 +139,7 @@ class ReportesarticulosController extends Controller
             -> select('codigo','nombre',$p,'imagen','unidad')
             ->where('imagen','<>',"ninguna.jpg")
 			-> where('stock','>',0)
+			->where('showlista','=',1)
 			->OrderBy('nombre','asc')
             ->get(); 
 			 }
@@ -146,6 +147,7 @@ class ReportesarticulosController extends Controller
             $datos=DB::table('articulos')                
             -> select('codigo','nombre',$p,'imagen','unidad')
 			-> where('stock','>',0)
+			->where('showlista','=',1)
             ->where('imagen','<>',"ninguna.jpg")
 			->OrderBy($ord,'asc')
             ->get(); 	 
@@ -155,6 +157,7 @@ class ReportesarticulosController extends Controller
             -> select('codigo','nombre',$p,'imagen','unidad')
 			-> where('idcategoria','=',$query)
 			-> where('stock','>',0)
+			->where('showlista','=',1)
             ->where('imagen','<>',"ninguna.jpg")
 			->OrderBy($ord,'asc')
             ->get(); 	 
