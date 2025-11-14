@@ -41,7 +41,7 @@ function truncar($numero, $digitos)
 	</table>
 	</div>
 
-<?php $des=$aux=$subbs=0; $acumsub=0; $cntline=$cntser=0;?>
+<?php $des=$aux=$subbs=0; $acumsub=0; $cntline=$cntser=0; $acumpeso=0;?>
 </div>
 <div class ="row">
                                               
@@ -61,7 +61,9 @@ function truncar($numero, $digitos)
                  
                       <tbody>
                         @foreach($detalles as $det)
-						<?php $cntline++; $acumsub=$acumsub+($det->precio_venta*$det->cantidad);?>
+						<?php $cntline++; 
+						$acumsub=$acumsub+($det->precio_venta*$det->cantidad);
+						$acumpeso=$acumpeso+($det->cantidad*$det->peso);?>
                         <tr >
 						     <td>{{$det->codigo}}</td>
                           <td>{{$det->articulo}}</td>
@@ -91,10 +93,11 @@ function truncar($numero, $digitos)
                       </tbody>
             </table>
 			  <table id="detalles" width="100%" border="1">
-			               <tr>      
+				<tr>      
 					<td ><b>TOTAL:</b></td>
 					<td colspan="7" align="right"><b><font size="4"><?php echo "$ ".number_format(($acumsub), 2,',','.')." "; ?>&nbsp;</b></font></td>
-		</tr>
+				</tr>
+				<tr><td colspan="7"><b>Items:</b> <?php echo $cntline;  ?>, <b>Peso Total: </b> <?php echo $acumpeso; ?> Kg.</td></tr>
 			</table>
         </div>                   
 		@if(Auth::user()->nivel=="A")

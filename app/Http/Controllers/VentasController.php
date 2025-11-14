@@ -507,7 +507,6 @@ public function recibo($id){
             return view("ventas.venta.recibobs",["venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
 }
 public function show(Request $request, $id){
-
 			$ruta=$_SERVER["HTTP_REFERER"];
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$c1= substr($ruta,$empresa->caracteres);				//modelo juancho
@@ -520,7 +519,7 @@ public function show(Request $request, $id){
             -> first();
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.codigo','a.idarticulo','a.nombre as articulo','a.iva','a.unidad','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
+            -> select('a.peso','a.codigo','a.idarticulo','a.nombre as articulo','a.iva','a.unidad','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
             -> where ('dv.idventa','=',$id)
             ->get();
 			
@@ -537,7 +536,7 @@ public function show(Request $request, $id){
             return view("ventas.venta.show",["retencion"=>$retencion,"ruta"=>$c1,"seriales"=>$seriales,"venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
 }
 public function fbs($id){
-	//dd($id);
+//dd($id);
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$venta=DB::table('venta as v')
 			->join('formalibre as fl','fl.idventa','v.idventa')
@@ -548,7 +547,7 @@ public function fbs($id){
 			//dd($venta);
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.idarticulo','dv.idarticulo','a.nombre as articulo','a.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
+            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','a.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
             -> where ('dv.idventa','=',$id)
             ->get();
 			
@@ -573,7 +572,7 @@ public function notabs($id){
 			//dd($venta);
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.idarticulo','dv.idarticulo','a.nombre as articulo','a.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','dv.precio')
+            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','a.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','dv.precio')
             -> where ('dv.idventa','=',$id)
             ->get();
 			
@@ -598,7 +597,7 @@ public function notads($id){
 			//dd($venta);
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.idarticulo','dv.idarticulo','a.nombre as articulo','a.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','dv.precio')
+            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','a.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','dv.precio')
             -> where ('dv.idventa','=',$id)
             ->get();
 			
@@ -657,9 +656,10 @@ public function notads($id){
     }
 	public function facturar(Request $request, $idcliente){
 		//dd($request);
-				$rol=DB::table('roles')-> select('crearventa')->where('iduser','=',$request->user()->id)->first();	
+		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->crearventa==1){
 	     $monedas=DB::table('monedas')->get();
+		 $rutas=DB::table('rutas')->get();
 	     $vendedor=DB::table('vendedores')->get();
 		 $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
          $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.nombre','clientes.cedula','clientes.tipo_cliente','vendedores.comision','vendedores.id_vendedor as nombrev')
@@ -669,14 +669,14 @@ public function notads($id){
          ->get();
          $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
       //dd($contador);
-        $articulos =DB::table('articulos as art')
-         -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion')
-         -> where('art.estado','=','Activo')
-         -> where ('art.stock','>','0')
-         ->groupby('articulo','art.idarticulo','art.stock')
-         -> get();
+         $articulos =DB::table('articulos as art')
+        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3')
+        -> where('art.estado','=','Activo')
+        -> where ('art.stock','>','0')
+        ->groupby('art.idarticulo')
+        -> get();
 		    $seriales =DB::table('seriales')->where('estatus','=',0)->get();
-     return view("ventas.venta.create",["seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"monedas"=>$monedas,"articulos"=>$articulos,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
+     return view("ventas.venta.create",["rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"monedas"=>$monedas,"articulos"=>$articulos,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
 	    } else { 
 	return view("reportes.mensajes.noautorizado");
 	}

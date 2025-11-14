@@ -12,7 +12,7 @@ function add_ceros($numero,$ceros) {
 return $insertar_ceros = $recibo.$numero;
 };
 $cntser=0;
-$cntline=$cntser=0;
+$cntline=$cntser=0; $acumpeso=0;
 ?>
 	<div class="invoice p-3 mb-3">		
 		<!-- title row -->
@@ -53,8 +53,11 @@ $cntline=$cntser=0;
                       </thead>
                       <tbody>
                         @foreach($detalles as $det)
-						<?php $cntline++; 
-						if ($det->cantidad>0){?>
+						<?php
+						if ($det->cantidad>0){ 
+							$cntline++; 
+							$acumpeso=$acumpeso+($det->cantidad*$det->peso);
+							?>
                         <tr >
 						  <td><?php echo $det->codigo; ?></td>
                           <td>{{$det->articulo}} <?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?></td>
@@ -85,7 +88,8 @@ $cntline=$cntser=0;
 						<th>Codigo <?php echo " :".number_format(($venta->total_venta), 2,',','.'); ?></th>						   
                           <th colspan="6"><div align="right">TOTAL: </div></th>
                           <th align="center"><b><font size="4"><?php echo " Bs ".number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> </b></font></th>
-                          </tfoot>
+                          <tr><td colspan="6"><b>Items:</b> <?php echo $cntline;  ?>, <b>Peso Total: </b> <?php echo $acumpeso; ?> Kg.</td></tr>
+						  </tfoot>
             </table>
 	
         </div>                   

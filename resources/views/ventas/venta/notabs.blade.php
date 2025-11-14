@@ -30,7 +30,7 @@ function truncar($numero, $digitos)
 	</table>
 	</div>
 
-<?php $des=$aux=$subbs=0; $acumsub=0; $cntline=$cntser=0;?>
+<?php $des=$aux=$subbs=0; $acumsub=0; $cntline=$cntser=0; $acumpeso=0;?>
 </div>
 <div class ="row">
                                               
@@ -50,7 +50,7 @@ function truncar($numero, $digitos)
                  
                       <tbody>
                         @foreach($detalles as $det)
-						<?php $cntline++; ?>
+						<?php $cntline++; $acumpeso=$acumpeso+($det->cantidad*$det->peso); ?>
                         <tr >
 						     <td>{{$det->codigo}}-{{$det->idarticulo}}</td>
                           <td>{{$det->articulo}} <?php if($det->iva>0){echo "(G)"; 
@@ -93,6 +93,7 @@ function truncar($numero, $digitos)
                           <th colspan="7">TOTAL:</th>
                           <th ><b><font size="4"><?php echo "Bs ".number_format(($acumsub), 2,',','.'); ?> </b></font></th>
                           </tfoot>
+						  <tr><td colspan="7"><b>Items:</b> <?php echo $cntline;  ?>, <b>Peso Total: </b> <?php echo $acumpeso; ?> Kg.</td></tr>
             </table>
 
 										  <table width="100%"><tr>
