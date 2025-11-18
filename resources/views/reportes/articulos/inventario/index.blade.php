@@ -26,7 +26,11 @@
 					<div class="col-sm-4 invoice-col">
 
 				  <h4>Articulos de Inventario</h4>
-             
+             <div id="conf"><tr><td><b>Ocultar</b></td>
+			 <td>Cod WEb  <input type="checkbox"  id="mcodweb"></td>
+			 <td>Unidad  <input  type="checkbox"  id="muni"></td>
+			 <td>Peso <input  type="checkbox" id="mpeso"></td></tr>
+			 </div>
 				</div>
               </div>
               <!-- /.row -->
@@ -38,7 +42,10 @@
 					 <thead style="background-color: #A9CCE3 !important">
 
 					<th id="pd">Codigo <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarpd"></i></th>
-					<th>Nombre</th>
+					<td ><b>CodigoWeb </b></td>
+					<td><b>Nombre</b></td>
+					<td ><b>Unidad</b></td>
+					<td ><b>Peso</b></td>
 					<th>Stock</th>
 					<th id="ad">Apart. <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarad"></i></th>
 					<th>Costo</th>
@@ -59,7 +66,10 @@
 					?> 
 
 					<td class="filap1"><small>{{ $q->codigo}}</small></td>
+					<td ><small>{{ $q->codweb}}</small></td>
 					<td>{{ $q->nombre}}</td>
+					<td>{{ $q->unidad}}</td>
+					<td>{{ $q->peso}}</td>
 					<td>{{ $q->stock}}</td>
 					<td class="filaad">{{ $q->apartado}}</td>
 					<td><?php echo number_format( $q->costo, 2,',','.'); ?></td>
@@ -73,7 +83,10 @@
 				@endforeach
 				<tr >
 				<td class="filap1"></td> 
+				<td></td>
 				  <td ><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
+				  <td></td>
+				  <td></td>
 				  <td><?php echo "".number_format($costoacum, 2,',','.').""; ?></td>
 				  <td class="filaad"><?php echo "".number_format($apart, 2,',','.').""; ?></td>
 				  <td ><?php echo "".number_format($costo, 2,',','.')." $"; ?></td>
@@ -104,13 +117,31 @@
 $(document).ready(function(){
     $('#imprimir').click(function(){
 	document.getElementById('imprimir').style.display="none";
+	document.getElementById('conf').style.display="none";
+	document.getElementById('ocultarad').style.display="none";
+	document.getElementById('ocultarp1').style.display="none";
+	document.getElementById('ocultarp2').style.display="none";
+	document.getElementById('ocultarpd').style.display="none";
 	window.print(); 
 	window.location="{{route('reportearticulos')}}";
     });
 	$('#ocultarpd').click(function(){
 		document.getElementById('pd').style.display="none";
-		$(".filap1").remove();
+		$(".filap1").remove(); 
     });
+		$('#mcodweb').click(function(){
+			$(".codweb").toggle();
+			$('td:nth-child(2)').toggle();	
+    });
+			$('#muni').click(function(){
+			$(".uni").toggle();
+			$('td:nth-child(4)').toggle();	
+    });
+				$('#mpeso').click(function(){
+			$(".uni").toggle();
+			$('td:nth-child(5)').toggle();	
+    })
+	
 		$('#ocultarad').click(function(){
 		document.getElementById('ad').style.display="none";
 		$(".filaad").remove();
