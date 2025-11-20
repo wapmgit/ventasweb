@@ -26,7 +26,7 @@
                 <!-- /.col -->
 				<div class="col-sm-4 invoice-col">
 
-				  <h4>Articulos sin Existencias</h4>
+				  <h4>Articulos con Stock Minimo </h4>
               
 				</div>
               </div>
@@ -40,6 +40,7 @@
 						<th>Codigo</th>
 						<th>Nombre</th>
 						<th>Existencia</th>
+						<th>Minimo</th>
 						<th>Costo</th>
 					  <th>Iva</th>
 					  <th>Utilidad</th>
@@ -48,14 +49,18 @@
 					  <th>Precio 2</th>					
 						</thead><?php $count=0; $costo=0;$costoacum=0; $precioacum=0;?>
 						@foreach ($lista as $q)
-							<tr> <?php $count++; 
+						<?php $count++; 
+							if($q->stock <= $q->minimo){
 							$costoacum=$q->stock+$costoacum;
 							$costo=$costo+($q->costo*$q->stock);
 							$precioacum=$q->stock*$q->precio1+$precioacum;
 							?> 
+							<tr> 
 							<td>{{ $q->codigo}}</td>
 							<td>{{ $q->nombre}}</td>
 							<td>{{ $q->stock}}</td>
+							<td>{{ $q->minimo}}</td>
+							
 							  <td><?php echo number_format( $q->costo, 2,',','.'); ?></td>
 							  <td>{{ $q->iva}} %</td>
 							<td>{{$q->utilidad}} %</td>
@@ -63,11 +68,13 @@
 							<td>{{$q->util2}} %</td>
 							<td><?php echo number_format( $q->precio2, 2,',','.'); ?></td>  
 							</tr>
+							<?php } ?>
 						@endforeach
 							<tr style="background-color: #E6E6E6" >
 						  <td colspan="2"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
 						  <td></td>
 						  <td ></td>
+						  <td></td>
 						  <td></td>
 						  <td></td>
 						  <td></td>

@@ -55,7 +55,7 @@ $idv=0;
                   <input type="text" name="codweb"  id="cod2" placeholder="Barcode" class="form-control">         			
             		</div>
             </div>
-			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+			<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
             	 <div class="form-group">
             			<label for="codigo">Fraccion</label>
             			<input type="number" name="fraccion"  min="0.1" required value="{{old('fraccion')}}" class="form-control" placeholder="1,0.25,0.5">
@@ -102,11 +102,21 @@ $idv=0;
                   <input type="number" name="peso"  id="peso" required value="0.01" min="0.01" class="form-control">         			
             		</div>
             </div>
+				<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
+            	 <div class="form-group">
+            			<label for="codigo">Stock Min.</label>
+            			<input type="number" name="min"  min="0.1" required value="0" class="form-control">
+            		</div>
+            </div>
 						<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
                   <div class="form-group"></br>
                     <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                       <input type="checkbox" name="serial" class="custom-control-input" id="customSwitch3">
                       <label class="custom-control-label" for="customSwitch3">¿Usa Seriales?</label>
+                    </div>
+					<div class="custom-control custom-switch  custom-switch-on-success custom-switch-off-danger">
+                      <input type="checkbox" name="showlista" class="custom-control-input" id="customSwitch4">
+                      <label class="custom-control-label" for="customSwitch4">¿lista de Precios?</label>
                     </div>
                   </div>
             </div>

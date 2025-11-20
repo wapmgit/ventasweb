@@ -515,7 +515,7 @@
               <li class="nav-item">
                 <a href="{{route('stockcero')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Existencia Cero</p>
+                  <p>Reporte de Stock Min. </p>
                 </a>
               </li>
 				<li class="nav-item">

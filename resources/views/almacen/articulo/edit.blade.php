@@ -20,14 +20,14 @@
 	        <form action="{{route('updatearticulo')}}" id="formulario" method="POST" enctype="multipart/form-data" >       
         {{csrf_field()}}
  <div class="row">
-            	<div class="col-lg-6 col-sm-6 col-md-6 col-xs-4">
+            	<div class="col-lg-6 col-sm-6 col-md-12 col-xs-12">
             		 <div class="form-group">
             			<label for="nombre">Nombre</label>
             			<input type="text" name="nombre" id="nombre" onchange="conMayusculas(this)"  required value="{{$articulo->nombre}}" class="form-control" placeholder="Nombre...">
             		<input type="hidden" name="id"  value="{{$articulo->idarticulo}}" class="form-control">
 					</div>
             	</div>
-          	<div class="col-lg-2 col-sm-2 col-md-2 col-xs-4">
+          	<div class="col-lg-2 col-sm-2 col-md-6 col-xs-6">
             	 <div class="form-group">
             			<label >Categoria</label>
             			<select name="idcategoria" id="idcategoria" class="form-control selectpicker" data-live-search="true">
@@ -42,7 +42,7 @@
             			
             		</div>
             </div>
-			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-4">			
+			<div class="col-lg-2 col-sm-2 col-md-6 col-xs-6">			
             	 <div class="form-group">
             			<label for="codigo">Codigo</label>
             			<input type="text" name="codigo" required value="{{$articulo->codigo}}" class="form-control">
@@ -55,12 +55,13 @@
             		</div>
             </div>
 
- 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
-            	 <div class="form-group">
+ 			 			<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
+				 <div class="form-group">
             			<label for="codigo">Fraccion</label>
             			<input type="number" name="fraccion"  min="0.1" required value="{{$articulo->fraccion}}" class="form-control">
             		</div>
-            </div>
+            		</div>
+
 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Unidad </label>                      
@@ -103,6 +104,12 @@
             	 <div class="form-group">
             			<label for="stock">Peso Unidad(Kg) </label>          
                   <input type="number" name="peso"  id="peso" required value="{{$articulo->peso}}" min="0.01" class="form-control">         			
+            		</div>
+            </div>
+	<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
+            	 <div class="form-group">
+            			<label for="codigo">Stock Min.</label>
+            			<input type="number" name="min"  min="0.1" required value="{{$articulo->min}}" class="form-control">
             		</div>
             </div>
 									<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
@@ -162,12 +169,12 @@
                               <label for="precio2">Precio 2</label>
                               <input type="text" value="{{$articulo->precio2}}" name="precio2" step="0.01"  id="precio2" class="form-control">
                  </div>         </div>
-				 <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+				 <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2">
                  <div class="form-group">
                               <label for="util2">Utilidad 3</label>
                               <input type="number" value="{{$articulo->util3}}"  name="util3" id="util3" step="0.01" class="form-control">
                  </div>         </div>
-                 <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
+                 <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2">
                  <div class="form-group">
                               <label for="precio2">Precio 3</label>
                               <input type="text" value="{{$articulo->precio3}}" name="precio3" step="0.01"  id="precio3" class="form-control">

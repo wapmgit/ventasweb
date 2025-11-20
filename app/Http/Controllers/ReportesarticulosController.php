@@ -118,15 +118,16 @@ class ReportesarticulosController extends Controller
     {   
         $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
         $lista=DB::table('articulos')
-		->where('stock','<=',0)
-		->OrderBy('articulos.nombre')
+		->where('estado','=',"Activo")
+		->OrderBy('nombre')
         ->get();
+	
         return view('reportes.articulos.inventario.cero',["lista"=>$lista,"empresa"=>$empresa]);
             
     }
 	public function catalogo(Request $request)
     {
-		//dd($request);
+		
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
              $precio=trim($request->get('precio'));
              $orden=trim($request->get('orden'));

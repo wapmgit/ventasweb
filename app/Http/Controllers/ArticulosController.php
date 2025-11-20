@@ -77,6 +77,8 @@ class ArticulosController extends Controller
         $articulo->fraccion=$request->get('fraccion');
         $articulo->volumen=$request->get('volumen');
         $articulo->peso=$request->get('peso');
+		$articulo->minimo=$request->get('min');
+       if(!$request->get('showlista')){$articulo->showlista=0;}else{$articulo->showlista=1;}
         $articulo->grados=$request->get('grados');
         $articulo->utilidad=$request->get('utilidad');
         $articulo->precio1=$request->get('precio1');
@@ -142,6 +144,7 @@ class ArticulosController extends Controller
 		$articulo->fraccion=$request->get('fraccion');
         $articulo->volumen=$request->get('volumen');
 		$articulo->peso=$request->get('peso');
+		$articulo->minimo=$request->get('min');
         $articulo->grados=$request->get('grados');
         $articulo->utilidad=$request->get('utilidad');
 
