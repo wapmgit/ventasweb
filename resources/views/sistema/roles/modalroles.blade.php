@@ -123,122 +123,134 @@
 				  </div>
                   <div class="tab-pane fade" id="custom-tabs-one-profile{{$q->id}}" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab{{$q->id}}">
                    <div  class="row">
-				   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				   <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Crear Compras: </label><label>
 					  <input type="checkbox" name="op9" class="minimal" @if($q->crearcompra==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Anular Compras: </label><label>
 					  <input type="checkbox" name="op10" class="minimal" @if($q->anularcompra==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+					 <div class="form-group">
+					 <label>Anular Recibo Compra: </label><label>
+					  <input type="checkbox" name="op71" class="minimal" @if($q->anularrc==1) checked @endif ></label>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Crear Venta: </label><label>
 					  <input type="checkbox" name="op11" class="minimal" @if($q->crearventa==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Anular Venta: </label><label>
 					  <input type="checkbox" name="op12" class="minimal" @if($q->anularventa==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+					 <div class="form-group">
+					 <label>Anular Recibo Venta: </label><label>
+					  <input type="checkbox" name="op70" class="minimal" @if($q->anularrv==1) checked @endif ></label>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Crear Gasto: </label><label>
 					  <input type="checkbox" name="op13" class="minimal" @if($q->creargasto==1) checked @endif ></label>
 
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Anular Gasto: </label><label>
 					  <input type="checkbox" name="op14" class="minimal"@if($q->anulargasto==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Abonar Compras: </label><label>
 					  <input type="checkbox" name="op15" class="minimal" @if($q->abonarcxp==1) checked @endif ></label>			
 					</div>
 				</div>		
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Crear Ajuste: </label><label>
 					  <input type="checkbox" name="op17" class="minimal" @if($q->crearajuste==1) checked @endif ></label>			
 					</div>
 				</div>		
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Abonar Gastos: </label><label>
 					  <input type="checkbox" name="op21" class="minimal" @if($q->abonargasto==1) checked @endif ></label>			
 					</div>
 				</div>					
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Abonar Ventas: </label><label>
 					  <input type="checkbox" name="op16" class="minimal" @if($q->abonarcxc==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Crear Pedidos: </label><label>
 					  <input type="checkbox" name="op20" class="minimal" @if($q->crearpedido==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Anular Pedido: </label><label>
 					  <input type="checkbox" name="op29" class="minimal" @if($q->anularpedido==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Importar Pedido: </label><label>
 					  <input type="checkbox" name="op30" class="minimal" @if($q->importarpedido==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Modificar Pedido: </label><label>
 					  <input type="checkbox" name="op31" class="minimal" @if($q->editpedido==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Crear Apartado: </label><label>
 					  <input type="checkbox" name="op61" class="minimal" @if($q->newapartado==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Anular Apartado: </label><label>
 					  <input type="checkbox" name="op62" class="minimal" @if($q->anularapartado==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Abonar Apartado: </label><label>
 					  <input type="checkbox" name="op63" class="minimal" @if($q->abonarapartado==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Convertir NE en FAC: </label><label>
 					  <input type="checkbox" name="op66" class="minimal" @if($q->importarne==1) checked @endif ></label>
 					</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Cambiar Precio de Venta: </label><label>
 						<input type="checkbox" name="op68" class="minimal" @if($q->cambiarprecioventa==1) checked @endif ></label>
 						</div>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
 						<label>Ajustar Fecha de Venta: </label><label>
 						<input type="checkbox" name="op69" class="minimal" @if($q->editfecha==1) checked @endif ></label>

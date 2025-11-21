@@ -45,9 +45,9 @@ $cefe=0;?>
 					@foreach ($cobranza as $cob)
 					<?php   if($cob->tiporecibo=="A") { $tcobranza=$tcobranza+$cob->monto;?> 		 
 					<tr>
-						<td><?php if ($cob->monto>0){?>
+						<td>@if($rol->anularrv==1)<?php if ($cob->monto>0){?>
 							<a href="" data-target="#modal-delete-{{$cob->idrecibo}}" data-toggle="modal" ><button class="btn btn-danger btn-xs" >X</button></a>	
-							<?php } ?>
+							<?php } ?>@endif
 						{{$cob->idrecibo}}</td>
 						<td>{{$cob->vendedor}}</td>
 						<td>{{$cob->nombre}}</td>
@@ -80,9 +80,10 @@ $cefe=0;?>
 		         @foreach ($cobranza as $cob)
 					<?php   if($cob->tiporecibo=="P") { $tventas=$tventas+$cob->monto;?> 
 					<tr>
-						<td><?php if ($cob->monto>0){?>
+						
+						<td>@if($rol->anularrv==1) <?php if ($cob->monto>0){?>
 						<a href="" data-target="#modal-delete-{{$cob->idrecibo}}" data-toggle="modal" ><button class="btn btn-danger btn-xs" >X</button></a>	
-						<?php } ?>
+						<?php } ?> @endif
 						{{$cob->idrecibo}}</td>
 						<td>{{$cob->vendedor}}</td>
 						<td>{{$cob->nombre}}</td>

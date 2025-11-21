@@ -193,7 +193,7 @@ class ReportescomprasController extends Controller
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		if ($request)
         {				
-			$rol=DB::table('roles')-> select('rdetallec')->where('iduser','=',$request->user()->id)->first();	
+			$rol=DB::table('roles')-> select('rdetallec','anularrc')->where('iduser','=',$request->user()->id)->first();	
 			if ($rol->rdetallec==1){
 			$corteHoy = date("Y-m-d");
             $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
@@ -230,7 +230,7 @@ class ReportescomprasController extends Controller
             ->get();
 			//dd($desglose);
 		   $query2=date("Y-m-d",strtotime($query2."- 1 days"));
-			return view('reportes.compras.pagos.index',["egresosnd"=>$egresosnd,"comprobante"=>$desglose,"empresa"=>$empresa,"gastos"=>$gastos,"pagos"=>$pagos,"searchText"=>$query,"searchText2"=>$query2]);
+			return view('reportes.compras.pagos.index',["rol"=>$rol,"egresosnd"=>$egresosnd,"comprobante"=>$desglose,"empresa"=>$empresa,"gastos"=>$gastos,"pagos"=>$pagos,"searchText"=>$query,"searchText2"=>$query2]);
 			} else { 
 	return view("reportes.mensajes.noautorizado");
 	}

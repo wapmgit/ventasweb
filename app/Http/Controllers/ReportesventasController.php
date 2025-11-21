@@ -357,7 +357,7 @@ class ReportesventasController extends Controller
         $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
       if ($request)
         {	
-		$rol=DB::table('roles')-> select('rdetallei')->where('iduser','=',$request->user()->id)->first();	
+		$rol=DB::table('roles')-> select('rdetallei','anularrv')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->rdetallei==1){
 			$corteHoy = date("Y-m-d");
             $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
@@ -448,7 +448,7 @@ class ReportesventasController extends Controller
 				->get();
 			   }
 		   $query2=date("Y-m-d",strtotime($query2."- 1 days"));
-			return view('reportes.ventas.cobranza.index',["apartado"=>$apartado,"comprobante"=>$comprobante,"vendedores"=>$vendedores,"empresa"=>$empresa,"cobranza"=>$cobranza,"searchText"=>$query,"searchText2"=>$query2,"ingresosnd"=>$ingresosnd,"recibonc"=>$recibonc]);
+			return view('reportes.ventas.cobranza.index',["rol"=>$rol,"apartado"=>$apartado,"comprobante"=>$comprobante,"vendedores"=>$vendedores,"empresa"=>$empresa,"cobranza"=>$cobranza,"searchText"=>$query,"searchText2"=>$query2,"ingresosnd"=>$ingresosnd,"recibonc"=>$recibonc]);
 			   } else { 
 			return view("reportes.mensajes.noautorizado");
 			}
