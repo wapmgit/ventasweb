@@ -114,7 +114,7 @@ $idv=0;
                       <input type="checkbox" name="serial" class="custom-control-input" id="customSwitch3">
                       <label class="custom-control-label" for="customSwitch3">¿Usa Seriales?</label>
                     </div>
-					<div class="custom-control custom-switch  custom-switch-on-success custom-switch-off-danger">
+					<div class="custom-control custom-switch  custom-switch-on-success custom-switch-off-danger ">
                       <input type="checkbox" name="showlista" class="custom-control-input" id="customSwitch4">
                       <label class="custom-control-label" for="customSwitch4">¿lista de Precios?</label>
                     </div>
@@ -197,6 +197,9 @@ $idv=0;
             @push('scripts')
 			<script>
 $(document).ready(function(){
+	const switchElement = document.getElementById('customSwitch4');
+	switchElement.checked = !switchElement.checked;
+
       $("#codigo").on("change",function(){
 		  	var nuevo=$("#codigo").val();
 			var pin2=nuevo.replace('-','/');

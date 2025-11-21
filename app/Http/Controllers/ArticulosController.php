@@ -78,7 +78,7 @@ class ArticulosController extends Controller
         $articulo->volumen=$request->get('volumen');
         $articulo->peso=$request->get('peso');
 		$articulo->minimo=$request->get('min');
-       if(!$request->get('showlista')){$articulo->showlista=0;}else{$articulo->showlista=1;}
+      if($request->get('showlista')=="on"){$articulo->showlista=1;}else{$articulo->showlista=0;}
         $articulo->grados=$request->get('grados');
         $articulo->utilidad=$request->get('utilidad');
         $articulo->precio1=$request->get('precio1');
