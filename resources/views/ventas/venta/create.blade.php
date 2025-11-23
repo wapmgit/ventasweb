@@ -372,6 +372,7 @@ $(document).ready(function(){
 		}
     })
     $('#guardar').click(function(){
+		limpiar();
 		var auxmonto=$("#divtotal").val();
 		auxmonto=parseFloat(auxmonto.replace(/,/g, ""))
                     .toFixed(2);
