@@ -166,7 +166,12 @@ return $insertar_ceros = $recibo.$numero;
                   </table>
 				  </div>
                     </div>
-
+             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="num_comprobante">Fecha: </label><?php echo " ".date("d-m-Y",strtotime($ingreso->fecha_hora)); ?>
+                   
+                </div>
+            </div> 
                 </div>
                 </div>
 				</div></div>
