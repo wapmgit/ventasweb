@@ -20,7 +20,7 @@ class ClientsApiController extends Controller
 
 	   $clients = DB::table('clientes as cli')
 		  ->join('vendedores as vend','vend.id_vendedor','=','cli.vendedor')	
-		 ->select(DB::raw('(space(12)*0) as cxc'),'cli.id_cliente','cli.nombre','cli.cedula','cli.cedula as rif','cli.direccion','cli.telefono','cli.diascredito as dias_credito','cli.vendedor','vend.comision')
+		 ->select(DB::raw('(space(12)*0) as cxc'),'cli.id_cliente','cli.nombre','cli.cedula','cli.cedula as rif','cli.direccion','cli.telefono','cli.diascredito as dias_credito','cli.tipo_precio','cli.vendedor','vend.comision')
 		 ->orderby('id_cliente','desc')
 		->where('status','=',"A")		 
 		 ->groupby('cli.id_cliente')
