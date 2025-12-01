@@ -174,6 +174,7 @@ $this->middleware('auth');
 		   $denomina=$request->get('denominacion');
            $tmonto=$request->get('tmonto');
            $tref=$request->get('tref');		 
+		    $fecha=$request->get('fecha');	
            $contp=0;
              while($contp < count($idpago)){
 				$recibo=new Recibos;
