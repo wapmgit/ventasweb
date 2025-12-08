@@ -42,7 +42,7 @@ class SendArticle extends Command
     {
 		$empresa=DB::table('empresa')->first();
 		$article = DB::table('articulos')->join('categoria as cat','cat.idcategoria','=','articulos.idcategoria')
-			->select ('articulos.idarticulo','articulos.codigo','articulos.nombre','articulos.costo','articulos.precio1','articulos.precio2','articulos.stock')
+			->select ('articulos.idarticulo','articulos.codigo','articulos.nombre','articulos.costo','articulos.precio1','articulos.precio2','articulos.stock','articulos.imagen','articulos.fraccion','articulos.cntxund')
 			->where('articulos.estado','=',"Activo")
 			->get(); 
 			$articlejs=json_encode($article);
