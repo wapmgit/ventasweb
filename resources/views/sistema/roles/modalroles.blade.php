@@ -216,6 +216,12 @@
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
+					 <label>Descargar Pedido Web: </label><label>
+					  <input type="checkbox" name="op72" class="minimal" @if($q->web==1) checked @endif ></label>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+					 <div class="form-group">
 					 <label>Modificar Pedido: </label><label>
 					  <input type="checkbox" name="op31" class="minimal" @if($q->editpedido==1) checked @endif ></label>
 					</div>

@@ -145,6 +145,7 @@ class SistemaController extends Controller
 		if ($request->get('op69')){ $data->editfecha=1; }else{ $data->editfecha=0; }
 		if ($request->get('op70')){ $data->anularrv=1; }else{ $data->anularrv=0; }
 		if ($request->get('op71')){ $data->anularrc=1; }else{ $data->anularrc=0; }
+		if ($request->get('op72')){ $data->web=1; }else{ $data->web=0; }
 		$data ->update();
 			
 		$user=DB::table('users')->join('roles','users.id','=','roles.iduser')
