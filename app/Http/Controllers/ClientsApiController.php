@@ -102,7 +102,8 @@ class ClientsApiController extends Controller
 				'clientes' => $clientesjs,
 				'ventas' => $ventasjs,			
 				'recibos' => $recibosjs,
-				'detalleventas' => $detalleventasjs				
+				'detalleventas' => $detalleventasjs,				
+				'tasadif' => $empresa->tasadif				
             ]);
 		//return $response->getBody();
 			
