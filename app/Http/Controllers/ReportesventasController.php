@@ -605,14 +605,17 @@ class ReportesventasController extends Controller
 			$query2 = date_create($query2);
             date_add($query2, date_interval_create_from_date_string('1 day'));
             $query2=date_format($query2, 'Y-m-d');
-            $datos=DB::table('detalle_venta as dv')            
+            $datos=DB::table('detalle_venta as dv') 
+			->join ('venta as ve', 've.idventa','=','dv.idventa') 			
              ->join ('articulos as a', 'a.idarticulo','=','dv.idarticulo') 
              ->join ('categoria as ca','ca.idcategoria','=','a.idcategoria')      
             -> select(DB::raw('avg(dv.precio_venta) as vpromedio'),DB::raw('sum(dv.cantidad) as vendido'),'a.nombre','a.precio1 as pventa','a.idarticulo','ca.nombre as grupo')
             ->whereBetween('dv.fecha', [$query, $query2])
-            ->groupby('dv.idarticulo','a.nombre')
+            ->where('ve.devolu','=',0)
+			->groupby('dv.idarticulo','a.nombre')
 			->OrderBy('a.nombre')
             ->get();
+		
 			$nvendedor="";
 		if($request->get('opcion')>0){	
 			if($request->get('opcion')==1){		
@@ -665,6 +668,7 @@ class ReportesventasController extends Controller
 			
 			   }
 			   }
+			
 			$query2=date("Y-m-d",strtotime($query2."- 1 days"));
 			return view('reportes.ventas.ventasarticulo.index',["rutas"=>$rutas,"clientes"=>$clientes,"persona"=>$nvendedor,"vendedores"=>$vendedores,"datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2,"opc"=>$request->get('opcion')]);
        	}
