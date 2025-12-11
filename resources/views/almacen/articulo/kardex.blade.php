@@ -22,7 +22,9 @@
 					<th>Entradas</th>
 					<th>Salidas</th>
 					<th>Stock</th>					
-				</thead><?php $stock=$articulo->stock; $comp=0; $vent=0; $de=0; $exis=0;$entra=0;$sale=0; $pago=0;?>
+				</thead>
+				<?php $stock=$articulo->stock; $comp=0; $vent=0; $acumajuou=$acumcompras=$acumventas=$acumajuin=0;
+				$de=0; $exis=0;$entra=0;$sale=0; $pago=0;?>
                @foreach ($datos as $compra)
 				<tr>            <?php 
 				$data=explode("-",$compra->documento);
@@ -32,16 +34,19 @@
 				<td><?php  echo  $fecha=date_format(date_create($compra->fecha),'d-m-Y h:i:s');?></td>
 				<td><?php 
 switch ($doc) {
-    case "VENT": ?>
+    case "VENT": $acumventas=$acumventas+$compra->cantidad;
+	?>
 			<a href="{{route('detalleventa',['id'=>$var])}}">{{$compra->documento}}</a>
 	<?php
         break;
-    case "COMP":
+    case "COMP": $acumcompras=$acumcompras+$compra->cantidad;
       ?>
 			<a href="{{route('detallecompra',['id'=>$var])}}">{{$compra->documento}}</a>
 	<?php
         break;
     case "AJUS":
+		 if($compra->tipo == 1){ $acumajuin=$acumajuin+$compra->cantidad;}
+		 if($compra->tipo == 2){ $acumajuou=$acumajuou+$compra->cantidad;}
         ?>
 			<a href="{{route('detalleajuste',['id'=>$var])}}">{{$compra->documento}}</a>
 	<?php
@@ -59,12 +64,18 @@ switch ($doc) {
 				</tr>
 				</table>
 			<table class="table table-striped table-bordered table-condensed table-hover">
-			<tr ><td colspan="5" align="center"><strong>Resumen</strong></td></tr> 
+			<tr ><td colspan="6" align="center"><strong>Resumen</strong></td></tr> 
 			<tr>
-			<td>Entradas:<?Php echo $entra;?></td>
-			<td>Salidas:<?Php echo $sale;?></td>		
-			<td>Apartado:{{$articulo->apartado}}</td>		
-			<td>Existencia:<?Php $exis=(($entra)-($sale+$articulo->apartado)); echo $exis;?></td>
+			<td><b>Compras:</b> <?Php echo $acumcompras;?></td>
+			<td><b>Ventas:</b> <?Php echo $acumventas;?></td>		
+			<td><b>Cargos:</b> <?Php echo $acumajuin;?></td>
+			<td><b>Descargos:</b> <?Php echo $acumajuou;?></td>
+			</tr>
+			<tr>
+			<td><b>Entradas:</b> <?Php echo $entra;?></td>
+			<td><b>Salidas:</b> <?Php echo $sale;?></td>		
+			<td><b>Apartado:</b> {{$articulo->apartado}}</td>		
+			<td><b>Existencia:</b> <?Php $exis=(($entra)-($sale+$articulo->apartado)); echo $exis;?></td>
 			</tr>
 			</table>
 		</div>
