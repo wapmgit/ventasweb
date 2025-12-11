@@ -15,14 +15,14 @@
     <div class="table-responsive">
         <h4 align="center"><strong>KARDEX DE UN ARTICULO:</strong> {{$articulo->nombre}} -> Stock: {{$articulo->stock}}</h4>
 	<div id="global">
-      <table width="100%">
-        <thead style="background-color: #E6E6E6">
-					<th>Fecha</th>
-					<th>Documento</th>
-					<th>Entradas</th>
-					<th>Salidas</th>
-					<th>Stock</th>					
-				</thead>
+		<table width="100%">
+			<thead style="background-color: #E6E6E6">
+						<th>Fecha</th>
+						<th>Documento</th>
+						<th>Entradas</th>
+						<th>Salidas</th>
+						<th>Stock</th>					
+			</thead>
 				<?php $stock=$articulo->stock; $comp=0; $vent=0; $acumajuou=$acumcompras=$acumventas=$acumajuin=0;
 				$de=0; $exis=0;$entra=0;$sale=0; $pago=0;?>
                @foreach ($datos as $compra)
@@ -33,55 +33,56 @@
 				$var=$iddoc."_".$compra->idarticulo;				?>
 				<td><?php  echo  $fecha=date_format(date_create($compra->fecha),'d-m-Y h:i:s');?></td>
 				<td><?php 
-switch ($doc) {
-    case "VENT": $acumventas=$acumventas+$compra->cantidad;
-	?>
-			<a href="{{route('detalleventa',['id'=>$var])}}">{{$compra->documento}}</a>
-	<?php
-        break;
-    case "COMP": $acumcompras=$acumcompras+$compra->cantidad;
-      ?>
-			<a href="{{route('detallecompra',['id'=>$var])}}">{{$compra->documento}}</a>
-	<?php
-        break;
-    case "AJUS":
-		 if($compra->tipo == 1){ $acumajuin=$acumajuin+$compra->cantidad;}
-		 if($compra->tipo == 2){ $acumajuou=$acumajuou+$compra->cantidad;}
-        ?>
-			<a href="{{route('detalleajuste',['id'=>$var])}}">{{$compra->documento}}</a>
-	<?php
-        break;
-		default:
-		   ?>
-			{{$compra->documento}}
-	<?php 
-	if($doc=="DEV:V"){$acumventas=$acumventas-$compra->cantidad;}
-	if($doc=="DEVP"){$acumventas=$acumventas-$compra->cantidad;}
-	if($doc=="DEV:C"){$acumcompras=$acumcompras-$compra->cantidad;}
-}
-?> </td>
+				switch ($doc) {
+					case "VENT": $acumventas=$acumventas+$compra->cantidad;
+					?>
+							<a href="{{route('detalleventa',['id'=>$var])}}">{{$compra->documento}}</a>
+					<?php
+						break;
+					case "COMP": $acumcompras=$acumcompras+$compra->cantidad;
+					  ?>
+							<a href="{{route('detallecompra',['id'=>$var])}}">{{$compra->documento}}</a>
+					<?php
+						break;
+					case "AJUS":
+						 if($compra->tipo == 1){ $acumajuin=$acumajuin+$compra->cantidad;}
+						 if($compra->tipo == 2){ $acumajuou=$acumajuou+$compra->cantidad;}
+						?>
+							<a href="{{route('detalleajuste',['id'=>$var])}}">{{$compra->documento}}</a>
+					<?php
+						break;
+						default:
+						   ?>
+							{{$compra->documento}}
+					<?php 
+					if($doc=="DEV:V"){$acumventas=$acumventas-$compra->cantidad;}
+					if($doc=="DEVP"){$acumventas=$acumventas-$compra->cantidad;}
+					if($doc=="DEV:C"){$acumcompras=$acumcompras-$compra->cantidad;}
+				}
+				?> </td>
 				<td> <?php  if($compra->tipo == 1){ $entra=$entra+ $compra->cantidad; ?>{{ $compra->cantidad}}<?php } ?></td>
 				<td> <?php  if($compra->tipo == 2){ $sale=$sale+ $compra->cantidad;?>{{ $compra->cantidad}}<?php } ?></td>
 				<td><?php $de=$entra-$sale; echo $de;?></td>
 				@endforeach
 				</tr>
-				</table>
+		</table>
+	
 		</div>
-				<table class="table table-striped table-bordered table-condensed table-hover">
-			<tr ><td colspan="6" align="center"><strong>Resumen</strong></td></tr> 
-			<tr>
-			<td><b>Compras:</b> <?Php echo $acumcompras;?></td>
-			<td><b>Ventas:</b> <?Php echo $acumventas;?></td>		
-			<td><b>Cargos:</b> <?Php echo $acumajuin;?></td>
-			<td><b>Descargos:</b> <?Php echo $acumajuou;?></td>
-			</tr>
-			<tr>
-			<td><b>Entradas:</b> <?Php echo $entra;?></td>
-			<td><b>Salidas:</b> <?Php echo $sale;?></td>		
-			<td><b>Apartado:</b> {{$articulo->apartado}}</td>		
-			<td><b>Existencia:</b> <?Php $exis=(($entra)-($sale+$articulo->apartado)); echo $exis;?></td>
-			</tr>
-			</table>
+		<table class="table table-striped table-bordered table-condensed table-hover">
+		<tr ><td colspan="6" align="center"><strong>Resumen</strong></td></tr> 
+		<tr>
+		<td><b>Compras:</b> <?Php echo $acumcompras;?></td>
+		<td><b>Ventas:</b> <?Php echo $acumventas;?></td>		
+		<td><b>Cargos:</b> <?Php echo $acumajuin;?></td>
+		<td><b>Descargos:</b> <?Php echo $acumajuou;?></td>
+		</tr>
+		<tr>
+		<td><b>Entradas:</b> <?Php echo $entra;?></td>
+		<td><b>Salidas:</b> <?Php echo $sale;?></td>		
+		<td><b>Apartado:</b> {{$articulo->apartado}}</td>		
+		<td><b>Existencia:</b> <?Php $exis=(($entra)-($sale+$articulo->apartado)); echo $exis;?></td>
+		</tr>
+		</table>
   </div>
   </div>
 		<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12"></br>

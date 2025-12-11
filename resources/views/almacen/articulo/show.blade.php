@@ -121,38 +121,45 @@ return $dias;
 				<div class="row">
 					<div class="col-6 table-responsive">
 					<table width="100%">
-				<thead><td colspan="4" align="center"  style="background-color: #E6E6E6"><strong>Resumen Compras</strong></td></thead>
+				<thead><td colspan="5" align="center"  style="background-color: #E6E6E6"><strong>Resumen Compras</strong></td></thead>
 				<thead>			
+					<th>Total Compras</th>						
 					<th>Total Comprado</th>
-					<th>Precio Promedio</th>					
-					<th>Total Compras</th>					
-					<th>Devoluciones</th>					
+					<th>Devoluciones</th>
+					<th>Compras Netas</th>
+					<th>Precio Promedio</th>									
+										
 					</thead>
 				<tr>
 					<?php  if (!empty($compras->cantidad)) {?>
-					<td><?php echo number_format($compras->cantidad,2,',','.');?> Unds.</td>
-					<td><?php echo number_format(($compras->precio/$compras->compra), 2,',','.'); ?> $</td>
-					<td>{{$compras->compra}}</td>					
-					<td><?php echo number_format($devcompras->devocompras,2,',','.');?> Unds.</td>	
+					<td align="center">{{$compras->compra}}</td>
+					<td align="center"><?php echo number_format($compras->cantidad,2,',','.');?> Unds.</td>
+					<td align="center"><?php echo number_format($devcompras->devocompras,2,',','.');?> Unds.</td>
+					<td align="center"><?php echo number_format(($compras->cantidad-$devcompras->devocompras),2,',','.');?> Unds.</td>
+					<td align="center"><?php echo number_format(($compras->precio/$compras->compra), 2,',','.'); ?> $</td>
+									
+					
 					<?php } ?>					
 				</tr>
 				</table></div>
 				
 				<div class="col-6 table-responsive">
 				<table width="100%">
-				<thead><td colspan="4" align="center"  style="background-color: #E6E6E6"><strong>Resumen Ventas</strong></td></thead>
-				<thead>			
+				<thead><td colspan="5" align="center"  style="background-color: #E6E6E6"><strong>Resumen Ventas</strong></td></thead>
+				<thead>		
+					<th>Total ventas</th>				
 					<th>Total Vendido</th>
-					<th>Precio  venta Promedio</th>					
-					<th>Total ventas</th>					
-					<th>Devoluciones</th>					
+					<th>Devoluciones</th>
+					<th>Ventas Netas</th>
+					<th>Precio  venta Promedio</th>																								
 					</thead>
 				<tr>
 				 <?php if (!empty($ventas->cantidad)){?>
-					<td><?php echo number_format( $ventas->cantidad,2,',','.');?> Unds.</td>
-					<td><?php echo number_format(($ventas->precio/$ventas->venta), 2,',','.'); ?> $</td>
-					<td>{{$ventas->venta}}</td>					
-					<td><?php echo number_format($deventas->devoventas,2,',','.');?> Unds.</td>	
+					<td align="center">{{$ventas->venta}}</td>		
+					<td align="center"><?php echo number_format( $ventas->cantidad,2,',','.');?> Unds.</td>
+					<td align="center"><?php echo number_format($deventas->devoventas,2,',','.');?> Unds.</td>		
+					<td align="center"><?php echo number_format(( $ventas->cantidad-$deventas->devoventas),2,',','.');?> Unds.</td>	
+					<td align="center"><?php echo number_format(($ventas->precio/$ventas->venta), 2,',','.'); ?> $</td>												
 				 <?php } ?>					
 				</tr>
 				</table></div>
