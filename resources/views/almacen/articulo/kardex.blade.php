@@ -63,7 +63,8 @@ switch ($doc) {
 				@endforeach
 				</tr>
 				</table>
-			<table class="table table-striped table-bordered table-condensed table-hover">
+		</div>
+				<table class="table table-striped table-bordered table-condensed table-hover">
 			<tr ><td colspan="6" align="center"><strong>Resumen</strong></td></tr> 
 			<tr>
 			<td><b>Compras:</b> <?Php echo $acumcompras;?></td>
@@ -78,7 +79,6 @@ switch ($doc) {
 			<td><b>Existencia:</b> <?Php $exis=(($entra)-($sale+$articulo->apartado)); echo $exis;?></td>
 			</tr>
 			</table>
-		</div>
   </div>
   </div>
 		<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12"></br>
