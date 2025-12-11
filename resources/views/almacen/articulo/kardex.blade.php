@@ -54,7 +54,10 @@ switch ($doc) {
 		default:
 		   ?>
 			{{$compra->documento}}
-	<?php
+	<?php 
+	if($doc=="DEV:V"){$acumventas=$acumventas-$compra->cantidad;}
+	if($doc=="DEVP"){$acumventas=$acumventas-$compra->cantidad;}
+	if($doc=="DEV:C"){$acumcompras=$acumcompras-$compra->cantidad;}
 }
 ?> </td>
 				<td> <?php  if($compra->tipo == 1){ $entra=$entra+ $compra->cantidad; ?>{{ $compra->cantidad}}<?php } ?></td>
