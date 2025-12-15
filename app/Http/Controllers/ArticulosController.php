@@ -74,6 +74,7 @@ class ArticulosController extends Controller
         $articulo->estado='Activo';
         $articulo->unidad=$request->get('unidad');
         $articulo->cntxund=$request->get('cntxund');
+        $articulo->cntgrupo=$request->get('cntgrupo');
         $articulo->fraccion=$request->get('fraccion');
         $articulo->volumen=$request->get('volumen');
         $articulo->peso=$request->get('peso');
@@ -141,6 +142,7 @@ class ArticulosController extends Controller
         $articulo->estado='Activo';
 		$articulo->unidad=$request->get('unidad');
 		$articulo->cntxund=$request->get('cntxund');
+		$articulo->cntgrupo=$request->get('cntgrupo');
 		$articulo->fraccion=$request->get('fraccion');
         $articulo->volumen=$request->get('volumen');
 		$articulo->peso=$request->get('peso');

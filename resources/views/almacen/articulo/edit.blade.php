@@ -88,7 +88,7 @@
             		</div>
             </div>
 
-			 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			 		<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Volumen</label>
             			<input type="text" name="volumen"   id="volumen"  value="{{$articulo->volumen}}"  <?php if($articulo->volumen==0) echo "disabled "; ?> class="form-control" placeholder="volumen...">
@@ -100,10 +100,16 @@
                   <input type="text" name="grados"  value="{{$articulo->grados}}" id="grados" <?php if($articulo->grados==0) echo "disabled "; ?> class="form-control" placeholder="grados...">         			
             		</div>
             </div>
-			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+		<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Peso Unidad(Kg) </label>          
                   <input type="number" name="peso"  id="peso" required value="{{$articulo->peso}}" min="0.01" class="form-control">         			
+            		</div>
+            </div>
+					<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
+            	 <div class="form-group">
+            			<label for="stock">Cnt.Grupo</label>          
+                  <input type="number" name="cntgrupo"  required value="{{$articulo->cntgrupo}}" min="1" class="form-control">         			
             		</div>
             </div>
 	<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">

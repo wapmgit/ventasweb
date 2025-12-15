@@ -84,10 +84,16 @@ $idv=0;
             			<input type="hidden" name="stock" disabled   value="0" class="form-control" placeholder="stock...">
             		</div>
             </div>
-			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Volumen</label>
             			<input type="text" name="volumen"   id="volumen" disabled  value="0" class="form-control" placeholder="volumen...">
+            		</div>
+            </div>
+					<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            	 <div class="form-group">
+            			<label for="stock">Peso Unidad(Kg) </label>          
+                  <input type="number" name="peso"  id="peso" required value="0" min="0.01" class="form-control">         			
             		</div>
             </div>
 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12" style="display:none">
@@ -96,10 +102,10 @@ $idv=0;
                   <input type="text" name="grados"  value="{{old('grados')}}" id="grados" disabled class="form-control" placeholder="grados...">         			
             		</div>
             </div>
-			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+		<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
             	 <div class="form-group">
-            			<label for="stock">Peso Unidad(Kg) </label>          
-                  <input type="number" name="peso"  id="peso" required value="0.01" min="0.01" class="form-control">         			
+            			<label for="stock">Cnt.Grupo</label>          
+                  <input type="number" name="cntgrupo"  required value="1" min="1" class="form-control">         			
             		</div>
             </div>
 				<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
