@@ -133,10 +133,12 @@ class BancoController extends Controller
         $mov->user=Auth::user()->name;
         $mov->save();
 		  $valort=DB::table('monedas')->where('idbanco','=',$request->get('idbanco'))->first();
+		//  dd($valort);
+		if($valort != NULL){
 			if($valort->tipo==0){ $mmov=$request->get('monto'); }
 			if($valort->tipo==1){ $mmov=($request->get('monto')/$valort->valor); }
-			if($valort->tipo==2){ $mmov=($request->get('monto')*$valort->valor); }
-			
+			if($valort->tipo==2){ $mmov=($request->get('monto')*$valort->valor); } 
+		}else{ $mmov=$request->get('monto');}
 	if (isset($_POST["cxc"])) {
 		$contador=DB::table('notasadm')->select(DB::raw('count(idnota) as doc'))->where('tipo','=',1)->first();
 		if ($contador==NULL){$numero=0;}else{$numero=$contador->doc;}
@@ -149,7 +151,7 @@ class BancoController extends Controller
         $paciente->monto=$mmov;
 		$mytime=Carbon::now('America/Caracas');
 		$paciente->fecha=$mytime->toDateTimeString();
-        $paciente->pendiente=$request->get('monto');
+        $paciente->pendiente=$mmov;
 		$paciente->usuario=Auth::user()->name;
         $paciente->save();
 	} 
@@ -162,7 +164,7 @@ class BancoController extends Controller
         $paciente->idproveedor=$idcliente[0];
         $paciente->descripcion=$request->get('concepto');
         $paciente->referencia=$request->get('numero');
-        $paciente->monto=$request->get('monto');
+        $paciente->monto=$mmov;
 		$mytime=Carbon::now('America/Caracas');
 		$paciente->fecha=$mytime->toDateTimeString();
         $paciente->pendiente=$mmov;
@@ -174,9 +176,7 @@ class BancoController extends Controller
     }
 		   public function addcredito(Request $request)
     {    
-	//dd($request);
-
-	      $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$idcliente=explode("_",$request->get('cliente'));
 		$user=Auth::user()->name;
          $mov=new MovBancos;
@@ -195,6 +195,13 @@ class BancoController extends Controller
         $mov->fecha_mov=$request->get('fecha');
         $mov->user=Auth::user()->name;
         $mov->save();
+		
+			  $valort=DB::table('monedas')->where('idbanco','=',$request->get('idbanco'))->first();
+			  if($valort != NULL){
+			if($valort->tipo==0){ $mmov=$request->get('monto'); }
+			if($valort->tipo==1){ $mmov=($request->get('monto')/$valort->valor); }
+			if($valort->tipo==2){ $mmov=($request->get('monto')*$valort->valor); }
+			}else{ $mmov=$request->get('monto');}
 	if (isset($_POST["cxc"])) {
 			$contador=DB::table('notasadm')->select(DB::raw('count(idnota) as doc'))->where('tipo','=',2)->first();
 		if ($contador==NULL){$numero=0;}else{$numero=$contador->doc;}
@@ -204,10 +211,10 @@ class BancoController extends Controller
         $paciente->idcliente=$idcliente[0];
         $paciente->descripcion=$request->get('concepto');
         $paciente->referencia=$request->get('numero');
-        $paciente->monto=$request->get('monto');
+        $paciente->monto=$mmov;
 		$mytime=Carbon::now('America/Caracas');
 		$paciente->fecha=$mytime->toDateTimeString();
-        $paciente->pendiente=$request->get('monto');
+        $paciente->pendiente=$mmov;
 		$paciente->usuario=Auth::user()->name;
         $paciente->save();
 	} 
@@ -220,10 +227,10 @@ class BancoController extends Controller
         $paciente->idproveedor=$idcliente[0];
         $paciente->descripcion=$request->get('concepto');
         $paciente->referencia=$request->get('numero');
-        $paciente->monto=$request->get('monto');
+        $paciente->monto=$mmov;
 		$mytime=Carbon::now('America/Caracas');
 		$paciente->fecha=$mytime->toDateTimeString();
-        $paciente->pendiente=$request->get('monto');
+        $paciente->pendiente=$mmov;
 		$paciente->usuario=Auth::user()->name;
         $paciente->save();
 	} 
