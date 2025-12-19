@@ -89,7 +89,8 @@ return $contenido_formateado;
 	<font size="4">{{$venta->cedula}} -> {{$venta->nombre}}</br></font>
 	{{$venta->direccion}} </br>
 	<font size="4"><b>Documento:  <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); ?> </b></font> </br>
-	  <font size="2"> <b>  <?php echo date("d-m-Y h:i:s a",strtotime($venta->fecha_hora)); ?></b></font>
+	  <font size="2"> <b>  <?php echo date("d-m-Y h:i:s a",strtotime($venta->fecha_hora)); ?></b></font></br>
+	  <font size="2"> <b> Tasa de Cambio: {{$venta->tasa}} Bsf.</b></font>
 	  </br>
 	  </br>
 </div>    
@@ -100,7 +101,7 @@ return $contenido_formateado;
                           <th width="15%"><b class="lista">Subtotal</b></th>
                       </thead>
                       <tfoot>  
-					  <th colspan="2" ><div align="center"><font size="4">Bs: <?php echo number_format(($venta->total_venta*$empresa->tc), 2,',','.'); ?> <-->
+					  <th colspan="2" ><div align="center"><font size="4">Bs: <?php echo number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> <-->
                        $: <?php echo number_format($venta->total_venta, 2,',','.'); ?> </font></div></th>
                           </tfoot>
                       <tbody>
