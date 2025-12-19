@@ -116,7 +116,7 @@ return $contenido_formateado;
                   </table>
         <?php  if(count($recibos)>0){?>
 		</br>
-                  <table id="desglose" style="line-height:80%" border="0"  width="100%">
+                                    <table class="tabla-secundaria" width="130%">
                       <thead>                  
                           <td>Tipo</td>
                           <td>Monto</td>
@@ -135,7 +135,7 @@ return $contenido_formateado;
 					      
                   </table>
 				  <?php } ?>
-           </div></br><p></br></br>Gracias por Preferirnos</p>
+           </div></br><p></br></br>Precios Insuperables...</p>
      <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
                     <div class="form-group" align="center">
 					 <button type="button" id="regresar" class="btn btn-danger btn-xs" data-dismiss="modal">Regresar</button>
