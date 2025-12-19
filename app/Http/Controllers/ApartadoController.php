@@ -142,6 +142,7 @@ class ApartadoController extends Controller
 				$recibo->tasab=$request->get('tc');
 				$recibo->aux=$request->get('tdeuda');
 				$recibo->fecha=$mytime->toDateTimeString();		
+				$recibo->fecharecibo=$mytime->toDateTimeString();		
 				$recibo->usuario=$user;					
 				$recibo->save();
 						$mon=Monedas::findOrFail($idpago[$contp]);
@@ -401,6 +402,7 @@ catch(\Exception $e)
 				$recibo->aux=$request->get('tdeuda');
 				$mytime=Carbon::now('America/Caracas');
 				$recibo->fecha=$mytime->toDateTimeString();	
+				$recibo->fecharecibo=$mytime->toDateTimeString();	
 				$recibo->usuario=$user;				
 				$recibo->save();
 						$mon=Monedas::findOrFail($idpago[$contp]);

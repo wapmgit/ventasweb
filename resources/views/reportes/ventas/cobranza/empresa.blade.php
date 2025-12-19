@@ -9,6 +9,6 @@
                 <!-- /.col -->
 	<div class="col-sm-4 invoice-col">
 
-				  <h4>Detall de Ingresos</h4>
+				  <h4>Detalle de Ingresos</h4>
                 <?php echo date("d-m-Y",strtotime($searchText)); ?> al <?php echo date("d-m-Y",strtotime($searchText2)); ?>
 	</div>

@@ -40,7 +40,8 @@ $cefe=0;?>
 						<th>Recibido</th>
 						<th>Monto</th>
 						<th>Referencia</th>
-						<th>Fecha Rec.</th>
+						<th>Fecha</th>
+						<th>Fecha Recibo.</th>
 					</thead>
 					@foreach ($cobranza as $cob)
 					<?php   if($cob->tiporecibo=="A") { $tcobranza=$tcobranza+$cob->monto;?> 		 
@@ -53,10 +54,11 @@ $cefe=0;?>
 						<td>{{$cob->nombre}}</td>
 						<td>{{$cob->tipo_comprobante}}-{{$cob->num_comprobante}}</td>
 						<td><?php  echo$cob->idbanco; ?></td>
-						<td><?php echo number_format($cob->recibido, 2,',','.'); ?></td>
+						<td><?php echo number_format($cob->recibido, 2,',','.'); if(date("d-m-Y",strtotime($cob->fecharecibo)) != date("d-m-Y",strtotime($cob->fecha))){ echo "*"; } ?></td>
 						<td><?php  echo number_format($cob->monto, 2,',','.')." $"; ?></td>
 						<td>{{$cob->referencia}}</td>
 						<td><?php echo date("d-m-Y h:i:s a",strtotime($cob->fecha)); ?></td>
+						<td><?php echo date("d-m-Y",strtotime($cob->fecharecibo)); ?></td>
 					</tr>
 					@include('reportes.ventas.cobranza.modal')
 					<tr>  <?php  } ?>

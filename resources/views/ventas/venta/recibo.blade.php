@@ -12,86 +12,148 @@ $digitos=strlen($numero);
 return $insertar_ceros = $recibo.$numero;
 };
 ?>   	 
-<div align="center">
-<div id="areaimprimir"  class="col-lg-3 col-md-3 col-sm-3 col-xs-3" >
-			<div style="line-height:70%" width="90%">
-			<label><small><small><b>{{$empresa->nombre}}</b></small></small></br>
-			<small><small>{{$empresa->rif}}</small></small></br>
-			<small><small><small>{{$empresa->direccion}}</small></small></small></br>
-			<small><small>Telf:{{$empresa->telefono}}</small></small></br>
-					 
-			<small><small> <small>  {{$venta->cedula}} -> {{$venta->nombre}}</br>
-				{{$venta->direccion}}</small></small></small> </br>
-			<small><small>	Documento:  <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); ?></small></small> </label>  
-			</div>    
-                  <table style="line-height:60%" id="detalles" border="0" width="95%">
+
+<style>
+@media print {
+    /* Configuración general de la página */
+    @page {
+        size: 80mm auto; /* Ancho fijo de 80mm, altura automática */
+        margin: 0mm;    /* Márgenes mínimos para aprovechar el espacio */
+    }
+
+    /* Estilos para el cuerpo del contenido */
+    div {
+        width: 80mm;
+        padding: 0;
+        margin: 0;
+		 font: oblique bold 120% cursive;
+        font-size: 10pt; /* Tamaño de fuente adecuado para ticket */
+    }
+
+    /* Ocultar elementos no deseados */
+    header, nav, footer, aside, .no-print {
+        display: none;
+    }
+
+    /* Estilos para tablas (tickets/facturas) */
+    #tablecabecera {
+        width: 130%;
+        border-collapse: collapse; /* Une bordes de celdas */
+        margin-top: 2px;
+		font: oblique bold 120% cursive;
+        font-size: 12pt; /* Tamaño de fuente adecuado para ticket */
+    }
+    #tablecentro {
+        width: 130%;
+        border-collapse: collapse; /* Une bordes de celdas */
+        margin-top: 2px;
+    }
+}
+.lista{
+	font: bold 90% monospace;
+	 font-size: 16pt;
+	
+}
+.tabla-principal th, td {
+     border: 0px solid #000; /* Bordes finos */
+         padding: 1px 1px;
+        text-align: center;
+}
+.tabla-secundaria th, td {
+		border: 1px solid #000; /* Bordes finos */
+		border-style: dotted;
+        padding: 1px 1px;
+        text-align: left;
+}
+</style>
+<div>
+
+<?php
+function adjustext($textoin,$nc){
+$texto = $textoin;
+$ancho_maximo = $nc; // Caracteres por línea
+$lineas = explode("\n", $texto);
+$contenido_formateado = "";
+foreach ($lineas as $linea) {
+    $contenido_formateado .= wordwrap($linea, $ancho_maximo, "\n", true) . "\n";
+}
+return $contenido_formateado;
+}
+?>  
+<table border="0" style="line-height:95%" align="center" id="tablecabecera" class="tabla-principal">
+ <thead> <th><b><font size="4"><?Php echo nl2br(adjustext($empresa->nombre,30)); ?></font></b></th> </thead> 
+<thead><th><b><font size="3">{{$empresa->rif}}</font></b></th></thead>
+<thead><th><b><font size="2"><?Php echo nl2br(adjustext($empresa->direccion,40)); ?></font><small>{{$empresa->telefono}}</small></b></th></thead>
+</table>			
+<div align="left">				 
+	<font size="4">{{$venta->cedula}} -> {{$venta->nombre}}</br></font>
+	{{$venta->direccion}} </br>
+	<font size="4"><b>Documento:  <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); ?> </b></font> </br>
+	  <font size="2"> <b>  <?php echo date("d-m-Y h:i:s a",strtotime($venta->fecha_hora)); ?></b></font>
+	  </br>
+	  </br>
+</div>    
+                  <table style="line-height:90%"  id="tablecentro" class="tabla-secundaria">
                       <thead>                 
-                          <th width="5%"><font size="1"><small>Cant.</small></font></th>
-                          <th width="60%" align="center"><small><small>Descrip.</small></small></th>
-                          <th width="15%"><font size="1"><small><small>Precio</small></small></font></th>
-                          <th width="15%"><font size="1"><small><small>Subt.</small></small></font></th>
+						
+                          <th width="80%" align="center"><b class="lista">Descripcion</b></th>
+                          <th width="15%"><b class="lista">Subtotal</b></th>
                       </thead>
-                      <tfoot>                      
-                          <th colspan="2" align="center"><small><small>Bs: <?php echo number_format(($venta->total_venta*$empresa->tc), 2,',','.'); ?> </small></small></th>
-                          <th colspan="2" align="center"><small><small>$: <?php echo number_format($venta->total_venta, 2,',','.'); ?> </small></small></th>
+                      <tfoot>  
+					  <th colspan="2" ><div align="center"><font size="4">Bs: <?php echo number_format(($venta->total_venta*$empresa->tc), 2,',','.'); ?> <-->
+                       $: <?php echo number_format($venta->total_venta, 2,',','.'); ?> </font></div></th>
                           </tfoot>
                       <tbody>
                         @foreach($detalles as $det)
-                        <tr height="10px"> 
-						  <td><font size="1"><small><small>{{$det->cantidad}}</small></small></font></td>
-                          <td><font size="1"><small><small><small><?php echo strtolower($det->articulo);?><?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?></small></small></small></font></td>                       
-                          <td><font size="1"><small><small><?php echo number_format( $det->precio_venta, 2,',','.'); ?></small></small></font></td>
-                          <td><font size="1"><small><small><?php echo number_format( (($det->cantidad*$det->precio_venta)), 2,',','.'); ?></small></small></font></td>
+                        <tr height="10px"> 						
+                         <td align="left"><span class="lista">
+						   {{$det->cantidad}} -
+						  <?php echo strtolower($det->articulo);?><?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?> - <?php echo number_format( $det->precio_venta, 2,',','.'); ?> </span></td>                       
+                          <td><span class="lista"><?php echo "$ ".number_format( (($det->cantidad*$det->precio_venta)), 2,',','.'); ?></span></td>
                         </tr>
                         @endforeach
                       </tbody>
                   </table>
+				  <?php  if(count($recibos)>0){?>
                   <table id="desglose" style="line-height:80%" border="0"  width="100%">
                       <thead>                  
-                          <td><font size="1"><small>Tipo</small></font></td>
-                          <td><font size="1"><small>Monto</small></font></td>
-                          <td><font size="1"><small>Monto$</small></font></td>                        
+                          <td>Tipo</td>
+                          <td>Monto</td>
+                          <td>Monto$</td>                        
                       </thead>                     
                       <tbody>                       
                         @foreach($recibos as $re) <?php  $acum=$acum+$re->monto;?>
                         <tr >
-                          <td><font size="1"><small>{{$re->idbanco}}</small></font></td>
-                          <td><font size="1"><small><?php echo number_format( $re->recibido, 2,',','.'); ?></small></font></td>
-						  <td><font size="1"><small><?php echo number_format( $re->monto, 2,',','.'); ?></small></font></td>                       
+                          <td>{{$re->idbanco}}</small></font></td>
+                          <td><?php echo number_format( $re->recibido, 2,',','.'); ?></td>
+						  <td><?php echo number_format( $re->monto, 2,',','.'); ?></td>                       
                         </tr>
                         @endforeach
-                        <tfoot >                    
-                          </tfoot>
+                    
                       </tbody>
                   </table>
-           
-                <div ><small><font size="1">
-                    <p><?php echo date("d-m-Y h:i:s a",strtotime($venta->fecha_hora)); ?></p></font></small>
-                </div>
-</div>
-</div>
+				  <?php } ?>
+</div></br><p></br></br>Gracias por Preferirnos</p>
      <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
                     <div class="form-group" align="center">
 					 <button type="button" id="regresar" class="btn btn-danger btn-xs" data-dismiss="modal">Regresar</button>
-                     <button type="button" id="imprimir" class="btn btn-primary btn-xs" onclick="printdiv('areaimprimir');" >Imprimir</button>
+                     <button type="button" id="imprimir" class="btn btn-primary btn-xs"  >Imprimir</button>
                     </div>
                 </div>  
 			
 @push ('scripts')
 <script>
 $(document).ready(function(){
-
+    $('#imprimir').click(function(){
+  //  alert ('si');
+  document.getElementById('imprimir').style.display="none";
+  document.getElementById('regresar').style.display="none";
+  window.print(); 
+ 
+  window.location="{{route('ventas')}}";
+    });
 });
-  function printdiv(divname){
-		document.getElementById('imprimir').style.display="none";
-		document.getElementById('regresar').style.display="none";
-	 	var printcontenido =document.getElementById(divname).innerHTML;
-		var originalcontenido = document.body.innerHTML;
-		document.body.innerHTML =printcontenido;
-	  	window.print();
-	  	window.location="{{route('newventa')}}";
-	  	document.body.innerHTML=originalcontenido;
-  }
+
   $('#regresar').on("click",function(){
   window.location="{{route('newventa')}}";
   

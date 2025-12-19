@@ -133,7 +133,6 @@ class BancoController extends Controller
         $mov->user=Auth::user()->name;
         $mov->save();
 		  $valort=DB::table('monedas')->where('idbanco','=',$request->get('idbanco'))->first();
-		//  dd($valort);
 		if($valort != NULL){
 			if($valort->tipo==0){ $mmov=$request->get('monto'); }
 			if($valort->tipo==1){ $mmov=($request->get('monto')/$valort->valor); }

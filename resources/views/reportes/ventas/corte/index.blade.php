@@ -5,7 +5,7 @@
 <div class="row">
 		@include('reportes.ventas.corte.search')
 </div>
-<?php $acum=0;$efe=0;$deb=0;$che=0;$tra=0;
+<?php $acum=0;$efe=0;$deb=0;$che=0;$tra=0; $acumcnt=0; $acumcntrec=0;
 $cefe=0;?>
   <!-- Main content -->
             <div class="invoice p-3 mb-3">
@@ -133,6 +133,14 @@ $cefe=0;?>
              <td><?php  echo number_format($cob->monto, 2,',','.')." $"; ?></td>
         </tr>
         @endforeach
+		    <tr><td colspan="3" align="center"><strong>Cobranza Dias Anteriores
+			@foreach ($cobranzant as $cb)
+			<?php if($cb->dif>0){
+				$acumcnt=$acumcnt+$cb->monto;
+				$acumcntrec=$acumcntrec+$cb->recibido;
+			} ?>
+			@endforeach
+			<?php echo number_format($acumcnt, 2,',','.')." $"; ?> -> <?php echo number_format($acumcntrec, 2,',','.'); ?> </strong></td></tr>
 		    <tr><td colspan="2" align="center"><strong>Total Desglose de Cobranza</strong></td><td><strong><?php echo number_format($tcobranza, 2,',','.')." $"; ?></strong></td></tr>
       </table>
    </br>

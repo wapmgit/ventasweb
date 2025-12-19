@@ -179,6 +179,12 @@ class ReportesventasController extends Controller
 			-> where ('re.tiporecibo','=',"A")
 			-> groupby('re.idpago','re.idbanco')
             ->get();
+			$cobranzant=DB::table('recibos as re')
+			-> select('re.recibido','re.monto',DB::raw('DATEDIFF(re.fecha,re.fecharecibo) as dif'))
+            -> whereBetween('re.fecha', [$query, $query2])
+			-> where ('re.tiporecibo','=',"A")
+            ->get();
+			//dd($cobranzant);
 			$papartado=DB::table('recibos as re')
 			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco')
             -> whereBetween('re.fecha', [$query, $query2])
@@ -250,6 +256,12 @@ class ReportesventasController extends Controller
 			-> where ('re.tiporecibo','=',"A")
 			-> groupby('re.idpago','re.idbanco')
             ->get();
+			$cobranzant=DB::table('recibos as re')
+			-> select('re.recibido','re.monto',DB::raw('DATEDIFF(re.fecha,re.fecharecibo) as dif'))
+            -> where ('re.usuario','=',$user)
+			-> whereBetween('re.fecha', [$query, $query2])
+			-> where ('re.tiporecibo','=',"A")
+            ->get();
 			$papartado=DB::table('recibos as re')
             -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
 			-> where ('re.usuario','=',$user)
@@ -318,6 +330,11 @@ class ReportesventasController extends Controller
 			-> where ('re.tiporecibo','=',"A")
 			-> groupby('re.idpago','re.idbanco')
             ->get();
+			$cobranzant=DB::table('recibos as re')
+			-> select('re.recibido','re.monto',DB::raw('DATEDIFF(re.fecha,re.fecharecibo) as dif'))
+			-> whereBetween('re.fecha', [$query, $query2])
+			-> where ('re.tiporecibo','=',"A")
+            ->get();
 			$papartado=DB::table('recibos as re')
 			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco')
             -> whereBetween('re.fecha', [$query, $query2])
@@ -349,7 +366,7 @@ class ReportesventasController extends Controller
 	return view("reportes.mensajes.noautorizado");
 	}
 
-        return view('reportes.ventas.corte.index',["papartado"=>$papartado,"filtro"=>$filtro,"datos"=>$datos,"devolucion"=>$devolucion,"impuestos"=>$impuestos,"comision"=>$comisiones,"empresa"=>$empresa,"ingresos"=>$ingresos,"cobranza"=>$cobranza,"pagos"=>$pagos,"searchText"=>$query,"searchText2"=>$query2,"usuario"=>$usuario,"ingresosnd"=>$ingresosnd]);    
+        return view('reportes.ventas.corte.index',["cobranzant"=>$cobranzant,"papartado"=>$papartado,"filtro"=>$filtro,"datos"=>$datos,"devolucion"=>$devolucion,"impuestos"=>$impuestos,"comision"=>$comisiones,"empresa"=>$empresa,"ingresos"=>$ingresos,"cobranza"=>$cobranza,"pagos"=>$pagos,"searchText"=>$query,"searchText2"=>$query2,"usuario"=>$usuario,"ingresosnd"=>$ingresosnd]);    
   }
   	public function cobranza(Request $request)
     {   
@@ -374,7 +391,7 @@ class ReportesventasController extends Controller
 			->join('venta','venta.idventa','=','re.idventa' )
 			->join('clientes','clientes.id_cliente','=','venta.idcliente')
 			->join('vendedores as vende','vende.id_vendedor','=','clientes.vendedor')
-			-> select('clientes.nombre','re.referencia','re.tiporecibo','venta.tipo_comprobante','venta.num_comprobante','re.idbanco','re.idpago','re.idrecibo','re.monto','re.recibido','re.fecha','vende.nombre as vendedor')    
+			-> select('clientes.nombre','re.referencia','re.tiporecibo','venta.tipo_comprobante','venta.num_comprobante','re.idbanco','re.idpago','re.idrecibo','re.monto','re.recibido','re.fecha','re.fecharecibo','vende.nombre as vendedor')    
 			-> where('venta.devolu','=',0)
             -> whereBetween('re.fecha', [$query, $query2])
 			-> groupby('re.idrecibo','re.idbanco')
@@ -391,7 +408,7 @@ class ReportesventasController extends Controller
 			$ingresosnd=DB::table('recibos as re')
 			-> join('notasadm as n','n.idnota','=','re.idnota')
 			->join('clientes','clientes.id_cliente','=','n.idcliente')
-            -> select('clientes.nombre','re.referencia','re.tiporecibo','n.idnota as tipo_comprobante','n.idnota as num_comprobante','re.idbanco','re.idrecibo','re.idpago','re.monto','re.recibido','re.fecha','n.usuario as vendedor')
+            -> select('clientes.nombre','re.referencia','re.tiporecibo','n.idnota as tipo_comprobante','n.idnota as num_comprobante','re.idbanco','re.idrecibo','re.idpago','re.monto','re.recibido','re.fecha','re.fecharecibo','n.usuario as vendedor')
             -> whereBetween('re.fecha', [$query, $query2])
 			-> groupby('re.idrecibo')
             ->get();
@@ -401,7 +418,7 @@ class ReportesventasController extends Controller
 			->join('apartado','apartado.idventa','=','re.idapartado' )
 			->join('clientes','clientes.id_cliente','=','apartado.idcliente')
 			->join('vendedores as vende','vende.id_vendedor','=','clientes.vendedor')
-			-> select('clientes.nombre','re.referencia','re.tiporecibo','apartado.tipo_comprobante','apartado.num_comprobante','re.idbanco','re.idpago','re.idrecibo','re.monto','re.recibido','re.fecha','vende.nombre as vendedor')    
+			-> select('clientes.nombre','re.referencia','re.tiporecibo','apartado.tipo_comprobante','apartado.num_comprobante','re.idbanco','re.idpago','re.idrecibo','re.monto','re.recibido','re.fecha','re.fecharecibo','vende.nombre as vendedor')    
 			-> where('apartado.devolu','=',0)
             -> whereBetween('re.fecha', [$query, $query2])
 			-> groupby('re.idrecibo','re.idbanco')
@@ -411,7 +428,7 @@ class ReportesventasController extends Controller
 				->join('venta','venta.idventa','=','re.idventa' )
 				->join('clientes','clientes.id_cliente','=','venta.idcliente')
 				->join('vendedores as vende','vende.id_vendedor','=','clientes.vendedor')
-			 -> select('clientes.nombre','re.referencia','re.tiporecibo','venta.tipo_comprobante','venta.num_comprobante','re.idbanco','re.idrecibo','re.idpago','re.monto','re.recibido','re.fecha','vende.nombre as vendedor')
+			 -> select('clientes.nombre','re.referencia','re.tiporecibo','venta.tipo_comprobante','venta.num_comprobante','re.idbanco','re.idrecibo','re.idpago','re.monto','re.recibido','re.fecha','re.fecharecibo','vende.nombre as vendedor')
 				->where('clientes.vendedor','=',$request->get('vendedor'))  
 				-> where('venta.devolu','=',0)
 				-> whereBetween('re.fecha', [$query, $query2])
@@ -430,7 +447,7 @@ class ReportesventasController extends Controller
 				$ingresosnd=DB::table('recibos as re')
 				-> join('notasadm as n','n.idnota','=','re.idnota')
 				->join('clientes','clientes.id_cliente','=','n.idcliente')
-				-> select('clientes.nombre','re.referencia','re.tiporecibo','n.idnota as tipo_comprobante','n.idnota as num_comprobante','re.idbanco','re.idrecibo','re.idpago','re.monto','re.recibido','re.fecha','n.usuario as vendedor')
+				-> select('clientes.nombre','re.referencia','re.tiporecibo','n.idnota as tipo_comprobante','n.idnota as num_comprobante','re.idbanco','re.idrecibo','re.idpago','re.monto','re.recibido','re.fecha','re.fecharecibo','n.usuario as vendedor')
 				-> whereBetween('re.fecha', [$query, $query2])
 				-> groupby('re.idrecibo')
 				->get();
@@ -440,7 +457,7 @@ class ReportesventasController extends Controller
 				->join('apartado','apartado.idventa','=','re.idapartado' )
 				->join('clientes','clientes.id_cliente','=','apartado.idcliente')
 				->join('vendedores as vende','vende.id_vendedor','=','clientes.vendedor')
-			 -> select('clientes.nombre','re.referencia','re.tiporecibo','apartado.tipo_comprobante','apartado.num_comprobante','re.idbanco','re.idrecibo','re.idpago','re.monto','re.recibido','re.fecha','vende.nombre as vendedor')
+			 -> select('clientes.nombre','re.referencia','re.tiporecibo','apartado.tipo_comprobante','apartado.num_comprobante','re.idbanco','re.idrecibo','re.idpago','re.monto','re.recibido','re.fecha','re.fecharecibo','vende.nombre as vendedor')
 				->where('clientes.vendedor','=',$request->get('vendedor'))  
 				-> where('apartado.devolu','=',0)
 				-> whereBetween('re.fecha', [$query, $query2])
