@@ -66,18 +66,19 @@ class HomeController extends Controller
 		
         return view('home',["vene"=>$vene,"vfeb"=>$vfeb,"vmar"=>$vmar,"vabr"=>$vabr,"vmay"=>$vmay,"vjun"=>$vjun,"vjul"=>$vjul,"vago"=>$vago,"cene"=>$cene,"cfeb"=>$cfeb,"cmar"=>$cmar,"cmay"=>$cmay,"cabr"=>$cabr,"cjun"=>$cjun,"cjul"=>$cjul,"cago"=>$cago,"csep"=>$csep,"vsep"=>$vsep,"voct"=>$voct,"coct"=>$coct,"vnov"=>$vnov,"cnov"=>$cnov,"vdic"=>$vdic,"cdic"=>$cdic,"empresa"=>$empresa,"clientes"=>$clientes,"proveedor"=>$proveedor,"articulos"=>$articulos,"vendedores"=>$vendedores]);
     } else {
-		$rol=DB::table('roles')-> select('crearventa','anularventa')->where('iduser','=',$request->user()->id)->first();
+		$rol=DB::table('roles')-> select('crearventa','anularventa','cambiarprecioventa')->where('iduser','=',$request->user()->id)->first();
 		
 		if($rol <> null){	
 			if ($rol->crearventa==1){
 		$monedas=DB::table('monedas')->get();
+		$rutas=DB::table('rutas')->get();
 		$vendedor=DB::table('vendedores')->get();
         $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
         $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev')-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->get();
          $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
       //dd($contador);
         $articulos =DB::table('articulos as art')
-        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo','art.stock','art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion')
+         -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3')
         -> where('art.estado','=','Activo')
         -> where ('art.stock','>','0')
         ->groupby('articulo','art.idarticulo')
@@ -85,7 +86,7 @@ class HomeController extends Controller
 		//dd($articulos);
 		 $seriales =DB::table('seriales')->where('estatus','=',0)->get();
      if ($contador==""){$contador=0;}
-      return view("ventas.venta.create",["seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
+      return view("ventas.venta.create",["rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
 		} }else { 
 	return view("reportes.mensajes.noautorizado");
 	}
