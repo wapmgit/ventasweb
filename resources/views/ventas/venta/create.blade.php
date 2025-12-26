@@ -53,7 +53,7 @@ $idv=0;
 			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
 			<h4 id="nombrevendedor"></h4>
 				<div class="form-group">
-					<label for="tipo_precio">Vendedor </label> <?php if($cntvend==0){ echo "<span class='text-danger'>Debe Registrar Vendedor¡¡</span>";} ?> <br>
+					<label for="tipo_precio">Vendedor</label> <?php if($cntvend==0){ echo "<span class='text-danger'>Debe Registrar Vendedor¡¡</span>";} ?> <br>
             			<select name="vpedido" id="vpedido" class="form-control">
             				@foreach ($vendedores as $cat)
             				<option value="{{$cat->id_vendedor}}_{{$cat->comision}}">{{$cat->nombre}}</option>
@@ -143,7 +143,7 @@ $idv=0;
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                     <div class="form-group">
-                        <label for="precio_venta">Precio venta <?php if ($rol->cambiarprecioventa==1){?><i class="fa-solid fa-money-check-dollar" style="display: none" id="changeprice"></i> <?php }  ?><span id="nprecioventa"></span></label>
+                        <label for="precio_venta">Precio venta <?php if ($rol->cambiarprecioventa==1){?><i class="fa-solid fa-money-check-dollar" style="display: none" id="changeprice"></i> <?php }else{?><i  id="changeprice"></i> <?php }  ?><span id="nprecioventa"></span></label>
                         <input type="number" name="pprecio_venta" id="pprecio_venta"  min="0.01" class ="form-control" placeholder="Precio de Venta" <?php if ($rol->cambiarprecioventa==0){?> echo "disabled" <?php }  ?> >
                     </div>
 				</div>
@@ -596,7 +596,6 @@ function trunc (x, posiciones = 0) {
 			var formc= $('#formventa');
 			var urlc = '{{route("ventacxc")}}';
 			var datac = formc.serialize();
-    //     alert(data1);
     $.post(urlc,datac,function(result){  
       var resultadoc=result;
           console.log(resultadoc);
@@ -607,8 +606,8 @@ function trunc (x, posiciones = 0) {
 			}else{ $("#cxc").html("$: 0");
 }
             });
-       //alert();
 	   var cli=$("#id_cliente").val();
+	  
       dato=document.getElementById('id_cliente').value.split('_');
       var comi= dato[2];
 	  var vendedor= dato[3];
