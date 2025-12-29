@@ -479,7 +479,7 @@ public function recibo($id){
             -> first();
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.nombre as articulo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta')
+            -> select('a.nombre as articulo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','a.unidad')
             -> where ('dv.idventa','=',$id)
             ->get();
 			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
@@ -497,7 +497,7 @@ public function recibo($id){
             -> first();
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.nombre as articulo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta')
+            -> select('a.nombre as articulo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','a.unidad')
             -> where ('dv.idventa','=',$id)
             ->get();
 			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)

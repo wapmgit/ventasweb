@@ -97,7 +97,7 @@ return $contenido_formateado;
                   <table style="line-height:90%"  id="tablecentro" class="tabla-secundaria">
                       <thead>                 
 						
-                          <th width="80%" align="center"><b class="lista">Descripcion</b></th>
+                          <th width="80%" align="center"><b class="lista">Cantidad-Descripcion</b></th>
                           <th width="15%"><b class="lista">Subtotal</b></th>
                       </thead>
                       <tfoot>  
@@ -108,7 +108,7 @@ return $contenido_formateado;
                         @foreach($detalles as $det)
                         <tr height="10px"> 						
                          <td align="left"><span class="lista">
-						   {{$det->cantidad}} -
+						   {{$det->cantidad}} {{$det->unidad}}  -
 						  <?php echo strtolower($det->articulo);?><?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?> - <?php echo number_format( $det->precio_venta, 2,',','.'); ?> </span></td>                       
                           <td><span class="lista"><?php echo "$ ".number_format( (($det->cantidad*$det->precio_venta)), 2,',','.'); ?></span></td>
                         </tr>
