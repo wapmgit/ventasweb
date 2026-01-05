@@ -21,7 +21,7 @@ role="dialog" tabindex="-1" id="modaldevolucion-{{$det->idarticulo}}">
 				<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
             		 <div class="form-group">
             			<label for="nombre">Nueva Cantidad</label>
-            			<input type="number" step="any" name="cantidad" min="0" required value="{{$det->cantidad}}" class="form-control">
+            			<input type="number" step="0.01" name="cantidad" min="0" required value="{{$det->cantidad}}" class="form-control">
 					<input type="hidden" name="idventa"  value="{{$venta->idpedido}}" >
 						<input type="hidden" name="idarticulo"  value="{{$det->idarticulo}}" >
 					<input type="hidden" name="iddetalle"  value="{{$det->iddetalle_pedido}}" >
@@ -31,7 +31,7 @@ role="dialog" tabindex="-1" id="modaldevolucion-{{$det->idarticulo}}">
 				<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
             		 <div class="form-group">
             			<label for="nombre">Nuevo Precio</label>
-            			<input type="number" step="any" name="precio" min="1" required value="{{$det->precio_venta}}" class="form-control">
+            			<input type="number" step="0.001" name="precio" min="0.01" required value="{{$det->precio_venta}}" class="form-control">
 
             		</div>
             	</div>

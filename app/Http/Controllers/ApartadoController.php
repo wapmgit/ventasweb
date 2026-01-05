@@ -331,6 +331,8 @@ catch(\Exception $e)
 			$recibo=Recibos::findOrFail($arrayid[$j]);
 			$mrecibo=$recibo->monto;	
 			 $recibo->referencia='Doc. Anulado ->'.$mrecibo;
+			 $recibo->recibido=0;
+			 $recibo->monto=0;
 			 $recibo->update();
 				 	$mbanco=DB::table('mov_ban')
 					->where('tipodoc','=',"APA")
@@ -339,6 +341,7 @@ catch(\Exception $e)
 				if($mbanco!= NULL){	
 				$delmov=MovBancos::findOrFail($mbanco->id_mov);
 				$delmov->concepto="Doc. Anul.".$request->get('id')."Rec".$arrayid[$j]."M:".$mrecibo;
+				$delmov->estatus=1;
 				$delmov->update();
 				}
 				}  
