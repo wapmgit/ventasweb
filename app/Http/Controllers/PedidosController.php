@@ -299,7 +299,7 @@ public function show(Request $request,$id){
 		    
     $idarticulo = $request -> get('idarticulo');
     $cantidad = $request -> get('cantidad');
-    $precio = $request -> get('preciop');
+    $precio = $request -> get('precio');
     $precio_venta = $request -> get('precio');
     $costoarticulo = $request -> get('costo');
     $descuento = $request -> get('descuento');

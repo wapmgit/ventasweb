@@ -503,6 +503,7 @@ catch(\Exception $e)
         $detalle->costoarticulo=$costoarticulo[$cont];
         $detalle->cantidad=$cantidad[$cont];
         $detalle->descuento=$descuento[$cont];
+        $detalle->precio=$precio_venta[$cont];
         $detalle->precio_venta=$precio_venta[$cont];
          $detalle->fecha=$mytime->toDateTimeString();	
          $detalle->fecha_emi=$fecha_emi;	
