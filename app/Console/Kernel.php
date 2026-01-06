@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
        $schedule->command('sendclientes')->everyTenMinutes();
        $schedule->command('enviarArticulos')->everyTenMinutes();
+       $schedule->command('sendtomercarapi')->hourly();
 		
     /**
      * Register the commands for the application.

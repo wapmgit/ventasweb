@@ -127,7 +127,8 @@ class SendClients extends Command
 				'clientes' => $clientesjs,
 				'ventas' => $ventasjs,			
 				'recibos' => $recibosjs,
-				'detalleventas' => $detalleventasjs								
+				'detalleventas' => $detalleventasjs,
+				'tasadif' => $empresa->tasadif					
             ]);
     }
 }
