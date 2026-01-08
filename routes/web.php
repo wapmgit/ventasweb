@@ -122,6 +122,7 @@ Route::get('recibo/{id}', [ventasController::class, 'recibo'])->name('recibo');
 Route::get('recibobs/{id}', [ventasController::class, 'recibobs'])->name('recibobs');
 Route::get('tnotabs/{id}', [ventasController::class, 'notabs'])->name('tnotabs');
 Route::get('tnotads/{id}', [ventasController::class, 'notads'])->name('tnotads');
+Route::get('tnota2ds/{id}', [ventasController::class, 'nota2ds'])->name('tnota2ds');
 Route::get('tcarta/{id}', [ventasController::class, 'show'])->name('tcarta');
 Route::get('fbs/{id}', [ventasController::class, 'fbs'])->name('fbs');
 Route::post('anulforma', [ventasController::class, 'anulforma'])->name('anulforma');
@@ -156,6 +157,7 @@ Route::get('tnotabsp/{id}', [PedidosController::class, 'notabs'])->name('tnotabs
 Route::get('tnotadsp/{id}', [PedidosController::class, 'notads'])->name('tnotadsp');
 Route::get('tcartap/{id}', [PedidosController::class, 'tcartap'])->name('tcartap');
 Route::get('fbsp/{id}', [PedidosController::class, 'fbs'])->name('fbsp');
+
 // apartados
 Route::get('apartado', [ApartadoController::class, 'index'])->name('apartado');
 Route::get('newapartado', [ApartadoController::class, 'create'])->name('newapartado');

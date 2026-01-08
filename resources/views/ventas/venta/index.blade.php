@@ -43,6 +43,7 @@
                       <a class="dropdown-item" href="{{route('tcarta',['id'=>$ven->idventa])}}">Diseño Carta</a>
                       <a class="dropdown-item" href="{{route('tnotabs',['id'=>$ven->idventa])}}">Diseño Nota Bs</a>
                       <a class="dropdown-item" href="{{route('tnotads',['id'=>$ven->idventa])}}">Diseño Nota $</a>
+                      <a class="dropdown-item" href="{{route('tnota2ds',['id'=>$ven->idventa])}}">Diseño Nota2 $</a>
                       <a class="dropdown-item" href="{{route('recibobs',['id'=>$ven->idventa])}}">Tikect Bs</a>
                       <a class="dropdown-item" href="{{route('recibo',['id'=>$ven->idventa])}}">Tikect $</a>
                        <?php if ($ven->flibre==1){?>   <a class="dropdown-item" href="{{route('fbs',['id'=>$ven->idventa])}}">Forma Libre</a><?php } ?>
