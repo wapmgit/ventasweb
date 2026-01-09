@@ -35,6 +35,7 @@ $cefe=0;?>
 					<th>Vendedor </th>
 					<th>Comprobante</th>
 					<th>Estatus</th>
+					<th>Recibos</th>
 					<th>Monto</th>
 					<th>Fecha Fac.</th>
 					<th>Usuario</th>
@@ -43,12 +44,17 @@ $cefe=0;?>
 					@foreach ($datos as $q)
 						<?php $count++; 
 						if($q->estado=="Credito"){$credito=$credito + $q->total_venta;}else{$contado=$contado + $q->total_venta;} ?> 
-							<tr <?php if($mostrar==0){?> style="display:none" <?php } ?> >
+							<tr <?php if($mostrar==0){?> style="display:none" <?php } ?> <?php if (($count%2)==0){ echo "style='background-color: #DFF2FE !important'";}?>>
 							  <td><?php echo $count; ?></td>
 							   <td>{{ $q->nombre}}</td>
 							   <td>{{ $q->vendedor}}</td>
 							  <td>{{ $q->tipo_comprobante}}-{{ $q->num_comprobante}} <?php if ($q->devolu>0){ echo "- Devuelta";}?></td>       
 							  <td>{{$q->estado}}</td> 
+							  <td> @foreach ($recibos as $r)
+							  <?php if($q->idventa==$r->idventa){?>
+								 <small><small> {{$r->idbanco}}->{{$r->recibido}}</br></small></small>
+							  <?php } ?>
+							  @endforeach</td>
 							  <td><?php $acum=$acum+ $q->total_venta; echo number_format($q->total_venta, 2,',','.')." $"; ?></td>
 							  <td><?php echo date("d-m-Y h:i:s a",strtotime($q->fecha_hora)); ?></td>
 							  <td>{{$q->user}}</td>

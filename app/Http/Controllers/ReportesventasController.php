@@ -73,6 +73,17 @@ class ReportesventasController extends Controller
             ->whereBetween('d.fecha_hora', [$query, $query2])
             ->get();
 		// dd($devolucion);   
+		//de los recibos
+			$recibos=DB::table('recibos as re')
+			->join('venta as v','v.idventa','=','re.idventa')
+			->join('monedas as mo','mo.idmoneda','=','re.idpago')
+			-> select('re.monto','re.recibido','re.idbanco','re.idpago','re.idventa')
+			->where('re.monto','>',0)
+			->where('v.devolu','=',0)
+			-> where ('v.idvendedor',$c,$v)
+            -> whereBetween('re.fecha', [$query, $query2])
+            ->get();
+			//dd($recibos);
 		 }else{
 			 
 			$datos=DB::table('venta as v')
@@ -96,7 +107,16 @@ class ReportesventasController extends Controller
 			->where('v.devolu','=',0)
             -> whereBetween('re.fecha', [$query, $query2])
 			-> groupby('re.idpago','re.idbanco')
-            ->get(); 		
+            ->get(); 	
+			$recibos=DB::table('recibos as re')
+			->join('venta as v','v.idventa','=','re.idventa')
+			->join('monedas as mo','mo.idmoneda','=','re.idpago')
+			-> select('re.monto','re.recibido','re.idbanco','re.idpago','re.idventa')
+			->where('re.monto','>',0)
+			->where('v.devolu','=',0)
+			-> where ('v.idvendedor',$c,$v)
+            -> whereBetween('re.fecha', [$query, $query2])
+            ->get();			
 		//dd($pagos);	
 			$devolucion=DB::table('venta as d')
 			->join('vendedores as ve','ve.id_vendedor','=','d.idvendedor')
@@ -109,7 +129,7 @@ class ReportesventasController extends Controller
             ->get();
 		 }
 			$query2=date("Y-m-d",strtotime($query2."- 1 days"));
-			return view('reportes.ventas.ventas.index',["filtro"=>$filtro,"rutas"=>$rutas,"datos"=>$datos,"devolucion"=>$devolucion,"empresa"=>$empresa,"pagos"=>$pagos,"vendedores"=>$vendedores,"searchText"=>$query,"searchText2"=>$query2]);
+			return view('reportes.ventas.ventas.index',["recibos"=>$recibos,"filtro"=>$filtro,"rutas"=>$rutas,"datos"=>$datos,"devolucion"=>$devolucion,"empresa"=>$empresa,"pagos"=>$pagos,"vendedores"=>$vendedores,"searchText"=>$query,"searchText2"=>$query2]);
        
 		} 
 		}
