@@ -61,7 +61,7 @@
 				</div>
 
 			   
-					 <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
 					  <div class="form-group">
 				 <label for="tipo_cliente">Tipo Cliente</label>
 			  <select name="ctipo_cliente" class="form-control selectpicker">
@@ -70,7 +70,7 @@
 							  
 						   </select>
 			   </div>       </div>
-					 <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
 					    <div class="form-group">
             			             <label for="tipo_precio">Vendedor </label><br>
             			<select name="idvendedor" class="form-control selectpicker">
@@ -82,6 +82,16 @@
             		</div>
 					    
 			   </div>
+			   		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+           <div class="form-group">
+             <label for="categoria">Categoria</label>
+				<select name="categoria" class="form-control selectpicker">
+            				@foreach ($categoria as $cat)
+            				<option value="{{$cat->idcategoria}}">{{$cat->nombrecategoria}}</option>
+            				@endforeach
+            			</select>
+           </div>
+		   </div>
 			 <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
 					  <div class="form-group">
 				     <label for="tipo_precio">Ruta </label><br>
@@ -94,7 +104,6 @@
 			   <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
  <div class="form-group">
 				 <label for="tipo_precio">Tipo de Precio </label><br>
-					<label for="tipo_precio">Tipo de Precio </label><br>
 				<label for="precio1"> P 1 </label> <input name="cprecio" type="radio" value="1" checked="checked">
 				<label for="precio2"> P 2 </label> <input name="cprecio" type="radio" value="2">
 				<label for="precio2"> P 3 </label> <input name="cprecio" type="radio" value="3">

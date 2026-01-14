@@ -38,8 +38,9 @@ class ClientesController extends Controller
 		$rol=DB::table('roles')-> select('newcliente')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->newcliente==1){
 		$vendedor=DB::table('vendedores')->get();	
+		$categoria=DB::table('categoriaclientes')->get();	
 		$rutas=DB::table('rutas')->get();	
-		return view("clientes.cliente.create",["rutas"=>$rutas,"vendedores"=>$vendedor]);
+		return view("clientes.cliente.create",["rutas"=>$rutas,"categoria"=>$categoria,"vendedores"=>$vendedor]);
 		} else { 
 		return view("reportes.mensajes.noautorizado");
 		}
@@ -62,6 +63,7 @@ class ClientesController extends Controller
         $paciente->codpais=$request->get('codpais');
         $paciente->telefono=$request->get('telefono');
         $paciente->licencia=$request->get('licencia');
+        $paciente->catcomercial=$request->get('categoria');
         $paciente->status='A';
         $paciente->direccion=$request->get('direccion');
         $paciente->casa=$request->get('casa');
@@ -118,12 +120,13 @@ class ClientesController extends Controller
 	
 		$vendedor=DB::table('vendedores')->get();
 		$rutas=DB::table('rutas')->get();
+		$categoria=DB::table('categoriaclientes')->get();	
 		 $datos=DB::table('clientes as c')
 			-> join('vendedores as v','c.vendedor','=','v.id_vendedor')
 			->select('v.nombre as vendedor')
 			-> where('c.id_cliente','=',$historia)
             ->first();
-		return view("clientes.cliente.edit",["rutas"=>$rutas,"cliente"=>Clientes::findOrFail($historia),"vendedores"=>$vendedor,"datos"=>$datos]);
+		return view("clientes.cliente.edit",["rutas"=>$rutas,"categoria"=>$categoria,"cliente"=>Clientes::findOrFail($historia),"vendedores"=>$vendedor,"datos"=>$datos]);
 	}
 	public function update(Request $request)
 	{
@@ -141,6 +144,7 @@ class ClientesController extends Controller
         $paciente->cedula=$request->get('cedula');
         $paciente->telefono=$request->get('telefono');
 		$paciente->licencia=$request->get('licencia');
+		$paciente->catcomercial=$request->get('categoria');
         $paciente->codpais=$request->get('codpais');
         $paciente->rif=$request->get('rif');
     	$paciente->direccion=$request->get('direccion');

@@ -48,12 +48,17 @@
 				  </div>
             </div>
 		</div>
-		<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">		
+			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
            <div class="form-group">
-		     <label for="tipo_cliente" >Licencia</label>
-				<input type="text" name="licencia" class="form-control" value="{{old('licencia')}}" placeholder="Licencia...">
+             <label for="categoria">Categoria Comercial</label>
+				<select name="categoria" class="form-control">
+            				@foreach ($categoria as $cat)
+            				<option value="{{$cat->idcategoria}}">{{$cat->nombrecategoria}}</option>
+            				@endforeach
+            			</select>
            </div>
-		</div>
+		   </div>
+
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">			
              <div class="form-group">
              <label for="direccion">Direccion <a href="" data-target="#modaldireccion" data-toggle="modal"><button class="btn btn-primary btn-xs">+</button></a></label>
@@ -121,6 +126,12 @@
       <input type="number"  step="1" class="form-control" disabled id="retencion" name="retencion" >
            </div>
 		   </div>
+		   		<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">		
+           <div class="form-group">
+		     <label for="tipo_cliente" >Licencia</label>
+				<input type="text" name="licencia" class="form-control" value="{{old('licencia')}}" placeholder="Licencia...">
+           </div>
+		</div>
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">	
             <div class="form-group">
 				<button class="btn btn-danger btn-sm" type="reset" id="btncancelar">Cancelar</button>

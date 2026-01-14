@@ -504,6 +504,15 @@
 						<input type="checkbox" name="op41" class="minimal" @if($q->editmoneda==1) checked @endif ></label>
 						</div>
 						</div>
+						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="form-group">
+            			<label for="nombre">Nivel de Usuario</label>
+            				<select name="nivel" class="form-control">          			            			
+            				<option value="L"  @if($q->nivel=="L") selected @endif >Limitado</option>
+            				<option value="A" @if($q->nivel=="A") selected @endif >Administrador</option>         				
+            			</select>
+						</div>
+						</div>
 					</div>
 				</div>
                 </div>

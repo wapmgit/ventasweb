@@ -39,13 +39,18 @@
             	<input type="text" name="telefono" class="form-control" value="{{$cliente->telefono}}" placeholder="telefono...">
              @if($errors->first('telefono'))<P class='text-danger'>{{$errors->first('telefono')}}</p>@endif
 			</div>
-	</div>
-	<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
+	</div>		   		
+		<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
            <div class="form-group">
-		     <label for="tipo_cliente" >Licencia</label>
-<input type="text" name="licencia" class="form-control" value="{{$cliente->licencia}}" placeholder="Licencia...">
+             <label for="categoria">Categoria Comercial</label>
+				<select name="categoria" class="form-control">
+            				@foreach ($categoria as $cat)
+            				<option value="{{$cat->idcategoria}}" <?php if($cat->idcategoria==$cliente->catcomercial){ echo "selected";}?>>{{$cat->nombrecategoria}}</option>
+            				@endforeach
+            			</select>
            </div>
-		</div>
+		   </div>
+
 	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">			
               <div class="form-group">
             <label for="telefono">Direccion <a href="" data-target="#modaldireccionedit" data-toggle="modal"><button class="btn btn-primary btn-xs">+</button></a></label>
@@ -117,6 +122,12 @@
       <input type="number"  step="1" class="form-control"  <?php if ($cliente->retencion>0){ echo  "value='$cliente->retencion'"; }else{ echo "disabled"; } ?> id="retencion" name="retencion" >
            </div>
 		   </div>
+		   	<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
+           <div class="form-group">
+		     <label for="tipo_cliente" >Licencia</label>
+<input type="text" name="licencia" class="form-control" value="{{$cliente->licencia}}" placeholder="Licencia...">
+           </div>
+		</div>
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">	
             <div class="form-group">
 						<button class="btn btn-danger btn-sm" type="reset" id="btncancelar">Cancelar</button>

@@ -5,12 +5,12 @@
 <div class="panel panel-primary">
 <div class="panel-body">
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
- 
+  @include('sistema.roles.modalnewuser')
     <h3 align="center">USUARIOS DEL SISTEMA</h3> 
       <table class="table table-striped table-bordered table-condensed table-hover">
         <thead style="background-color: #A9D0F5">
     
-          <th>Nombre</th>
+          <th>Nombre <?php if($updatepass==1){?> <a  href="" data-target="#modaluser" data-toggle="modal"><i class="fa fa-fw  fa-user-plus "> </i></a><?php } ?></th>
           <th>Login</th>
           <th>Fecha inicio</th>
           <th>Acceso</th>
@@ -63,7 +63,9 @@ $(document).ready(function(){
   window.print(); 
   window.location="/sistema/tasa/usuarios";
     });
-
+    $('#btn-nuser').click(function(){
+  document.getElementById('btn-nuser').style.display="none";
+    });
 });
 
 </script>

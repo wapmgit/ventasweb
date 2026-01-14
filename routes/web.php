@@ -283,6 +283,7 @@ Route::post('updatetasas', [SistemaController::class, 'update'])->name('updateta
 Route::post('updateuser', [SistemaController::class, 'updtuser'])->name('updateuser');
 Route::post('updatepass', [SistemaController::class, 'updatepass'])->name('updatepass');
 Route::get('showusuarios', [SistemaController::class, 'usuarios'])->name('showusuarios');
+Route::post('newuser', [SistemaController::class, 'newuser'])->name('newuser');
 Route::get('ayuda', [SistemaController::class, 'ayuda'])->name('ayuda');
 Route::get('logs', [SistemaController::class, 'logs'])->name('logs');
 Route::get('calc', [SistemaController::class, 'calculador'])->name('calc');
