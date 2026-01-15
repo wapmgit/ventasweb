@@ -38,7 +38,9 @@ $saldond=$saldonc=0; $contnd=0; $contnc=0;
               <div class="row invoice-info">
 			@include('proveedores.proveedor.empresa')
 				<div class="col-sm-3 invoice-col">
-				<h3 align="center"> <u>Estado de Cuenta</u> </h3></div>		
+				<h3 align="center"> <u>Estado de Cuenta</u> </h3>
+				<h5 align="center"> Proveedor </h>
+				</div>		
 				<div class="col-sm-3 invoice-col">
 				<div align="center">  
 			<img src="{{ asset('dist/img/'.$empresa->logo)}}" width="50%" height="80%" title="NKS">
@@ -100,9 +102,15 @@ $saldond=$saldonc=0; $contnd=0; $contnc=0;
 					<td>{{ $cat->miva}}</td>
 					<td>{{ $cat->exento}}</td>
 					<td>{{ $cat->saldo}}</td>				
-				</tr>
-				@endforeach
+				</tr>	
+				@foreach($rcompras as $p)
+					<?php if($cat->idcompra==$p->idcompra){ ?>
+					<tr style="line-height:80%"><td></td><td colspan="3"><small>------------> Recibo-{{$p->idrecibo}} <?php echo date("d-m-Y",strtotime($p->fecha_comp)); ?></small></td><td colspan="3"><small>{{$p->idbanco}}->{{$p->recibido}}->{{$p->monto}}$</small></td><td></td></tr>
+					<?php } ?>
+					@endforeach
 				<tr>
+				@endforeach
+				
 				@foreach ($gastos as $go)
 			   <?php 
 			   $comprado=$comprado+$go->monto; 
@@ -120,6 +128,11 @@ $saldond=$saldonc=0; $contnd=0; $contnc=0;
 					<td></td>
 					<td>{{ $go->saldo}}</td>				
 				</tr>
+					@foreach($rgastos as $p)
+					<?php if($go->idgasto==$p->idgasto){ ?>
+					<tr style="line-height:80%"><td></td><td colspan="3"><small>------------> Recibo-{{$p->idrecibo}} <?php echo date("d-m-Y",strtotime($p->fecha_comp)); ?></small></td><td colspan="3"><small>{{$p->idbanco}}->{{$p->recibido}}->{{$p->monto}}$</small></td><td></td></tr>
+					<?php } ?>
+					@endforeach
 				@endforeach
 					@foreach ($notas as $not)
 					<?php  $comprado=$comprado+$not->monto; 

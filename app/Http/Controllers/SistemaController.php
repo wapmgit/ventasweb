@@ -11,6 +11,7 @@ use App\Models\Articulos;
 use App\Models\Roles;
 use App\Models\User;
 
+
 use DB;
 use Carbon\Carbon;
 use Auth;
@@ -147,12 +148,33 @@ class SistemaController extends Controller
 		if ($request->get('op71')){ $data->anularrc=1; }else{ $data->anularrc=0; }
 		if ($request->get('op72')){ $data->web=1; }else{ $data->web=0; }
 		$data ->update();
-			
-		$user=DB::table('users')->join('roles','users.id','=','roles.iduser')
-			->get();
+
+	$user = User::find($data->iduser);
+    $user->nivel =$request->get('nivel');
+    $user->update();
+	
 		   
          return Redirect::to('showusuarios');
 	}
+	public function newuser(Request $request)
+    {
+		//dd($request);
+		 $user=$request->get('nombre');		 
+		 $mail=$request->get('mail');		 
+		 $pass=$request->get('pass');	
+		 User::create([
+					'name' => $user,
+					'email' => $mail,
+					'password' => Hash::make($pass),
+					'nivel' => $request->get('nivel'),
+				]);
+				$iduser=DB::table('users')->select('id')->orderby('id','DESC')->first();
+				$dat=new Roles;
+				$dat->iduser=$iduser->id;
+				$dat->save();
+
+        return Redirect::to('showusuarios');
+    }
 	public function ayuda()
 	{		
 		return view('sistema.ayuda.index');	

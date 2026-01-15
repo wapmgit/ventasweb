@@ -72,14 +72,14 @@ $this->middleware('auth');
 	$rcompras=DB::table('comprobante as re')
 	->join('compras as c','c.idcompra','=','re.idcompra')
 	->join('proveedores as pro','pro.idproveedor','=','c.idproveedor')
-	 -> select('re.monto','re.recibido','re.idbanco','re.idpago','re.referencia','c.idcompra','c.num_comprobante','re.fecha_comp')
+	 -> select('re.monto','re.recibido','re.idbanco','re.idpago','re.referencia','c.idcompra','c.num_comprobante','re.fecha_comp','re.idrecibo')
 	 -> where('pro.idproveedor','=',$id)
 		->get();
-	
+	//dd($rcompras);
 		$rgastos=DB::table('comprobante as re')
 	->join('gastos as c','c.idgasto','=','re.idgasto')
 	->join('proveedores as pro','pro.idproveedor','=','c.idpersona')
-	 -> select('re.monto','re.recibido','re.idbanco','re.idpago','re.referencia','c.idgasto','c.documento','re.fecha_comp')
+	 -> select('re.monto','re.recibido','re.idbanco','re.idpago','re.referencia','c.idgasto','c.documento','re.fecha_comp','re.idrecibo')
 	 -> where('pro.idproveedor','=',$id)
 		->get();
 	$notas=DB::table('notasadmp')->where('notasadmp.idproveedor','=',$id)->get();

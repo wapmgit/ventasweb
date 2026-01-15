@@ -44,6 +44,7 @@ return $insertar_ceros = $recibo.$numero;
 	</div>
 				 	<div class="col-sm-3 invoice-col">
 		<h3 align="center"><u>  Estado de Cuenta </u></h3>		
+		<h5 align="center">  Cliente </h5>		
 	</div>	
 	<div class="col-sm-3 invoice-col" align="center">
 <img src="{{ asset('dist/img/'.$empresa->logo)}}" width="50%" height="80%" title="NKS">
