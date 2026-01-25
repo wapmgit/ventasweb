@@ -51,6 +51,7 @@ class VentasController extends Controller
         'serie_comprobante', 
         'num_comprobante', 
         'total_venta', 
+        'devolu', 
         'estado'
     )
     ->with(['cliente' => function($q) {
@@ -99,7 +100,7 @@ class VentasController extends Controller
 	}
 	}	
     public function store(Request $request){
-		//dd($request);
+	//	dd($request);
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$user=Auth::user()->name;
    try{
@@ -153,53 +154,31 @@ class VentasController extends Controller
            $tmonto=$request->get('tmonto');
            $tref=$request->get('tref');		 
            $contp=0;
-		   if($request->get('totala')>0){
-              while($contp < count($idpago)){
-				$recibo=new Recibos;
-				$recibo->idventa=$venta->idventa;
-				if($request->get('tdeuda')>0){
-				$recibo->tiporecibo='A'; }else{$recibo->tiporecibo='P'; }
-				$recibo->monto=$request->get('total_venta');
-				$pago=explode("_",$idbanco[$contp]);
-				$recibo->idpago=$idpago[$contp]; // bbanco
-				$recibo->idnota=0;
-				$recibo->id_banco=0;
-				$recibo->idbanco=$idbanco[$contp]; 
-				$recibo->recibido=$denomina[$contp];			
-				$recibo->monto=$tmonto[$contp]; 
-				$recibo->referencia=$tref[$contp];
-				$recibo->tasap=$request->get('peso');
-				$recibo->tasab=$request->get('tc');
-				$recibo->aux=$request->get('tdeuda');
-				$recibo->fecha=$mytime->toDateTimeString();		
-				$recibo->fecharecibo=$mytime->toDateTimeString();		
-				$recibo->usuario=$user;					
-				$recibo->save();
-						$mon=Monedas::findOrFail($idpago[$contp]);
-							if($mon->idbanco>0){
-								    $mov=new MovBancos;
-									$mov->idbanco=$mon->idbanco;
-									$mov->clasificador=1;
-									$mov->tipodoc="FAC";
-									$mov->docrelacion=$venta->idventa;
-									$mov->iddocumento=$recibo->idrecibo;
-									$mov->tipo_mov="N/C";
-									$mov->numero="FAC-".$recibo->idventa." Rec-".$recibo->idrecibo;
-									$mov->concepto="Ventas";
-									$mov->idbeneficiario=$idcliente[0];	
-									$mov->identificacion="";
-									$mov->ced="";
-									$mov->tipo_per="C";
-									$mov->monto=$denomina[$contp];
-									$mov->tasadolar=$request->get('tc');
-									$mytime=Carbon::now('America/Caracas');
-									$mov->fecha_mov=$mytime->toDateTimeString();	
-									$mov->user=Auth::user()->name;
-									$mov->save();
-							}			
-				 $contp=$contp+1;
-			  }  
-		   }
+		  if ($request->get('totala') > 0) {
+    foreach ($idpago as $contp => $pago_id) {
+        $recibo = new Recibos;
+        $recibo->idventa = $venta->idventa;
+        $recibo->tiporecibo = ($request->get('tdeuda') > 0) ? 'A' : 'P';
+        $recibo->idpago = $pago_id;
+        $recibo->idbanco = $idbanco[$contp];
+        $recibo->recibido = $denomina[$contp];
+        $recibo->monto = $tmonto[$contp];
+		$recibo->tasap=$request->get('peso');
+		$recibo->tasab=$request->get('tc');
+        $recibo->referencia = $tref[$contp];
+		$recibo->aux=$request->get('tdeuda');
+        $recibo->fecha = $mytime;
+		$recibo->fecharecibo=$mytime;
+        $recibo->usuario = $user;
+        $recibo->save();
+
+        // Lógica de Movimiento Bancario
+        $moneda = Monedas::find($pago_id);
+        if ($moneda && $moneda->idbanco > 0) {
+            $this->registrarMovimientoBancario($venta, $recibo, $moneda, $idcliente[0], $denomina[$contp]);
+        }
+    }
+}
 		    
         $idarticulo = $request -> get('idarticulo');
         $cantidad = $request -> get('cantidad');
@@ -221,7 +200,7 @@ class VentasController extends Controller
 			 $detalle->fecha_emi=$mytime->toDateTimeString();	
             $detalle->save();
 
-				$kar=new Kardex;
+			/*	$kar=new Kardex;
 		$kar->fecha=$mytime->toDateTimeString();
 		$kar->documento="VENT-".$venta->idventa;
 		$kar->idarticulo=$idarticulo[$cont];
@@ -233,21 +212,28 @@ class VentasController extends Controller
                       //actualizo stock   
         $articulo=Articulos::findOrFail($idarticulo[$cont]);
         $articulo->stock=$articulo->stock-$cantidad[$cont];
-        $articulo->update();
+        $articulo->update();*/
+			if ($request->has('pidserial') && is_array($request->get('pidserial'))) {
+				$seriales_ids = $request->get('pidserial');
+
+				foreach ($seriales_ids as $id_serial) {
+				$ser = Seriales::find($id_serial);
+
+				if ($ser) {
+				$ser->idventa = $venta->idventa;
+            
+            // ¡OJO! Aquí debes asegurar que el serial se asocie al detalle correcto.
+            // Si el serial pertenece al artículo que acabas de guardar:
+				$ser->iddetalleventa = $detalle->iddetalle_venta; 
+            
+				$ser->estatus = 1; // 1 = Vendido / Activo
+				$ser->update();
+				}
+				}
+			}
             $cont=$cont+1;
             }
-		if( $request -> get('pidserial') > 0){
-					$conts=0;
-						$serial = $request -> get('pidserial');
-						 while($conts < count($serial)){
-						$ser=Seriales::findOrFail($serial[$conts]);
-						$ser->idventa=$venta->idventa;
-						$ser->iddetalleventa=$detalle->iddetalle_venta;
-						$ser->estatus=1;
-						$ser->update();
-						 $conts=$conts+1;
-						}
-						}
+
 		$cli=Clientes::findOrFail($idcliente[0]);
         $cli->lastfact=$mytime->toDateTimeString();
         $cli->update();
@@ -310,7 +296,7 @@ public function devolucion(Request $request){
     $devolucion=new Devolucion;
     $devolucion->idventa=$request->get('idventa');
     $devolucion->comprobante=$request->get('comprobante');
-    $mytime=Carbon::now('America/Lima');
+    $mytime=Carbon::now('America/Caracas');
     $devolucion->fecha_hora=$mytime->toDateTimeString();
     $devolucion->user=$user;
 	$devolucion-> save();
@@ -356,7 +342,7 @@ public function devolucion(Request $request){
             $detalle->descuento=$descuento[$cont];
             $detalle->precio_venta=$precio_venta[$cont];
             $detalle->save();
-            $articulo=Articulos::findOrFail($idarticulo[$cont]);
+          /*  $articulo=Articulos::findOrFail($idarticulo[$cont]);
             $articulo->stock=($articulo->stock+$cantidad[$cont]);
             $articulo->update();
 		$kar=new Kardex;
@@ -367,7 +353,7 @@ public function devolucion(Request $request){
 		$kar->costo=$precio_venta[$cont];
 		$kar->tipo=1; 
 		$kar->user=$user;
-		 $kar->save(); 
+		 $kar->save(); */
             $cont=$cont+1;
             }
 		
@@ -467,7 +453,9 @@ public function devolucion(Request $request){
 		$detalleventa->cantidad=$request -> get('cantidad');
 		$detalleventa->precio_venta=$request -> get('precio');
 		$detalleventa->update();
-		
+		//actualizo stock
+		$artcomi->stock=($artcomi->stock+$nc);
+		$artcomi->update();
 				
 		$kar=new Kardex;
 		$mytime=Carbon::now('America/Caracas');
@@ -690,8 +678,9 @@ public function nota2ds($id){
      }
 	 public function refrescar(Request $request)
     {
+		$rol=DB::table('roles')-> select('factsinexis')->where('iduser','=',$request->user()->id)->first();	
 		 $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
-		 if($empresa->factsinexis==0){ $exi='0';}else{$exi='-10000';} 
+		 if($rol->factsinexis==0){ $exi='0';}else{$exi='-10000';} 
 		if($request->ajax()){
         $articulos =DB::table('articulos as art')
          -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3')
@@ -834,5 +823,24 @@ public function nota2ds($id){
     $ventaf->anulado=1;
     $ventaf->update();
     return Redirect::to('correlativof');
+}
+private function registrarMovimientoBancario($venta, $recibo, $moneda, $idCliente, $monto)
+{
+    $mov = new MovBancos;
+    $mov->idbanco = $moneda->idbanco;
+    $mov->clasificador = 1;
+    $mov->tipodoc = "FAC";
+    $mov->docrelacion = $venta->idventa;
+    $mov->iddocumento = $recibo->idrecibo;
+    $mov->tipo_mov = "N/C";
+    $mov->numero = "FAC-{$venta->idventa} Rec-{$recibo->idrecibo}";
+    $mov->concepto = "Ventas";
+	$mov->tipo_per="C";
+    $mov->idbeneficiario = $idCliente;
+    $mov->monto = $monto;
+    $mov->tasadolar = $venta->tasa;
+    $mov->fecha_mov = Carbon::now('America/Caracas');
+    $mov->user = Auth::user()->name;
+    $mov->save();
 }
 }

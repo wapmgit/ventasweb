@@ -66,7 +66,7 @@ class HomeController extends Controller
 		
         return view('home',["vene"=>$vene,"vfeb"=>$vfeb,"vmar"=>$vmar,"vabr"=>$vabr,"vmay"=>$vmay,"vjun"=>$vjun,"vjul"=>$vjul,"vago"=>$vago,"cene"=>$cene,"cfeb"=>$cfeb,"cmar"=>$cmar,"cmay"=>$cmay,"cabr"=>$cabr,"cjun"=>$cjun,"cjul"=>$cjul,"cago"=>$cago,"csep"=>$csep,"vsep"=>$vsep,"voct"=>$voct,"coct"=>$coct,"vnov"=>$vnov,"cnov"=>$cnov,"vdic"=>$vdic,"cdic"=>$cdic,"empresa"=>$empresa,"clientes"=>$clientes,"proveedor"=>$proveedor,"articulos"=>$articulos,"vendedores"=>$vendedores]);
     } else {
-		$rol=DB::table('roles')-> select('crearventa','anularventa','cambiarprecioventa')->where('iduser','=',$request->user()->id)->first();
+		$rol=DB::table('roles')-> select('crearventa','anularventa','cambiarprecioventa','factsinexis')->where('iduser','=',$request->user()->id)->first();
 		
 		if($rol <> null){	
 			if ($rol->crearventa==1){
