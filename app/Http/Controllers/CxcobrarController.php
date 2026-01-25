@@ -588,10 +588,11 @@ $this->middleware('auth');
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
         $nota=DB::table('notasadm as no')
 		->join('clientes as cl','cl.id_cliente','=','no.idcliente')
+		->select('cl.*','no.tipo as tnota','no.idnota','no.ndocumento','no.referencia','no.descripcion','no.fecha','no.monto','no.usuario','no.pendiente')
 		->where('no.idnota','=',$dato[0])
 		->first();
 		//dd($dato[1]);
-		$tipo=$dato[1];
+		$tipo=$nota->tnota;
 		if($tipo==1){
 			$pagos=DB::table('recibos as re')
 			-> where ('re.idnota','=',$nota->idnota)

@@ -49,6 +49,7 @@ $idv=0;
 			<input type="hidden" value="{{$empresa->nlineas}}" id="nlineas" ></input>
 			<input type="hidden" value="{{$empresa->facfiscalcredito}}" id="faccredito" ></input>
 			<input type="hidden" value="{{$empresa->tasadif}}" id="tasadif" ></input>
+			<input type="hidden" value="{{$rol->factsinexis}}" id="factsinexis" ></input>
         </div>
 			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
 			<h4 id="nombrevendedor"></h4>
@@ -626,6 +627,7 @@ function trunc (x, posiciones = 0) {
 	
 		vdolar=$("#valortasa").val();
 		nlineas=$("#nlineas").val();
+		factsinexis=$("#factsinexis").val();
       var cantidad=0; var stock=0;
         datosarticulo=document.getElementById('pidarticulo').value.split('_');
         idarticulo=datosarticulo[0];
@@ -641,7 +643,8 @@ function trunc (x, posiciones = 0) {
 		precio_venta=precondesc; }else{
 			precio_venta=precio;
 		}
-        stock=$("#pstock").val();
+		if(factsinexis==0){
+        stock=$("#pstock").val();}else{ stock=cantidad; }
 		costoarticulo=datosarticulo[4];
 		alicuota=datosarticulo[5];
 		mserial=datosarticulo[6];

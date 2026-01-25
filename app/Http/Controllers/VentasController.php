@@ -21,7 +21,7 @@ use App\Models\Formalibre;
 use App\Models\Clientes;
 use App\clase\Errores;
 use Carbon\Carbon;
-use Dompdf\Dompdf;
+use Illuminate\Support\Facades\Storage;
 use DB;
 use Auth;
 
@@ -43,35 +43,52 @@ class VentasController extends Controller
 			$rol=DB::table('roles')-> select('crearventa','anularventa')->where('iduser','=',$request->user()->id)->first();
 			   $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
             $query=trim($request->get('searchText'));
-            $ventas=DB::table('venta as v')
-            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> join ('detalle_venta as dv','v.idventa','=','dv.idventa')
-            -> select ('v.idventa','v.fecha_hora','p.nombre','v.flibre','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.devolu','v.estado','v.total_venta','v.user')
-            -> where ('p.nombre','LIKE','%'.$query.'%')
-            -> orwhere ('v.idventa','LIKE','%'.$query.'%')
-            -> orderBy('v.idventa','desc')
-            -> groupBy('v.idventa','v.fecha_hora','p.nombre','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado')
-                ->paginate(50);
+		$ventas = Ventas::select(
+        'idventa', 
+        'idcliente', // OJO: Es obligatorio incluir la llave foránea para que la relación 'cliente' funcione
+        'fecha_hora', 
+        'tipo_comprobante', 
+        'serie_comprobante', 
+        'num_comprobante', 
+        'total_venta', 
+        'estado'
+    )
+    ->with(['cliente' => function($q) {
+        $q->select('id_cliente', 'nombre'); // Solo el ID y el nombre del cliente
+    }])
+    ->where(function($q) use ($query) {
+        $q->where('idventa', 'LIKE', '%' . $query . '%')
+          ->orWhereHas('cliente', function($q2) use ($query) {
+              $q2->where('nombre', 'LIKE', '%' . $query . '%');
+          });
+    })
+    ->orderBy('idventa', 'desc')
+    ->paginate(50);
      
      return view ('ventas.venta.index',["rol"=>$rol,"ventas"=>$ventas,"searchText"=>$query,"empresa"=>$empresa]);
         }
     }
     public function create(Request $request){
-		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa')->where('iduser','=',$request->user()->id)->first();	
+		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa','factsinexis')->where('iduser','=',$request->user()->id)->first();	
+		 $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
+		 if ($empresa->orderart==1){$order="art.nombre";}else{$order="art.idarticulo";}
 		if ($rol->crearventa==1){
+			 if($rol->factsinexis==0){ $exi='0';}else{$exi='-10000';} 
 		$monedas=DB::table('monedas')->get();
 		$vendedor=DB::table('vendedores')->get();
 		$categoria=DB::table('categoriaclientes')->get();	
 		$rutas=DB::table('rutas')->get();
-        $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
-        $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev')-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->get();
+       
+        $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev')
+		-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->OrderBy('clientes.nombre','asc')->get();
          $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
       //dd($contador);
         $articulos =DB::table('articulos as art')
-        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3')
-        -> where('art.estado','=','Activo')
-        -> where ('art.stock','>','0')
+        -> select('art.nombre',DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3')
+        -> where('art.estado','=','Activo')   
+		-> where ('art.stock','>',$exi) 
         ->groupby('art.idarticulo')
+        ->OrderBy($order,'asc')
         -> get();
 		//dd($articulos);
 		   $seriales =DB::table('seriales')->where('estatus','=',0)->get();
@@ -537,6 +554,7 @@ public function show(Request $request, $id){
 
             return view("ventas.venta.show",["retencion"=>$retencion,"ruta"=>$c1,"seriales"=>$seriales,"venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
 }
+
 public function fbs($id){
 //dd($id);
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
@@ -672,11 +690,13 @@ public function nota2ds($id){
      }
 	 public function refrescar(Request $request)
     {
+		 $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
+		 if($empresa->factsinexis==0){ $exi='0';}else{$exi='-10000';} 
 		if($request->ajax()){
         $articulos =DB::table('articulos as art')
-        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion')
+         -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3')
         -> where('art.estado','=','Activo')
-        -> where ('art.stock','>','0')
+        -> where ('art.stock','>',$exi)
         ->groupby('articulo','art.idarticulo')
         -> get();
            return response()->json($articulos);
@@ -684,13 +704,14 @@ public function nota2ds($id){
     }
 	public function facturar(Request $request, $idcliente){
 		//dd($request);
-		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa')->where('iduser','=',$request->user()->id)->first();	
+		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa','factsinexis')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->crearventa==1){
 	     $monedas=DB::table('monedas')->get();
 		 $rutas=DB::table('rutas')->get();
 	     $vendedor=DB::table('vendedores')->get();
 		 $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
-         $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.nombre','clientes.cedula','clientes.tipo_cliente','vendedores.comision','vendedores.id_vendedor as nombrev')
+          if($rol->factsinexis==0){ $exi='0';}else{$exi='-10000';} 
+		 $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.nombre','clientes.cedula','clientes.tipo_cliente','vendedores.comision','vendedores.id_vendedor as nombrev')
          -> where('status','=','A')
 		 ->groupby('clientes.id_cliente')
          -> where ('id_cliente','=',$idcliente)
@@ -698,9 +719,9 @@ public function nota2ds($id){
          $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
       //dd($contador);
          $articulos =DB::table('articulos as art')
-        -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3')
+          -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3')
         -> where('art.estado','=','Activo')
-        -> where ('art.stock','>','0')
+        -> where ('art.stock','>',$exi)
         ->groupby('art.idarticulo')
         -> get();
 		    $seriales =DB::table('seriales')->where('estatus','=',0)->get();

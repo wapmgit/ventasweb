@@ -28,7 +28,7 @@ class ClientesController extends Controller
 			->select('clientes.id_cliente','clientes.nombre','clientes.codpais','clientes.telefono','clientes.cedula','clientes.direccion','ven.nombre as vendedor')
 			->where('clientes.status','=','A')
 			->orderBy('clientes.id_cliente','desc')
-			->paginate(20);
+			->paginate(50);
 
 			return view('clientes.cliente.index',["rol"=>$rol,"pacientes"=>$pacientes,"empresa"=>$empresa,"searchText"=>$query]);
 		}

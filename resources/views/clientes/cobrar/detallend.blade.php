@@ -18,7 +18,7 @@ return $insertar_ceros = $recibo.$numero;
               <div class="row">
                 <div class="col-12">
                   <h4>
-                    <i class="fas fa-chart-pie"></i> Sistema de Ventas SysVent@s
+                 <img src="{{asset('dist/img/iconosistema.png')}}" title="NKS">SysVent@s
                     <small class="float-right"></small>
                   </h4>
                 </div>
@@ -40,7 +40,7 @@ return $insertar_ceros = $recibo.$numero;
 				<h4 align="center"># <?php $idv=$nota->ndocumento; echo add_ceros($idv,$ceros); ?></h5> 
 				</div>	
 				<div class="col-sm-3 invoice-col" align="center">
-					<img src="{{asset('dist/img/logoempresa.png')}}" width="50%" height="80%" title="NKS">
+					<img src="{{ asset('dist/img/'.$empresa->logo)}}" width="50%" height="80%" title="NKS">
 				</div>
               </div>
 

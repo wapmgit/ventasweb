@@ -216,6 +216,15 @@
 				<input type="number" min="1" size="5" class="form-control" name="nlineas"  value="{{$empresa->nlineas}}">			   
                     </td>
 				</tr>
+				<tr>
+                    <td>¿Ordenar articulos en venta por nombre?</td>              
+                    <td class="text-right py-0 align-middle">
+					<div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                      <input type="checkbox" name="orderart" <?Php if($empresa->orderart==1) echo "checked"; ?> class="custom-control-input" id="customSwitch5b">
+                      <label class="custom-control-label" for="customSwitch5b"></label>
+                    </div>
+                    </td>
+					</tr>
 				  <tr>
                     <td>Formato Lista de Precios
 					</div></td>     

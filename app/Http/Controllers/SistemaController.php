@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Http;
 use App\Models\Empresa;
 use App\Models\Monedas;
 use App\Models\Articulos;
@@ -29,7 +30,19 @@ class SistemaController extends Controller
 			->first();
 			$monedas=DB::table('monedas')
 			->get();
-			return view('sistema.tasa.index',["rol"=>$rol,"monedas"=>$monedas,"empresa"=>$empresa]);
+			try {
+			 $response = Http::get('https://api.dolarvzla.com/public/exchange-rate');
+			 $datos = $response->json();
+			 // Extraer solo 'current'
+			$soloCurrent = $datos['current'];
+			$tasa=$soloCurrent['usd'];
+			// Si quieres ver qué hay dentro ahora:
+		//dd($soloCurrent['usd']);
+		} catch (\Exception $e) {
+	$tasa=0;
+}
+		
+			return view('sistema.tasa.index',["tasabcv"=>$tasa,"rol"=>$rol,"monedas"=>$monedas,"empresa"=>$empresa]);
 		
 	}
 	 public function update(Request $request)
@@ -147,6 +160,7 @@ class SistemaController extends Controller
 		if ($request->get('op70')){ $data->anularrv=1; }else{ $data->anularrv=0; }
 		if ($request->get('op71')){ $data->anularrc=1; }else{ $data->anularrc=0; }
 		if ($request->get('op72')){ $data->web=1; }else{ $data->web=0; }
+		if ($request->get('op73')){ $data->factsinexis=1; }else{ $data->factsinexis=0; }
 		$data ->update();
 
 	$user = User::find($data->iduser);
@@ -244,6 +258,7 @@ class SistemaController extends Controller
 		if($request->get('relapedido')=="on"){$emp->relapedido=1;}else{$emp->relapedido=0;}
 		if($request->get('bordefac')=="on"){$emp->bordefac=1;}else{$emp->bordefac=0;}
 		if($request->get('printpeso')=="on"){$emp->printpeso=1;}else{$emp->printpeso=0;}
+		if($request->get('orderart')=="on"){$emp->orderart=1;}else{$emp->orderart=0;}
         $emp->update();
 
 		 if ($tasa>0){

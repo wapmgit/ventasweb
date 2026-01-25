@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Clientes;
 
 class Ventas extends Model
 {
@@ -36,4 +37,8 @@ class Ventas extends Model
     protected $guarded =[
 
     ];
+public function cliente() {
+    return $this->belongsTo(Clientes::class, 'idcliente', 'id_cliente');
 }
+}
+

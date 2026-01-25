@@ -27,7 +27,7 @@
 					?>
 				<tr>
 					<td><small><small><?php echo $newdate; ?></small></small></td>
-					<td><small><?php echo substr( $ven->nombre, 0, 30 ); ?></small></td>
+					<td><small><?php echo substr( $ven->cliente->nombre, 0, 30 ); ?></small></td>
 					<td><small>{{ $ven->tipo_comprobante.':'.$ven->serie_comprobante.'-'.$ven->num_comprobante}} <?php if ($ven->flibre==1){ echo "*"; } ?></td>
 					<td>{{ $ven->total_venta}}</small></td>
 					<td><small>{{ $ven->user}}</small></td>
