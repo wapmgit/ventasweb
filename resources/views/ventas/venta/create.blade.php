@@ -733,32 +733,30 @@ function trunc (x, posiciones = 0) {
     function eliminar(index){
 		nlineas=$("#nlineas").val();
 		vdolar=$("#valortasa").val();
-		totaliva=(parseFloat(totaliva) - parseFloat(subiva[index]));
-		totalbase=(parseFloat(totalbase) - parseFloat(base[index]));
-		totalexe=(parseFloat(totalexe) - parseFloat(subexe[index]));
+		totaliva=(parseFloat(totaliva) - parseFloat(subiva[index])); 
+		totalbase=(parseFloat(totalbase) - parseFloat(base[index])); 
+		totalexe=(parseFloat(totalexe) - parseFloat(subexe[index]));  
         total=(total-subtotal[index]).toFixed(2);
         $("#total").html(total);
 		//alert(totalexe);
         $("#divtotal").val(total);
 		$("#resta").val(total);		
-		if(total <= 0){total=0; cont=0; document.getElementById('vdescuento').style.display="none"; totaliva=0;	totalbase=0; totalexe=0;}
+		if(total < 0){total=0; cont=0; alert('entr'); document.getElementById('vdescuento').style.display="none"; totaliva=0;	totalbase=0; totalexe=0;}
 		var mon_tasad=(total);
 		$("#muestramonto").html("$  : " + mon_tasad.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' }));
 		$("#muestramontobs").html("Bs  : " + (mon_tasad*vdolar).toLocaleString('de-DE', { style: 'decimal',  decimal: '2' }));
-        $("#total_venta").val(total);
+        $("#total_venta").val(mon_tasad);
         $("#total_iva").val(totaliva.toFixed(2));
         $("#totalbase").val(totalbase.toFixed(2));
 		$("#texe").val(totalexe.toFixed(2));
-        $("#tdeuda").val(total);
+        $("#tdeuda").val(mon_tasad);
         $("#fila" + index).remove();
-		contl--;
-		
+		contl--;		
 		$("#item").html(contl);
 		if(parseFloat(contl) < parseFloat(nlineas)){
 				document.getElementById('bt_add').style.display="";
 				  }
 			evaluar();
-
     }
     function limpiar(){
 		$("#pidarticulo").val('1000');
