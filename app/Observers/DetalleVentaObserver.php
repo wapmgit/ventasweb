@@ -9,9 +9,18 @@ use Auth;
 use Carbon\Carbon;
 
 class DetalleVentaObserver
-{
+{	
+	protected static $procesados = [];
+
     public function created(DetalleVentas $detalle)
     {
+	
+    //dd("El observer está funcionando para el artículo: " . $detalle->idarticulo);
+
+	if (in_array($detalle->id, self::$procesados)) {
+            return;
+        }
+		
         // 1. ACTUALIZAR STOCK
         $articulo = Articulos::find($detalle->idarticulo);
         if ($articulo) {
@@ -28,5 +37,7 @@ class DetalleVentaObserver
         $kar->tipo = 2; // Salida
         $kar->user = Auth::user()->name ?? 'Sistema';
         $kar->save();
+		// Marcamos este detalle como "ya listo"
+        self::$procesados[] = $detalle->id;
     }
 }

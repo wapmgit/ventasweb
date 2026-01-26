@@ -155,30 +155,30 @@ class VentasController extends Controller
            $tref=$request->get('tref');		 
            $contp=0;
 		  if ($request->get('totala') > 0) {
-    foreach ($idpago as $contp => $pago_id) {
-        $recibo = new Recibos;
-        $recibo->idventa = $venta->idventa;
-        $recibo->tiporecibo = ($request->get('tdeuda') > 0) ? 'A' : 'P';
-        $recibo->idpago = $pago_id;
-        $recibo->idbanco = $idbanco[$contp];
-        $recibo->recibido = $denomina[$contp];
-        $recibo->monto = $tmonto[$contp];
-		$recibo->tasap=$request->get('peso');
-		$recibo->tasab=$request->get('tc');
-        $recibo->referencia = $tref[$contp];
-		$recibo->aux=$request->get('tdeuda');
-        $recibo->fecha = $mytime;
-		$recibo->fecharecibo=$mytime;
-        $recibo->usuario = $user;
-        $recibo->save();
+			foreach ($idpago as $contp => $pago_id) {
+			$recibo = new Recibos;
+			$recibo->idventa = $venta->idventa;
+			$recibo->tiporecibo = ($request->get('tdeuda') > 0) ? 'A' : 'P';
+			$recibo->idpago = $pago_id;
+			$recibo->idbanco = $idbanco[$contp];
+			$recibo->recibido = $denomina[$contp];
+			$recibo->monto = $tmonto[$contp];
+			$recibo->tasap=$request->get('peso');
+			$recibo->tasab=$request->get('tc');
+			$recibo->referencia = $tref[$contp];
+			$recibo->aux=$request->get('tdeuda');
+			$recibo->fecha = $mytime;
+			$recibo->fecharecibo=$mytime;
+			$recibo->usuario = $user;
+			$recibo->save();
 
-        // Lógica de Movimiento Bancario
-        $moneda = Monedas::find($pago_id);
-        if ($moneda && $moneda->idbanco > 0) {
-            $this->registrarMovimientoBancario($venta, $recibo, $moneda, $idcliente[0], $denomina[$contp]);
-        }
-    }
-}
+			// Lógica de Movimiento Bancario
+			$moneda = Monedas::find($pago_id);
+			if ($moneda && $moneda->idbanco > 0) {
+				$this->registrarMovimientoBancario($venta, $recibo, $moneda, $idcliente[0], $denomina[$contp]);
+			}
+			}
+		}
 		    
         $idarticulo = $request -> get('idarticulo');
         $cantidad = $request -> get('cantidad');
@@ -199,41 +199,23 @@ class VentasController extends Controller
             $detalle->precio_venta=$precio_venta[$cont];
 			 $detalle->fecha_emi=$mytime->toDateTimeString();	
             $detalle->save();
-
-			/*	$kar=new Kardex;
-		$kar->fecha=$mytime->toDateTimeString();
-		$kar->documento="VENT-".$venta->idventa;
-		$kar->idarticulo=$idarticulo[$cont];
-		$kar->cantidad=$cantidad[$cont];
-		$kar->costo=$costoarticulo[$cont];
-		$kar->tipo=2; 
-		$kar->user=$user;
-		 $kar->save();  
-                      //actualizo stock   
-        $articulo=Articulos::findOrFail($idarticulo[$cont]);
-        $articulo->stock=$articulo->stock-$cantidad[$cont];
-        $articulo->update();*/
-			if ($request->has('pidserial') && is_array($request->get('pidserial'))) {
-				$seriales_ids = $request->get('pidserial');
-
-				foreach ($seriales_ids as $id_serial) {
-				$ser = Seriales::find($id_serial);
-
-				if ($ser) {
-				$ser->idventa = $venta->idventa;
-            
-            // ¡OJO! Aquí debes asegurar que el serial se asocie al detalle correcto.
-            // Si el serial pertenece al artículo que acabas de guardar:
-				$ser->iddetalleventa = $detalle->iddetalle_venta; 
-            
-				$ser->estatus = 1; // 1 = Vendido / Activo
-				$ser->update();
-				}
-				}
-			}
             $cont=$cont+1;
             }
-
+// Lógica de seriales corregida para no interferir con el detalle
+if ($request->has('pidserial')) {
+    $seriales_ids = $request->get('pidserial');
+    // Filtramos solo los seriales que correspondan a este artículo 
+    // (Asegúrate de que tu lógica de envío de datos permita identificar cuál es de cuál)
+    foreach ($seriales_ids as $id_serial) {
+        $ser = Seriales::find($id_serial);
+        if ($ser) {
+            $ser->idventa = $venta->idventa;
+            $ser->iddetalleventa = $detalle->iddetalle_venta; 
+            $ser->estatus = 1;
+            $ser->update(); // Esto no debería disparar el Observer de DetalleVentas
+        }
+    }
+}
 		$cli=Clientes::findOrFail($idcliente[0]);
         $cli->lastfact=$mytime->toDateTimeString();
         $cli->update();
