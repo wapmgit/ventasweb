@@ -342,7 +342,7 @@ public function devolucion(Request $request){
             $detalle->descuento=$descuento[$cont];
             $detalle->precio_venta=$precio_venta[$cont];
             $detalle->save();
-          /*  $articulo=Articulos::findOrFail($idarticulo[$cont]);
+           $articulo=Articulos::findOrFail($idarticulo[$cont]);
             $articulo->stock=($articulo->stock+$cantidad[$cont]);
             $articulo->update();
 		$kar=new Kardex;
@@ -353,7 +353,7 @@ public function devolucion(Request $request){
 		$kar->costo=$precio_venta[$cont];
 		$kar->tipo=1; 
 		$kar->user=$user;
-		 $kar->save(); */
+		 $kar->save(); 
             $cont=$cont+1;
             }
 		
