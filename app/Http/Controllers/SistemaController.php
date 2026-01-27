@@ -35,14 +35,18 @@ class SistemaController extends Controller
 			 $datos = $response->json();
 			 // Extraer solo 'current'
 			// dd($datos[1]['promedio']);
-			$tasa=($datos[1]['promedio']);
+			$tasa=($datos[0]['promedio']);
+			$tasap=($datos[1]['promedio']);
+			$fecha=($datos[1]['fechaActualizacion']);
 			// Si quieres ver qué hay dentro ahora:
 		
 		} catch (\Exception $e) {
 	$tasa=0;
+	$tasap=0;
+	$fecha="";
 }
 
-			return view('sistema.tasa.index',["tasabcv"=>$tasa,"rol"=>$rol,"monedas"=>$monedas,"empresa"=>$empresa]);
+			return view('sistema.tasa.index',["fechatasa"=>$fecha,"tasap"=>$tasap,"tasabcv"=>$tasa,"rol"=>$rol,"monedas"=>$monedas,"empresa"=>$empresa]);
 		
 	}
 	 public function update(Request $request)

@@ -1,6 +1,6 @@
 @extends ('layouts.master')
 @section ('contenido')
-<?php $cont=0; $cntm=0; ?>
+<?php $cont=0; $cntm=0; $dif=0;?>
 <div class="row px-3" >
 		<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
 			<div class="form-group">
@@ -14,9 +14,66 @@
 <div class="panel-body">
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
   
-        <h3 align="center">TASAS DE CAMBIO <?php if($tasabcv>0){?><i class="fa-solid fa-paste" id="tasabcv"></i><?php echo number_format( $tasabcv, 2,',','.')."Bcv."; }?> </h3>
-
+        <h3 align="center">TASAS DE CAMBIO </h3>
 </div>
+<?php if($tasabcv>0){
+	$date = new DateTime($fechatasa);
+	?>
+<section class="content">
+      <div class="container-fluid">
+        <h5 class="mb-2">Fecha: <?php echo $date->format('d/m/Y'); ?></h5>
+        <div class="row">
+                <div class="col-md-4 col-sm-6 col-12">
+            <div class="info-box">
+		 <i class="nav-icon">BCV</i>
+              <div class="info-box-content">
+                <span class="info-box-number">
+				<i class="fa-solid fa-paste" id="tasabcv"></i><?php echo number_format( $tasabcv, 2,',','.')." Bs."; ?>
+				</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+              <div class="col-md-4 col-sm-6 col-12">
+            <div class="info-box">
+			<i class="nav-icon">PROM.</i>
+              <div class="info-box-content">
+                <span class="info-box-number">
+				<?Php echo number_format( $tasap, 2,',','.')." Bs.";?>
+				</span>
+
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+              <div class="col-md-4 col-sm-6 col-12">
+            <div class="info-box">
+			<i class="nav-icon">Dif %</i>
+
+              <div class="info-box-content">
+                <span class="info-box-number">
+				<?php echo number_format( $dif=((($tasap-$tasabcv)/$tasabcv)*100), 2,',','.'); ?>
+				</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+
+
+
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+  
+  </div>
+  </section>
+<?php } ?>
  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	<form action="{{route('updatetasas')}}" method="POST" enctype="multipart/form-data" >         
 			{{csrf_field()}}
