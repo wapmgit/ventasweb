@@ -31,17 +31,17 @@ class SistemaController extends Controller
 			$monedas=DB::table('monedas')
 			->get();
 			try {
-			 $response = Http::get('https://api.dolarvzla.com/public/exchange-rate');
+			 $response = Http::get('https://ve.dolarapi.com/v1/dolares');
 			 $datos = $response->json();
 			 // Extraer solo 'current'
-			$soloCurrent = $datos['current'];
-			$tasa=$soloCurrent['usd'];
+			// dd($datos[1]['promedio']);
+			$tasa=($datos[1]['promedio']);
 			// Si quieres ver qué hay dentro ahora:
-		//dd($soloCurrent['usd']);
+		
 		} catch (\Exception $e) {
 	$tasa=0;
 }
-		
+
 			return view('sistema.tasa.index',["tasabcv"=>$tasa,"rol"=>$rol,"monedas"=>$monedas,"empresa"=>$empresa]);
 		
 	}
