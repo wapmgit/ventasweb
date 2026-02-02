@@ -474,7 +474,7 @@ catch(\Exception $e)
     DB::rollback();
 } */
 
-  return Redirect::to('tcarta/'.$request -> get('idventa'));
+  return Redirect::to('showdevolucion/'.$request -> get('idventa'));
 }
 public function recibo($id){
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();

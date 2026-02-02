@@ -38,7 +38,7 @@
 	
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-				<button type="submit"  class="btn btn-primary">Confirmar</button>
+				<button type="button" id="pdevolu" class="btn btn-primary">Confirmar</button>
 			</div>
 		</div>
 			

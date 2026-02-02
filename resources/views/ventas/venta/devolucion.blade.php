@@ -136,6 +136,7 @@ return $insertar_ceros = $recibo.$numero;
         </div>
     </div>
 </form>
+  </div>
 @push ('scripts')
 <script>
 $(document).ready(function(){
@@ -157,6 +158,27 @@ Swal.fire({
     });
 	  document.getElementById('procesa').style.display="none";
 	document.getElementById('formdevolucion').submit(); 
+  }
+});
+    });
+$('#pdevolu').click(function(){
+Swal.fire({
+  title: "¿ Confirma Devolucion Parcial?",
+  text: "",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Si, Confirmar!"
+}).then((result) => {
+  if (result.isConfirmed) {
+    Swal.fire({
+      title: "Devolucion!",
+      text: "Devolucion Parcial.",
+      icon: "success"
+    });
+	  document.getElementById('pdevolu').style.display="none";
+	document.getElementById('formulario').submit(); 
   }
 });
     });
