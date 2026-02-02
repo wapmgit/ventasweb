@@ -136,8 +136,9 @@ $cntser=0;
 					<div class="table-responsive">
                   <table id="desglose" width="100%">
                       <thead style="background-color: #A9D0F5">
-						<th>Tipo{{$ruta}}</th>
+						<th>Tipo</th>
                           <th>Monto</th>
+						  <th>Fecha</th>
 						  <th>Tasa</th>
                           <th>Monto$</th>
                           <th>Referencia</th>
@@ -149,14 +150,16 @@ $cntser=0;
                         <tr >
                           <td>{{$re->idbanco}}</td>
                           <td><?php echo number_format( $re->recibido, 2,',','.'); ?></td>
-						      <td> <?php if ($re->idpago==2){echo number_format( $re->tasap, 2,',','.'); }
-							  if ($re->idpago==3){echo number_format( $re->tasab, 2,',','.'); }?></td>
+						  <td><?php echo " ".date("d-m-Y",strtotime($re->fecha_comp)); ?></td>
+						   <td> <?php if ($re->idpago==2){echo number_format( $re->tasap, 2,',','.'); }
+							  if ($re->idpago==3){echo number_format( $re->tasab, 2,',','.'); }?></td>							  
+							
 						   <td><?php echo number_format( $re->monto, 2,',','.'); ?></td>
                           <td>{{$re->referencia}}</td>                        
                         </tr>
                         @endforeach
                         <tfoot>                    
-                          <th colspan="3">Total</th>
+                          <th colspan="4">Total</th>
 						  <th><?php echo number_format( $acum, 2,',','.');?> $</th>
                           <th ><b> Pendiente: <?php echo number_format( ($ingreso->total-$acum), 2,',','.');?></b></h4></th>
                           </tfoot>
