@@ -324,7 +324,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 				$("#pbase").val(total);
 				 $("#pexento").val(total);
 				for(var i=0;i<cont;i++){
-				$("#fila" + i).remove(); subtotal[i]=0; }
+				$("#fila" + i).remove(); arrayiva[i]=0; arraybase[i]=0; arrayexento[i]=0; subtotal[i]=0;  }
 				})
 			// registrar nuevo articulo		
 			   $("#Nenviar").on("click",function(){				
@@ -509,7 +509,7 @@ $("#guardar").hide();
         }
     }
     function eliminar(index){
-        total=subtotal[index];
+        total=subtotal[index].toFixed(2);
 		iva=arrayiva[index];
 		base=arraybase[index];
 		exe=arrayexento[index]
