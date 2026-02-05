@@ -521,13 +521,14 @@ $("#guardar").hide();
 		  niva=(auxiva-iva.toFixed(2)); if(niva<=0){ tmiva=0; niva=0;}
 		  nexe=(auxexe-exe); if(nexe<=0){texe=0; nexe=0;}
 		  nv=(resta-total);
-		
+
         $("#total").html("$" + nv.toFixed(2));
-        $("#divtotal").html("$ : " + nv.toFixed(2));
+		 $("#divtotal").val(nv.toFixed(2));
 		$("#piva").val(niva.toFixed(2));
 		$("#pexento").val(nexe.toFixed(2));
 		$("#pbase").val(nbase.toFixed(2));
-		$("#total_venta").val(nv.toFixed(2));			
+		$("#total_venta").val(nv.toFixed(2));	
+		$("#resta").val((nv.toFixed(2)));		
         $("#fila" + index).remove();
          subtotal[index]=(nv);	
 		 total=subtotal[index];	

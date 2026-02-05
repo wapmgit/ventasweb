@@ -127,26 +127,27 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 $("#pcantidad").change(validar);  
 $(document).ready(function(){
 	
-			document.getElementById('Nenviarcsv').style.display="none"; 
-		document.getElementById('pcosto').addEventListener('keypress',function(e){ validarenter(e); });
-		document.getElementById('pcantidad').addEventListener('keypress',function(e){ validarno(e); });	
-    $('#bt_add').click(function(){   
-     agregar();
+	document.getElementById('Nenviarcsv').style.display="none"; 
+	document.getElementById('pcosto').addEventListener('keypress',function(e){ validarenter(e); });
+	document.getElementById('pcantidad').addEventListener('keypress',function(e){ validarno(e); });	
+   
+   $('#bt_add').click(function(){   
+		agregar();
     });
 	$("#pidarticulo").change(function(){
-		  document.getElementById('ptipo').focus();
+		document.getElementById('ptipo').focus();
 	})
-		$("#ptipo").change(function(){
-		  document.getElementById('pcantidad').focus();
+	$("#ptipo").change(function(){
+		document.getElementById('pcantidad').focus();
 	})
- $('#btnguardar').click(function(){   
- $('#totalaj').val($('#totalo').val()); 
- if($("#concepto").val() == "" ){alert('Debe indicar Concepto.'); } else{
- if($("#responsable").val() == "" ){alert('Debe indicar Responsable.');}else{ 
-		document.getElementById('loading').style.display=""; 
-		document.getElementById('btnguardar').style.display="none"; 
-		document.getElementById('btncancelar').style.display="none"; 
-		document.getElementById('formajuste').submit(); }	 }
+	$('#btnguardar').click(function(){   
+	$('#totalaj').val($('#totalo').val()); 
+		if($("#concepto").val() == "" ){alert('Debe indicar Concepto.'); } else{
+			if($("#responsable").val() == "" ){alert('Debe indicar Responsable.');}else{ 
+				document.getElementById('loading').style.display=""; 
+				document.getElementById('btnguardar').style.display="none"; 
+				document.getElementById('btncancelar').style.display="none"; 
+				document.getElementById('formajuste').submit(); }	 }
     })
 
 	$("#Nenviar").on("click",function(){
@@ -155,48 +156,51 @@ $(document).ready(function(){
         var url1 = form1.attr('action');
         var data1 = form1.serialize();
 
-    $.post(url1,data1,function(result){  
-	    var resultado=result;
-          console.log(resultado);	
-        var nombre=resultado[0].articulo;  
-        var id=resultado[0].idarticulo;
-		var costo=resultado[0].costo;		
-		var fraccion=resultado[0].fraccion;		
-	$("#pidarticulo")
-	.append( '<option value="'+id+' - '+costo+' - '+fraccion+'">'+nombre+'</option>')
-	.selectpicker('refresh');
-alert('Articulo Registrado con exito');
-     $("#formarticulo")[0].reset();
-        });
+			$.post(url1,data1,function(result){  
+				var resultado=result;
+				console.log(resultado);	
+				var nombre=resultado[0].articulo;  
+				var id=resultado[0].idarticulo;
+				var costo=resultado[0].costo;		
+				var fraccion=resultado[0].fraccion;		
+				$("#pidarticulo")
+				.append( '<option value="'+id+' - '+costo+' - '+fraccion+'">'+nombre+'</option>')
+				.selectpicker('refresh');
+				alert('Articulo Registrado con exito');
+				$("#formarticulo")[0].reset();
+			});
   
-          });
-		  	$("#Nenviarcsv").on("click",function(){
+	});
+	$("#Nenviarcsv").on("click",function(){
 		document.getElementById('cancelarcsv').style.display="none"; 
 		document.getElementById('Nenviarcsv').style.display="none"; 
 		document.getElementById('loadingcsv').style.display=""; 
-		});
-		  			$("#capcsv").change(function(){
-				var archivo=document.getElementById('capcsv').value.split('.');
-				if(archivo[1]=="csv"){ 
+	});
+	$("#capcsv").change(function(){
+		var archivo=document.getElementById('capcsv').value.split('.');
+			if(archivo[1]=="csv"){ 
 				$("#responsablemodal").val($("#responsable").val());
 				$("#conceptomodal").val($("#concepto").val());
 				document.getElementById('Nenviarcsv').style.display=""; 
-				} else{
-					alert('El Archivo indicado no es un Archivo de tipo csv, verifique¡¡'); 
-					$("#capcsv").val("");				}
+			} else{
+				alert('El Archivo indicado no es un Archivo de tipo csv, verifique¡¡'); 
+				$("#capcsv").val("");			
+			}
 	});
 })
-							function validarenter(e){
-								let tecla = (document.all) ? e.keyCode : e.which;
-								if(tecla==13) { 
-							agregar();
-							event.preventDefault();
-								} }
-								function validarno(e){
-								let tecla = (document.all) ? e.keyCode : e.which;
-								if(tecla==13) { 
-								event.preventDefault();
-								} }	
+	function validarenter(e){
+		let tecla = (document.all) ? e.keyCode : e.which;
+		if(tecla==13) { 
+			agregar();
+			event.preventDefault();
+		} 
+	}
+	function validarno(e){
+		let tecla = (document.all) ? e.keyCode : e.which;
+		if(tecla==13) { 
+		event.preventDefault();
+		} 
+	}	
 var cont=0;
 var total=0;
 subtotal=[];
