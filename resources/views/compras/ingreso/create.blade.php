@@ -424,7 +424,7 @@ $("#guardar").hide();
               { subtotal[cont]=(neto*(viva/100))+neto;
 				arrayexento[cont]=0;
 				miva=(neto*(viva/100));	
-				arrayiva[cont]=miva;
+				arrayiva[cont]=miva.toFixed(2);
 				arraybase[cont]=neto;
 				tneto=tneto+neto; }
 				tmiva=tmiva+miva;
@@ -472,13 +472,13 @@ $("#guardar").hide();
         if (idarticulo!="" && cantidad > 0 &&  precio_compra!=""){         
             neto=((cantidad*precio_compra)-precio_venta);
 			//neto=neto.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' });      
-            if (viva==0){ subtotal[cont]=neto; miva=0; arrayiva[cont]=0;  
-			arraybase[cont]=0; texe=texe+neto;  arrayexento[cont]=neto; }
+            if (viva==0){ subtotal[cont]=neto.toFixed(2); miva=0; arrayiva[cont]=0;  
+			arraybase[cont]=0; texe=texe+neto.toFixed(2);  arrayexento[cont]=neto.toFixed(2); }
               else
               { subtotal[cont]=(neto*(viva/100))+neto;
 				arrayexento[cont]=0;
 				miva=(neto*(viva/100));	
-				arrayiva[cont]=miva;
+				arrayiva[cont]=miva.toFixed(2);
 				arraybase[cont]=neto;
 				tneto=tneto+neto; }
 				tmiva=tmiva+miva;
@@ -488,7 +488,7 @@ $("#guardar").hide();
             limpiar();
 			//alert(total);
             $("#total").html("$ : " + (total).toFixed(2));
-             $("#total_venta").val((total));
+             $("#total_venta").val((total.toFixed(2)));
 			 $("#divtotal").val(total.toFixed(2));
 			 $("#resta").val((total));
 		//$("#pidarticulo").selectpicker('toggle');
@@ -508,20 +508,22 @@ $("#guardar").hide();
             toastr.error('Error Al Ingresar El Articulo, Verifique!.');
         }
     }
-    function eliminar(index){
-        total=subtotal[index].toFixed(2);
+    function eliminar(index){	
+        total=subtotal[index];
 		iva=arrayiva[index];
 		base=arraybase[index];
-		exe=arrayexento[index]
+		exe=arrayexento[index];
 		auxexe=$("#pexento").val();
 		auxbase=$("#pbase").val();
 		resta=$("#total_venta").val();
 		auxiva=$("#piva").val();
-		  nbase=(auxbase-base); if(nbase<=0){tneto=0; nbase=0;}
-		  niva=(auxiva-iva.toFixed(2)); if(niva<=0){ tmiva=0; niva=0;}
-		  nexe=(auxexe-exe); if(nexe<=0){texe=0; nexe=0;}
-		  nv=(resta-total);
-
+		  nbase=(parseFloat(auxbase)-parseFloat(base)); if(nbase<0){tneto=0; nbase=0;}
+		  niva=(parseFloat(auxiva)-parseFloat(iva)); if(niva<0){ tmiva=0; niva=0;}
+		  nexe=(parseFloat(auxexe)-parseFloat(exe)); if(nexe<0){texe=0; nexe=0;}
+		  nv=(parseFloat(resta)-(total));
+texe=nexe;
+tmiva=niva;
+tneto=nbase;
         $("#total").html("$" + nv.toFixed(2));
 		 $("#divtotal").val(nv.toFixed(2));
 		$("#piva").val(niva.toFixed(2));

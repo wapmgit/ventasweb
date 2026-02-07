@@ -741,7 +741,7 @@ function trunc (x, posiciones = 0) {
 		//alert(totalexe);
         $("#divtotal").val(total);
 		$("#resta").val(total);		
-		if(total < 0){total=0; cont=0; alert('entr'); document.getElementById('vdescuento').style.display="none"; totaliva=0;	totalbase=0; totalexe=0;}
+		if(total < 0){total=0; cont=0; alert('Sin Articulos'); document.getElementById('vdescuento').style.display="none"; totaliva=0;	totalbase=0; totalexe=0;}
 		var mon_tasad=(total);
 		$("#muestramonto").html("$  : " + mon_tasad.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' }));
 		$("#muestramontobs").html("Bs  : " + (mon_tasad*vdolar).toLocaleString('de-DE', { style: 'decimal',  decimal: '2' }));
