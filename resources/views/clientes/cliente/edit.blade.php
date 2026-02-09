@@ -92,7 +92,7 @@
             			<label >Vendedor: {{$datos->vendedor}}</label>
             			<select name="idvendedor" class="form-control">
             				@foreach ($vendedores as $cat)
-            				<option value="{{$cat->id_vendedor}}">{{$cat->nombre}}</option>
+            				<option value="{{$cat->id_vendedor}}" <?php if($cliente->vendedor==$cat->id_vendedor){ echo "selected"; }?>>{{$cat->nombre}}</option>
             				@endforeach
             			</select>
             			
