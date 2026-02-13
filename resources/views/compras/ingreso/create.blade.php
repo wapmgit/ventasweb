@@ -232,11 +232,12 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 		function abrir(url) {
 			open(url,'','top=300,left=500,width=500,height=650') ;
 		}
+		var auxcompra=0;
 		$("#pcantidad").change(validar); 
 		$("#pprecio_compra").change(validartexto);   
 		$(document).ready(function(){
 
-			var auxcompra=0;
+			
 		document.getElementById('pprecio_compra').addEventListener('keypress',function(e){ validarenter(e); });		
 		document.getElementById('pcantidad').addEventListener('keypress',function(e){ validarno(e); });			
 		document.getElementById('pprecio_venta').addEventListener('keypress',function(e){ validarno(e); });			
@@ -456,7 +457,7 @@ $("#guardar").hide();
       toastr.error('Error Al Ingresar El Articulo, Verifique!.');
         }
     }
-	    function agregarbs(){ 
+	    function agregarbs(){ 	
 		tasacompra=$('#tasacompra').val();
         idarticulo=$("#pidarticulo").val();
         articulo= $("#pidarticulo option:selected").text();
@@ -469,16 +470,16 @@ $("#guardar").hide();
         viva=artiva[4];
 		mserial=artiva[5];
         narticulo=artiva[1];
-        if (idarticulo!="" && cantidad > 0 &&  precio_compra!=""){         
+        if (idarticulo!="" && cantidad > 0 &&  precio_compra!=""){  
             neto=((cantidad*precio_compra)-precio_venta);
 			//neto=neto.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' });      
-            if (viva==0){ subtotal[cont]=neto.toFixed(2); miva=0; arrayiva[cont]=0;  
-			arraybase[cont]=0; texe=texe+neto.toFixed(2);  arrayexento[cont]=neto.toFixed(2); }
+            if (viva==0){ subtotal[cont]=neto; miva=0; arrayiva[cont]=0;  
+			arraybase[cont]=0; texe=texe+neto;  arrayexento[cont]=neto; }
               else
               { subtotal[cont]=(neto*(viva/100))+neto;
 				arrayexento[cont]=0;
 				miva=(neto*(viva/100));	
-				arrayiva[cont]=miva.toFixed(2);
+				arrayiva[cont]=miva;
 				arraybase[cont]=neto;
 				tneto=tneto+neto; }
 				tmiva=tmiva+miva;
@@ -590,6 +591,10 @@ tneto=nbase;
       arti=datosarticulo.split('-');
           st=arti[3];
          $("#pprecio_compra").val(""+st); 
+		if(auxcompra==1){
+			var tasac= $("#tasacompra").val();
+			$("#pprecio_compra").val((tasac*st).toFixed(2)); 
+		}
     }
 
     function validartexto(){
