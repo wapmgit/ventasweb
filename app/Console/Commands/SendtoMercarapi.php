@@ -50,7 +50,7 @@ class SendtoMercarapi extends Command
 				->where('art.stock','>=','0')
 				->whereNotNull('art.codweb')
 				->get()->toArray(); */
-		$products = Articulo::selectRaw("
+		$products = Articulos::selectRaw("
         codweb as barcode,
         SUBSTRING_INDEX(nombre, '*', 1) as name,
         ROUND(stock, 2) as stock,
