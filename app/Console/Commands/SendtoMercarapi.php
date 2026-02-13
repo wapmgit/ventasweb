@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Exception;
 use App\Models\Empresa;
-use App\Models\Articulo;
+use App\Models\Articulos;
 use DB;
 use Carbon\Carbon;
 
