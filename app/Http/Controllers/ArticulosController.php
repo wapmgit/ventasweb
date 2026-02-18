@@ -27,15 +27,27 @@ class ArticulosController extends Controller
 			$rol=DB::table('roles')-> select('newarticulo','editarticulo','web')->where('iduser','=',$request->user()->id)->first();
             $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
             $query=trim($request->get('searchText'));
-            $articulos=DB::table('articulos as a')
-			-> join('categoria as c','a.idcategoria','=','c.idcategoria')
-			-> select ('a.idarticulo','a.nombre','a.precio1','a.codigo','a.stock','c.nombre as categoria','a.descripcion','a.imagen','a.estado')
-            ->where('a.nombre','LIKE','%'.$query.'%')
-            ->orwhere('a.codigo','LIKE','%'.$query.'%')
-            ->orwhere('a.codweb','LIKE','%'.$query.'%')
-            ->where('a.estado','=','Activo')
-            ->orderBy('a.idarticulo','desc')
-            ->paginate(25);
+           $articulos = DB::table('articulos as a')
+				->join('categoria as c', 'a.idcategoria', '=', 'c.idcategoria')
+				->select(
+					'a.idarticulo', 
+					'a.nombre', 
+					'a.precio1', 
+					'a.codigo', 
+					'a.stock', 
+					'c.nombre as categoria', 
+					'a.descripcion', 
+					'a.imagen', 
+					'a.estado'
+				)
+			->where('a.estado', '=', 'Activo') // Primero el estado
+			->where(function($q) use ($query) { // Agrupamos la búsqueda
+			$q->where('a.nombre', 'LIKE', '%' . $query . '%')
+			->orWhere('a.codigo', 'LIKE', '%' . $query . '%')
+			->orWhere('a.codweb', 'LIKE', '%' . $query . '%');
+			})
+			->orderBy('a.idarticulo', 'desc')
+			->paginate(50);
 			//dd($articulos);
             return view('almacen.articulo.index',["rol"=>$rol,"articulos"=>$articulos,"empresa"=>$empresa,"searchText"=>$query]);
         } 
