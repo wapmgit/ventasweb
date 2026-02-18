@@ -32,6 +32,7 @@ class ArticulosController extends Controller
 			-> select ('a.idarticulo','a.nombre','a.precio1','a.codigo','a.stock','c.nombre as categoria','a.descripcion','a.imagen','a.estado')
             ->where('a.nombre','LIKE','%'.$query.'%')
             ->orwhere('a.codigo','LIKE','%'.$query.'%')
+            ->orwhere('a.codweb','LIKE','%'.$query.'%')
             ->where('a.estado','=','Activo')
             ->orderBy('a.idarticulo','desc')
             ->paginate(25);
