@@ -11,6 +11,8 @@ $digitos=strlen($numero);
   }
 return $insertar_ceros = $recibo.$numero;
 };
+$acumpeso=0;
+$cntline=0;
 ?>   	 
 
 <style>
@@ -79,6 +81,8 @@ foreach ($lineas as $linea) {
 }
 return $contenido_formateado;
 }
+
+$acumpeso=0;
 ?>  
 <table border="0" style="line-height:95%" align="center" id="tablecabecera" class="tabla-principal">
  <thead> <th><b><font size="4"><?Php echo nl2br(adjustext($empresa->nombre,30)); ?></font></b></th> </thead> 
@@ -100,12 +104,9 @@ return $contenido_formateado;
                           <th width="80%" align="center"><b class="lista">Cantidad-Descripcion</b></th>
                           <th width="15%"><b class="lista">Subtotal</b></th>
                       </thead>
-                      <tfoot>  
-					  <th colspan="2" ><div align="center"><font size="4">Bs: <?php echo number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> <-->
-                       $: <?php echo number_format($venta->total_venta, 2,',','.'); ?> </font></div></th>
-                          </tfoot>
+                  
                       <tbody>
-                        @foreach($detalles as $det)
+                        @foreach($detalles as $det)<?php  $cntline++; $acumpeso=$acumpeso+($det->cantidad*$det->peso);?>
                         <tr height="10px"> 						
                          <td align="left"><span class="lista">
 						   {{$det->cantidad}} {{$det->unidad}}  -
@@ -114,6 +115,18 @@ return $contenido_formateado;
                         </tr>
                         @endforeach
                       </tbody>
+					     <tfoot>  
+					  <th colspan="2" ><div align="center"><font size="4">Bs: <?php echo number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> <-->
+                       $: <?php echo number_format($venta->total_venta, 2,',','.'); ?> </font></div></th>                      
+						</tfoot>
+				<?php if($empresa->printpeso ==1){?>  
+					 <tfoot>  
+					  <th colspan="2" ><div align="center"><font size="4">Items: <?php echo $cntline;  ?> --->
+                       Peso Total: <?php echo number_format($acumpeso, 2,',','.'); ?> </font></div></th>
+					   
+						</tfoot>	
+				<?php } ?>
+					 
                   </table>
 				  <?php  if(count($recibos)>0){?>
                   <table class="tabla-secundaria" width="130%">
