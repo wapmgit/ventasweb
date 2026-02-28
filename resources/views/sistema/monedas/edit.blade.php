@@ -17,18 +17,34 @@
             	<input type="text" name="simbolo" class="form-control" required value="{{$mone->simbolo}}">
 				@if($errors->first('simbolo'))<P class='text-danger'>{{$errors->first('simbolo')}}</p>@endif
             </div>
-		<div class="form-group"></br>	<label for="descripcion">tipo</label>
+		<div class="form-group"></br>	<label for="descripcion">Calculo</label>
 			<select name="tipo"  class="form-control">           				
             				<option value="0" <?php if ($mone->tipo==0){ echo "selected"; }?>>=</option>
             				<option value="1" <?php if ($mone->tipo==1){ echo "selected"; }?>>Multiplica</option>
             				<option value="2" <?php if ($mone->tipo==2){ echo "selected"; }?>>Divide</option>
 							</select>
-                  </div>	<div class="form-group">
+                  </div>
+	<div class="form-group"></br>	<label for="descripcion">Tipo</label>
+			<select name="tipom"  class="form-control">           				
+            				<option value="N" <?php if ($mone->tipom=="N"){ echo "selected"; }?>>Nacional</option>
+            				<option value="E" <?php if ($mone->tipom=="E"){ echo "selected"; }?>>Extranjera</option>
+
+							</select>
+                  </div>					  
+				  <div class="form-group">
 				  	<label for="stock">Valor</label>
             			<input type="text" name="valor" required  value="{{$mone->valor}}" class="form-control" placeholder="valor...">
 						@if($errors->first('valor'))<P class='text-danger'>{{$errors->first('valor')}}</p>@endif
 	          
 		</div>
+
+                  <div class="form-group"></br>
+                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                      <input type="checkbox" name="sumcaja"  <?Php if($mone->sumcaja==1) echo "checked"; ?> class="custom-control-input" id="customSwitch3">
+                      <label class="custom-control-label" for="customSwitch3">¿Acumular en corte de caja?</label>
+                    </div>
+				
+            </div>
 		</div>
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">	
             <div class="form-group">

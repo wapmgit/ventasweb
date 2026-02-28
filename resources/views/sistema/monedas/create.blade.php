@@ -24,6 +24,13 @@
             				<option value="2">Divide</option>
 							</select>
             </div>  
+			   <div class="form-group">	
+			   <label for="descripcion">Tipo</label>	
+					<select name="tipom"  class="form-control">  				
+            				<option value="N">Nacional</option>
+            				<option value="E">Extranjera</option>
+							</select>
+            </div>  
 			<div class="form-group">
             			<label for="stock">Valor</label>
             			<input type="text" name="valor" required  value="0" class="form-control" placeholder="valor...">
