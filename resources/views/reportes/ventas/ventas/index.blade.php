@@ -5,7 +5,7 @@
 <div class="row">
 	@include('reportes.ventas.ventas.search')
 </div>
-<?php $acum=0;$efe=0;$deb=0;$che=0;$tra=0;
+<?php $acum=0;$efe=0;$deb=0;$che=0;$tra=0; $acumdesc=0; $tcobro=0;
 $cefe=0;?>
   <!-- Main content -->
             <div class="invoice p-3 mb-3">
@@ -82,12 +82,16 @@ $cefe=0;?>
 						<th>Monto</th> 
 						</thead>
 						@foreach ($pagos as $q)
+						 <?php $tcobro=$tcobro+$q->monto; 
+						if( $q->sumcaja==0){$tcobro=$tcobro-$q->monto;} ?>
 						<tr >
 						<td>{{$q->idbanco}}</td>
 						<td><?php echo number_format($q->recibido, 2,',','.'); ?></td>
-						<td><?php echo number_format($q->monto, 2,',','.')." $"; ?></td>
+						<td><?php if( $q->sumcaja==0){  echo "-";} echo number_format($q->monto, 2,',','.')." $"; ?></td>
 						</tr>   
 						@endforeach
+						
+						<tr><td colspan="2">Total</td><td><?php echo number_format($tcobro, 2,',','.'); ?></td></tr>
 					</table>
                 </div>
                 <!-- /.col -->

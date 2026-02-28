@@ -107,11 +107,13 @@ $cefe=0;?>
           
         </thead>
          @foreach ($pagos as $cob)
-		   <?php $tingreso=$tingreso+$cob->monto;	   ?>
+		   <?php $tingreso=$tingreso+$cob->monto;	 
+			if( $cob->sumcaja==0){$tingreso=$tingreso-$cob->monto;}
+		   ?>
       <tr >
           <td><?php  echo $cob->idbanco; ?></td>
           <td><?php echo number_format($cob->recibido, 2,',','.'); ?></td>
-          <td><?php  echo number_format($cob->monto, 2,',','.')." $"; ?></td>
+          <td><?php if( $cob->sumcaja==0){echo "-";} echo number_format($cob->monto, 2,',','.')." $"; ?></td>
         </tr>
         @endforeach
         <tr><td colspan="2" align="center"><strong>Total Desglose de ventas</strong></td><td><strong><?php echo number_format($tingreso, 2,',','.')." $"; ?></strong></td></tr>
@@ -126,11 +128,12 @@ $cefe=0;?>
 		<th>Recibido</th>
 		<th>Monto</th> </thead>
          @foreach ($cobranza as $cob)
-		 <?php  $tcobranza=$tcobranza+$cob->monto; ?> 
+		 <?php  $tcobranza=$tcobranza+$cob->monto;
+	if( $cob->sumcaja==0){$tcobranza=$tcobranza-$cob->monto;}		 ?> 
         <tr>
           <td><?php  echo$cob->idbanco; ?></td>
           <td><?php echo number_format($cob->recibido, 2,',','.'); ?></td>
-             <td><?php  echo number_format($cob->monto, 2,',','.')." $"; ?></td>
+             <td><?php  if( $cob->sumcaja==0){echo "-";}  echo number_format($cob->monto, 2,',','.')." $"; ?></td>
         </tr>
         @endforeach
 		    <tr><td colspan="3" align="center"><strong>Cobranza Dias Anteriores
@@ -173,11 +176,14 @@ $cefe=0;?>
 		<th>Moneda</th>
 		<th>Recibido</th>
 		<th>Monto</th> </thead>
-         @foreach ($ingresos as $cob) <?php $tcobro=$tcobro+$cob->monto; if($cob->monto >0){?>	
+         @foreach ($ingresos as $cob)
+		 <?php $tcobro=$tcobro+$cob->monto; 
+		 if( $cob->sumcaja==0){$tcobro=$tcobro-$cob->monto;}
+		 if($cob->monto >0){?>	
         <tr>
           <td><?php  echo$cob->idbanco; ?></td>
           <td><?php echo number_format($cob->recibido, 2,',','.'); ?></td>
-          <td><?php  echo number_format($cob->monto, 2,',','.')." $"; ?></td>
+          <td><?php  if( $cob->sumcaja==0){echo "-";} echo number_format($cob->monto, 2,',','.')." $"; ?></td>
         </tr>
 		 <?php } ?> 
         @endforeach

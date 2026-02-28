@@ -54,12 +54,12 @@ class ReportesventasController extends Controller
 			->join('venta as v','v.idventa','=','re.idventa')
 			->join('clientes as cli','cli.id_cliente','=','v.idcliente')
 			->join('monedas as mo','mo.idmoneda','=','re.idpago')
-			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
+			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago','mo.sumcaja')
 			->where('re.monto','>',0)
 			->where('v.devolu','=',0)
 			-> where ('v.idvendedor',$c,$v)
 			-> where ('cli.ruta',$cr,$r)
-            -> whereBetween('re.fecha', [$query, $query2])
+            -> whereBetween('v.fecha_emi', [$query, $query2])
 			-> groupby('re.idpago','re.idbanco')
             ->get();
 			//datos devolucion     
@@ -77,7 +77,7 @@ class ReportesventasController extends Controller
 			$recibos=DB::table('recibos as re')
 			->join('venta as v','v.idventa','=','re.idventa')
 			->join('monedas as mo','mo.idmoneda','=','re.idpago')
-			-> select('re.monto','re.recibido','re.idbanco','re.idpago','re.idventa')
+			-> select('re.monto','re.recibido','re.idbanco','re.idpago','re.idventa','mo.sumcaja')
 			->where('re.monto','>',0)
 			->where('v.devolu','=',0)
 			-> where ('v.idvendedor',$c,$v)
@@ -111,7 +111,7 @@ class ReportesventasController extends Controller
 			$recibos=DB::table('recibos as re')
 			->join('venta as v','v.idventa','=','re.idventa')
 			->join('monedas as mo','mo.idmoneda','=','re.idpago')
-			-> select('re.monto','re.recibido','re.idbanco','re.idpago','re.idventa')
+			-> select('re.monto','re.recibido','re.idbanco','re.idpago','re.idventa','mo.sumcaja')
 			->where('re.monto','>',0)
 			->where('v.devolu','=',0)
 			-> where ('v.idvendedor',$c,$v)
@@ -140,7 +140,6 @@ class ReportesventasController extends Controller
 	}
 	public function corte(Request $request)
     {   
-	//dd($request);
 	$rol=DB::table('roles')-> select('ccaja')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->ccaja==1){
         $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
@@ -186,7 +185,8 @@ class ReportesventasController extends Controller
 			//cobros directos
 			$pagos=DB::table('recibos as re')
 			-> join('venta as v','v.idventa','=','re.idventa')
-			-> select('re.idpago','re.idbanco',DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'))
+			-> join('monedas as m','m.idmoneda','=','re.idpago')
+			-> select('m.sumcaja','re.idpago','re.idbanco',DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'))
             -> whereBetween('re.fecha', [$query, $query2])
 			-> where ('re.tiporecibo','=',"P")
 			->where('v.devolu','=',0)
@@ -194,7 +194,8 @@ class ReportesventasController extends Controller
             ->get();
 			//  
 			$cobranza=DB::table('recibos as re')
-			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco')
+			-> join('monedas as m','m.idmoneda','=','re.idpago')
+			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','m.sumcaja')
             -> whereBetween('re.fecha', [$query, $query2])
 			-> where ('re.tiporecibo','=',"A")
 			-> groupby('re.idpago','re.idbanco')
@@ -212,7 +213,8 @@ class ReportesventasController extends Controller
 			-> groupby('re.idpago','re.idbanco')
             ->get();
 			$ingresos=DB::table('recibos as re')
-			 -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco')
+			-> join('monedas as m','m.idmoneda','=','re.idpago')
+			 -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','m.sumcaja')
             -> whereBetween('re.fecha', [$query, $query2])
 			-> groupby('re.idpago','re.idbanco')
             ->get();	
@@ -260,7 +262,8 @@ class ReportesventasController extends Controller
 			//cobros directos
 			$pagos=DB::table('recibos as re')
 			-> join('venta as v','v.idventa','=','re.idventa')
-            -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
+			-> join('monedas as m','m.idmoneda','=','re.idpago')
+            -> select('m.sumcaja',DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
 			-> where ('v.user','=',$user)
             -> whereBetween('re.fecha', [$query, $query2])
 			-> where ('re.tiporecibo','=',"P")
@@ -270,7 +273,8 @@ class ReportesventasController extends Controller
 			
       // dd($query);   
 			$cobranza=DB::table('recibos as re')
-            -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
+			-> join('monedas as m','m.idmoneda','=','re.idpago')
+            -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago','m.sumcaja')
 			-> where ('re.usuario','=',$user)
             -> whereBetween('re.fecha', [$query, $query2])
 			-> where ('re.tiporecibo','=',"A")
@@ -289,8 +293,9 @@ class ReportesventasController extends Controller
 			-> where ('re.tiporecibo','=',"AP")
 			-> groupby('re.idpago','re.idbanco')
             ->get();
-		    $ingresos=DB::table('recibos as re')			
-            -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
+		    $ingresos=DB::table('recibos as re')
+			-> join('monedas as m','m.idmoneda','=','re.idpago')			
+            -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago','m.sumcaja')
 			-> where ('re.usuario','=',$user)
             -> whereBetween('re.fecha', [$query, $query2])
 			-> groupby('re.idpago','re.idbanco')
@@ -337,7 +342,8 @@ class ReportesventasController extends Controller
 			//cobros directos
 			$pagos=DB::table('recibos as re')
 			-> join('venta as v','v.idventa','=','re.idventa')
-			-> select('re.idpago','re.idbanco',DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'))
+			-> join('monedas as m','m.idmoneda','=','re.idpago')
+			-> select('m.sumcaja','re.idpago','re.idbanco',DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'))
             -> whereBetween('re.fecha', [$query, $query2])
 			-> where ('re.tiporecibo','=',"P")
 			->where('v.devolu','=',0)
@@ -345,7 +351,8 @@ class ReportesventasController extends Controller
             ->get();
 			//  
 			$cobranza=DB::table('recibos as re')
-			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco')
+			-> join('monedas as m','m.idmoneda','=','re.idpago')
+			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','m.sumcaja')
             -> whereBetween('re.fecha', [$query, $query2])
 			-> where ('re.tiporecibo','=',"A")
 			-> groupby('re.idpago','re.idbanco')
@@ -362,7 +369,8 @@ class ReportesventasController extends Controller
 			-> groupby('re.idpago','re.idbanco')
             ->get();
 			$ingresos=DB::table('recibos as re')
-			 -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco')
+			-> join('monedas as m','m.idmoneda','=','re.idpago')	
+			 -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','m.sumcaja')
             -> whereBetween('re.fecha', [$query, $query2])
 			-> groupby('re.idpago','re.idbanco')
             ->get();	

@@ -39,6 +39,7 @@ class MonedasController extends Controller
         $mone->nombre=$request->get('nombre');
         $mone->simbolo=$request->get('simbolo');
         $mone->tipo=$request->get('tipo');
+        $mone->tipom=$request->get('tipom');
         $mone->valor=$request->get('valor');
         $mone->idbanco=0;
         $mone->save();
@@ -54,6 +55,7 @@ class MonedasController extends Controller
     }
 		public function update(Request $request)
     {
+
 		     $this->validate($request,[
             'nombre' => 'required',
             'simbolo' => 'required',
@@ -63,7 +65,9 @@ class MonedasController extends Controller
         $data->nombre=$request->get('nombre');
         $data->simbolo=$request->get('simbolo');
         $data->tipo=$request->get('tipo');
-        $data->valor=$request->get('valor');	
+        $data->tipom=$request->get('tipom');
+        $data->valor=$request->get('valor');
+		if($request->get('sumcaja')=="on"){$data->sumcaja=1;}else{$data->sumcaja=0;}		
         $data->update();
        return Redirect::to('monedas');
     }
