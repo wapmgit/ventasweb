@@ -99,6 +99,7 @@ class ReportesventasController extends Controller
 			$pagos=DB::table('recibos as re')
 			->join('venta as v','v.idventa','=','re.idventa')
 			->join('clientes as cli','cli.id_cliente','=','v.idcliente')
+			->join('monedas as mo','mo.idmoneda','=','re.idpago')
 			->join('vendedores as ve','ve.id_vendedor','=','cli.vendedor')
 			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago','mo.sumcaja')
 			-> where ('v.idvendedor',$c,$v)
