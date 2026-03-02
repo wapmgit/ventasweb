@@ -58,7 +58,7 @@ class ComprasController extends Controller
         $personas=DB::table('proveedores')
         -> where('estatus','=','A')->get();
         $articulos =DB::table('articulos as art')
-        -> select(DB::raw('CONCAT(art.codigo,"-",art.nombre," - ",stock," - ",costo,"-",iva) as articulo'),'art.idarticulo','art.costo','art.serial')
+        -> select(DB::raw('CONCAT(art.codigo,"-",art.nombre," - ",stock," - ",costo,"-",iva) as articulo'),'art.idarticulo','art.costo','art.serial','art.iva')
         -> where('art.estado','=','Activo')
         -> get();
         return view("compras.ingreso.create",["cnt"=>$contador,"monedas"=>$monedas,"personas"=>$personas,"articulos"=>$articulos,"categorias"=>$categorias,"empresa"=>$empresa]);
@@ -426,7 +426,7 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 		$articulo->save();
 
 		$articulos =DB::table('articulos as art')
-        -> select(DB::raw('CONCAT(art.codigo,"-",art.nombre," - ",stock," - ",costo,"-",iva) as articulo'),'art.idarticulo','art.costo','art.serial','art.fraccion')
+        -> select(DB::raw('CONCAT(art.codigo,"-",art.nombre," - ",stock," - ",costo,"-",iva) as articulo'),'art.idarticulo','art.costo','art.serial','art.fraccion','art.iva')
         -> where('art.codigo','=',$request->get('codigo'))
         -> get();
            return response()->json($articulos);

@@ -87,7 +87,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 						 <div class="form-group"	>				                         
                              <select name="pidarticulo" id="pidarticulo" class="form-control selectpicker" data-live-search="true">
                              @foreach ($articulos as $articulo)<?php $cntart++; ?>
-                              <option  value="{{$articulo -> idarticulo}}">{{$articulo -> articulo}}-{{$articulo -> serial}}</option> 
+                              <option  value="{{$articulo -> idarticulo}}_{{$articulo->iva}}">{{$articulo -> articulo}}</option> 
                              @endforeach
                               </select>
 						
@@ -340,8 +340,9 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 				console.log(resultado);	
 				var nombre=resultado[0].articulo;  
 				var id=resultado[0].idarticulo;  		  
+				var iva=resultado[0].iva;  		  
 				$("#pidarticulo")
-				.append( '<option selected value="'+id+'">'+nombre+'</option>')
+				.append( '<option selected value="'+id+'_'+iva+'">'+nombre+'</option>')
 				.selectpicker('refresh');
 				$('select[name=pidarticulo]').change();
 						Toast.fire({
@@ -405,17 +406,19 @@ $("#guardar").hide();
 
     function agregar(){ 
 
-        idarticulo=$("#pidarticulo").val(); 
         articulo= $("#pidarticulo option:selected").text();
+        newarticulo= $("#pidarticulo").val();
         cantidad= $("#pcantidad").val();
         precio_compra=$("#pprecio_compra").val();
         precio_venta=$("#pprecio_venta").val();
         precio_tasa=(precio_compra*$("#vtasa").val());
 		precio_tasa=precio_tasa.toFixed(2);
         artiva=articulo.split('-');
-        viva=artiva[4];
+        newartiva=newarticulo.split('_');
+        viva=newartiva[1];
 		mserial=artiva[5];
         narticulo=artiva[1];
+		idarticulo=newartiva[0]; 
         if (idarticulo!="" && cantidad > 0 &&  precio_compra!=""){         
             neto=(cantidad*precio_compra)-precio_venta;
 			//neto=neto.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' });      
