@@ -57,7 +57,7 @@ $cntser=0;
                         @foreach($detalles as $det)
                         <?php  $mo=$mo+($det->subtotal); ?>
                         <tr >
-                          <td>{{$det->articulo}}{{$det->idarticulo}}</td>
+                          <td>{{$det->articulo}}</td>
                           <td>{{$det->cantidad}}</td>
                           <td><?php echo number_format( $det->precio_compra, 2,',','.'); ?></td>
                           <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
