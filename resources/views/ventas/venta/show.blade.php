@@ -43,6 +43,7 @@ $cntline=$cntser=0; $acumpeso=0;
             <table id="detalles" width="100%">
                       <thead style="background-color: #A9D0F5">                    
                           <th width="7%">Codigo</th>
+                          <th  align="center">Ref</th>
                           <th>Articulo</th>
                           <th>Cantidad</th>
                           <th>Unidad</th>
@@ -60,6 +61,7 @@ $cntline=$cntser=0; $acumpeso=0;
 							?>
                         <tr >
 						  <td><?php echo $det->codigo; ?></td>
+						   <td align="center"><?php echo number_format( $det->precio, 2,',','.'); ?></td>
                           <td>{{$det->articulo}} <?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?></td>
                           <td>{{$det->cantidad}}</td>
                           <td>{{$det->unidad}}</td>
@@ -70,7 +72,7 @@ $cntline=$cntser=0; $acumpeso=0;
                         </tr>	<?php if ($seriales <> NULL){?>
 									@foreach($seriales as $ser) 
 									<?php  if ($det->idarticulo == $ser->idarticulo){ $cntser++;?>
-									<tr ><td colspan="6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Chasis:</b> {{$ser->chasis}}
+									<tr ><td colspan="7"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Chasis:</b> {{$ser->chasis}}
 									<b>Motor:</b> {{$ser->motor}}
 									<b>Color:</b> {{$ser->color}}
 									<b>Placa:</b> {{$ser->placa}}
@@ -86,10 +88,10 @@ $cntline=$cntser=0; $acumpeso=0;
                       </tbody>
 					       <tfoot>  
 						<th>Codigo <?php echo " :".number_format(($venta->total_venta), 2,',','.'); ?></th>						   
-                          <th colspan="6"><div align="right">TOTAL: </div></th>
+                          <th colspan="7"><div align="right">TOTAL: </div></th>
                           <th align="center"><b><font size="4"><?php echo " Bs ".number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> </b></font></th>
                         <?php if($empresa->printpeso ==1){?>  
-						<tr><td colspan="6"><b>Items:</b> <?php echo $cntline;  ?>, <b>Peso Total: </b> <?php echo $acumpeso; ?> Kg.</td></tr>
+						<tr><td colspan="7"><b>Items:</b> <?php echo $cntline;  ?>, <b>Peso Total: </b> <?php echo $acumpeso; ?> Kg.</td></tr>
 						<?php } ?>
 						  </tfoot>
             </table>
