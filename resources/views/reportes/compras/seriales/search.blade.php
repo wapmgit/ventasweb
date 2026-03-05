@@ -1,7 +1,6 @@
-
 <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Indique la fecha del Registro de Compra</h3>
+          <h3 class="card-title">Indique Serial Motor</h3>
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
               <i class="fas fa-minus"></i>
@@ -18,18 +17,10 @@
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 				<div class="form-group">
 				<div class="input-group">
-					<input type="date" class="form-control" name="searchText"  value="{{$searchText}}">
+					<input type="text" class="form-control" name="searchText"  value="{{$searchText}}">
 				</div>
 				</div>
 			</div>
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-				<div class="form-group">
-				<div class="input-group">
-					<input type="date" class="form-control" name="searchText2" value="{{$searchText2}}">
-				</div>
-				</div>	
-			</div>
-
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 				<div class="form-group">
 				<div class="input-group">

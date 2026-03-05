@@ -25,7 +25,7 @@ $cefe=0;?>
               <!-- Table row -->
             <div class="row">
 				<div class="col-12 table-responsive">
-					<table width="100%">
+					<table width="100%"  id="serialestable"   class="table table-striped table-bordered table-condensed table-hover">
 					<thead style="background-color: #E6E6E6">
 					
 					  <th>Proveedor</th>
@@ -87,7 +87,16 @@ $(document).ready(function(){
   window.print(); 
   window.location="{{route('resumencompras')}}";
     });
+		$(function () {
+    $("#serialestable").DataTable({
+		"searching": true,
+		"bPaginate": true,
+		"bInfo":true,
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#serialestable_wrapper .col-md-6:eq(0)');
 
+  });
 });
 </script>
 @endpush

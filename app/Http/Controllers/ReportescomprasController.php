@@ -304,27 +304,21 @@ class ReportescomprasController extends Controller
 		$rol=DB::table('roles')-> select('editserial','printcertificado')->where('iduser','=',$request->user()->id)->first();	
         $corteHoy = date("Y-m-d");
         $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
-             $query=trim($request->get('searchText'));
-             $query2=trim($request->get('searchText2'));
-             if (($query)==""){$query=$corteHoy; }
-			$query2 = date_create($query2);
-            date_add($query2, date_interval_create_from_date_string('1 day'));
-            $query2=date_format($query2, 'Y-m-d');
-          
-            $datos=DB::table('seriales as se') 
+		$query=trim($request->get('searchText'));
+     $datos=DB::table('seriales as se') 
 			 ->join ('compras as co', 'co.idcompra','=','se.idcompra')
 			 ->join ('detalle_compras as dc', 'dc.idcompra','=','co.idcompra') 
              ->join ('articulos as a', 'a.idarticulo','=','dc.idarticulo')    			
              ->join ('proveedores as p', 'p.idproveedor','=','co.idproveedor')                            
             -> select('a.nombre as articulo','p.nombre as proveedor','co.num_comprobante','co.emision','se.*')
-            ->whereBetween('co.emision', [$query, $query2])
+           ->where('se.motor','LIKE','%'.$query.'%')	
 			->where('co.estatus','=',0)
 			->where('a.serial','=',1)
 			->groupby('se.idserial','a.idarticulo')
 			->OrderBy('a.nombre')
-            ->get();
-			$query2=date("Y-m-d",strtotime($query2."- 1 days"));
-			return view('reportes.compras.seriales.index',["rol"=>$rol,"datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);           
+              ->paginate(200);
+
+			return view('reportes.compras.seriales.index',["rol"=>$rol,"datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query]);           
 		
 	}
 	public function editserial(Request $request){	
