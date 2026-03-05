@@ -87,7 +87,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 						 <div class="form-group"	>				                         
                              <select name="pidarticulo" id="pidarticulo" class="form-control selectpicker" data-live-search="true">
                              @foreach ($articulos as $articulo)<?php $cntart++; ?>
-                              <option  value="{{$articulo -> idarticulo}}_{{$articulo->iva}}">{{$articulo -> articulo}}</option> 
+                              <option  value="{{$articulo -> idarticulo}}_{{$articulo->iva}}_{{$articulo -> serial}}">{{$articulo -> articulo}}</option> 
                              @endforeach
                               </select>
 						
@@ -416,7 +416,7 @@ $("#guardar").hide();
         artiva=articulo.split('-');
         newartiva=newarticulo.split('_');
         viva=newartiva[1];
-		mserial=artiva[5];
+		mserial=newartiva[2];
         narticulo=artiva[1];
 		idarticulo=newartiva[0]; 
         if (idarticulo!="" && cantidad > 0 &&  precio_compra!=""){         

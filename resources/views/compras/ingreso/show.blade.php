@@ -161,7 +161,7 @@ $cntser=0;
                         <tfoot>                    
                           <th colspan="4">Total</th>
 						  <th><?php echo number_format( $acum, 2,',','.');?> $</th>
-                          <th ><b> Pendiente: <?php echo number_format( ($ingreso->total-$acum), 2,',','.');?></b></h4></th>
+                          <th ><b> Pendiente: <?php echo number_format( ($mo-$acum), 2,',','.');?></b></h4></th>
                           </tfoot>
                        
                       </tbody>
