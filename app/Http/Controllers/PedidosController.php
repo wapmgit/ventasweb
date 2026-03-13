@@ -479,19 +479,18 @@ public function show(Request $request,$id){
 			$datos= $response->getBody();
 			$datos2=  json_decode($datos,false);          		 
 			$datos3=$datos2->data;
+			//dd($datos3);
 			if(count($datos3)>0){
-	
-				//dd($datos3);
 				foreach($datos3 as $art){	
 					$cliente=DB::table('clientes')->select('nombre','id_cliente')-> where('id_cliente','=',$art->cliente_id)->first();							
-					$arraynombre[]		= $cliente->nombre;
+					$arraynombre[] = $cliente->nombre;
 				}
 			}else{ $arraynombre[]=0; }
 			
 		} catch (Exception $e) {
            return Redirect::to('sininternet');
         }
-		//dd($datos3);
+		
 		return view ('pedidos.descargados.index',["rol"=>$rol,"empresa"=>$empresa,"datos3"=>$datos3,"nombresc"=>$arraynombre]);
     } else { 
 	return view("reportes.mensajes.noautorizado");
@@ -709,4 +708,51 @@ public function notads($id){
 
             return view("pedidos.pedido.notads",["seriales"=>$seriales,"venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
 }
+public function repedidos(Request $request){
+
+		$vendedor=DB::table('vendedores')->get();
+		$rutas=DB::table('rutas')->get();
+			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$query=trim($request->get('vendedor'));
+		if ($request->get('vendedor')){	
+		$ruta=$request->get('ruta');
+			if($ruta==0){ $c=">"; $idr=0; 
+			$filtroruta="Todas Las Rutas";
+			}else{$c="="; $idr=$ruta;
+			$rut=DB::table('rutas')-> where('idruta','=',$idr)->first();
+			$filtroruta=$rut->nombre;
+			}
+			$pedidos=DB::table('pedidos as v')
+            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
+			->join('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
+            -> select ('v.idpedido','v.fecha_hora','v.pweb','p.nombre','p.cedula','p.direccion','v.fecha_emi','v.num_comprobante','v.impuesto','v.devolu','v.estado','v.total_venta','ve.nombre as user')
+            -> where ('v.idvendedor','=',$query)
+            -> where ('p.ruta',$c,$idr)
+			-> where ('v.impor','=',0)            
+            -> where ('v.devolu','=',0)
+            -> orderBy('v.idpedido','desc')
+			->get();
+			$ven=DB::table('vendedores')-> where('id_vendedor','=',$query)->first();
+			$filtro=$ven->nombre;
+			
+				$valida=0;
+		}
+		else{
+		
+			$pedidos=DB::table('pedidos as v')
+            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
+			->join('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
+            -> select ('v.idpedido','v.fecha_hora','v.pweb','p.nombre','p.cedula','v.fecha_emi','v.serie_comprobante','v.num_comprobante','v.impuesto','v.devolu','v.estado','v.total_venta','ve.nombre as user')
+            -> where ('v.impor','=',0)
+            -> where ('v.devolu','=',0)
+            -> orderBy('v.idpedido','desc')
+			->get();		
+			$filtro="Todos Vendedores";
+			$filtroruta="Todas Las Rutas";
+			$valida=0;
+		}
+		//
+	     return view ('reportes.pedido.pedidoruta.index',["filtroruta"=>$filtroruta,"filtro"=>$filtro,"rutas"=>$rutas,"valida"=>$valida,"vendedor"=>$vendedor,"ventas"=>$pedidos,"searchText"=>$query,"empresa"=>$empresa]);
+}
+
 }

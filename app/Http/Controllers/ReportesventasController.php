@@ -924,8 +924,8 @@ class ReportesventasController extends Controller
 	}
 	public function reportecxcvencida(Request $request)
  {
-		$rol=DB::table('roles')-> select('rventasarti')->where('iduser','=',$request->user()->id)->first();	
-		if ($rol->rventasarti==1){
+		$rol=DB::table('roles')-> select('rvencicobro')->where('iduser','=',$request->user()->id)->first();	
+		if ($rol->rvencicobro==1){
 		$vendedores=DB::table('vendedores')->get();  
 		$clientes=DB::table('clientes')->get();  
 		$rutas=DB::table('rutas')->get();  

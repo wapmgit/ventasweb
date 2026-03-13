@@ -187,6 +187,7 @@ class SistemaController extends Controller
 		if ($request->get('op71')){ $data->anularrc=1; }else{ $data->anularrc=0; }
 		if ($request->get('op72')){ $data->web=1; }else{ $data->web=0; }
 		if ($request->get('op73')){ $data->factsinexis=1; }else{ $data->factsinexis=0; }
+		if ($request->get('op74')){ $data->rvencicobro=1; }else{ $data->rvencicobro=0; }
 		$data ->update();
 
 	$user = User::find($data->iduser);

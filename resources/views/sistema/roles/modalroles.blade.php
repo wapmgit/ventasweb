@@ -386,6 +386,12 @@
 						<input type="checkbox" name="op67" class="minimal" @if($q->rvdivisas==1) checked @endif ></label>
 						</div>
 						</div>
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+						<div class="form-group">
+						<label>Reporte Venci. Cobros: </label><label>
+						<input type="checkbox" name="op74" class="minimal" @if($q->rvencicobro==1) checked @endif ></label>
+						</div>
+						</div>
 						</div>
                   </div>
 				<div class="tab-pane fade" id="custom-tabs-one-impuestos{{$q->id}}" role="tabpanel" aria-labelledby="custom-tabs-one-impuestos-tab{{$q->id}}">

@@ -316,6 +316,12 @@
                   <p>Pedidos</p>
                 </a>
               </li>
+			<li class="nav-item">
+                 <a href="{{route('pedidoruta')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Reporte Pedidos</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a href="{{route('reportepedido')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>

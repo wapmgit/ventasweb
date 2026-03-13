@@ -1,0 +1,55 @@
+
+<div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Seleccione</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>	<form action="{{route('pedidoruta')}}" method="GET" enctype="multipart/form-data" >         
+			{{csrf_field()}}
+        <div class="card-body p-0"></br>
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				<div class="form-group">
+				<label for="nombre">Vendedor</label>
+				<div class="input-group">
+					<select name="vendedor" class="form-control selectpicker" data-live-search="true">
+                            <option value="0">Seleccione..</option> 
+						   @foreach ($vendedor as $per)
+                           <option value="{{$per -> id_vendedor}}">{{$per -> nombre}}</option> 
+                           @endforeach
+					</select>
+				</div>
+				</div>		
+			</div>
+		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+				<div class="form-group"><label for="nombre">Ruta</label>
+				<div class="input-group">
+				
+					<select name="ruta" class="form-control selectpicker" data-live-search="true">
+                            <option value="0">Todas..</option> 
+						   @foreach ($rutas as $ru)
+                           <option value="{{$ru -> idruta}}">{{$ru -> nombre}}</option> 
+                           @endforeach
+					</select>
+				</div>
+				</div>		
+		</div>
+			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+				<div class="form-group">
+				<div class="input-group">
+					<span class="input-group-btn">
+						<button type="submit" class="btn btn-primary btn-sm">consultar</button>
+					</span>
+				</div>
+				</div>
+			</div>
+	</div>
+	</div>
+		</form>
+	</div>
