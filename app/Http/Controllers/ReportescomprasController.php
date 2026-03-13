@@ -343,4 +343,37 @@ class ReportescomprasController extends Controller
 			$cliente=Clientes::findOrFail($venta->idcliente);											
 		return view('reportes.compras.seriales.certificado',["cliente"=>$cliente,"documento"=>$documento,"venta"=>$venta,"empresa"=>$empresa]);           
 	}
+		public function comprasproveedor(Request $request)
+    {
+	//	dd($request);
+        $corteHoy = date("Y-m-d");
+        $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+        $listap=DB::table('proveedores')->get();
+             $query=trim($request->get('searchText'));
+             $query2=trim($request->get('searchText2'));
+             if (($query)==""){$query=$corteHoy; }
+			$query2 = date_create($query2);
+            date_add($query2, date_interval_create_from_date_string('1 day'));
+            $query2=date_format($query2, 'Y-m-d');
+			 if($request->get('proveedor')){
+            $datos=DB::table('compras as c')            
+             ->join ('proveedores as p', 'p.idproveedor','=','c.idproveedor') 
+             ->join ('detalle_compras as dc', 'dc.idcompra','=','c.idcompra') 
+             ->join ('articulos as art', 'art.idarticulo','=','dc.idarticulo') 			 
+            -> select(DB::raw('count(dc.idcompra) as titems'),DB::raw('sum(dc.cantidad) as tcantidad'),DB::raw('avg(dc.precio_compra) as prom_compra'),'art.idarticulo','art.nombre','art.minimo','art.stock')
+				->whereBetween('c.fecha_hora', [$query, $query2])
+				->where('c.idproveedor','=',$request->get('proveedor'))
+				->where('c.estatus','=',"0")
+			->groupby('dc.idarticulo')
+			->orderby('art.nombre','asc')
+            ->get();
+			 $pro=DB::table('proveedores')-> where('idproveedor','=',$request->get('proveedor'))->first();
+			$filtro=$pro->rif." - ".$pro->nombre;
+			 }else{
+				 $datos=[];
+				 $filtro="";
+			 }
+			$query2=date("Y-m-d",strtotime($query2."- 1 days"));
+			return view('reportes.compras.comprasproveedor.index',["filtro"=>$filtro,"listap"=>$listap,"datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);
+    }
 }

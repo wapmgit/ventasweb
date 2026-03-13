@@ -489,6 +489,12 @@
                   <p>Compras de un Articulo</p>
                 </a>
               </li>
+			    <li class="nav-item">
+                <a href="{{route('comprasproveedor')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Compras Por Proveedor</p>
+                </a>
+              </li>
 			  <li class="nav-item">
                 <a href="{{route('reporteetiquetas')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
