@@ -43,14 +43,15 @@ return $dias;
 								<th>Fecha Emi.</th>
 								<th>dias.Venc.</th>
 								<th>Monto</th>
+								<th>Saldo</th>
 								
 							</thead>
-							<?php $total=0; $countnd=0; $acummn=0; $count=0; $diascre=0; $p=0; ?>	
+							<?php $total=0; $acumtventa=0; $countnd=0; $acummn=0; $count=0; $diascre=0; $p=0; ?>	
 						   @foreach ($datos as $cat)<?php $p++; $cntnc=0; ?>
 					
 							<tr>
 								<td>{{$cat->serie_comprobante}}-{{$cat->num_comprobante}}</td>
-								<td>{{ $cat->nombre}}
+								<td><small>{{ $cat->nombre}}</small>
 								@foreach ($nc as $c)							
 								<?php if (($c->id_cliente==$cat->id_cliente)and ($cntnc==0)){																						
 								echo " <strong>* N/C: ".number_format($c->tnc,2,',','.')." *</strong>";							
@@ -59,7 +60,7 @@ return $dias;
 								</td>
 								
 								<td>{{ $cat->telefono}}</td>
-								<td>{{ $cat->vendedor}}</td>
+								<td><small>{{ $cat->vendedor}}</small></td>
 								<td>{{ $cat->diascre}}</td>
 								<td><?php echo date("d-m-Y",strtotime($cat->fecha_hora)); ?></td>
 								<td><?php $diascre=((int)$cat->diascre-dias_pasados($fecha_actual,$cat->fecha_hora));
@@ -67,6 +68,7 @@ return $dias;
 								<?php }else { echo $diascre; }
 
 								?></td>
+								<td><?php  $acumtventa=$acumtventa+$cat->total_venta; echo number_format( $cat->total_venta, 2,',','.')." $"; ?></td>
 								<td><?php $count++; $total=$total+$cat->acumulado; echo number_format( $cat->acumulado, 2,',','.')." $"; ?></td>
 							</tr>
 							
@@ -74,12 +76,13 @@ return $dias;
 						@foreach ($notasnd as $nd)
 						<tr>
 						<?php $acummn=$acummn+$nd->tnotas;
+						$acumtventa=$acumtventa+$nd->monto;
 						$total=$total+$nd->tnotas;
 						$countnd++;
 						?>
 						<td>N/D-{{$nd->idnota}}</td>
 						<td>{{$nd->nombre}}</td>
-						<td>{{$nd->cedula}}</td>
+						<td>{{$nd->telefono}}</td>
 						<td></td>
 						<td></td>
 						<td><?php echo date("d-m-Y",strtotime($nd->fecha)); ?></td>
@@ -87,6 +90,7 @@ return $dias;
 						if($diascre <= 0){ ?>  <font style="color:#FF0000";><?php echo $diascre;?> </font> 
 							<?php }else { echo $diascre; }
 								?></td>
+						<td><?php echo number_format($nd->monto, 2,',','.'); ?></td>
 						<td><?php echo number_format($nd->tnotas, 2,',','.'); ?></td>
 						</tr> 
 								@endforeach		
@@ -96,6 +100,7 @@ return $dias;
 						<td colspan="2"><b>Notas debito:{{$countnd}}</b></td>
 						<td colspan="2"></td>	
 						<td>Total $</td>	
+						<td><b><?php echo number_format($acumtventa, 2,',','.'); ?></b></td>					
 						<td><b><?php echo number_format($total, 2,',','.'); ?></b></td>					
 						</tr>
 						</tfoot>								
