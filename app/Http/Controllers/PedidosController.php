@@ -742,7 +742,7 @@ public function repedidos(Request $request){
 			$pedidos=DB::table('pedidos as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
 			->join('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
-            -> select ('v.idpedido','v.fecha_hora','v.pweb','p.nombre','p.cedula','v.fecha_emi','v.serie_comprobante','v.num_comprobante','v.impuesto','v.devolu','v.estado','v.total_venta','ve.nombre as user')
+            -> select ('v.idpedido','v.fecha_hora','v.pweb','p.nombre','p.cedula','p.direccion','v.fecha_emi','v.serie_comprobante','v.num_comprobante','v.impuesto','v.devolu','v.estado','v.total_venta','ve.nombre as user')
             -> where ('v.impor','=',0)
             -> where ('v.devolu','=',0)
             -> orderBy('v.idpedido','desc')
