@@ -130,6 +130,7 @@ Route::post('anularecibo', [ventasController::class, 'anular'])->name('anulareci
 Route::post('validarcventa', [ventasController::class, 'validar'])->name('validarcventa');
 Route::post('ventacxc', [ventasController::class, 'vcxc'])->name('ventacxc');
 
+
 //gastos
 Route::get('gastos', [GastosController::class, 'index'])->name('gastos');
 Route::get('newgasto', [GastosController::class, 'create'])->name('newgasto');
@@ -147,6 +148,7 @@ Route::get('ajustepedido', [PedidosController::class, 'ajuste'])->name('ajustepe
 Route::post('facpedido', [PedidosController::class, 'facturar'])->name('facpedido');
 Route::post('anularpedido', [PedidosController::class, 'destroy'])->name('anularpedido');
 Route::get('reportepedido', [PedidosController::class, 'reporte'])->name('reportepedido');
+Route::get('pedidoruta', [PedidosController::class, 'repedidos'])->name('pedidoruta');
 Route::post('devolucionpedido', [PedidosController::class, 'devolucionpedido'])->name('devolucionpedido');
 Route::post('addarticulo', [PedidosController::class, 'addart'])->name('addarticulo');
 Route::get('pdescargados', [PedidosController::class, 'descargados'])->name('pdescargados');
