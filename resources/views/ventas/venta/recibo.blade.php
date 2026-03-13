@@ -106,13 +106,16 @@ $acumpeso=0;
                       </thead>
                   
                       <tbody>
-                        @foreach($detalles as $det)<?php  $cntline++; $acumpeso=$acumpeso+($det->cantidad*$det->peso);?>
+                        @foreach($detalles as $det)<?php  $cntline++; $acumpeso=$acumpeso+($det->cantidad*$det->peso);
+						if($det->cantidad>0){
+						?>
                         <tr height="10px"> 						
                          <td align="left"><span class="lista">
 						   {{$det->cantidad}} {{$det->unidad}}  -
 						  <?php echo strtolower($det->articulo);?><?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?> - <?php echo number_format( $det->precio_venta, 2,',','.'); ?> </span></td>                       
                           <td><span class="lista"><?php echo "$ ".number_format( (($det->cantidad*$det->precio_venta)), 2,',','.'); ?></span></td>
                         </tr>
+						<?php } ?>
                         @endforeach
                       </tbody>
 					     <tfoot>  

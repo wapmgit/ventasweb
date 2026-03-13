@@ -95,7 +95,14 @@
 			</tr>
 				<?php } ?>
 				@endforeach
+		<tr><td colspan="2"><div class="form-group">
+				<?php if ($dif == 0 ){?><label> Indique % dif Cambiario</label><?php } ?>
+				<input  <?php if ($dif > 0 ){?> type="hidden" <?php } else {?> type="number" <?php } ?> name="difc" value="<?php echo $dif; ?>"  class ="form-control"></input>
+            	<label for="productor">¿ Actualizar Precio 2 por Tasa Diferencial ?</label>
+				<input type="checkbox" name="actprec" id="cbx1"  >
 				
+		
+            </div></td></tR>
 		</table>
   </div>  
 

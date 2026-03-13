@@ -223,15 +223,15 @@ public function show(Request $request,$id){
 		if(($request->get('convertir')=="on")){
 			$venta->flibre=1;
 			}
-		if($request->get('tdeuda') != NULL){  $venta->saldo=$request->get('tdeuda');}
-		else {  $venta->saldo=$dpedido->total_venta; }
+		if($request->get('totala') == 0){  $venta->saldo=$dpedido->total_venta;}
+		else {  $venta->saldo=$request->get('tdeuda'); }
 		if ($venta->saldo > 0){
 		$venta->estado='Credito';} else { $venta->estado='Contado';}
 		$venta->devolu='0';
 		$venta->comision=$dpedido->comision;
 		$venta->montocomision=$dpedido->montocomision;
 		$venta->user=$user;
-   $venta-> save();
+		$venta-> save();
    if(($request->get('convertir')=="on")){
 			$pnro=DB::table('formalibre')
 			->select(DB::raw('MAX(idforma) as pnum'))
@@ -358,17 +358,22 @@ public function show(Request $request,$id){
 	}
 	public function reporte(Request $request){
 		$rol=DB::table('roles')-> select('editpedido')->where('iduser','=',$request->user()->id)->first();
+		$rutas=DB::table('rutas')->get();
 		if ($request->get('idvendedor'))
         {		
+		$ruta=$request->get('ruta');
+	if($ruta==0){ $c=">"; $idr=0;}else{$c="="; $idr=$ruta;}
 		$query=trim($request->get('idvendedor'));
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$vendedor=DB::table('vendedores')->get();
 		$detalles=DB::table('detalle_pedido as dv')
 		->join('pedidos as ve','ve.idpedido','=','dv.idpedido')
+		->join('clientes as cli','cli.id_cliente','=','ve.idcliente')
 		-> join('articulos as a','dv.idarticulo','=','a.idarticulo')
 		-> select(DB::raw('sum(dv.cantidad) as cantidad'),DB::raw('sum(dv.cantidad*a.peso) as pesot'),DB::raw('sum(dv.precio_venta*dv.cantidad) as mventa'),'ve.idvendedor as vendedor','a.nombre as articulo','a.stock','a.idarticulo')
 		->where('ve.tipo_comprobante','=',"PED")
 		->where('ve.idvendedor','=',$query)
+		->where('cli.ruta',$c,$idr)
 		->where('ve.devolu','=',0)
 		->where('ve.impor','=',0)
 		->groupby('dv.idarticulo','ve.idvendedor')
@@ -391,7 +396,7 @@ public function show(Request $request,$id){
 		$query="Todos Vendedores";
 		$valida=0;
 			}
-		return view("reportes.pedido.index",["rol"=>$rol,"valida"=>$valida,"vendedor"=>$vendedor,"ventas"=>$detalles,"searchText"=>$query,"empresa"=>$empresa]);
+		return view("reportes.pedido.index",["rol"=>$rol,"rutas"=>$rutas,"valida"=>$valida,"vendedor"=>$vendedor,"ventas"=>$detalles,"searchText"=>$query,"empresa"=>$empresa]);
 	}
 	public function ajustepv(Request $request, $id){
 	
@@ -470,7 +475,7 @@ public function show(Request $request,$id){
 		
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$client = new Client();	
-			$response = $client->request('POST', 'http://pedidos.nks-sistemas.net/api/pedidos-descargados?limite=50&empresa='.$empresa->codigo);		
+			$response = $client->request('POST', 'http://creciven.com/api/pedidos-descargados?limite=50&empresa='.$empresa->codigo);		
 			$datos= $response->getBody();
 			$datos2=  json_decode($datos,false);          		 
 			$datos3=$datos2->data;

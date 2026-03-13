@@ -16,7 +16,7 @@
 		<div class="row">
 	
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-				<div class="form-group">
+				<div class="form-group"><label for="nombre">Vendedor</label>
 				<div class="input-group">
 				<select name="idvendedor" class="form-control">
 						<option value="0">Seleccione</option>
@@ -27,6 +27,19 @@
 				</div>
 				</div>		
 			</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+				<div class="form-group"><label for="nombre">Ruta</label>
+				<div class="input-group">
+				
+					<select name="ruta" class="form-control selectpicker" data-live-search="true">
+                            <option value="0">Todas..</option> 
+						   @foreach ($rutas as $ru)
+                           <option value="{{$ru -> idruta}}">{{$ru -> nombre}}</option> 
+                           @endforeach
+					</select>
+				</div>
+				</div>		
+		</div>
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 				<div class="form-group">
 				<div class="input-group">

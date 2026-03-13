@@ -53,7 +53,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
                   <table id="detalles" width="100%">
                       <thead style="background-color: #A9D0F5">
 						<th>Edit.</yh>
-                          <th>Articulo <a href="" data-target="#modalaggart" data-toggle="modal"><span class="label label-success"><i class="fa-solid fa-square-plus"></i></span></a></th>
+                          <th>Articulo <a href="" data-target="#modalaggart" data-toggle="modal"><span class="label label-success"><i class="fa-solid fa-square-plus fa-lg"></i></span></a></th>
                           <th>Cantidad</th>
                           <th>Stock</th>
 						  <th>Precio</th>
@@ -65,7 +65,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
                         @foreach($detalles as $det)										
 						<?php if ($det->cantidad>$det->stock){ $auxf=1;}?>
                         <tr ><td>@if($rol->editpedido==1)
-						<?php if ($det->cantidad>$det->stock){?> <a href="" data-target="#modaldevolucion-{{$det->idarticulo}}" data-toggle="modal"><i class="fa fa-fw fa-exclamation-circle fa-lg"></i></a> <?php 
+						<?php if ($det->cantidad>$det->stock){?> <a href="" data-target="#modaldevolucion-{{$det->idarticulo}}" data-toggle="modal"><i class="fa fa-fw fa-exclamation-circle fa-lg" style="color:red"></i></a> <?php 
 						} else{?> <a href="" data-target="#modaldevolucion-{{$det->idarticulo}}" data-toggle="modal"><i class="fa fa-fw fa-check-circle fa-lg"></i></a><?php  } ?>
 						@else <i class="fa fa-fw fa-lock"></i> @endif</td>
                           <td> {{$det->articulo}}
@@ -130,7 +130,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
                      <button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
 					@if($rol->importarpedido==1) 
 						<?php if($venta->devolu ==0){?>
-							<?php if ($auxf==0){?>    <a id="link" href="" data-target="#modal-{{$venta->idpedido}}" data-toggle="modal"><button class="btn btn-info btn-sm">Facturar</button></a><?php } else { echo " Verificar stock...";}?>
+							<?php if ($auxf==0){?>    <a id="link" href="" data-target="#modal-{{$venta->idpedido}}" data-toggle="modal"><button class="btn btn-info btn-sm">Facturar</button></a><?php } else { echo "<font face='Arial' size='4' color='red'> <b>Verificar stock...</b> </font>";}?>
 					<?php  } ?>
 					@endif
 					@include('pedidos.pedido.modal')

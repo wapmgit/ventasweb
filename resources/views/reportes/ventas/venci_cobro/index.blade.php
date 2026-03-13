@@ -33,7 +33,7 @@ return $dias;
 
 	<div class="row">
 		<div class="table-responsive">
-			<table  id="tabla" width="100%">
+			<table  id="articulostable" width="100%">
 							<thead style="background-color: #E6E6E6">
 								<th>Documento</th>
 								<th>Cliente</th>
@@ -47,10 +47,10 @@ return $dias;
 							</thead>
 							<?php $total=0; $countnd=0; $acummn=0; $count=0; $diascre=0; $p=0; ?>	
 						   @foreach ($datos as $cat)<?php $p++; $cntnc=0; ?>
-						<tbody>
+					
 							<tr>
 								<td>{{$cat->serie_comprobante}}-{{$cat->num_comprobante}}</td>
-								<td>{{ $cat->cedula}} {{ $cat->nombre}}
+								<td>{{ $cat->nombre}}
 								@foreach ($nc as $c)							
 								<?php if (($c->id_cliente==$cat->id_cliente)and ($cntnc==0)){																						
 								echo " <strong>* N/C: ".number_format($c->tnc,2,',','.')." *</strong>";							
@@ -89,41 +89,43 @@ return $dias;
 								?></td>
 						<td><?php echo number_format($nd->tnotas, 2,',','.'); ?></td>
 						</tr> 
-								@endforeach
-						</tbody>
-						<tfoot>
+								@endforeach		
+					<tfoot >
 						<tr>
-						<td colspan="2">Facturas:{{$count}}</td>
-						<td colspan="2">Notas debito:{{$countnd}}</td>
+						<td colspan="2"><b>Facturas:{{$count}}</b></td>
+						<td colspan="2"><b>Notas debito:{{$countnd}}</b></td>
 						<td colspan="2"></td>	
 						<td>Total $</td>	
-						<td><?php echo number_format($total, 2,',','.'); ?></td>					
+						<td><b><?php echo number_format($total, 2,',','.'); ?></b></td>					
 						</tr>
-						</tfoot>
+						</tfoot>								
 						</table>
 
 						
 </div>
-    </div>
-			</div>
-                  	</div><!-- /.row -->
-                     <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
+    </div>         <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
                     <div class="form-group" align="center">
                      <button type="button" id="imprimir" class="btn btn-primary" data-dismiss="modal">Imprimir</button>
                     </div>
                 </div>
-                   
-                </div><!-- /.box-body -->
-              </div><!-- /.box -->
+			</div>
+
 
 @push ('scripts')
 <script>
 $(document).ready(function(){
     $('#imprimir').click(function(){
-  //  alert ('si');
+	$('#articulostable').DataTable().destroy();
+
+// 2. Volvemos a inicializar con los cambios
+$("#articulostable").DataTable({
+		"searching": false,
+		"bPaginate": false,
+		"bInfo":false,
+});
   document.getElementById('imprimir').style.display="none";
   window.print(); 
-  window.location="{{route('ventasarticulo')}}";
+  window.location="{{route('reportecxcvencida')}}";
     });
 	$("#filtro").on("change",function(){
 		var variable=$("#filtro").val();							
@@ -149,7 +151,30 @@ $(document).ready(function(){
 		
 	});
 });
+	$(function () {
+    $("#articulostable").DataTable({
+		"searching": false,
+		"bPaginate": false,
+		"bInfo":false,
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf",{
+            extend: 'print',
+            // La magia ocurre aquí:
+            exportOptions: {
+                // Esto asegura que solo se exporte el contenido de la tabla
+                // y no los elementos de la interfaz de DataTables
+                modifier: {
+                    page: 'all'
+                }
+            },
+            customize: function (win) {
+                // Esto remueve físicamente el contenedor de botones de la ventana de impresión
+                $(win.document.body).find('.dt-buttons').remove();
+            }
+        }, "colvis"]
+    }).buttons().container().appendTo('#articulostable_wrapper .col-md-6:eq(0)');
 
+  });
 </script>
 
 @endpush

@@ -51,8 +51,10 @@ class SistemaController extends Controller
 	}
 	 public function update(Request $request)
     {
+		//dd($request);
 	         $idm=$request->get('idmoneda');
 			$valor=$request->get('valor');	 
+			$difc=$request->get('difc');	 
 			$contp=0;
               while($contp < count($idm)){
 				  $actm=Monedas::findOrFail($idm[$contp]);
@@ -70,7 +72,27 @@ class SistemaController extends Controller
 				}
 				 $contp=$contp+1;
 			  }  
-		   
+		   	if ($request->get('actprec')){ 
+				$actventa=DB::table('articulos')
+				->select('idarticulo','costo','precio1','precio2','iva')
+				->where('stock','>',0)
+				->get();
+			$longitudv = count($actventa);
+			$array = array();
+			foreach($actventa as $av){
+			$arrayid[] = $av->idarticulo;
+			$arraycto[] = $av->costo;
+			$arrayp1[] = $av->precio1;
+			$arrayp2[] = $av->precio2;
+			$arrayiva[] = $av->iva;
+			}
+			for ($i=0;$i<$longitudv;$i++){		
+			$articulo=Articulos::findOrFail($arrayid[$i]);
+			$articulo->precio2=($arrayp1[$i]*(($difc/100)+1));
+			$articulo->util2=((($articulo->precio2/((($arrayiva[$i]/100)*$arraycto[$i])+$arraycto[$i]))-1)*100);
+			$articulo->update();
+			}
+		}
          return Redirect::to('tasas');
 	}
 	public function usuarios(Request $request)
