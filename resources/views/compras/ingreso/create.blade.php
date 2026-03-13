@@ -83,7 +83,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
             </div>  
             <div class ="row" id="divarticulos">       
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                     <label>  Articulo  </label> <a href="" data-target="#modalarticuloid" data-toggle="modal"><span class="label label-success"> <i class="fa  fa-plus-circle"> </i></span></a>
+                     <i class="fa fa-fw fa-refresh" id="refresh"></i><label>  Articulo  </label> <a href="" data-target="#modalarticuloid" data-toggle="modal"><span class="label label-success"> <i class="fa  fa-plus-circle"> </i></span></a>
 						 <div class="form-group"	>				                         
                              <select name="pidarticulo" id="pidarticulo" class="form-control selectpicker" data-live-search="true">
                              @foreach ($articulos as $articulo)<?php $cntart++; ?>
@@ -341,8 +341,9 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 				var nombre=resultado[0].articulo;  
 				var id=resultado[0].idarticulo;  		  
 				var iva=resultado[0].iva;  		  
+				var serial=resultado[0].serial;  		  
 				$("#pidarticulo")
-				.append( '<option selected value="'+id+'_'+iva+'">'+nombre+'</option>')
+				.append( '<option selected value="'+id+'_'+iva+'_'+serial+'">'+nombre+'</option>')
 				.selectpicker('refresh');
 				$('select[name=pidarticulo]').change();
 						Toast.fire({
@@ -404,6 +405,35 @@ arraybase=[];
 arrayexento=[];
 $("#guardar").hide();
 
+ 	$("#refresh").on("click",function(){
+		$("#pidarticulo").empty();
+	$.ajax({
+    url: "{{ route('actuartic') }}",
+    type: 'POST', 
+    data: {
+        _token: "{{ csrf_token() }}" 
+    },
+    success: function(response) {
+        console.log(response);
+				var r3=response;
+				rows=r3.length; 
+				   $("#pidarticulo")
+				.append('<option value="1000" selected="selected">Seleccione..</option>');
+				for (j=0;j<rows;j++){
+				$("#pidarticulo")
+				.append( '<option value="'+r3[j].idarticulo+'_'+r3[j].iva+'_'+r3[j].serial+'">'+r3[j].articulo+'</option>');
+				}
+				$("#pidarticulo").selectpicker('refresh');
+				$("#pidarticulo").selectpicker('toggle');
+				
+    },
+    error: function(xhr) {
+        console.log(xhr.responseText);
+    }
+	
+});
+  toastr.info('¡Lista de Articulos Actualizada!.');
+	});
     function agregar(){ 
 
         articulo= $("#pidarticulo option:selected").text();

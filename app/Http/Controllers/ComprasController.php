@@ -273,6 +273,18 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
             ->get();
             return view("compras.ingreso.etiquetas",["empresa"=>$empresa,"detalles"=>$detalles]);
 	}
+	public function actuartic(Request $request)
+    {
+		if($request->ajax()){
+        $articulos =DB::table('articulos as art') 
+		-> select(DB::raw('CONCAT(art.codigo,"-",art.nombre," - ",stock," - ",costo,"-",iva) as articulo'),'art.idarticulo','art.costo','art.serial','art.iva')		
+        -> where('art.estado','=','Activo')
+        ->groupby('art.idarticulo')
+        -> get();
+	
+          return response()->json($articulos);
+	}
+    }
 	public function destroy(Request $request){
 	
 		//dd($request);

@@ -107,6 +107,7 @@ Route::post('validarif', [ComprasController::class, 'validar'])->name('validarif
 Route::post('validarcodigo', [ComprasController::class, 'validarcod'])->name('validarcodigo');
 Route::post('anulareciboc', [ComprasController::class, 'anular'])->name('anulareciboc');
 Route::post('almacenanota', [ComprasController::class, 'almacenanota'])->name('almacenanota');
+Route::post('actuartic', [ComprasController::class, 'actuartic'])->name('actuartic');
 //ventas
 Route::get('ventas', [VentasController::class, 'index'])->name('ventas');
 Route::get('newventa', [VentasController::class, 'create'])->name('newventa');
