@@ -5,7 +5,7 @@
 	<div class="row">
 		<h3>Nuevo Cliente</h3> <?php if($cntvend==0){ echo "<P class='text-danger'><span class='text-danger'>Debe Registrar Vendedor¡¡</span></p>";} ?>
 		 <?php if($cntrut==0){ echo "<P class='text-danger'><span class='text-danger'>Debe Registrar Ruta¡¡</span></p>";} ?>
-		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">			
+		<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">			
 			<form action="{{route('guardarcliente')}}" id="formulario" method="POST" enctype="multipart/form-data" >         
 			{{csrf_field()}}
             <div class="form-group">
@@ -14,21 +14,21 @@
 				@if($errors->first('nombre'))<P class='text-danger'>{{$errors->first('nombre')}}</p>@endif
             </div>
 		</div>
-			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">			
+			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">			
             <div class="form-group">
             	<label for="descripcion">Cedula</label>
             	<input type="text" name="cedula" id="vidcedula" onchange="conMayusculas(this)"  value="{{old('cedula')}}" class="form-control" maxlength="10" placeholder="V000000">
 					@if($errors->first('cedula'))<P class='text-danger'>{{$errors->first('cedula')}}</p>@endif
             </div>
 		</div>	
-		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">					
+		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">					
             <div class="form-group">
             	<label for="rif" id="prif" title="Pasar Cedula">Rif</label>
             	<input type="text" name="rif" id="rif" value="{{old('rif')}}" onchange="conMayusculas(this)"  class="form-control" maxlength="12" placeholder="V000000-0">
 					@if($errors->first('rif'))<P class='text-danger'>{{$errors->first('rif')}}</p>@endif
             </div>
 		</div>	
-				<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">		
+				<div class="col-lg-1 col-md- col-sm-6 col-xs-6">		
            <div class="form-group">
 		     <label for="tipo_cliente" >Codigo Pais</label>
 				<input type="text" name="codpais" class="form-control" value="{{old('codpais')}}" placeholder="+58">
@@ -59,13 +59,21 @@
            </div>
 		   </div>
 
-		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">			
+		<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">			
              <div class="form-group">
              <label for="direccion">Direccion <a href="" data-target="#modaldireccion" data-toggle="modal"><button class="btn btn-primary btn-xs">+</button></a></label>
             <input type="text" name="direccion" class="form-control" value="{{old('direccion')}}" placeholder="Direccion...">
             @if($errors->first('direccion'))<P class='text-danger'>{{$errors->first('direccion')}}</p>@endif
 		   </div>
 		</div>
+		      <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            	 <div class="form-group"> <label for="tipo_cliente" >Imagen</label>
+            			  <div class="custom-file">
+                      <input type="file" name="imagen" class="custom-file-input" id="customFile">
+                      <label class="custom-file-label" for="customFile">Cargar</label>
+                    </div>
+            		</div>
+            </div>
 		 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">	
            <div class="form-group">
              <label for="tipo_cliente" >Tipo cliente</label>
@@ -75,14 +83,20 @@
             </select>
            </div>
 		</div>
-			 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">	
+			 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">	
            <div class="form-group">
 				<label for="tipo_precio">Dias Credito </label><br>
 				  <input type="number" name="diascre"  id="diascre"  value="0" class="form-control">
 
            </div>
 		</div>
+			 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+           <div class="form-group">
+				<label for="tipo_precio">Limite Credito </label><br>
+				  <input type="number" name="limitcre"  id="limitcre"  value="0" class="form-control">
 
+           </div>
+		</div>
 		 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
            <div class="form-group">
 				<label for="tipo_precio">Tipo de Precio </label><br>
@@ -92,7 +106,7 @@
            </div>
 		</div>
 
-		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">	
+		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">	
 		   	   <div class="form-group">
             			<label for="tipo_precio">Vendedor </label><br>
             			<select name="idvendedor" class="form-control">
@@ -120,9 +134,9 @@
 		    <label for="precio1"> No </label> <input name="agente" checked="checked" id="arno"  type="radio" value="0" >
            </div>
 		   </div>
-	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+	<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12">
            <div class="form-group">
-             <label for="tipo_precio">% Retencion</label><br>
+             <label for="tipo_precio">% Ret.</label><br>
       <input type="number"  step="1" class="form-control" disabled id="retencion" name="retencion" >
            </div>
 		   </div>
@@ -130,6 +144,18 @@
            <div class="form-group">
 		     <label for="tipo_cliente" >Licencia</label>
 				<input type="text" name="licencia" class="form-control" value="{{old('licencia')}}" placeholder="Licencia...">
+           </div>
+		</div>
+	<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">		
+           <div class="form-group">
+		     <label for="tipo_cliente" >Contacto</label>
+				<input type="text" name="contacto" class="form-control" value="{{old('contacto')}}" placeholder="Persona...">
+           </div>
+		</div>
+			<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">		
+           <div class="form-group">
+		     <label for="tipo_cliente" >Tel. Contacto</label>
+				<input type="text" name="telcontacto" class="form-control" value="{{old('telcontacto')}}" placeholder="Telefono...">
            </div>
 		</div>
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">	
@@ -150,6 +176,7 @@
 	    $('[data-mask]').inputmask()
 		$(document).ready(function(){
 			$("#diascre").attr("readonly",true); 
+			$("#limitcre").attr("readonly",true); 
 		$("#vidcedula").on("change",function(){
          var form2= $('#formulario');
         var url2 = '{{route("validarcliente")}}';
@@ -170,10 +197,13 @@
      });
 	 		$("#tipo_cliente").on("change",function(){			
 			  var valor= $("#tipo_cliente").val();
-			  if(valor==0){$("#diascre").attr("readonly",false); 
-			  $("#diascre").val(5);}
+			  if(valor==0){ $("#diascre").attr("readonly",false); 
+			  $("#limitcre").attr("readonly",false); 
+			  $("#diascre").val(5); }
 			  else { $("#diascre").attr("readonly",true);
+			    $("#limitcre").attr("readonly",true); 
 				$("#diascre").val(0);
+				$("#limitcre").val(0);
 			  }
 				 });
 	  $('#btnguardar').click(function(){   

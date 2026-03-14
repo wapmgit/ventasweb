@@ -1,8 +1,15 @@
 @extends ('layouts.master')
 @section ('contenido')
+	<div class="row">
+		<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+			<h3>Editar datos de:{{ $cliente->nombre}}</h3>
+			</div>
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" align="center">
+                       <img src="{{asset('img/clientes/'.$cliente->imagen)}}" width="100" height="80">
+               </div>
+	</div>
 	<div class="row">	
-	<h3>Editar datos de: {{ $cliente->nombre}}</h3>
-	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">	
+		<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">		
         <form action="{{route('updatecliente')}}" id="formulario" method="POST" enctype="multipart/form-data" >       
         {{csrf_field()}}
             <div class="form-group">
@@ -12,28 +19,28 @@
 				@if($errors->first('nombre'))<P class='text-danger'>{{$errors->first('nombre')}}</p>@endif
 			</div>
 	</div>
-<div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">	
+	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">	
             <div class="form-group">
             	<label for="cedula">Cedula</label>
             	<input type="text" name="cedula" class="form-control"  onchange="conMayusculas(this)" value="{{$cliente->cedula}}" placeholder="cedula...">
 					@if($errors->first('cedula'))<P class='text-danger'>{{$errors->first('cedula')}}</p>@endif
 			</div>
 	</div>
-		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">	
+		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">	
             <div class="form-group">
             	<label for="cedula">Rif</label>
             	<input type="text" name="rif" class="form-control" onchange="conMayusculas(this)" value="{{$cliente->rif}}" placeholder="rif...">
 				@if($errors->first('rif'))<P class='text-danger'>{{$errors->first('rif')}}</p>@endif
 			</div>
 	</div>
-					<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">		
+			<div class="col-lg-1 col-md- col-sm-6 col-xs-6">	
            <div class="form-group">
 		     <label for="tipo_cliente" >Codigo Pais</label>
 				<input type="text" name="codpais" class="form-control" value="{{$cliente->codpais}}" placeholder="+58">
 		    @if($errors->first('codpais'))<P class='text-danger'>{{$errors->first('codpais')}}</p>@endif
 		   </div>
 		</div>
-		<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">			
+		<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">				
              <div class="form-group">
             	<label for="telefono">Telefono</label>
             	<input type="text" name="telefono" class="form-control" value="{{$cliente->telefono}}" placeholder="telefono...">
@@ -51,14 +58,21 @@
            </div>
 		   </div>
 
-	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">			
+	<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">			
               <div class="form-group">
             <label for="telefono">Direccion <a href="" data-target="#modaldireccionedit" data-toggle="modal"><button class="btn btn-primary btn-xs">+</button></a></label>
                 <input type="text" name="direccion" class="form-control" value="{{$cliente->direccion}}" placeholder="direccion...">
  @if($errors->first('direccion'))<P class='text-danger'>{{$errors->first('direccion')}}</p>@endif          
 		  </div>
 	</div>
-
+		      <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+            	 <div class="form-group"> <label for="tipo_cliente" >Imagen</label>
+            			  <div class="custom-file">
+                      <input type="file" name="imagen" class="custom-file-input" id="customFile">
+                      <label class="custom-file-label" for="customFile">Cargar</label>
+                    </div>
+            		</div>
+            </div>
 						 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
               <div class="form-group">
 			  <input type="hidden" name="tclient" id="tclient" value="{{$cliente->tipo_cliente}}">
@@ -78,6 +92,13 @@
 
            </div>
 		</div>
+					 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+           <div class="form-group">
+				<label for="tipo_precio">Limite Credito </label><br>
+				  <input type="number" name="limitcre"  id="limitcre"  value="0" class="form-control">
+
+           </div>
+		</div>
 	 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
            <div class="form-group">
              <label for="tipo_precio">Tipo de Precio </label><br>
@@ -87,7 +108,7 @@
 		   </div>
 	</div>
 
-<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">			
+	<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">		
 		   <div class="form-group">
             			<label >Vendedor: {{$datos->vendedor}}</label>
             			<select name="idvendedor" class="form-control">
@@ -116,9 +137,9 @@
 		    <label for="precio1"> No </label> <input name="agente" id="arno" <?php if ($cliente->retencion==0){ echo "checked='checked'"; } ?>  type="radio" value="0" >
            </div>
 		   </div>
-		   		   		   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12">
            <div class="form-group">
-             <label for="tipo_precio">% Retencion</label><br>
+             <label for="tipo_precio">% Ret.</label><br>
       <input type="number"  step="1" class="form-control"  <?php if ($cliente->retencion>0){ echo  "value='$cliente->retencion'"; }else{ echo "disabled"; } ?> id="retencion" name="retencion" >
            </div>
 		   </div>
@@ -126,6 +147,18 @@
            <div class="form-group">
 		     <label for="tipo_cliente" >Licencia</label>
 <input type="text" name="licencia" class="form-control" value="{{$cliente->licencia}}" placeholder="Licencia...">
+           </div>
+		</div>
+			<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">		
+           <div class="form-group">
+		     <label for="tipo_cliente" >Contacto</label>
+				<input type="text" name="contacto" class="form-control" value="{{$cliente->contacto}}" placeholder="Persona...">
+           </div>
+		</div>
+			<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">		
+           <div class="form-group">
+		     <label for="tipo_cliente" >Tel. Contacto</label>
+				<input type="text" name="telcontacto" class="form-control" value="{{$cliente->telcontacto}}" placeholder="Telefono...">
            </div>
 		</div>
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">	
@@ -148,8 +181,10 @@
 	
 	var tc= $("#tclient").val();
 			
-			  	  if(tc==0){ $("#diascre").attr("readonly",false); }
+		if(tc==0){ $("#diascre").attr("readonly",false);
+					$("#limitcre").attr("readonly",false); 	}
 			  else { $("#diascre").attr("readonly",true);
+			  $("#limitcre").attr("readonly",true);
 			  }
 		 $('#btnguardar').click(function(){   		 
 		document.getElementById('loading').style.display=""; 
@@ -160,9 +195,12 @@
 			    $("#tipo_cliente").on("change",function(){			
 			  var valor= $("#tipo_cliente").val();
 			  if(valor==0){$("#diascre").attr("readonly",false); 
+			   $("#limitcre").attr("readonly",false);
 			  $("#diascre").val(5);}
 			  else { $("#diascre").attr("readonly",true);
+			   $("#limitcre").attr("readonly",true);
 				$("#diascre").val(0);
+				$("#limitcre").val(0);
 			  }
 				 });
 	});

@@ -76,13 +76,22 @@ class ClientesController extends Controller
         $paciente->tipo_cliente=$request->get('tipo_cliente');
         $paciente->tipo_precio=$request->get('precio');
         $paciente->diascredito=$request->get('diascre');
+        $paciente->limitecre=$request->get('limitcre');
         if($request->get('agente')==1){
 		$paciente->retencion=$request->get('retencion');
 		}
 		$paciente->vendedor=$request->get('idvendedor');
+		$paciente->contacto=$request->get('contacto');
+		$paciente->telcontacto=$request->get('telcontacto');
 		$paciente->ruta=$request->get('idruta');
 		 $mytime=Carbon::now('America/Caracas');
 		$paciente->creado=$mytime->toDateTimeString();
+		if(!empty($request->file('imagen'))){
+			$file = $request->file('imagen');
+			$img = $file->getClientOriginalName();		
+        	\Storage::disk('clientes')->put($img, \File::get($file));
+			$paciente->imagen=$img;
+			}
         $paciente->save();
         return Redirect::to('clientes');
 
@@ -157,12 +166,21 @@ class ClientesController extends Controller
         $paciente->codpostal=$request->get('codpostal');
     	$paciente->tipo_cliente=$request->get('tipo_cliente');
     	$paciente->diascredito=$request->get('diascre');
+		$paciente->limitecre=$request->get('limitcre');
 			if($request->get('agente')==1){
 		$paciente->retencion=$request->get('retencion');
 		}
         $paciente->tipo_precio=$request->get('precio');
 		 $paciente->vendedor=$request->get('idvendedor');
+		 $paciente->contacto=$request->get('contacto');
+		$paciente->telcontacto=$request->get('telcontacto');
 		 $paciente->ruta=$request->get('idruta');
+		 	if(!empty($request->file('imagen'))){
+			$file = $request->file('imagen');
+			$img = $file->getClientOriginalName();		
+        	\Storage::disk('clientes')->put($img, \File::get($file));
+			$paciente->imagen=$img;
+			}
         $paciente->update();
         return Redirect::to('clientes');
 	}
