@@ -1,6 +1,10 @@
 @extends ('layouts.master')
 @section ('contenido')
-  <!-- Main content -->
+	<div class="row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		@include('bancos.resumen.search')
+	</div>
+</div>
             <div class="invoice p-3 mb-3">
               <!-- title row -->
               <div class="row">
@@ -24,7 +28,7 @@
 	</div>
 		<div class="col-sm-4 invoice-col">
 
-                <?php echo date("d-m-Y",strtotime($searchText)); ?>
+                <?php echo "<b>Fecha: ".date("d-m-Y",strtotime($searchText))."</b>"; ?>
 			
 	</div>
               </div>

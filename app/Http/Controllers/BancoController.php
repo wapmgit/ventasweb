@@ -494,36 +494,26 @@ $id=$request->get('id');
     }
 		 public function resumen(Request $request)
 			{   
+			//dd($request);
 			$rol=DB::table('roles')-> select('resumenbanco')->where('iduser','=',$request->user()->id)->first();	
 			if ($rol->resumenbanco==1){
 			$corteHoy = date("Y-m-d");
             $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
             $query=trim($request->get('searchText'));
-			$query2=trim($request->get('searchText2'));
-			if (($query)==""){$query=$corteHoy; }
-			if (($query2)==""){$query2=$corteHoy; }
-            $query2=trim($request->get('searchText2'));
-			
-            $query2 = date_create($query2);  	
-            date_add($query2, date_interval_create_from_date_string('1 day'));
-            $query2=date_format($query2, 'Y-m-d');	
-			 
-			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			if (($query)==""){$query=$corteHoy; }		
 			$banco=DB::table('bancos')->get();
             $mov=DB::table('bancos as ba')
             ->join('mov_ban as mv','ba.idbanco','=','mv.idbanco')
             ->join('ctascon','mv.clasificador','=','ctascon.idcod')
             ->select('mv.*','ctascon.descrip')
 			 ->where('mv.estatus','=',0)
-			 -> whereBetween('mv.fecha_mov', [$query, $query2])
+			 -> where(DB::raw('date(mv.fecha_mov)'),$query)
 			// -> where('mv.fecha_mov','like','%'.$cortehoy.'%')
             ->orderby('mv.id_mov', 'asc')
            ->get();
         //dd($mov);
-		 $query2 = date_create($query2);  	
-            date_add($query2, date_interval_create_from_date_string('-1 day'));
-            $query2=date_format($query2, 'Y-m-d');	
-        return view('bancos.resumen.index',["banco"=>$banco,"datos"=>$mov,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);
+	
+        return view('bancos.resumen.index',["banco"=>$banco,"datos"=>$mov,"empresa"=>$empresa,"searchText"=>$query]);
            	     } else { 
 		return view("reportes.mensajes.noautorizado");
 			} 
