@@ -127,11 +127,11 @@ $acumpa=0; $countpa=0; $acumga=0; $countga=0; $tcobro=0; $tpagos=0; $countndp=0;
 					@foreach ($pagos as $pa)
 						<?php $countpa++; $acumpa=$acumpa+$pa->monto; ?>
 				<tr>
-				<td><small>{{$pa->nombre}}</small></td>
+				<td><small><small>{{$pa->nombre}}</small></small></td>
 				<td>{{$pa->num_comprobante}}</td>
-				<td>{{$pa->idbanco}}</td>
+				<td><small>{{$pa->idbanco}} </small><small><small><?php if($pa->tipo>0){ echo $pa->tasab; } ?></small></small></td>
 				<td><?php echo number_format( ($pa->monto), 2,',','.')." $"; ?></td>
-				<td><?php echo number_format( ($pa->recibido), 2,',','.')." $"; ?></td>
+				<td><?php echo number_format( ($pa->recibido), 2,',','.')." ".$pa->simbolo; ?></td>
 				</tr>
 				@endforeach
 							<tr><td>Documentos: </td><td><?php echo "<b>".$countpa."</b>"; ?></td>
@@ -154,11 +154,11 @@ $acumpa=0; $countpa=0; $acumga=0; $countga=0; $tcobro=0; $tpagos=0; $countndp=0;
 					@foreach ($gastos as $ga)
 						<?php $countga++; $acumga=$acumga+$ga->monto; ?>
 				<tr>
-				<td><small>{{$ga->nombre}}</small></td>
+				<td><small><small>{{$ga->nombre}}</small></small></td>
 				<td>{{$ga->referencia}}-{{$ga->documento}}</td>
-				<td>{{$ga->idbanco}}</td>
+				<td>{{$ga->idbanco}} </small><small><small><?php if($ga->tipo>0){ echo $ga->tasab; } ?></small></small></td>
 				<td><?php echo number_format( ($ga->monto), 2,',','.')." $"; ?></td>
-				<td><?php echo number_format( ($ga->recibido), 2,',','.')." $"; ?></td>
+				<td><?php echo number_format( ($ga->recibido), 2,',','.')." ".$pa->simbolo; ?></td>
 				</tr>
 				@endforeach
 							<tr><td>Documentos: </td><td><?php echo "<b>".$countga."</b>"; ?></td>
@@ -180,11 +180,11 @@ $acumpa=0; $countpa=0; $acumga=0; $countga=0; $tcobro=0; $tpagos=0; $countndp=0;
 					@foreach ($pagond as $ndp)
 						<?php $countndp++; $acumndp=$acumndp+$ndp->monto; ?>
 				<tr>
-				<td><small>{{$ndp->nombre}}</small></td>
+				<td><small><small>{{$ndp->nombre}}</small></small></td>
 				<td>{{$ndp->referencia}}-{{$ndp->documento}}</td>
-				<td>{{$ndp->idbanco}}</td>
+				<td> <small>{{$ndp->idbanco}} </small><small><small><?php if($ndp->tipo>0){ echo $ndp->tasab; } ?></small></small></td>
 				<td><?php echo number_format( ($ndp->monto), 2,',','.')." $"; ?></td>
-				<td><?php echo number_format( ($ndp->recibido), 2,',','.')." $"; ?></td>
+				<td><?php echo number_format( ($ndp->recibido), 2,',','.')." ".$ndp->simbolo; ?></td>
 				</tr>
 				@endforeach
 							<tr><td>Documentos: </td><td><?php echo "<b>".$countndp."</b>"; ?></td>

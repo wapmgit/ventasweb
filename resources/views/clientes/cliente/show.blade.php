@@ -98,15 +98,15 @@ return $insertar_ceros = $recibo.$numero;
 				<tr>
 				<td class="filap1"> <a  href="{{route('tcarta',['id'=>$cat->idventa.'-'.$link])}}"><i class="fa fa-fw fa-eye" title="Ver Documento"></i></a></td>
 					<td> <?php if($cat->devolu==1){echo "*DEV";}?>             
-					{{ $cat->tipo_comprobante}}-{{ $cat->serie_comprobante}} {{$cat->num_comprobante}}
+					{{ $cat->tipo_comprobante}}-{{ $cat->serie_comprobante}} <b>{{$cat->num_comprobante}}</b>
 					</td>
 					<td></td><td></td>
 					<td><small><?php echo date("d-m-Y h:i:s a",strtotime($cat->fecha_hora)); ?></small></td>
 					<td>{{ $cat->estado}}</td>
-					<td>{{ $cat->total_venta}}</td>
+					<td><b>{{ $cat->total_venta}}</b></td>
 					<td>{{ $cat->descuento}}</td>
 					<td>{{ $cat->total_pagar}}</td>
-					<td> {{ $cat->saldo}}</td>				
+					<td><b> {{ $cat->saldo}}</b></td>				
 				</tr>
 				
 					@foreach($pagos as $p)
@@ -127,15 +127,20 @@ return $insertar_ceros = $recibo.$numero;
 					<td>{{ $not->referencia}}</td><td>{{ $not->descripcion}}</td>
 					<td><?php echo date("d-m-Y",strtotime($not->fecha)); ?></td>
 					<td></td>
-					<td>{{ $not->monto}}</td>
+					<td><b>{{ $not->monto}}</b></td>
 					<td></td>
 					<td></td>
 					<td>
 					<?php if ($not->tipo==1){?>
-				{{ $not->pendiente}}<?php
-						 $saldond=$saldond+$not->pendiente; $contnd++;  }else{?>{{ $not->pendiente}}<?php			 
+				<b>{{ $not->pendiente}}</b><?php
+						 $saldond=$saldond+$not->pendiente; $contnd++;  }else{?><b>{{ $not->pendiente}}</b><?php			 
 						  $saldonc=$saldonc+$not->pendiente;  $contnc++; }?></td>				
 				</tr>
+					@foreach($pagosnd as $p)
+					<?php if($not->idnota==$p->idventa){ ?>
+					<tr style="line-height:80%"><td></td><td colspan="4"><small>------------> Recibo-{{$p->idrecibo}} <?php echo date("d-m-Y",strtotime($p->fecha)); ?></small></td><td colspan="4"><small>{{$p->idbanco}}->{{$p->recibido}}->{{$p->monto}}$</small></td><td></td><td></td></tr>
+					<?php } ?>
+					@endforeach
 				@endforeach
 				@foreach ($retencion as $ret)
 				<?php $link=1; ?>

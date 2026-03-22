@@ -108,6 +108,7 @@ Route::post('validarcodigo', [ComprasController::class, 'validarcod'])->name('va
 Route::post('anulareciboc', [ComprasController::class, 'anular'])->name('anulareciboc');
 Route::post('almacenanota', [ComprasController::class, 'almacenanota'])->name('almacenanota');
 Route::post('actuartic', [ComprasController::class, 'actuartic'])->name('actuartic');
+Route::get('ajustecompra', [ComprasController::class, 'ajustec'])->name('ajustecompra');
 //ventas
 Route::get('ventas', [VentasController::class, 'index'])->name('ventas');
 Route::get('newventa', [VentasController::class, 'create'])->name('newventa');
@@ -244,6 +245,7 @@ Route::get('editserial', [ReportescomprasController::class, 'editserial'])->name
 Route::get('reportearticulos', [ReportesarticulosController::class, 'articulos'])->name('reportearticulos');
 Route::get('valorizado', [ReportesarticulosController::class, 'valorizado'])->name('valorizado');
 Route::get('listaprecios', [ReportesarticulosController::class, 'listaprecio'])->name('listaprecios');
+Route::get('listapreciosdesc', [ReportesarticulosController::class, 'listapreciosdesc'])->name('listapreciosdesc');
 Route::get('stockcero', [ReportesarticulosController::class, 'cero'])->name('stockcero');
 Route::get('catalogo', [ReportesarticulosController::class, 'catalogo'])->name('catalogo');
 Route::get('resumen', [ReportesarticulosController::class, 'resumen'])->name('resumen');

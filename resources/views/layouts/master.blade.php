@@ -517,13 +517,20 @@
                   <i class="far fa-circle nav-icon"></i>
                   <p>Reporte de Articulos</p>
                 </a>
-              </li>
-              <li class="nav-item">
+              </li>			
+			  <li class="nav-item">
                 <a href="{{route('listaprecios')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Lista de Precios</p>
                 </a>
+			</li>
+              <li class="nav-item">
+                <a href="{{route('listapreciosdesc')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Precios con Descuento</p>
+                </a>
               </li>
+
               <li class="nav-item">
                 <a href="{{route('stockcero')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>

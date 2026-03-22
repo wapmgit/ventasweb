@@ -119,7 +119,7 @@
                     <td>Maneja Tasa Espercial (Pesos)</td>
                   
                     <td class="text-right py-0 align-middle">
-   <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+				<div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                       <input type="checkbox" name="tasaes" <?Php if($empresa->tespecial==1) echo "checked"; ?> class="custom-control-input" id="customSwitch3">
                       <label class="custom-control-label" for="customSwitch3"></label>
                     </div>
@@ -128,11 +128,20 @@
                     <td>Maneja Tasa Diferencial (*Descuento por divisas %*)</td>
                   
                     <td class="text-right py-0 align-middle">
-   <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+				<div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                       <input type="checkbox" name="tdif" <?Php if($empresa->tdif==1) echo "checked"; ?> class="custom-control-input" id="customSwitch1a">
                       <label class="custom-control-label" for="customSwitch1a"></label>
                     </div>
 					<input type="number" name="tasadif" id="tasadif"  <?php if ($empresa->tdif == 0){ echo "disabled"; }   ?> class="form-control" value="{{$empresa->tasadif}}">
+                    </td></tr>
+				<tr>
+                    <td>Mantener Proporcion entre P1 y P2 (*Tasa Diferencial*)</td>
+                  
+                    <td class="text-right py-0 align-middle">
+   <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                      <input type="checkbox" name="relaprecios" <?Php if($empresa->relaprecios==1) echo "checked"; ?> class="custom-control-input" id="customSwitch2b">
+                      <label class="custom-control-label" for="customSwitch2b"></label>
+                    </div>
                     </td></tr>
                   <tr>
                     <td>Plataforma web</td>
@@ -275,6 +284,13 @@
                       <input type="checkbox" name="printpeso" <?Php if($empresa->printpeso==1) echo "checked"; ?> class="custom-control-input" id="customSwitch1b">
                       <label class="custom-control-label" for="customSwitch1b"></label>
                     </div>
+                    </td>
+				</tr>
+				<tr>
+                    <td>Clave de Autorizacion
+					</div></td>     
+                    <td>
+				<input type="password" min="1" size="5" maxlength="20"  class="form-control" name="claveauto"  value="{{$empresa->claveauto}}">			   
                     </td>
 				</tr>
                 </tbody>

@@ -94,8 +94,8 @@
 		</div>
 					 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
            <div class="form-group">
-				<label for="tipo_precio">Limite Credito </label><br>
-				  <input type="number" name="limitcre"  id="limitcre"  value="0" class="form-control">
+				<label for="tipo_precio">Limite Credito $</label><br>
+				  <input type="number" name="limitcre"  id="limitcre"  value="{{$cliente->limitecre}}" class="form-control">
 
            </div>
 		</div>

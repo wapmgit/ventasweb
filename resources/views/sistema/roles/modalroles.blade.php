@@ -135,6 +135,12 @@
 					  <input type="checkbox" name="op10" class="minimal" @if($q->anularcompra==1) checked @endif ></label>
 					</div>
 				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+						<div class="form-group">
+						<label>Editar Compra: </label><label>
+						<input type="checkbox" name="op75" class="minimal" @if($q->editcompra==1) checked @endif ></label>
+				</div>
+				</div>
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Anular Recibo Compra: </label><label>
@@ -264,7 +270,7 @@
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<div class="form-group">
-						<label>Facturar sis Existencia: </label><label>
+						<label>Facturar sin Existencia: </label><label>
 						<input type="checkbox" name="op73" class="minimal" @if($q->factsinexis==1) checked @endif ></label>
 						</div>
 				</div>

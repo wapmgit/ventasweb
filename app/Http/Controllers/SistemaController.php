@@ -63,11 +63,13 @@ class SistemaController extends Controller
 				if($idm[$contp]==4){
 					$empresa=Empresa::findOrFail('1');
 					$empresa->tc=$valor[$contp];
+					$empresa->difpre=$difc;
 					$empresa->update();
 				}
 				if($idm[$contp]==3){
 					$empresa=Empresa::findOrFail('1');
 					$empresa->peso=$valor[$contp];
+					$empresa->difpre=$difc;
 					$empresa->update();
 				}
 				 $contp=$contp+1;
@@ -188,6 +190,7 @@ class SistemaController extends Controller
 		if ($request->get('op72')){ $data->web=1; }else{ $data->web=0; }
 		if ($request->get('op73')){ $data->factsinexis=1; }else{ $data->factsinexis=0; }
 		if ($request->get('op74')){ $data->rvencicobro=1; }else{ $data->rvencicobro=0; }
+		if ($request->get('op75')){ $data->editcompra=1; }else{ $data->editcompra=0; }
 		$data ->update();
 
 	$user = User::find($data->iduser);
@@ -263,6 +266,7 @@ class SistemaController extends Controller
         $emp->formatolp=$request->get('formatolp');
         $emp->calc_util=$request->get('calc_util');
         $emp->nlineas=$request->get('nlineas');
+        $emp->claveauto=$request->get('claveauto');
 		if($request->get('usaserie')){
         $emp->serie=$request->get('usaserie');}else{
 			$emp->serie="A";
@@ -286,6 +290,7 @@ class SistemaController extends Controller
 		if($request->get('bordefac')=="on"){$emp->bordefac=1;}else{$emp->bordefac=0;}
 		if($request->get('printpeso')=="on"){$emp->printpeso=1;}else{$emp->printpeso=0;}
 		if($request->get('orderart')=="on"){$emp->orderart=1;}else{$emp->orderart=0;}
+		if($request->get('relaprecios')=="on"){$emp->relaprecios=1;}else{$emp->relaprecios=0;}
         $emp->update();
 
 		 if ($tasa>0){
@@ -377,22 +382,25 @@ class SistemaController extends Controller
 			//de los egresos
 			$pagos=DB::table('comprobante as co')
 			->join('compras','compras.idcompra','=','co.idcompra' )
+			->join('monedas as mo','mo.idmoneda','=','co.idpago' )
 			->join('proveedores as p','p.idproveedor','=','compras.idproveedor')
-           -> select('p.nombre','co.referencia','compras.num_comprobante','co.idbanco','co.idpago','co.idrecibo','co.monto','co.recibido','co.fecha_comp as fecha')
+           -> select('p.nombre','co.referencia','compras.num_comprobante','co.idbanco','co.idpago','co.idrecibo','co.monto','co.recibido','co.fecha_comp as fecha','co.tasab','mo.simbolo','mo.tipo')
 			-> where('compras.estatus','=',0)
             -> whereBetween('co.fecha_comp', [$query, $query2])
             ->get();
 			//dd($pagos);
 			$gastos=DB::table('comprobante as co')
 			->join('gastos','gastos.idgasto','=','co.idgasto' )
+			->join('monedas as mo','mo.idmoneda','=','co.idpago' )
 			->join('proveedores as p','p.idproveedor','=','gastos.idpersona')
-           -> select('p.nombre','co.referencia','gastos.documento','co.idbanco','co.idpago','co.idrecibo','co.monto','co.recibido','co.fecha_comp as fecha')
+           -> select('p.nombre','co.referencia','gastos.documento','co.idbanco','co.idpago','co.idrecibo','co.monto','co.recibido','co.fecha_comp as fecha','co.tasab','mo.simbolo','mo.tipo')
             -> whereBetween('co.fecha_comp', [$query, $query2])
             ->get();
 			$pagond=DB::table('comprobante as co')
 			->join('notasadmp as not','not.idnota','=','co.idnota' )
+				->join('monedas as mo','mo.idmoneda','=','co.idpago' )
 			->join('proveedores as p','p.idproveedor','=','not.idproveedor')
-           -> select('p.nombre','not.referencia','not.ndocumento as documento','co.idbanco','co.idpago','co.idrecibo','co.monto','co.recibido','co.fecha_comp as fecha')
+           -> select('p.nombre','not.referencia','not.ndocumento as documento','co.idbanco','co.idpago','co.idrecibo','co.monto','co.recibido','co.fecha_comp as fecha','co.tasab','mo.simbolo','mo.tipo')
             -> whereBetween('co.fecha_comp', [$query, $query2])
             ->get();
 			 $desglosep=DB::table('comprobante')->select(DB::raw('sum(recibido) as recibido'),DB::raw('sum(monto) as monto'),'idbanco')

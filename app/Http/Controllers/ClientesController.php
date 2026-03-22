@@ -120,9 +120,15 @@ class ClientesController extends Controller
          -> select('re.idrecibo','re.monto','re.recibido','re.idbanco','re.idpago','v.tipo_comprobante','re.referencia','v.num_comprobante','re.fecha','re.idventa')
 		 -> where('v.idcliente','=',$id)
             ->get(); 
+		$pagosnd=DB::table('recibos as re')
+				  ->join('notasadm as v','v.idnota','=','re.idnota')
+				  ->join('clientes as cli','cli.id_cliente','=','v.idcliente')
+         -> select('re.idrecibo','re.monto','re.recibido','re.idbanco','re.idpago','v.referencia as tipo_comprobante','re.referencia','v.ndocumento as num_comprobante','re.fecha','re.idnota as idventa')
+		 -> where('v.idcliente','=',$id)
+            ->get(); 
 			$retencion=DB::table('retencionventas')->where('idcliente','=',$id)->get();
 			$notas=DB::table('notasadm')->where('notasadm.idcliente','=',$id)->get();
-        return view("clientes.cliente.show",["rol"=>$rol,"retencion"=>$retencion,"empresa"=>$empresa,"cliente"=>$pacientes,"ventas"=>$ventas,"notas"=>$notas,"pagos"=>$pagos]);
+        return view("clientes.cliente.show",["rol"=>$rol,"retencion"=>$retencion,"empresa"=>$empresa,"cliente"=>$pacientes,"ventas"=>$ventas,"notas"=>$notas,"pagos"=>$pagos,"pagosnd"=>$pagosnd]);
     }
 	public function edit($historia)
 	{
