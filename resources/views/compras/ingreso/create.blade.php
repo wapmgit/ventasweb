@@ -107,7 +107,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
                     </div>
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                     <div class="form-group">
-                        <label for="precio_venta">Descuento</label>
+                        <label for="precio_venta">Descto. %</label>
                         <input type="number" value="0" name="pprecio_venta" id="pprecio_venta" class ="form-control" placeholder="Descuento">
                     </div>
                     </div>
@@ -124,14 +124,15 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
                           <th  width="4%">Supr</th>
                           <th >Articulo</th>
                           <th width="5%">Cantidad</th>
-                          <th>Precio compra</th>
+                          <th>Precio</th>
                           <th>Precio Bs</th>
-                          <th>Descuento</th>
+                          <th>Descto.</th>
+						   <th>Precio compra</th>
                           <th>Neto</th>
                           <th>Subtotal</th>
                       </thead>
 						<tfoot style="background-color: #A9D0F5"> 
-							<th align="center" colspan="7">Total</th>			  
+							<th align="center" colspan="8">Total</th>			  
 							<th  align="center"><h4 id="total">$.  0.00</h4></th><input type="hidden" name="total_venta" id="total_venta">
 						</tfoot>
                       <tbody></tbody>
@@ -208,8 +209,14 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 									  </tfoot>
 									  <tbody></tbody>
 								</table>
-						</div>						
-						<div class="col-lg-12 ol-md-12 col-sm-12 col-xs-12" align="right">
+						</div>	
+	<div class="col-lg-8 ol-md-8 col-sm-8 col-xs-12">
+						<div class="form-group">
+						<label for="productor">¿ Recalcular Precios ?</label>
+						<input type="checkbox" name="recalcular" checked >
+						</div>
+					</div>							
+							<div class="col-lg-4 ol-md-4 col-sm-4 col-xs-4" align="right">
 						<button type="button" class="btn btn-danger" id="regresar" data-dismiss="modal">Cancelar</button>
 						<input name="_token" value="{{ csrf_token() }}" type="hidden" ></input>
 						<button type="submit" id="procesa" class="btn btn-primary">Procesar</button>
@@ -250,6 +257,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 			$("#pidarticulo").change(function(){
 				$("#pcantidad").focus();
 				$("#pprecio_compra").val(0);  		
+				$("#pprecio_venta").val(0);  		
 			})
 			$('#pasapago').click(function(){
 			datosbanco=$("#pidpago").val();
@@ -435,13 +443,20 @@ $("#guardar").hide();
   toastr.info('¡Lista de Articulos Actualizada!.');
 	});
     function agregar(){ 
-
+		var precio=0;
         articulo= $("#pidarticulo option:selected").text();
         newarticulo= $("#pidarticulo").val();
         cantidad= $("#pcantidad").val();
         precio_compra=$("#pprecio_compra").val();
-        precio_venta=$("#pprecio_venta").val();
-        precio_tasa=(precio_compra*$("#vtasa").val());
+        descuento=$("#pprecio_venta").val();
+		pdesc=((100-descuento)/100);
+		if(descuento>0){
+		precondesc= trunc((precio_compra*pdesc),3);
+		precio=precondesc; }else{
+			precio= trunc((precio_compra),3);
+		}
+		
+        precio_tasa=(precio*$("#vtasa").val());
 		precio_tasa=precio_tasa.toFixed(2);
         artiva=articulo.split('-');
         newartiva=newarticulo.split('_');
@@ -450,7 +465,7 @@ $("#guardar").hide();
         narticulo=artiva[1];
 		idarticulo=newartiva[0]; 
         if (idarticulo!="" && cantidad > 0 &&  precio_compra!=""){         
-            neto=(cantidad*precio_compra)-precio_venta;
+            neto=(cantidad*precio);
 			//neto=neto.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' });      
             if (viva==0){ subtotal[cont]=neto; miva=0; arrayiva[cont]=0;  
 			arraybase[cont]=0; texe=texe+neto;  arrayexento[cont]=neto; }
@@ -463,7 +478,7 @@ $("#guardar").hide();
 				tneto=tneto+neto; }
 				tmiva=tmiva+miva;
 				total=total+subtotal[cont];
-            var fila='<tr class="selected" id="fila'+cont+'"><td><button class="btn btn-warning btn-xs" onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+narticulo+'</td><td><input type="text" style="width: 50px" name="cantidad[]" readonly="true" value="'+cantidad+'"></td><td><input type="text" name="precio_compra[]" readonly="true"  style="width: 100px" value="'+precio_compra+'"></td><td><input type="text" name="ptasa[]" readonly="true" style="width: 100px" value="'+precio_tasa+'"></td><td><input type="number" readonly="true" name="precio_venta[]" style="width: 100px" value="'+precio_venta+'"></td><td>'+neto.toFixed(2)+'</td><td><input type="hidden" name="iva[]" value="'+arrayiva[cont]+'"><input type="hidden" name="exento[]" value="'+arrayexento[cont]+'"><input type="hidden" name="base[]" value="'+arraybase[cont]+'"><input type="number" name="stotal[]" style="width: 100px" readonly="true" value="'+subtotal[cont].toFixed(2)+'"></td></tr>';
+            var fila='<tr class="selected" id="fila'+cont+'"><td><button class="btn btn-warning btn-xs" onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+narticulo+'</td><td><input type="text" style="width: 50px" name="cantidad[]" readonly="true" value="'+cantidad+'"></td><td><input type="text" name="precio_compra[]" readonly="true"  style="width: 100px" value="'+precio_compra+'"></td><td><input type="text" name="ptasa[]" readonly="true" style="width: 100px" value="'+precio_tasa+'"></td><td><input type="number" readonly="true" name="descuento[]" style="width: 100px" value="'+descuento+'"></td><td><input type="number" readonly="true" name="precio[]" style="width: 100px" value="'+precio+'"></td><td>'+neto.toFixed(2)+'</td><td><input type="hidden" name="iva[]" value="'+arrayiva[cont]+'"><input type="hidden" name="exento[]" value="'+arrayexento[cont]+'"><input type="hidden" name="base[]" value="'+arraybase[cont]+'"><input type="number" name="stotal[]" style="width: 100px" readonly="true" value="'+subtotal[cont].toFixed(2)+'"></td></tr>';
             cont++;
             limpiar();
 			//alert(total);

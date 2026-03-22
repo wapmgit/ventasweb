@@ -67,6 +67,7 @@ class ComprasController extends Controller
 	}   
    }
     public function store(Request $request){
+
 	$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 	$user=Auth::user()->name;
 	try{
@@ -145,8 +146,9 @@ class ComprasController extends Controller
         $idarticulo = $request -> get('idarticulo');
         $cantidad = $request -> get('cantidad');
         $precio_compra = $request -> get('precio_compra');
+        $precio = $request -> get('precio');
         $precio_cambio = $request -> get('ptasa');
-        $precio_venta = $request -> get('precio_venta');
+        $descuento = $request -> get('descuento');
         $subtotal = $request -> get('stotal');
 		
         
@@ -159,7 +161,8 @@ class ComprasController extends Controller
             $detalle->cantidad=$cantidad[$cont];
             $detalle->precio_compra=$precio_compra[$cont];
             $detalle->precio_tasa=$precio_cambio[$cont];
-            $detalle->precio_venta=$precio_venta[$cont];
+            $detalle->precio=$precio[$cont];
+            $detalle->descuento=$descuento[$cont];
             $detalle->subtotal=$subtotal[$cont];
 			$mytime=Carbon::now('America/Caracas');
 			$detalle->fecha=$mytime->toDateTimeString();
@@ -177,8 +180,6 @@ class ComprasController extends Controller
 		 
         //actualizo costo   
         $articulo=Articulos::findOrFail($idarticulo[$cont]);
-        $articulo->costo=$precio_compra[$cont];
-        $articulo->costo_t=$precio_cambio[$cont];
         $costo= $precio_compra[$cont];
         $costot= $precio_cambio[$cont];
         $articulo->stock=$articulo->stock+$cantidad[$cont];
@@ -186,23 +187,27 @@ class ComprasController extends Controller
         $utilidad= $articulo->utilidad;
         $util2= $articulo->util2;
         $util3= $articulo->util3;
-	if($empresa->calc_util==1){
-		$pt=($costo + (($utilidad/100)*$costo))+($costo + (($utilidad/100)*$costo))*($impuesto/100);
-		$pt2=($costo + (($util2/100)*$costo))+($costo + (($util2/100)*$costo))*($impuesto/100);
-		$pt3=($costo + (($util3/100)*$costo))+($costo + (($util3/100)*$costo))*($impuesto/100);
-        $articulo->precio1=$pt;
-        $articulo->precio2=$pt2;
-        $articulo->precio3=$pt3;
-        $articulo->precio_t=($costot + (($utilidad/100)*$costot))+($costot + (($utilidad/100)*$costot))*($impuesto/100);
-	}else{
-		$pt=($costo*(($impuesto/100)+1))/((100-$utilidad)/100);
-		$pt2=($costo*(($impuesto/100)+1))/((100-$util2)/100);
-		$pt3=($costo*(($impuesto/100)+1))/((100-$util3)/100);
-        $articulo->precio1=$pt;
-        $articulo->precio2=$pt2;
-        $articulo->precio3=$pt3;
-        $articulo->precio_t=($costot*(($impuesto/100)+1))/((100-$util2)/100);
-	}
+		if($request->get('recalcular')){
+			$articulo->costo=$precio_compra[$cont];
+			$articulo->costo_t=$precio_cambio[$cont];
+			if($empresa->calc_util==1){
+				$pt=($costo + (($utilidad/100)*$costo))+($costo + (($utilidad/100)*$costo))*($impuesto/100);
+				$pt2=($costo + (($util2/100)*$costo))+($costo + (($util2/100)*$costo))*($impuesto/100);
+				$pt3=($costo + (($util3/100)*$costo))+($costo + (($util3/100)*$costo))*($impuesto/100);
+				$articulo->precio1=$pt;
+				$articulo->precio2=$pt2;
+				$articulo->precio3=$pt3;
+				$articulo->precio_t=($costot + (($utilidad/100)*$costot))+($costot + (($utilidad/100)*$costot))*($impuesto/100);
+			}else{
+				$pt=($costo*(($impuesto/100)+1))/((100-$utilidad)/100);
+				$pt2=($costo*(($impuesto/100)+1))/((100-$util2)/100);
+				$pt3=($costo*(($impuesto/100)+1))/((100-$util3)/100);
+				$articulo->precio1=$pt;
+				$articulo->precio2=$pt2;
+				$articulo->precio3=$pt3;
+				$articulo->precio_t=($costot*(($impuesto/100)+1))/((100-$util2)/100);
+			}
+		}
 		$articulo->update();
 		$cont=$cont+1;
 	}
@@ -240,29 +245,30 @@ catch(\Exception $e)
 
 return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 }
-	public function show($id){
+	public function show(Request $request, $id){
 		$data=explode("-",$id);
 		$id=$data[0];
 		$ruta=$data[1];
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$rol=DB::table('roles')-> select('editcompra')->where('iduser','=',$request->user()->id)->first();		
 		$pago=DB::table('comprobante')
 			-> where('idcompra','=',$id)->get();
 		$ingreso=DB::table('compras as i')
 			-> join ('proveedores as p','i.idproveedor','=','p.idproveedor')
-			-> select ('i.idcompra as idingreso','i.fecha_hora','i.total','p.nombre','p.telefono','rif','direccion','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion as estado','i.base','i.miva','i.exento','i.estatus','i.idproveedor')
+			-> select ('i.idcompra as idingreso','i.fecha_hora','i.total','p.nombre','p.telefono','rif','direccion','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion as estado','i.base','i.miva','i.exento','i.estatus','i.idproveedor','i.saldo')
 			->where ('i.idcompra','=',$id)
 			-> first();
 
 
 		$detalles=DB::table('detalle_compras as d')
 			-> join('articulos as a','d.idarticulo','=','a.idarticulo')
-			-> select('a.idarticulo','a.nombre as articulo','d.cantidad','d.precio_compra','d.precio_venta','d.subtotal')
+			-> select('d.iddetalle_compra','a.idarticulo','a.nombre as articulo','d.cantidad','d.precio_compra','d.precio_venta','d.subtotal','d.descuento','d.precio')
 			-> where ('d.idcompra','=',$id)
 			->get();
 			
 		$ser=DB::table('seriales')-> where('idcompra','=',$id)->get();
 		$ret=DB::table('retenciones')-> where('idcompra','=',$id)->get();
-		return view("compras.ingreso.show",["ret"=>$ret,"ruta"=>$ruta,"ser"=>$ser,"ingreso"=>$ingreso,"empresa"=>$empresa,"detalles"=>$detalles,"pago"=>$pago]);
+		return view("compras.ingreso.show",["rol"=>$rol,"ret"=>$ret,"ruta"=>$ruta,"ser"=>$ser,"ingreso"=>$ingreso,"empresa"=>$empresa,"detalles"=>$detalles,"pago"=>$pago]);
 	}  
 	public function etiquetas($id){
     $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
@@ -581,4 +587,55 @@ catch(\Exception $e)
 } */
 return Redirect::to('compras');
 }
+public function ajustec(Request $request){
+	//dd($request);
+	try{
+	DB::beginTransaction();
+	$user=Auth::user()->name;
+    $detalleventa=DetalleCompras::findOrFail($request->iddetalle);
+	$aux= $detalleventa->cantidad*$detalleventa->precio_compra;
+	if($request -> get('descuento')==0){  $precio=$request -> get('precio'); }
+	else{
+		$precio=$request -> get('precio')*((100-$request -> get('descuento'))/100);
+		}
+	$precio_compra=$request -> get('precio');
+	$aux2=$request -> get('cantidad')*$precio;	
+
+		$art=DB::table('articulos')-> select('iva')->where('idarticulo','=',$detalleventa->idarticulo)->first();	
+			if($art->iva > 0){
+				 $nmexe=$request -> get('exe');
+				$niva=$aux2*($art->iva/100);
+				$ivaant=$aux*($art->iva/100);
+				$nmiva=($request -> get('miva')-$ivaant)+$niva;
+				$nbase=$aux2-$niva;
+				$baseant=$aux-$ivaant;
+				$nmbase=($request -> get('base')-$baseant)+$nbase;
+			}else{
+				 $nmbase=$request -> get('base');
+				 $nmiva=$request -> get('iva');
+				 $nmexe=($request -> get('exe')-$aux)+$aux2;
+			}
+		$compra=Compras::findOrFail($request -> get('idcompra'));
+			 $compra->total=(($compra->total-$aux)+$aux2); 
+			 $compra->saldo= $compra->total;
+			 $compra->exento= $nmexe;
+			 $compra->base= $nmbase;
+			 $compra->miva= $nmiva;
+			$compra->update();
+			
+	$detalleventa->cantidad=$request -> get('cantidad');
+	$detalleventa->precio_compra=$precio_compra;
+	$detalleventa->descuento=$request -> get('descuento');
+	$detalleventa->precio=$precio;
+	$detalleventa->subtotal=$precio*$request -> get('cantidad');
+	$detalleventa->update();
+
+	 DB::commit();
+	}
+	catch(\Exception $e)
+	{
+		DB::rollback();
+	}
+	return Redirect::to('showcompra/'.$request -> get('idcompra').'-1');
+	}
 }

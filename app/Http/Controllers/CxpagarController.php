@@ -260,7 +260,7 @@ $this->middleware('auth');
 
             $detalles=DB::table('detalle_compras as d')
             -> join('articulos as a','d.idarticulo','=','a.idarticulo')
-            -> select('a.nombre as articulo','d.cantidad','d.precio_compra','d.precio_venta','d.subtotal')
+            -> select('a.nombre as articulo','d.cantidad','d.precio_compra','d.precio_venta','d.subtotal','d.descuento','d.precio')
             -> where ('d.idcompra','=',$id)
             ->get();
 			$ret=DB::table('retenciones')-> where('idcompra','=',$id)->get();

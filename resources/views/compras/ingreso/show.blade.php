@@ -47,8 +47,9 @@ $cntser=0;
                      
                           <th>Articulo <!--<a href="" data-target="#modalact-{{$ingreso->idingreso}}" data-toggle="modal" ><i class="fa-solid fa-percent"></i></a>--></th>
                           <th>Cantidad</th>
-                          <th>Precio Compra</th>
+                          <th>Precio</th>
                           <th>Descuento</th>
+						   <th>Precio Compra</th>
                           <th>Neto</th>
                           <th>Subtotal</th>
                       </thead>
@@ -58,10 +59,17 @@ $cntser=0;
                         <?php  $mo=$mo+($det->subtotal); ?>
                         <tr >
                           <td>{{$det->articulo}}</td>
-                          <td>{{$det->cantidad}}</td>
+                          <td>@if($rol->editcompra==1)
+						  @if ($ingreso->saldo == $ingreso->total)
+							  <span class="filap2">
+						<a href="" data-target="#modaldevolucion-{{$det->idarticulo}}" data-toggle="modal"><i class="fa fa-fw fa-check-circle fa-lg"></i></a> 						  
+						  </span>
+						  @endif 
+						    @endif {{$det->cantidad}}</td>
                           <td><?php echo number_format( $det->precio_compra, 2,',','.'); ?></td>
-                          <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
-                           <td><?php echo number_format( $det->cantidad*$det->precio_compra, 2,',','.'); ?></td>
+                          <td><?php echo number_format( $det->descuento, 2,',','.'); ?></td>
+                          <td><?php echo number_format( $det->precio, 2,',','.'); ?></td>
+                           <td><?php echo number_format( $det->cantidad*$det->precio, 2,',','.'); ?></td>
                           <td><?php echo number_format( $det->subtotal, 2,',','.'); ?></td>
                         </tr>
 							<?php if ($ser <> NULL){?>
@@ -75,11 +83,11 @@ $cntser=0;
 									<?php } ?>
 									@endforeach
 							<?php	} ?>
-									
+							@include('compras.ingreso.modalajuste')		
                         @endforeach
                       </tbody> 
                       <tfoot>                    
-                          <th colspan="5"><div align="right">TOTAL: </div></th>
+                          <th colspan="6"><div align="right">TOTAL: </div></th>
                           <th ><b><font size="4"><?php  echo " $ ".number_format( $mo, 2,',','.'); ?></b></font></th>
                           </tfoot>
                   </table>
@@ -191,6 +199,7 @@ $(document).ready(function(){
   //  alert ('si');
   document.getElementById('imprimir').style.display="none";
   document.getElementById('regresar').style.display="none";
+	$(".filap2").remove();
   window.print(); 
   window.location="{{route('compras')}}";
     });
