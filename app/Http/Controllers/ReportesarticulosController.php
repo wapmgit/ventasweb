@@ -114,6 +114,36 @@ class ReportesarticulosController extends Controller
 			return view("reportes.mensajes.noautorizado");
 		}
 	}
+		public function listapreciosdesc(Request $request)
+    {  
+	//dd($request);
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();   
+		$rol=DB::table('roles')-> select('rlistap')->where('iduser','=',$request->user()->id)->first();	
+		if ($rol->rlistap==1){
+		if($request->get('searchText')){	
+		$desc=trim($request->get('descuento'));		
+        $lista=DB::table('articulos')
+		->select('nombre','unidad','stock','iva','apartado',DB::raw('(precio1*((100-'.$desc.')/100)) as precio1'),DB::raw('(precio2*((100-'.$desc.')/100)) as precio2'))
+		->where('stock','>',0)
+		->where('showlista','=',1)
+		->where('estado','=',"Activo")
+		->OrderBy('articulos.nombre')
+			->get();
+			
+			}else{
+			$lista=DB::table('articulos')
+		->where('stock','>',0)
+		->where('showlista','=',1)
+		->where('estado','=',"Activo")
+		->OrderBy('articulos.nombre')
+			->get();
+			}
+		return view('reportes.articulos.inventario.listapreciodesc',["lista"=>$lista,"empresa"=>$empresa,"valida"=>$request->get('searchText'),"descuento"=>$request->get('descuento')]);
+		}         
+		else { 
+			return view("reportes.mensajes.noautorizado");
+		}
+	}
 	public function cero(Request $request)
     {   
         $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
