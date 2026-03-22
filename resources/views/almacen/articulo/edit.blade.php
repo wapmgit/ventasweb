@@ -25,6 +25,8 @@
             			<label for="nombre">Nombre</label>
             			<input type="text" name="nombre" id="nombre" onchange="conMayusculas(this)"  required value="{{$articulo->nombre}}" class="form-control" placeholder="Nombre...">
             		<input type="hidden" name="id"  value="{{$articulo->idarticulo}}" class="form-control">
+            		<input type="hidden" id="relap"  value="{{$empresa->relaprecios}}" class="form-control">
+            		<input type="hidden" id="difpre"  value="{{$empresa->difpre}}" class="form-control">
 					</div>
             	</div>
           	<div class="col-lg-2 col-sm-2 col-md-6 col-xs-6">
@@ -320,6 +322,17 @@ function trunc (x, posiciones = 0) {
         var nv=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt));
 		nv=trunc(nv,2);
       $("#utilidad").val(parseFloat(nv));
+	  //
+	  var rela= $("#relap").val();
+	    if(rela==1){
+		var difpre= $("#difpre").val();
+			pre1= $("#precio1").val();
+		var    pre2=parseFloat((pre1*((difpre/100)+1))); 
+		pt=trunc(pre2,2);
+		$("#precio2").val(pt);
+		nutil2 =trunc((((pt-p32)/pt)*100),2)
+		  $("#util2").val(nutil2);
+		}
       }
         function reverso2(){
         var  p302 =0;  
