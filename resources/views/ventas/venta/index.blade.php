@@ -8,6 +8,17 @@
 		@include('ventas.venta.search')
 	</div>
 </div>
+    <?php
+// fecha actual
+$fecha_actual= date("Y/m/d");
+
+function dias_pasados($fecha_inicial,$fecha_final)
+{
+$dias = (strtotime($fecha_inicial)-strtotime($fecha_final))/86400;
+$dias = abs($dias); $dias = floor($dias);
+return $dias;
+}
+?>
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<div class="table-responsive">
@@ -24,6 +35,13 @@
                @foreach ($ventas as $ven)
                <?php 
 				$newdate=date("d-m-Y h:i:s a",strtotime($ven->fecha_hora));
+				
+			   	if($ven->saldo == 0){ $msg= "Pagado"; $color="background-color: #66DAF4";}else{
+						$diascre=((int)$ven->cliente->credito-dias_pasados($fecha_actual,$ven->fecha_hora));
+						if($diascre < 0){  $msg= "Vencido"; $color="background-color: #FF8A8A";}
+						if(($diascre >= 0)and($diascre > 3)){  $msg= "Vigente"; $color="background-color: #D7DBDD"; }
+						if(($diascre >= 0)and($diascre <= 3)){  $msg= "Por vencer"; $color="background-color: #FDDD5E";}						
+					}				
 					?>
 				<tr>
 					<td><small><small><?php echo $newdate; ?></small></small></td>
@@ -31,7 +49,7 @@
 					<td><small>{{ $ven->tipo_comprobante.':'.$ven->serie_comprobante.'-'.$ven->num_comprobante}} <?php if ($ven->flibre==1){ echo "*"; } ?></td>
 					<td>{{ $ven->total_venta}}</small></td>
 					<td><small>{{ $ven->user}}</small></td>
-					<td><small>{{ $ven->estado}}</small></td>
+					<td style="<?php echo $color; ?>"><small>{{ $ven->estado}} {{$msg}}</small></td>
 				
 					<td>
                   <div class="btn-group">
@@ -74,6 +92,7 @@
 $(document).ready(function(){
 	$(function () {
     $("#ventastable").DataTable({
+		 "bSort" : false,
 		"order":[0,'desc'],
 		"searching": true,
 		"bPaginate": false,

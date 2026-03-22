@@ -90,11 +90,8 @@ $this->middleware('auth');
 		}
 	public function store (Request $request)
     {
-		//dd($request);
 		$tipodoc=$request->get('tipodoc');
-		$user=Auth::user()->name;
-		//dd($tipodoc);
-			
+		$user=Auth::user()->name;			
 		if($tipodoc==1){
 			// inserta el recibo
 			$cliente=Ventas::findOrFail($request->get('venta'));

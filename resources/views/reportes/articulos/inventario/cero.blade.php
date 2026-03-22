@@ -26,7 +26,7 @@
                 <!-- /.col -->
 				<div class="col-sm-4 invoice-col">
 
-				  <h4>Articulos con Stock Minimo </h4>
+				  <h4>Articulos con Stock Minimo</h4>
               
 				</div>
               </div>
@@ -34,30 +34,32 @@
 
               <!-- Table row -->
               <div class="row" >
-                <div class="col-12 table-responsive" >
-					<table width="100%">
+                <div class="table-responsive" >
+					<table  id="arttable" width="100%" >
 						<thead style="background-color: #E6E6E6">
+						<th>#</th>
 						<th>Codigo</th>
 						<th>Nombre</th>
 						<th>Existencia</th>
 						<th>Minimo</th>
 						<th>Costo</th>
 					  <th>Iva</th>
-					  <th>Utilidad</th>
-					  <th>Precio 1</th>
-					   <th>Utilidad 2</th>
-					  <th>Precio 2</th>					
+					  <th>Util.</th>
+					  <th>Prec. 1</th>
+					   <th>Util. 2</th>
+					  <th>Prec. 2</th>					
 						</thead><?php $count=0; $costo=0;$costoacum=0; $precioacum=0;?>
 						@foreach ($lista as $q)
-						<?php $count++; 
-							if($q->stock <= $q->minimo){
+						<?php
+							if($q->stock <= $q->minimo){ $count++; 
 							$costoacum=$q->stock+$costoacum;
 							$costo=$costo+($q->costo*$q->stock);
 							$precioacum=$q->stock*$q->precio1+$precioacum;
 							?> 
 							<tr> 
+							<td>{{ $count}}</td>
 							<td>{{ $q->codigo}}</td>
-							<td>{{ $q->nombre}}</td>
+							<td><small>{{ $q->nombre}}</small></td>
 							<td>{{ $q->stock}}</td>
 							<td>{{ $q->minimo}}</td>
 							
@@ -70,16 +72,7 @@
 							</tr>
 							<?php } ?>
 						@endforeach
-							<tr style="background-color: #E6E6E6" >
-						  <td colspan="2"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
-						  <td></td>
-						  <td ></td>
-						  <td></td>
-						  <td></td>
-						  <td></td>
-						  <td></td>
-						  <td></td>     
-						  <td></td></tr>
+
 					</table>
 				</div>
 			</div>
@@ -94,16 +87,45 @@
 
 @push ('scripts')
 <script>
-$(document).ready(function(){
+$(document).ready(function(){ 
     $('#imprimir').click(function(){
-  //  alert ('si');
+  	$('#arttable').DataTable().destroy();
+
+// 2. Volvemos a inicializar con los cambios
+$("#arttable").DataTable({
+		"searching": false,
+		"bPaginate": false,
+		"bInfo":false,
+});
   document.getElementById('imprimir').style.display="none";
   window.print(); 
-  window.location="/reportes/inventario";
+  window.location="{{route('stockcero')}}";
     });
 
 });
-
+	$(function () {  
+	$("#arttable").DataTable({
+		"searching": false,
+		"bPaginate": false,
+		"bInfo":false,
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf",{
+            extend: 'print',
+            // La magia ocurre aquí:
+            exportOptions: {
+                // Esto asegura que solo se exporte el contenido de la tabla
+                // y no los elementos de la interfaz de DataTables
+                modifier: {
+                    page: 'all'
+                }
+            },
+            customize: function (win) {
+                // Esto remueve físicamente el contenedor de botones de la ventana de impresión
+                $(win.document.body).find('.dt-buttons').remove();
+            }
+        }, "colvis"]
+    }).buttons().container().appendTo('#arttable_wrapper .col-md-6:eq(0)');
+	});
 </script>
 
 @endpush

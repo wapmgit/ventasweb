@@ -43,8 +43,9 @@ return $insertar_ceros = $recibo.$numero;
                      
                           <th>Articulo</th>
                           <th>Cantidad</th>
-                          <th>Precio Compra</th>
+                          <th>Precio</th>
                           <th>Descuento</th>
+						   <th>Precio Compra</th>
                           <th>Neto</th>
                           <th>Subtotal</th>
                       </thead>
@@ -56,14 +57,15 @@ return $insertar_ceros = $recibo.$numero;
                           <td>{{$det->articulo}}</td>
                           <td>{{$det->cantidad}}</td>
                           <td><?php echo number_format( $det->precio_compra, 2,',','.'); ?></td>
-                          <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
-                           <td><?php echo number_format( $det->cantidad*$det->precio_compra, 2,',','.'); ?></td>
+                          <td><?php echo number_format( $det->descuento, 2,',','.'); ?></td>
+                          <td><?php echo number_format( $det->precio, 2,',','.'); ?></td>
+                           <td><?php echo number_format( $det->cantidad*$det->precio, 2,',','.'); ?></td>
                           <td><?php echo number_format( $det->subtotal, 2,',','.'); ?></td>
                         </tr>
                         @endforeach
                       </tbody> 
                       <tfoot>                    
-                          <th colspan="5">TOTAL:</th>
+                          <th colspan="6">TOTAL:</th>
                           <th ><h4 id="total"><b> <?php  echo number_format( $mo, 2,',','.'); ?> $</b></h4></th>
                           </tfoot>
                   </table>

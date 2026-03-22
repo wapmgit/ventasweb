@@ -177,12 +177,19 @@ class ReportesventasController extends Controller
 			->get();
 		//dd($impuestos);
         //datos devolucion     
-             $devolucion=DB::table('notasadm as d')
+             $detvol=DB::table('notasadm as d')
+			-> join('venta as ve','ve.idventa','=','d.iddocnc')
+			-> join('recibos as r','r.idventa','=','ve.idventa')
+            -> select('r.idbanco','r.referencia','r.idrecibo','d.idnota')
+			->where('ve.tipo_comprobante','=',"FAC")
+			->where('d.pordevolucion','=',1)
+            ->whereBetween('d.fecha', [$query, $query2])
+            ->get();
+			 $devolucion=DB::table('notasadm as d')
             -> select(DB::raw('sum(monto) as totaldev'))
 			->where('pordevolucion','=',1)
             ->whereBetween('fecha', [$query, $query2])
-            ->get();
-			//dd($devolucion);
+            ->first();
 			//cobros directos
 			$pagos=DB::table('recibos as re')
 			-> join('venta as v','v.idventa','=','re.idventa')
@@ -197,13 +204,16 @@ class ReportesventasController extends Controller
 			$cobranza=DB::table('recibos as re')
 			-> join('monedas as m','m.idmoneda','=','re.idpago')
 			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','m.sumcaja')
-            -> whereBetween('re.fecha', [$query, $query2])
+            -> whereBetween('re.fecharecibo', [$query, $query2])
 			-> where ('re.tiporecibo','=',"A")
 			-> groupby('re.idpago','re.idbanco')
             ->get();
 			$cobranzant=DB::table('recibos as re')
-			-> select('re.recibido','re.monto',DB::raw('DATEDIFF(re.fecha,re.fecharecibo) as dif'))
+			-> join('monedas as m','m.idmoneda','=','re.idpago')
+			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco')
             -> whereBetween('re.fecha', [$query, $query2])
+            -> where('re.fecharecibo','<',$query)
+			-> groupby('re.idpago','re.idbanco')
 			-> where ('re.tiporecibo','=',"A")
             ->get();
 			//dd($cobranzant);
@@ -258,8 +268,16 @@ class ReportesventasController extends Controller
 			->where('pordevolucion','=',1)
 		    -> where ('usuario','=',$user)
             ->whereBetween('d.fecha', [$query, $query2])
+            ->first();
+			    $detvol=DB::table('notasadm as d')
+			-> join('venta as ve','ve.idventa','=','d.iddocnc')
+			-> join('recibos as r','r.idventa','=','ve.idventa')
+            -> select('r.idbanco','r.referencia','r.idrecibo','d.idnota')
+			->where('ve.tipo_comprobante','=',"FAC")
+			 -> where ('d.usuario','=',$user)
+			->where('d.pordevolucion','=',1)
+            ->whereBetween('d.fecha', [$query, $query2])
             ->get();
-			//dd($devolucion);
 			//cobros directos
 			$pagos=DB::table('recibos as re')
 			-> join('venta as v','v.idventa','=','re.idventa')
@@ -277,16 +295,31 @@ class ReportesventasController extends Controller
 			-> join('monedas as m','m.idmoneda','=','re.idpago')
             -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago','m.sumcaja')
 			-> where ('re.usuario','=',$user)
+			  ->whereRaw('DATE(re.fecha) = DATE(re.fecharecibo)')
             -> whereBetween('re.fecha', [$query, $query2])
 			-> where ('re.tiporecibo','=',"A")
 			-> groupby('re.idpago','re.idbanco')
             ->get();
-			$cobranzant=DB::table('recibos as re')
-			-> select('re.recibido','re.monto',DB::raw('DATEDIFF(re.fecha,re.fecharecibo) as dif'))
-            -> where ('re.usuario','=',$user)
-			-> whereBetween('re.fecha', [$query, $query2])
-			-> where ('re.tiporecibo','=',"A")
-            ->get();
+
+	$cobranzant=DB::table('recibos as re')
+    ->join('monedas as m', 'm.idmoneda', '=', 're.idpago')
+    ->select(
+        're.idpago', 
+        'm.nombre as idbanco', 
+        DB::raw('SUM(re.monto) as monto'),
+        DB::raw('SUM(re.recibido) as recibido'),
+        DB::raw('COUNT(*) as cantidad_recibos')
+    )
+    // 1. Filtro de fechas diferentes (solo fecha, sin hora)
+    ->whereRaw('DATE(re.fecha) <> DATE(re.fecharecibo)')
+    
+    // 2. Filtros de rango y tipo
+    ->whereBetween('re.fecha', [$query, $query2])
+    ->where('re.tiporecibo', '=', 'A')
+      -> where ('re.usuario','=',$user)
+    // 3. Agrupación por el ID de pago
+    ->groupBy('re.idpago', 'm.nombre') 
+    ->get();
 			$papartado=DB::table('recibos as re')
             -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
 			-> where ('re.usuario','=',$user)
@@ -338,8 +371,15 @@ class ReportesventasController extends Controller
             -> select(DB::raw('sum(monto) as totaldev'))
 			->where('pordevolucion','=',1)
             ->whereBetween('fecha', [$query, $query2])
+            ->first();
+			$detvol=DB::table('notasadm as d')
+			-> join('venta as ve','ve.idventa','=','d.iddocnc')
+			-> join('recibos as r','r.idventa','=','ve.idventa')
+            -> select('r.idbanco','r.referencia','r.idrecibo','d.idnota')
+			->where('ve.tipo_comprobante','=',"FAC")
+			->where('d.pordevolucion','=',1)
+            ->whereBetween('d.fecha', [$query, $query2])
             ->get();
-			//dd($devolucion);
 			//cobros directos
 			$pagos=DB::table('recibos as re')
 			-> join('venta as v','v.idventa','=','re.idventa')
@@ -354,15 +394,31 @@ class ReportesventasController extends Controller
 			$cobranza=DB::table('recibos as re')
 			-> join('monedas as m','m.idmoneda','=','re.idpago')
 			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','m.sumcaja')
+			 ->whereRaw('DATE(re.fecha) = DATE(re.fecharecibo)')
             -> whereBetween('re.fecha', [$query, $query2])
 			-> where ('re.tiporecibo','=',"A")
 			-> groupby('re.idpago','re.idbanco')
             ->get();
 			$cobranzant=DB::table('recibos as re')
-			-> select('re.recibido','re.monto',DB::raw('DATEDIFF(re.fecha,re.fecharecibo) as dif'))
-			-> whereBetween('re.fecha', [$query, $query2])
-			-> where ('re.tiporecibo','=',"A")
-            ->get();
+    ->join('monedas as m', 'm.idmoneda', '=', 're.idpago')
+    ->select(
+        're.idpago', 
+        'm.nombre as idbanco', // Suponiendo que la tabla monedas tiene un nombre
+        DB::raw('SUM(re.monto) as monto'),
+        DB::raw('SUM(re.recibido) as recibido'),
+        DB::raw('COUNT(*) as cantidad_recibos')
+    )
+    // 1. Filtro de fechas diferentes (solo fecha, sin hora)
+    ->whereRaw('DATE(re.fecha) <> DATE(re.fecharecibo)')
+    
+    // 2. Filtros de rango y tipo
+    ->whereBetween('re.fecha', [$query, $query2])
+    ->where('re.tiporecibo', '=', 'A')
+    
+    // 3. Agrupación por el ID de pago
+    ->groupBy('re.idpago', 'm.nombre') 
+    ->get();
+	//dd($cobranzant);
 			$papartado=DB::table('recibos as re')
 			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco')
             -> whereBetween('re.fecha', [$query, $query2])
@@ -395,7 +451,7 @@ class ReportesventasController extends Controller
 	return view("reportes.mensajes.noautorizado");
 	}
 
-        return view('reportes.ventas.corte.index',["cobranzant"=>$cobranzant,"papartado"=>$papartado,"filtro"=>$filtro,"datos"=>$datos,"devolucion"=>$devolucion,"impuestos"=>$impuestos,"comision"=>$comisiones,"empresa"=>$empresa,"ingresos"=>$ingresos,"cobranza"=>$cobranza,"pagos"=>$pagos,"searchText"=>$query,"searchText2"=>$query2,"usuario"=>$usuario,"ingresosnd"=>$ingresosnd]);    
+        return view('reportes.ventas.corte.index',["detdevol"=>$detvol,"cobranzant"=>$cobranzant,"papartado"=>$papartado,"filtro"=>$filtro,"datos"=>$datos,"devolucion"=>$devolucion,"impuestos"=>$impuestos,"comision"=>$comisiones,"empresa"=>$empresa,"ingresos"=>$ingresos,"cobranza"=>$cobranza,"pagos"=>$pagos,"searchText"=>$query,"searchText2"=>$query2,"usuario"=>$usuario,"ingresosnd"=>$ingresosnd]);    
   }
   	public function cobranza(Request $request)
     {   
