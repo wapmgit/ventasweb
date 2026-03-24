@@ -62,7 +62,7 @@ $cefe=0;
         <?php $newdate=date("d-m-Y h:i:s a",strtotime($q->fecha_mov)); ?>
 		<tr >@include('reportes.banco.modal')
           <td><small><?php echo $newdate; ?></small></td> 
-        <td><small>{{ $q->descrip }}</small></td>
+        <td><small>{{ $q->descrip }} -> {{ $q->moneda }}</small></td>
         <td>{{ $q->concepto }}-> <a href="{{route('showrecibo',['id'=>$q->id_mov])}}"> <strong>{{ $q->numero}}</strong></a></td>  
           <td>	  
 		<?php 
@@ -83,7 +83,7 @@ echo number_format($credito, 2,',','.');
   
         @endforeach
    <tr><td></td><td></td><td></td><td>Total: <strong> <?php echo number_format($acumdebe, 2,',','.');?></strong></td>
-  <td>Total:<strong><?php echo number_format($acumhaber, 2,',','.');?></strong></td> <td><?php echo "<strong>".number_format($credito, 2,',','.')."</strong>"; ?> </td></tr>  
+  <td>Total: <strong><?php echo number_format($acumhaber, 2,',','.');?></strong></td> <td><?php echo "<strong>".number_format($credito, 2,',','.')."</strong>"; ?> </td></tr>  
       </table>
 
   </div>

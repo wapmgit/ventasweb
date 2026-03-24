@@ -38,7 +38,7 @@ $cefe=0;?>
 
                @foreach ($datos as $q)
         <tr >
-          <td>{{ $q->concepto }}</td> 
+          <td>{{ $q->concepto }} -> {{$q->moneda}}</td> 
 		      <td> {{$q->numero }}</td>
           <td>{{ $q->tipo_mov }}</td> 
           <td>{{ $q->cliente }}</td>

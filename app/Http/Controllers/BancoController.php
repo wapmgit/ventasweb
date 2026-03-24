@@ -407,7 +407,7 @@ class BancoController extends Controller
             $datos=DB::table('mov_ban as mb')
             ->join ('bancos as b', 'mb.idbanco','=','b.idbanco')
             ->join('ctascon as cta','mb.clasificador','=','cta.idcod')
-            ->select ('cta.descrip','b.nombre','mb.tipo_mov','mb.clasificador','mb.concepto','mb.numero','mb.monto','mb.fecha_mov','mb.user','mb.identificacion as cliente','mb.ced')              
+            ->select ('cta.descrip','b.nombre','mb.tipo_mov','mb.moneda','mb.clasificador','mb.concepto','mb.numero','mb.monto','mb.fecha_mov','mb.user','mb.identificacion as cliente','mb.ced')              
             ->where('mb.idbanco','=',$banco)
 			 ->where('mb.estatus','=',0)
             ->where('mb.clasificador','=',$clasi)

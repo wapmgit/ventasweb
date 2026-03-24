@@ -38,7 +38,11 @@
 						<?php $codempresa=$empresa->codigo; $tcosto= 0; $pventa=0; $pventaneta=0; $tutil=0; $tvn=0; $tcn=0; $tcant=0; $tpv=0;?>
 						@foreach ($datos as $q)  
 						<?php if ($codempresa==300){ $pventa=$q->precio; $pventaneta=$q->ventad; }
-						else{ $pventa=$q->precio_venta;  $pventaneta=$q->ventaneta;}?>						
+						else{ $pventa=$q->precio_venta;  $pventaneta=$q->ventaneta;}
+						if($empresa->utilpre1==1){
+						$pventa=$q->precioriginal; $pventaneta=$q->precioriginal*$q->cantidad; }
+						
+						?>						
 						<tr> 
 						  <td>{{ $q->tipo_comprobante.':'.$q->serie_comprobante.'-'.$q->num_comprobante}}</td>
 						  <td><?php $tcosto=$tcosto+$q->costo; echo number_format($q->costo, 2,',','.'); ?></td>
