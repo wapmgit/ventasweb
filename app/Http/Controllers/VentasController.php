@@ -52,10 +52,12 @@ class VentasController extends Controller
         'num_comprobante', 
         'total_venta', 
         'devolu', 
+        'saldo', 
+        'user', 
         'estado'
     )
     ->with(['cliente' => function($q) {
-        $q->select('id_cliente', 'nombre'); // Solo el ID y el nombre del cliente
+        $q->select('id_cliente', 'nombre','diascredito as credito'); // Solo el ID y el nombre del cliente
     }])
     ->where(function($q) use ($query) {
         $q->where('idventa', 'LIKE', '%' . $query . '%')
@@ -65,7 +67,7 @@ class VentasController extends Controller
     })
     ->orderBy('idventa', 'desc')
     ->paginate(50);
-     
+   //  dd($ventas);
      return view ('ventas.venta.index',["rol"=>$rol,"ventas"=>$ventas,"searchText"=>$query,"empresa"=>$empresa]);
         }
     }
@@ -80,7 +82,8 @@ class VentasController extends Controller
 		$categoria=DB::table('categoriaclientes')->get();	
 		$rutas=DB::table('rutas')->get();
        
-        $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev')
+        $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')
+		->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre')
 		-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->OrderBy('clientes.nombre','asc')->get();
          $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
       //dd($contador);
@@ -94,7 +97,8 @@ class VentasController extends Controller
 		//dd($articulos);
 		   $seriales =DB::table('seriales')->where('estatus','=',0)->get();
      if ($contador==""){$contador=0;}
-      return view("ventas.venta.create",["categoria"=>$categoria,"rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
+	 	$cxc=0;
+      return view("ventas.venta.create",["cxcc"=>$cxc,"categoria"=>$categoria,"rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
     } else { 
 	return view("reportes.mensajes.noautorizado");
 	}
@@ -175,7 +179,7 @@ class VentasController extends Controller
         // Lógica de Movimiento Bancario
         $moneda = Monedas::find($pago_id);
         if ($moneda && $moneda->idbanco > 0) {
-            $this->registrarMovimientoBancario($venta, $recibo, $moneda, $idcliente[0], $denomina[$contp]);
+            $this->registrarMovimientoBancario($venta, $recibo, $moneda, $idcliente[0], $denomina[$contp],$idbanco[$contp]);
         }
     }
 }
@@ -189,10 +193,12 @@ class VentasController extends Controller
 
         $cont = 0;
             while($cont < count($idarticulo)){
+			$articulo=Articulos::findOrFail($idarticulo[$cont]);
             $detalle=new DetalleVentas();
             $detalle->idventa=$venta->idventa;
             $detalle->idarticulo=$idarticulo[$cont];
             $detalle->costoarticulo=$costoarticulo[$cont];
+            $detalle->precioriginal=$articulo->precio1;
             $detalle->cantidad=$cantidad[$cont];
             $detalle->precio=$precio[$cont];
             $detalle->descuento=$descuento[$cont];
@@ -210,7 +216,6 @@ class VentasController extends Controller
 		$kar->user=$user;
 		 $kar->save();  
                       //actualizo stock   
-        $articulo=Articulos::findOrFail($idarticulo[$cont]);
         $articulo->stock=$articulo->stock-$cantidad[$cont];
         $articulo->update();
 			if ($request->has('pidserial') && is_array($request->get('pidserial'))) {
@@ -395,6 +400,7 @@ public function devolucion(Request $request){
 		$paciente->fecha=$mytime->toDateTimeString();
         $paciente->pendiente=$request->get('montonc');
         $paciente->pordevolucion=1;
+        $paciente->iddocnc=$request->get('idventa');
 		$paciente->usuario=Auth::user()->name;
         $paciente->save();
 			}      
@@ -675,7 +681,7 @@ public function nota2ds($id){
 		$paciente->creado=$mytime->toDateTimeString();
         $paciente->save();
 	// dd($paciente);
-	$personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.nombre','clientes.cedula','clientes.tipo_cliente','vendedores.comision','vendedores.id_vendedor as nombrev')-> where('clientes.cedula','=',$request->get('ccedula'))->get();
+	$personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.nombre','clientes.cedula','clientes.tipo_cliente','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre')-> where('clientes.cedula','=',$request->get('ccedula'))->get();
            return response()->json($personas);
 	}
     }
@@ -707,10 +713,11 @@ public function nota2ds($id){
 		if ($rol->crearventa==1){
 	     $monedas=DB::table('monedas')->get();
 		 $rutas=DB::table('rutas')->get();
+		 $categoria=DB::table('categoriaclientes')->get();	
 	     $vendedor=DB::table('vendedores')->get();
 		 $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
           if($rol->factsinexis==0){ $exi='0';}else{$exi='-10000';} 
-		 $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.nombre','clientes.cedula','clientes.tipo_cliente','vendedores.comision','vendedores.id_vendedor as nombrev')
+		 $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.nombre','clientes.cedula','clientes.tipo_cliente','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre')
          -> where('status','=','A')
 		 ->groupby('clientes.id_cliente')
          -> where ('id_cliente','=',$idcliente)
@@ -723,8 +730,16 @@ public function nota2ds($id){
         -> where ('art.stock','>',$exi)
         ->groupby('art.idarticulo')
         -> get();
+		  $cxcc=DB::table('venta as v')
+        ->select(DB::raw('SUM(v.saldo) as monto' ),'v.idcliente')
+        ->where('v.idcliente','=',$idcliente)
+        ->where('v.devolu','=',0)
+         ->groupby('v.idcliente')
+        -> first();
+		$cxc=$cxcc->monto;
+		//dd($cxc);
 		    $seriales =DB::table('seriales')->where('estatus','=',0)->get();
-     return view("ventas.venta.create",["rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"monedas"=>$monedas,"articulos"=>$articulos,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
+     return view("ventas.venta.create",["cxcc"=>$cxc,"categoria"=>$categoria,"rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"monedas"=>$monedas,"articulos"=>$articulos,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
 	    } else { 
 	return view("reportes.mensajes.noautorizado");
 	}
@@ -834,7 +849,7 @@ public function nota2ds($id){
     $ventaf->update();
     return Redirect::to('correlativof');
 }
-private function registrarMovimientoBancario($venta, $recibo, $moneda, $idCliente, $monto)
+private function registrarMovimientoBancario($venta, $recibo, $moneda, $idCliente, $monto, $tmoneda)
 {
     $mov = new MovBancos;
     $mov->idbanco = $moneda->idbanco;
@@ -845,6 +860,7 @@ private function registrarMovimientoBancario($venta, $recibo, $moneda, $idClient
     $mov->tipo_mov = "N/C";
     $mov->numero = "FAC-{$venta->idventa} Rec-{$recibo->idrecibo}";
     $mov->concepto = "Ventas";
+    $mov->moneda = $recibo->idbanco;
 	$mov->tipo_per="C";
     $mov->idbeneficiario = $idCliente;
     $mov->monto = $monto;

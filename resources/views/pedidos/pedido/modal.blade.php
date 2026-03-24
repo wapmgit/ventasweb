@@ -1,5 +1,5 @@
 <div class="modal fade modal-slide-in-right" aria-hidden="true"
-role="dialog" tabindex="-1" id="modal-{{$venta->idpedido}}">
+role="dialog" tabindex="-1" id="modalpedido">
 <form action="{{route('facpedido')}}" id="forimportar" method="POST" enctype="multipart/form-data" >         
         {{csrf_field()}}
 	<div class="modal-dialog modal-xl">
@@ -18,9 +18,9 @@ role="dialog" tabindex="-1" id="modal-{{$venta->idpedido}}">
 				<p>Confirma Convertir en factura el  Pedido {{$venta->idpedido}}?</p>
 				</div><div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
 				<label for="cliente">Cliente</label>
-                    	<select name="idcliente" id="idcliente" class="form-control selectpicker" data-live-search="true">						
+                    	<select name="id_cliente" id="id_cliente" class="form-control selectpicker" data-live-search="true">						
                            @foreach ($personas as $cli)
-                           <option value="{{$cli -> id_cliente}}" <?php if($cli -> id_cliente==$venta->idcliente){ echo "selected";} ?>>{{$cli -> cedula}}-{{$cli -> nombre}}</option> 
+                           <option value="{{$cli -> id_cliente}}_{{$cli->limitecre}}" <?php if($cli -> id_cliente==$venta->idcliente){ echo "selected";} ?>>{{$cli -> cedula}}-{{$cli -> nombre}}</option> 
                            @endforeach
                         </select>
 						</div>
@@ -136,7 +136,7 @@ role="dialog" tabindex="-1" id="modal-{{$venta->idpedido}}">
 					</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-				<button type="submit" id="sendpedido" class="btn btn-primary">Confirmar</button>
+				<button type="button" id="sendpedido" class="btn btn-primary">Confirmar</button>
 			</div>
 		</div>
 	</div>

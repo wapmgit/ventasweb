@@ -663,17 +663,17 @@ class ReportesventasController extends Controller
 				if ($resumen=="on"){    
 				$datos=DB::table('venta as v')
 				-> join('detalle_venta as dv','v.idventa','=','dv.idventa')
-				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante',DB::raw('avg(dv.costoarticulo) as costo'),DB::raw('avg(dv.precio) as precio'),DB::raw('avg(dv.precio_venta) as precio_venta'),DB::raw('sum(dv.cantidad) as cantidad'),DB::raw('sum(dv.cantidad*dv.costoarticulo) as costoneto'),DB::raw('sum(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('sum(dv.cantidad*dv.precio) as ventad'))
+				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante',DB::raw('avg(dv.costoarticulo) as costo'),DB::raw('avg(dv.precio) as precio'),DB::raw('avg(dv.precioriginal) as precioriginal'),DB::raw('avg(dv.precio_venta) as precio_venta'),DB::raw('sum(dv.cantidad) as cantidad'),DB::raw('sum(dv.cantidad*dv.costoarticulo) as costoneto'),DB::raw('sum(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('sum(dv.cantidad*dv.precio) as ventad'))
 				->where('v.devolu','=',0)
 				-> whereBetween('dv.fecha_emi', [$query, $query2])
 				-> Groupby('dv.idventa')      
 				->get();
-				//dd($datos);
+			
 				}else{
 				$datos=DB::table('venta as v')
 				-> join('detalle_venta as dv','v.idventa','=','dv.idventa')
 				-> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.total_venta','v.fecha_hora','a.idarticulo','dv.cantidad as cantidad','a.costo','a.iva','dv.precio','dv.precio_venta',DB::raw('(dv.cantidad * dv.costoarticulo) as costoneto'),DB::raw('(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('(dv.cantidad*dv.precio)as ventad'))  
+				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.total_venta','v.fecha_hora','a.idarticulo','dv.cantidad as cantidad','a.costo','a.iva','dv.precio','dv.precioriginal','dv.precio_venta',DB::raw('(dv.cantidad * dv.costoarticulo) as costoneto'),DB::raw('(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('(dv.cantidad*dv.precio)as ventad'))  
 				->where('v.devolu','=',0)
 				-> whereBetween('v.fecha_hora', [$query, $query2])
 				->get();

@@ -133,6 +133,7 @@ $this->middleware('auth');
 									$mov->tipo_mov="N/C";
 									$mov->numero="FAC-".$recibo->idventa." Rec-".$recibo->idrecibo;
 									$mov->concepto="Cobranza";
+									$mov->moneda=$idbanco[$contp];
 									$mov->idbeneficiario=$cliente->idcliente;	
 									$depcli=Clientes::findOrFail($cliente->idcliente);
 									$mov->identificacion=$depcli->nombre;
@@ -207,6 +208,7 @@ $this->middleware('auth');
 									$mov->tipo_mov="N/C";
 									$mov->numero="N/D-".$recibo->idnota."Rec-".$recibo->idrecibo;
 									$mov->concepto="Cobranza";
+									$mov->moneda=$idbanco[$contp];
 									$mov->idbeneficiario=$cliente->idcliente;	
 									$depcli=Clientes::findOrFail($cliente->idcliente);
 									$mov->identificacion=$depcli->nombre;
@@ -228,32 +230,35 @@ $this->middleware('auth');
     }
 	public function pagocxc(Request $request)
     {	
-		//dd($request);
+		///dd($request);
 		$moneda=explode("_",$request->get('pidpagomodal'));
 		$fac=$request->get('factura');
-		$saldo=$request->get('saldo'); 
+		$saldo=$request->get('saldo'); 		
 		$cont = 0;
         while($cont < count($fac)){
 			$venta=Ventas::findOrFail($fac[$cont]);
 			$venta->saldo=0;	
 			$venta->update();
-				
+			
+				if($moneda[1]==0){$recibe=$saldo[$cont];}
+				if($moneda[1]==1){$recibe=$saldo[$cont]*$moneda[2];}
+				if($moneda[1]==2){$recibe=$saldo[$cont]/$moneda[2];}
 				$recibo=new Recibos;
 				$recibo->idventa=$fac[$cont];
 				$recibo->tiporecibo="A";
 				$recibo->idnota=0;
 				$recibo->monto=$saldo[$cont];
 				$recibo->idpago=$moneda[0];
-				$recibo->idbanco=$moneda[1];
+				$recibo->idbanco=$moneda[3];
 				$recibo->id_banco=0;
-				$recibo->recibido=$saldo[$cont];			 
-				$recibo->referencia="";
+				$recibo->recibido=$recibe;			 
+				$recibo->referencia="Pago Total";
 				$recibo->tasap=0;
-				$recibo->tasab=0;
+				$recibo->tasab=$moneda[2];
 				$recibo->aux=0;
 				$mytime=Carbon::now('America/Caracas');			
 				$recibo->fecha=$mytime->toDateTimeString();
-				$recibo->fecharecibo=$fecha[$contp];
+				$recibo->fecharecibo=$mytime->toDateTimeString();
 				$recibo->usuario=Auth::user()->name;
 				$recibo->save();	
 					$mon=Monedas::findOrFail($recibo->idpago);
@@ -267,12 +272,13 @@ $this->middleware('auth');
 									$mov->tipo_mov="N/C";
 									$mov->numero="FAC-".$recibo->idventa." Rec-".$recibo->idrecibo;
 									$mov->concepto="Cobranza";
+									$mov->moneda=$moneda[3];
 									$mov->idbeneficiario=$venta->idcliente;	
 									$mov->identificacion="";
 									$mov->ced="";
 									$mov->tipo_per="C";
-									$mov->monto=$saldo[$cont];
-									$mov->tasadolar=0;
+									$mov->monto=$recibe;
+									$mov->tasadolar=$moneda[2];
 									$mytime=Carbon::now('America/Caracas');
 									$mov->fecha_mov=$mytime->toDateTimeString();	
 									$mov->user=Auth::user()->name;
@@ -292,10 +298,12 @@ $this->middleware('auth');
 			->orderBy('ve.idventa','asc')
             ->get();
 		$moneda=explode("_",$request->get('pidpagom'));
-		if($moneda[1]==1){$abono=$request->get('montom')/$moneda[2];}else{
-		$abono=$request->get('montom')*$moneda[2];}
-		//dd($abono);
 		$longitud = count($ventas);
+		
+		if($moneda[1]==1){$abono=$request->get('montom')/$moneda[2];}
+		if($moneda[1]==2){$abono=$request->get('montom')*$moneda[2];}
+		if($moneda[1]==0){$abono=$request->get('montom');}
+		
 		$array = array();
 			foreach($ventas as $t){
 			$arraycod[] = $t->cod;
@@ -305,7 +313,10 @@ $this->middleware('auth');
 			if($abono>0){
 			$monto=$abono-$mov->saldo;
 			$saldo=$mov->saldo;
-			if($monto>0){ 	
+			if($monto>0){
+				if($moneda[1]==0){$recibe=$saldo;}
+				if($moneda[1]==1){$recibe=$saldo*$moneda[2];}
+				if($moneda[1]==2){$recibe=$saldo/$moneda[2];}				
 				$mov->saldo=0;
 				$recibo=new Recibos;
 				$recibo->idventa=$arraycod[$i];
@@ -314,13 +325,10 @@ $this->middleware('auth');
 				$recibo->idpago=$moneda[0];
 				$recibo->idbanco=$request->get('nmoneda');		
 				$recibo->monto=$saldo;
-					if($moneda[1]==2){		
-					$recibe=$saldo/$moneda[2];}else{
-					$recibe=$saldo*$moneda[2];}
 				$recibo->recibido=$recibe;
 				$recibo->referencia="Pago Multiple";
 				 $recibo->id_banco=0;
-				 $recibo->tasab=0;
+				 $recibo->tasab=$moneda[2];
 				 $recibo->tasap=0;
 				$recibo->aux=0;
 				$mytime=Carbon::now('America/Caracas');
@@ -340,12 +348,13 @@ $this->middleware('auth');
 									$movb->tipo_mov="N/C";
 									$movb->numero="FAC-".$recibo->idventa." Rec-".$recibo->idrecibo;
 									$movb->concepto="Cobranza";
+									$movb->moneda="PMul. ".$request->get('nmoneda');
 									$movb->idbeneficiario=$mov->idcliente;	
 									$movb->identificacion="";
 									$movb->ced="";
 									$movb->tipo_per="C";
 									$movb->monto=$recibe;
-									$movb->tasadolar=0;
+									$movb->tasadolar=$moneda[2];
 									$mytime=Carbon::now('America/Caracas');
 									$movb->fecha_mov=$mytime->toDateTimeString();	
 									$movb->user=Auth::user()->name;
@@ -359,12 +368,13 @@ $this->middleware('auth');
             $recibo->idpago=$moneda[0];
             $recibo->idbanco=$request->get('nmoneda');			
 			$recibo->monto=$abono;
-				if($moneda[1]==2){		
-				$recibo->recibido=$abono/$moneda[2];}else{
-				$recibo->recibido=$abono*$moneda[2];}
+				if($moneda[1]==0){$recibe=$abono;}
+				if($moneda[1]==1){$recibe=$abono*$moneda[2];}
+				if($moneda[1]==2){$recibe=$abono/$moneda[2];}
             $recibo->referencia="Pago Multiple";
 			$recibo->id_banco=0;
-             $recibo->tasab=0;
+			$recibo->recibido=$recibe;
+             $recibo->tasab=$moneda[2];
 			 $recibo->tasap=0;
             $recibo->aux=0;
             $mytime=Carbon::now('America/Lima');
@@ -383,12 +393,13 @@ $this->middleware('auth');
 									$movb->tipo_mov="N/C";
 									$movb->numero="FAC-".$recibo->idventa." Rec-".$recibo->idrecibo;
 									$movb->concepto="Cobranza";
+									$movb->moneda="PMul. ".$request->get('nmoneda');
 									$movb->idbeneficiario=$mov->idcliente;	
 									$movb->identificacion="";
 									$movb->ced="";
 									$movb->tipo_per="C";
-									$movb->monto=$recibo->recibido;
-									$movb->tasadolar=0;
+									$movb->monto=$recibe;
+									$movb->tasadolar=$moneda[2];
 									$mytime=Carbon::now('America/Caracas');
 									$movb->fecha_mov=$mytime->toDateTimeString();	
 									$movb->user=Auth::user()->name;
@@ -525,7 +536,7 @@ $this->middleware('auth');
 	}
 	public function pagond(Request $request)
     {	
-	//dd($request);
+
 			$user=Auth::user()->name;
 		$moneda=explode("_",$request->get('pidpagomodaln'));
 		$fac=$request->get('nota');
@@ -565,6 +576,7 @@ $this->middleware('auth');
 									$mov->tipo_mov="N/C";
 									$mov->numero="N/D-".$recibo->idnota."Rec-".$recibo->idrecibo;
 									$mov->concepto="Cobranza";
+									$mov->moneda=$moneda[1];
 									$mov->idbeneficiario=$venta->idcliente;	
 									$mov->identificacion="";
 									$mov->ced="";

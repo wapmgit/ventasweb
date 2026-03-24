@@ -85,6 +85,9 @@ $(document).ready(function(){
 				$("#pmresta").val(pmrem/valort);   
 				}  				
     });
+	$('#send_am').click(function(){  
+				document.getElementById('send_am').style.display="none"; 
+			})
 });
 </script>
 @endpush

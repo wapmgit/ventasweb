@@ -142,7 +142,7 @@ public function show(Request $request,$id){
     $venta=DB::table('pedidos as pe')
     -> join ('clientes as p','pe.idcliente','=','p.id_cliente')
 	->join('vendedores as v','v.id_vendedor','=','pe.idvendedor')
-    -> select ('v.nombre as nombrev','pe.idcliente','pe.idpedido','pe.fecha_hora','p.nombre','p.telefono','p.cedula','p.direccion','p.tipo_precio','pe.tipo_comprobante','pe.serie_comprobante','pe.num_comprobante','pe.impuesto','pe.estado','pe.total_venta','pe.devolu')
+    -> select ('v.nombre as nombrev','pe.idcliente','pe.idpedido','pe.fecha_hora','p.nombre','p.telefono','p.cedula','p.direccion','p.tipo_precio','pe.tipo_comprobante','p.limitecre','pe.serie_comprobante','pe.num_comprobante','pe.impuesto','pe.estado','pe.total_venta','pe.devolu')
     ->where ('pe.idpedido','=',$id)
     -> first();
 
@@ -156,10 +156,15 @@ public function show(Request $request,$id){
 	-> where('art.estado','=',"Activo")
 	->groupby('art.idarticulo')
 	-> get();
-	$personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev')-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->get();
+	  $cxc=DB::table('venta as v')
+        ->select(DB::raw('SUM(v.saldo) as monto' ),'v.idcliente')
+        ->where('v.idcliente','=',$venta->idcliente)
+         ->groupby('v.idcliente')
+        -> first();
+	$personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre')-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->get();
 	$monedas=DB::table('monedas')->get();
 	//dd($personas);
-    return view("pedidos.pedido.show",["monedas"=>$monedas,"personas"=>$personas,"rol"=>$rol,"venta"=>$venta,"empresa"=>$empresa,"detalles"=>$detalles,"articulos"=>$articulos]);
+    return view("pedidos.pedido.show",["cxc"=>$cxc,"monedas"=>$monedas,"personas"=>$personas,"rol"=>$rol,"venta"=>$venta,"empresa"=>$empresa,"detalles"=>$detalles,"articulos"=>$articulos]);
 }
 	public function ajuste(Request $request){
 	//	dd($request);
@@ -205,7 +210,8 @@ public function show(Request $request,$id){
 		$dpedido->update();
 		//registro la venta
 		$venta=new Ventas;
-		$venta->idcliente=$dpedido->idcliente;
+		$idcliente=explode("_",$request->get('id_cliente'));
+		$venta->idcliente=$idcliente[0];
 		$venta->tipo_comprobante="FAC";
 		$venta->serie_comprobante=$dpedido->serie_comprobante;
 		$venta->control=$request->get('control');
@@ -282,7 +288,8 @@ public function show(Request $request,$id){
 									$mov->tipo_mov="N/C";
 									$mov->numero="FAC-".$recibo->idventa." Rec-".$recibo->idrecibo;
 									$mov->concepto="Ventas";
-									$mov->idbeneficiario=$request -> get('idcliente');	
+									$mov->moneda=$idbanco[$contp];
+									$mov->idbeneficiario=$idcliente[0];	
 									$mov->identificacion="";
 									$mov->ced="";
 									$mov->tipo_per="C";
@@ -310,12 +317,14 @@ public function show(Request $request,$id){
     $cont = 0;
         while($cont < count($idarticulo)){
 			if($cantidad[$cont]>0){
+		$articulo=Articulos::findOrFail($idarticulo[$cont]);
         $detalle=new DetalleVentas();
         $detalle->idventa=$venta->idventa;
         $detalle->idarticulo=$idarticulo[$cont];
         $detalle->costoarticulo=$costoarticulo[$cont];
         $detalle->cantidad=$cantidad[$cont];
 		$detalle->precio=$precio[$cont];
+		$detalle->precioriginal=$articulo->precio1;
         $detalle->descuento=$descuento[$cont];
         $detalle->precio_venta=$precio_venta[$cont];
          $detalle->fecha=$mytime->toDateTimeString();	
@@ -331,13 +340,12 @@ public function show(Request $request,$id){
     $kar->user=$user;
      $kar->save();  
                   //actualizo stock   
-    $articulo=Articulos::findOrFail($idarticulo[$cont]);
     $articulo->stock=$articulo->stock-$cantidad[$cont];
     $articulo->update();
         $cont=$cont+1;
         }
 		}
-		$cli=Clientes::findOrFail($request -> get('idcliente'));
+		$cli=Clientes::findOrFail($idcliente[0]);
         $cli->lastfact=$mytime->toDateTimeString();
         $cli->update();
         if($request->get('convertir')=="on"){

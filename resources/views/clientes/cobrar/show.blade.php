@@ -17,7 +17,7 @@ function truncar($numero, $digitos){
 	return intval($numero * $truncar) / $truncar;
 	} 
 ?>
-<?php $acum=0; $acum2=$aux=0;$auxn=0;$acumn=0;$acumf=0;$count=0; $count2=0; $contdoc=0; $montonc=0;$link="A"?>
+<?php $acum=0; $acum2=$aux=0;$auxn=0;$acumn=0;$acumf=0;$count=0; $count2=0; $contdoc=0; $montonc=0;$link="A"; $salpt=0; $cntpt=0; ?>
 <div class="row">
 	<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 		<h3>Detalles de Cuentas por Cobrar</h3>
@@ -122,7 +122,7 @@ function truncar($numero, $digitos){
 
 				 @include('clientes.cobrar.modalret')
 				@endforeach
-				@include('clientes.cobrar.modal')
+			
 				@include('clientes.cobrar.modaln')
 				<tr>
 					<td colspan="4">					
@@ -145,6 +145,7 @@ function truncar($numero, $digitos){
 					
 					</td>
 				</tr>
+					@include('clientes.cobrar.modal')
 			</table>
 		</div>
 	</div>
@@ -367,6 +368,28 @@ function truncar($numero, $digitos){
 			var nvap=$("#ntps").val();
 			$("#valortasap").val(nvap);
 			})
+			$('#btnpt').click(function(){  
+
+				document.getElementById('btnpt').style.display="none"; 
+			})
+			
+		$('#pidpagomodal').on("change",function(){
+			var datmoneda=$("#pidpagomodal").val();
+			var mntpt=$("#mntpt").val();
+			var mntptreal=$("#mntptreal").val();
+			 tm=datmoneda.split('_');
+		  tipomtp=tm[1];
+		  valortp=tm[2]; 
+		  if (tipomtp==0){ 
+				$("#mntpt").val(mntptreal); 			
+			}
+			if (tipomtp==1){ 
+				$("#mntpt").val((mntptreal*valortp).toFixed(2)); 			
+			}
+			if (tipomtp==2){   
+				$("#mntpt").val((mntptreal/valortp).toFixed(2));   
+				} 
+			})
 	});
 // calculo pago
 	function mediopago(){
@@ -527,6 +550,8 @@ var nv=$("#valor"+aux).val();
 var ndato=id+'_'+t+'_'+nv;	
 $("#vm"+aux).val(ndato);
 $("#vmm"+aux).val(ndato);
+$("#vmpt"+aux).val(ndato);
+alert('Monto Actualizado.');
 }
 </script>
 @endpush

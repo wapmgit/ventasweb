@@ -50,6 +50,7 @@ $idv=0;
 			<input type="hidden" value="{{$empresa->facfiscalcredito}}" id="faccredito" ></input>
 			<input type="hidden" value="{{$empresa->tasadif}}" id="tasadif" ></input>
 			<input type="hidden" value="{{$rol->factsinexis}}" id="factsinexis" ></input>
+			<input type="hidden" value="{{$empresa->claveauto}}" id="claveaut" ></input>
         </div>
 			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
 			<h4 id="nombrevendedor"></h4>
@@ -64,6 +65,7 @@ $idv=0;
 		</div>		
 			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12" align="center">	<label for="tipo_precio">Saldo </label> </br>
 			<span class="badge bg-yellow"><label id="cxc" style="font-size: 20px" >0</label></span>
+			<input type="hidden" value="{{$cxcc}}" id="cxccli" ></input>
 			</div>
 		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
 			<div class="small-box bg-green">
@@ -91,10 +93,11 @@ $idv=0;
 						<label for="cliente">Cliente <a href="" data-target="#modalcliente" data-toggle="modal"><span class="label label-success"> <i class="fa fa-fw  fa-user-plus "> </i></span></a></label><?php if($cntvend==0){ echo "<span class='text-danger'>Debe Registrar Cliente¡¡</span>";} ?>
                     	<select name="id_cliente" id="id_cliente" class="form-control selectpicker" data-live-search="true">						
                            @foreach ($personas as $per)
-                           <option value="{{$per -> id_cliente}}_{{$per -> tipo_precio}}_{{$per -> comision}}_{{$per -> nombrev}}_{{$per -> tipo_cliente}}">{{$per -> cedula}}-{{$per -> nombre}}</option> 
+                           <option value="{{$per -> id_cliente}}_{{$per -> tipo_precio}}_{{$per -> comision}}_{{$per -> nombrev}}_{{$per -> tipo_cliente}}_{{$per->limitecre}}">{{$per -> cedula}}-{{$per -> nombre}}</option> 
                            @endforeach
                         </select>
 						<input type="hidden" value="" id="tipocli" name="tipocli">
+						<input type="hidden" value="" id="limitcre" name="limitcre">
                     </div>
                 </div>
                 
@@ -280,7 +283,7 @@ $idv=0;
 						<div class="col-lg-4 ol-md-4 col-sm-12 col-xs-12" align="right">
 						<button type="button" class="btn btn-danger" id="regresar" data-dismiss="modal">Cancelar</button>
 						<input name="_token" value="{{ csrf_token() }}" type="hidden" ></input>
-						<button type="submit" id="procesa" class="btn btn-primary" ><u>P</u>rocesar</button>
+						<button type="button" id="procesa" class="btn btn-primary" ><u>P</u>rocesar</button>
 						<div style="display: none" id="loading">  <img src="{{asset('img/sistema/loading30.gif')}}"></div>
 				
 				</div>
@@ -303,6 +306,9 @@ $(document).ready(function(){
 		var comi= dato[2];
 		var vendedor= dato[3];
 		$("#tipocli").val(dato[4]);
+		$("#limitcre").val(dato[5]);
+		var ms=	$("#cxccli").val();
+		$("#cxc").html("$: " + parseFloat(ms).toFixed(2));
 		$("#comision").val(comi);
 		
 		$("#nvendedor").html("<strong>Vendedor:</strong> "+ vendedor);
@@ -360,17 +366,50 @@ $(document).ready(function(){
 	 $("#formulariocliente")[0].reset();
 	});
     $('#procesa').click(function(){	  
+		limit= $("#limitcre").val();
+		cxccli= $("#cxccli").val();
+		clave= $("#claveaut").val();
 		abono= $("#totala").val();
         tv= $("#total_venta").val();
+		rest= $("#resta").val();
 		var t1=parseFloat(abono);
-		if (t1==tv){ 
+		if(limit==0){ limit=parseFloat(rest)+parseFloat(cxccli)+1;}
+		if(rest <= 0){
 		document.getElementById('loading').style.display=""; 
 		document.getElementById('procesa').style.display="none"; 
 		document.getElementById('regresar').style.display="none"; 
-		}else{ 
-		document.getElementById('regresar').style.display="none"; 
-		document.getElementById('procesa').style.display="none"; 
+		document.getElementById('formventa').submit();
+		}else{
+			var valicxc=parseFloat(rest)+parseFloat(cxccli);
+		if (valicxc > limit){
+(async () => {
+  const { value: password } = await Swal.fire({
+    title: "Limite de Credito Excedido",
+    input: "password",
+    inputLabel: "Ingrese Clave de Autorizacion",
+    inputPlaceholder: "Ingrese Clave",
+    inputAttributes: {
+      maxlength: "15",
+      autocapitalize: "off",
+      autocorrect: "off"
+    }
+  });
+  if (password==clave) {
 		document.getElementById('loading').style.display=""; 
+		document.getElementById('procesa').style.display="none"; 
+		document.getElementById('regresar').style.display="none"; 
+		document.getElementById('formventa').submit(); 
+  } else {
+    Swal.fire('Clave Incorrecta');
+  }
+})();
+		}else{
+		document.getElementById('loading').style.display=""; 
+		document.getElementById('procesa').style.display="none"; 
+		document.getElementById('regresar').style.display="none"; 
+		document.getElementById('formventa').submit(); 
+
+		}
 		}
     })
     $('#guardar').click(function(){
@@ -452,8 +491,9 @@ $(document).ready(function(){
 		var idve=resultado[0].comision; 
 		var nv=resultado[0].nombrev; 
 		var tpc=resultado[0].tipo_cliente; 	
+		var limit=resultado[0].limitecre; 	
 			$("#id_cliente")
-			.append( '<option value="'+id+'_'+tp+'_'+idve+'_'+nv+'_'+tpc+'" selected >'+ced+'-'+nombre+'</option>')
+			.append( '<option value="'+id+'_'+tp+'_'+idve+'_'+nv+'_'+tpc+'_'+limit+'" selected >'+ced+'-'+nombre+'</option>')
 			.selectpicker('refresh');	
 			//$('.bootstrap-select .filter-option').text(ced+'-'+nombre)			
 			$('select[name=id_cliente]').change();
@@ -604,7 +644,8 @@ function trunc (x, posiciones = 0) {
 		  		rows=resultadoc.length; 			
 			if(rows>0){
 				var ms=resultadoc[0].monto.toFixed(2);
-        $("#cxc").html("$: " + ms);
+					$("#cxc").html("$: " + ms);
+					$("#cxccli").val(ms);
 			}else{ $("#cxc").html("$: 0");
 }
             });
@@ -617,6 +658,7 @@ function trunc (x, posiciones = 0) {
 		$("#vpedido").val(vendedor+'_'+comi);
 		$("#nvendedor").val(vendedor);
 		$("#tipocli").val(dato[4]);
+		$("#limitcre").val(dato[5]);
 		$("#nvendedor").html("Vendedor:"+vendedor);
 		if ($("#tipocli").val()==1){		
 		document.getElementById('procesa').style.display="none"; }else{document.getElementById('procesa').style.display=""; }

@@ -40,6 +40,9 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
 						</tr>
 						<tr><td>{{$venta->cedula}} -> {{$venta->nombre}}</td><td>{{$venta->telefono}}</td><td>{{$venta->direccion}}</td><td>{{$venta->tipo_comprobante}} <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); $tasa=$empresa->tc; ?></td><td width="20%">{{$venta->nombrev}}</td>
 							<input type="hidden" value="{{$venta->tipo_precio}}" name="tp" id="tp">
+							<input type="hidden" value="{{$venta->limitecre}}" name="limitcre" id="limitcre">
+							<input type="hidden" value="{{$cxc->monto}}" name="cxccli" id="cxccli">
+								<input type="hidden" value="{{$empresa->claveauto}}" id="claveaut" ></input>
 						</tr>
 					</table></br>
 				</div>
@@ -130,7 +133,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
                      <button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
 					@if($rol->importarpedido==1) 
 						<?php if($venta->devolu ==0){?>
-							<?php if ($auxf==0){?>    <a id="link" href="" data-target="#modal-{{$venta->idpedido}}" data-toggle="modal"><button class="btn btn-info btn-sm">Facturar</button></a><?php } else { echo "<font face='Arial' size='4' color='red'> <b>Verificar stock...</b> </font>";}?>
+							<?php if ($auxf==0){?>    <a id="link" href="" data-target="#modalpedido" data-toggle="modal"><button class="btn btn-info btn-sm">Facturar</button></a><?php } else { echo "<font face='Arial' size='4' color='red'> <b>Verificar stock...</b> </font>";}?>
 					<?php  } ?>
 					@endif
 					@include('pedidos.pedido.modal')
@@ -158,6 +161,7 @@ $(document).ready(function(){
 		$("#preferencia").focus();}
 	});
 	$("#pidpago").change(mediopago);
+	$("#id_cliente").change(mostrarcuenta);
 	$('#bt_pago').click(function(){		
 		agregarpago();
 	});
@@ -180,9 +184,7 @@ $(document).ready(function(){
 	$('#btnsubmit').click(function(){
 		document.getElementById('btnsubmit').style.display="none";
 		});	
-		$('#sendpedido').click(function(){
-		document.getElementById('sendpedido').style.display="none";
-		});
+
 	$('#btncerrar').click(function(){
       $("#pprecio_venta").val(0);
       $("#pf").val(0);
@@ -190,8 +192,50 @@ $(document).ready(function(){
       $("#pcantidad").val("1");
       $("#idarticulo").val(0);
 		});
+	$('#sendpedido').click(function(){	
+		limit= $("#limitcre").val();
+		cxccli= $("#cxccli").val();
+		clave= $("#claveaut").val();
+		abono= $("#totala").val();
+        tv= $("#total_venta").val();
+		rest= $("#resta").val();
+		var t1=parseFloat(abono);
+		if(limit==0){ limit=parseFloat(rest)+parseFloat(cxccli)+1;}
+		if(rest <= 0){
+		document.getElementById('sendpedido').style.display="none";
+		document.getElementById('forimportar').submit();
+		}else{
+			var valicxc=parseFloat(rest)+parseFloat(cxccli);
+		if (valicxc > limit){
+			$("#modalpedido").modal('hide');
+(async () => {
+  const { value: password } = await Swal.fire({
+    title: "Limite de Credito Excedido",
+    input: "password",
+    inputLabel: "Ingrese Clave de Autorizacion",
+    inputPlaceholder: "Ingrese Clave",
+    inputAttributes: {
+      maxlength: "15",
+      autocapitalize: "off",
+      autocorrect: "off"
+    }
+  });
+  if (password==clave) {
+document.getElementById('sendpedido').style.display="none";
+		document.getElementById('forimportar').submit();
+  } else {
+    Swal.fire('Clave Incorrecta');
+  }
+})();
+		}else{
+	document.getElementById('sendpedido').style.display="none";
+		document.getElementById('forimportar').submit();
 
+		}
+		}
 });
+});
+
  function mediopago(){
 	   	document.getElementById('bt_pago').style.display="";		
 	   var pesoresta =$("#resta").val();  
@@ -221,6 +265,28 @@ $(document).ready(function(){
 				$("#pmonto").attr('placeholder','Monto '+moneda);
 		t_pago=$("#pidpago").val();	   
     }
+		function mostrarcuenta(){ 
+		
+		dato=document.getElementById('id_cliente').value.split('_');
+
+		var limi= dato[1];
+		$("#limitcre").val(limi);
+		
+			var formc= $('#forimportar');
+			var urlc = '{{route("ventacxc")}}';
+			var datac = formc.serialize();
+    $.post(urlc,datac,function(result){  
+      var resultadoc=result;
+          console.log(resultadoc);
+		  		rows=resultadoc.length; 			
+			if(rows>0){
+				var ms=resultadoc[0].monto.toFixed(2);
+					$("#cxccli").val(ms);
+			}else{ $("#cxccli").val(0);
+			}
+            });
+		}
+	   var cli=$("#id_cliente").val();
 	var pagototal=0;
 	acumpago=[];var contp=0; var tresta=0;
 	function agregarpago(){ 
