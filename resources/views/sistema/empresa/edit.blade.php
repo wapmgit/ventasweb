@@ -248,7 +248,10 @@
                     </td>
 				</tr>
 				<tr>
-                    <td>Formato Para Etiquetas de Articulos
+                    <td>Formato Para Etiquetas de Articulos</br>
+					<label for="precio1"> P 1 </label> <input name="precioeti" type="radio" value="precio1" <?php if($empresa->precioeti=="precio1"){ echo "checked='checked'";} ?>>
+				<label for="precio2"> P 2 </label> <input name="precioeti" type="radio" value="precio2" <?php if($empresa->precioeti=="precio2"){ echo "checked='checked'";} ?>>
+				<label for="precio3"> P 3 </label> <input name="precioeti" type="radio" value="precio3" <?php if($empresa->precioeti=="precio3"){ echo "checked='checked'";} ?>>
 					</div></td>     
                     <td>
 						<div class="form-group">
