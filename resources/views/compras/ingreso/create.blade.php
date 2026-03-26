@@ -465,9 +465,9 @@ $("#guardar").hide();
         descuento=$("#pprecio_venta").val();
 		pdesc=((100-descuento)/100);
 		if(descuento>0){
-		precondesc= trunc((precio_compra*pdesc),3);
+		precondesc= trunc((precio_compra*pdesc),8);
 		precio=precondesc; }else{
-			precio= trunc((precio_compra),3);
+			precio= trunc((precio_compra),8);
 		}
 		
         precio_tasa=(precio*$("#vtasa").val());
