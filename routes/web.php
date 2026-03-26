@@ -236,6 +236,7 @@ Route::get('certificado/{id}', [ReportescomprasController::class, 'certificado']
 Route::get('reportecxp', [ReportescomprasController::class, 'cuentaspagar'])->name('reportecxp');
 Route::get('detallegresos', [ReportescomprasController::class, 'pagos'])->name('detallegresos');
 Route::get('comprasarticulo', [ReportescomprasController::class, 'comprasarticulo'])->name('comprasarticulo');
+Route::get('reportecxpvencida', [ReportescomprasController::class, 'reportecxpvencida'])->name('reportecxpvencida');
 Route::get('comprasproveedor', [ReportescomprasController::class, 'comprasproveedor'])->name('comprasproveedor');
 Route::get('librocompras', [ReportescomprasController::class, 'libroc'])->name('librocompras');
 Route::get('repseriales', [ReportescomprasController::class, 'seriales'])->name('repseriales');

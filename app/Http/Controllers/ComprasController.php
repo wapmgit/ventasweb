@@ -89,6 +89,8 @@ class ComprasController extends Controller
 	else { $ingreso->saldo=$request->get('tdeuda');}
     if ($ingreso->saldo > 0){
     $ingreso->condicion='Credito';} else { $ingreso->condicion='Contado';}
+    $ingreso->nota=$request->get('nota');
+    $ingreso->diascre=$request->get('diascre');
     $ingreso->tasa=$request->get('tasacompra');
     $ingreso->user=$user;
     $ingreso-> save();	
@@ -255,7 +257,7 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 			-> where('idcompra','=',$id)->get();
 		$ingreso=DB::table('compras as i')
 			-> join ('proveedores as p','i.idproveedor','=','p.idproveedor')
-			-> select ('i.idcompra as idingreso','i.fecha_hora','i.total','p.nombre','p.telefono','rif','direccion','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion as estado','i.base','i.miva','i.exento','i.estatus','i.idproveedor','i.saldo')
+			-> select ('i.idcompra as idingreso','i.fecha_hora','i.condicion','i.total','p.nombre','p.telefono','rif','direccion','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion as estado','i.base','i.miva','i.exento','i.estatus','i.idproveedor','i.saldo','i.nota')
 			->where ('i.idcompra','=',$id)
 			-> first();
 

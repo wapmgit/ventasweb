@@ -376,4 +376,98 @@ class ReportescomprasController extends Controller
 			$query2=date("Y-m-d",strtotime($query2."- 1 days"));
 			return view('reportes.compras.comprasproveedor.index',["filtro"=>$filtro,"listap"=>$listap,"datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);
     }
+		public function reportecxpvencida(Request $request)
+ {
+	 //dd($request);
+		$rol=DB::table('roles')-> select('rvencicobro')->where('iduser','=',$request->user()->id)->first();	
+		if ($rol->rvencicobro==1){
+		$proveedores=DB::table('proveedores')->get();  
+        $corteHoy = date("Y-m-d");
+        $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		
+			$datos=DB::table('compras as c')
+			->join('proveedores as p','p.idproveedor','=','c.idproveedor')
+			->select('c.saldo as acumulado','c.total as total_venta','c.idcompra as tipo_comprobante','serie_comprobante','num_comprobante','c.emision as fecha_hora','c.user','p.nombre','c.diascre as diascre','p.rif as cedula','p.telefono','p.idproveedor as id_cliente')
+			->where('c.saldo','>',0)
+			->where('c.estatus','=',0)
+			->orderby('p.nombre','ASC')
+			->get();
+			$notasnd=DB::table('notasadmp as not')
+			->join('proveedores as c','c.idproveedor','=','not.idproveedor')
+			->select('not.pendiente as tnotas','not.monto','c.idproveedor as id_cliente','c.nombre','not.idnota','c.rif as cedula','not.fecha','c.telefono')
+			->where('not.tipo','=',1)
+			->where('not.pendiente','>',0)			
+			->get();
+			$nc=DB::table('notasadmp as not')
+			->join('proveedores as c','c.idproveedor','=','not.idproveedor')
+			->select(DB::raw('SUM(not.pendiente) as tnc'),'c.idproveedor as id_cliente')
+			->where('not.tipo','=',2)
+			->where('not.pendiente','>',0)					
+			->groupby('c.idproveedor')
+			->get();
+			$nvendedor="";
+			
+		if($request->get('opcion')>0){	
+			if($request->get('opcion')==1){		
+			$vende=DB::table('proveedores')->where('idproveedor','=',$request->get('vendedor'))->first();  
+			$nvendedor=$vende->nombre;
+			$datos=DB::table('compras as c')
+			->join('proveedores as p','p.idproveedor','=','c.idproveedor')
+			->select('c.saldo as acumulado','c.total as total_venta','c.idcompra as tipo_comprobante','serie_comprobante','num_comprobante','c.emision as fecha_hora','c.user','p.nombre','c.diascre as diascre','p.rif as cedula','p.telefono','p.idproveedor as id_cliente')
+			->where('c.idproveedor','=',$request->get('vendedor'))
+			->where('c.saldo','>',0)
+			->where('c.estatus','=',0)
+			->orderby('p.nombre','ASC')
+			->get();
+			$notasnd=DB::table('notasadmp as not')
+			->join('proveedores as c','c.idproveedor','=','not.idproveedor')
+			->select('not.pendiente as tnotas','not.monto','c.idproveedor as id_cliente','c.nombre','not.idnota','c.rif as cedula','not.fecha','c.telefono')
+			->where('c.idproveedor','=',$request->get('vendedor'))
+			->where('not.tipo','=',1)
+			->where('not.pendiente','>',0)			
+			->get();
+		$nc=DB::table('notasadmp as not')
+			->join('proveedores as c','c.idproveedor','=','not.idproveedor')
+			->select(DB::raw('SUM(not.pendiente) as tnc'),'c.idproveedor as id_cliente')
+			->where('c.idproveedor','=',$request->get('vendedor'))
+			->where('not.tipo','=',2)
+			->where('not.pendiente','>',0)					
+			->groupby('c.idproveedor')
+			->get();			
+			}
+		if($request->get('opcion')==2){ 
+				$nvendedor="Todos los Proveedores";
+			$fechaActual = now()->format('Y-m-d'); // 2026-03-25
+
+	$datos = DB::table('compras as c')
+    ->join('proveedores as p', 'p.idproveedor', '=', 'c.idproveedor')
+    ->select('c.saldo as acumulado', 'c.total as total_venta', 'c.idcompra as tipo_comprobante', 'serie_comprobante', 'num_comprobante', 'c.emision as fecha_hora', 'c.user', 'p.nombre', 'c.diascre', 'p.rif as cedula', 'p.telefono', 'p.idproveedor as id_cliente')
+    ->where('c.saldo', '>', 0)
+    ->where('c.estatus', '=', 0)
+    // FILTRO DE VENCIMIENTO: emision + diascre < hoy
+    ->whereRaw('DATE_ADD(c.emision, INTERVAL c.diascre DAY) < ?', [$fechaActual])
+    ->orderby('p.nombre', 'ASC')
+    ->get();
+	$notasnd=DB::table('notasadmp as not')
+			->join('proveedores as c','c.idproveedor','=','not.idproveedor')
+			->select('not.pendiente as tnotas','not.monto','c.idproveedor as id_cliente','c.nombre','not.idnota','c.rif as cedula','not.fecha','c.telefono')
+			->where('not.tipo','=',1)
+			->where('not.pendiente','>',0)			
+			->get();
+			$nc=DB::table('notasadmp as not')
+			->join('proveedores as c','c.idproveedor','=','not.idproveedor')
+			->select(DB::raw('SUM(not.pendiente) as tnc'),'c.idproveedor as id_cliente')
+			->where('not.tipo','=',2)
+			->where('not.pendiente','>',0)					
+			->groupby('c.idproveedor')
+			->get();
+			}
+			   }
+
+			return view('reportes.compras.venci_pago.index',["proveedores"=>$proveedores,"persona"=>$nvendedor,"datos"=>$datos,"notasnd"=>$notasnd,"nc"=>$nc,"empresa"=>$empresa,"opc"=>$request->get('opcion')]);
+       	}
+		else { 
+	return view("reportes.mensajes.noautorizado");
+	}     
+    }
 }

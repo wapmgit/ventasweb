@@ -254,7 +254,7 @@ $this->middleware('auth');
         -> where('idcompra','=',$id)->get();	
 		$ingreso=DB::table('compras as i')
             -> join ('proveedores as p','i.idproveedor','=','p.idproveedor')
-            -> select ('i.idcompra as idingreso','i.idproveedor','i.fecha_hora','i.total','p.nombre','rif','p.telefono','direccion','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion as estado','i.base','i.miva','i.exento','i.estatus')
+            -> select ('i.idcompra as idingreso','i.idproveedor','i.fecha_hora','i.total','i.condicion','i.diascre','p.nombre','rif','p.telefono','direccion','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion as estado','i.base','i.miva','i.exento','i.estatus','i.nota')
             ->where ('i.idcompra','=',$id)
             -> first();
 
@@ -271,7 +271,6 @@ $this->middleware('auth');
 	}
 	public function pago(Request $request)
     {	
-	//dd($request);
 		$moneda=explode("_",$request->get('pidpagomodal'));
 		$fac=$request->get('factura');
 		$saldo=$request->get('saldo'); 
