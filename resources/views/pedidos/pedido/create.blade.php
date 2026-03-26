@@ -308,8 +308,9 @@ $(document).ready(function(){
 		var idve=resultado[0].comision; 
 		var nv=resultado[0].nombrev; 
 		var tpc=resultado[0].tipo_cliente; 	
+		var limit=resultado[0].limitecre; 
 			$("#id_cliente")
-			.append( '<option value="'+id+'_'+tp+'_'+idve+'_'+nv+'_'+tpc+'" selected >'+ced+'-'+nombre+'</option>')
+			.append( '<option value="'+id+'_'+tp+'_'+idve+'_'+nv+'_'+tpc+'_'+limit+'" selected >'+ced+'-'+nombre+'</option>')
 			.selectpicker('refresh');	
 			//$('.bootstrap-select .filter-option').text(ced+'-'+nombre)			
 			$('select[name=id_cliente]').change();
@@ -413,9 +414,10 @@ function trunc (x, posiciones = 0) {
 		  		rows=resultadoc.length; 			
 			if(rows>0){
 				var ms=resultadoc[0].monto.toFixed(2);
-        $("#cxc").html("$: " + ms);
+					$("#cxc").html("$: " + ms);
+					$("#cxccli").val(ms);
 			}else{ $("#cxc").html("$: 0");
-}
+			}
             });
        //alert();
 	   var cli=$("#id_cliente").val();
