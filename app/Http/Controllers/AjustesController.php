@@ -43,9 +43,11 @@ class AjustesController extends Controller
 			$contador=DB::table('articulos')->select('idarticulo')->limit('1')->orderby('idarticulo','desc')->first();		
 			$categorias=DB::table('categoria')->where('condicion','=','1')->get();
 			$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
+		if ($empresa->orderart==1){$order="art.nombre";}else{$order="art.idarticulo";}
 			$articulos =DB::table('articulos as art')
 			-> select(DB::raw('CONCAT(art.codigo,"-",art.nombre," - ",art.stock," - ",art.costo,"-",art.iva) as articulo'),'art.idarticulo','art.stock','art.costo','art.fraccion')
 			-> where('art.estado','=','Activo')
+			 ->OrderBy($order,'asc')
 			-> get();
 			//dd($contador->idarticulo);
 			return view("compras.ajuste.create",["cnt"=>$contador,"rol"=>$rol,"articulos"=>$articulos,"empresa"=>$empresa,"categorias"=>$categorias]);
@@ -208,7 +210,6 @@ class AjustesController extends Controller
             -> select('a.nombre as articulo','a.precio1','a.codigo')
             -> where ('d.idajuste','=',$id)
             ->get();
-		//dd($detalles);
-            return view("compras.ajuste.etiquetas",["empresa"=>$empresa,"detalles"=>$detalles]);
+            return view("compras.ajuste.".$empresa->formatoeti,["empresa"=>$empresa,"detalles"=>$detalles]);
 	}
 }

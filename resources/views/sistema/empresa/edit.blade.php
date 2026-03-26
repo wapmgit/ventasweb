@@ -248,6 +248,19 @@
                     </td>
 				</tr>
 				<tr>
+                    <td>Formato Para Etiquetas de Articulos
+					</div></td>     
+                    <td>
+						<div class="form-group">
+							<select name="formatoeti" class="form-control">
+							<option value="etiquetas" <?php if($empresa->formatoeti=="etiquetas"){ echo "Selected";} ?>>formato 1</option>
+							<option value="etiquetas2" <?php if($empresa->formatoeti=="etiquetas2"){ echo "Selected";} ?>>formato 2</option>							
+							</select>
+										
+						</div>
+                    </td>
+				</tr>
+				<tr>
                     <td>¿Permitir Facturacion fiscal de ventas a credito?</td>
                  
                     <td class="text-right py-0 align-middle">

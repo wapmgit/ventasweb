@@ -279,7 +279,7 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
             -> select('a.nombre as articulo','a.precio1','a.codigo')
             -> where ('d.idcompra','=',$id)
             ->get();
-            return view("compras.ingreso.etiquetas",["empresa"=>$empresa,"detalles"=>$detalles]);
+            return view("compras.ingreso.".$empresa->formatoeti,["empresa"=>$empresa,"detalles"=>$detalles]);
 	}
 	public function actuartic(Request $request)
     {

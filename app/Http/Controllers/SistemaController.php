@@ -264,6 +264,7 @@ class SistemaController extends Controller
         $emp->tasadif=$request->get('tasadif');
         $emp->formatofac=$request->get('formato');
         $emp->formatolp=$request->get('formatolp');
+        $emp->formatoeti=$request->get('formatoeti');
         $emp->calc_util=$request->get('calc_util');
         $emp->nlineas=$request->get('nlineas');
         $emp->claveauto=$request->get('claveauto');
