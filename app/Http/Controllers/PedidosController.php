@@ -161,6 +161,7 @@ public function show(Request $request,$id){
         ->where('v.idcliente','=',$venta->idcliente)
          ->groupby('v.idcliente')
         -> first();
+		
 	$personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre')-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->get();
 	$monedas=DB::table('monedas')->get();
 	//dd($personas);

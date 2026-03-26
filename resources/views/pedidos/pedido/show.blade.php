@@ -16,7 +16,10 @@ function truncar($numero, $digitos)
     $truncar = 10**$digitos;
     return intval($numero * $truncar) / $truncar;
 }
-$tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
+$tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;$cxccli=0;
+if (is_null($cxc)) {
+    $cxccli=0;
+}else{ $cxccli= $cxc->monto; }
 ?>
             <div class="invoice p-3 mb-3">
               <!-- title row -->
@@ -41,7 +44,7 @@ $tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;
 						<tr><td>{{$venta->cedula}} -> {{$venta->nombre}}</td><td>{{$venta->telefono}}</td><td>{{$venta->direccion}}</td><td>{{$venta->tipo_comprobante}} <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); $tasa=$empresa->tc; ?></td><td width="20%">{{$venta->nombrev}}</td>
 							<input type="hidden" value="{{$venta->tipo_precio}}" name="tp" id="tp">
 							<input type="hidden" value="{{$venta->limitecre}}" name="limitcre" id="limitcre">
-							<input type="hidden" value="{{$cxc->monto}}" name="cxccli" id="cxccli">
+							<input type="hidden" value="{{$cxccli}}" name="cxccli" id="cxccli">
 								<input type="hidden" value="{{$empresa->claveauto}}" id="claveaut" ></input>
 						</tr>
 					</table></br>
