@@ -477,6 +477,12 @@
                   <p>Cuentas por Pagar</p>
                 </a>
               </li>
+			<li class="nav-item">
+                <a href="{{route('reportecxpvencida')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Vencimiento de Pagos</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a href="{{route('detallegresos')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>

@@ -10,11 +10,10 @@
                 <!-- /.col -->
 	<div class="col-sm-4 invoice-col">
 
-				  <h4>Reporte de Vencimientos por Cobro</h4>
+				  <h4>Reporte de Vencimientos de Pagos</h4>
 			<?php echo "al ".$fecha_actual;
-				if (($opc)==1){ echo "</br> Vendedor: ".$persona; }
-				if (($opc)==2){ echo "</br> Cliente: ".$persona; }
-				if (($opc)==3){ echo "</br> Cliente: ".$persona; }
+				if (($opc)==1){ echo "</br> Proveedor: ".$persona; }
+				if (($opc)==2){ echo "</br> ".$persona; }
 				
 				?>
 	</div>

@@ -28,7 +28,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 	<form action="{{route('guardarcompra')}}" method="POST" enctype="multipart/form-data" >         
         {{csrf_field()}}
             <div class="row" id="proveedor" >
-                <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
+                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
                     <div class="form-group">
 						<input type="hidden" value="{{$empresa->tc}}" id="valortasa" name="tc" class="form-control">
 						<input type="hidden" value="{{$empresa->peso}}" id="valortasap" name="peso" class="form-control">
@@ -64,21 +64,35 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
                     <input type="text" name="serie_comprobante" maxlength="15" value="{{old('serie_comprobante')}}" class="form-control"placeholder="Numero del Documento" > 
                 </div>
 				</div>
-				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                 <div class="form-group">
                     <label for="num_comprobante">Numero Control</label>
                     <input type="text" required name="num_comprobante" maxlength="15" id="num_comprobante" value="{{old('num_comprobante')}}" class="form-control" placeholder="Numero de Control">
                 </div>
 				
 				</div>
-			     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+			     	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                 <div class="form-group">
                     <label for="num_comprobante">Compra: 
 					<input name="precio" type="radio" id="cbs" value="2">Bs
 					<input name="precio" type="radio" id="dls" value="1" checked="checked">$ 
-					Tasa Cambio</label>
+					Tasa </label>
                     <input type="number" name="tasacompra" step="any" id="tasacompra" readonly value="{{$empresa->tc}}"  class="form-control">
                 </div>
+				</div>
+	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                <div class="form-group">
+                    <label for="num_comprobante">Dias Credito</label>
+                    <input type="number" required name="diascre"   value="0" class="form-control" >
+                </div>
+				
+				</div>
+			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                <div class="form-group">
+                    <label for="num_comprobante">Observacion</label>
+                    <input type="text"  name="nota" maxlength="200"  value="" class="form-control" placeholder="Observacion...">
+                </div>
+				
 				</div>
             </div>  
             <div class ="row" id="divarticulos">       

@@ -29,13 +29,13 @@ return $insertar_ceros = $recibo.$numero;
 	<div class ="row">
 		<div class="panel panel-primary">
 		<div class="panel-body">   
-		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			<table width="100%"><tr><td width="30%"><strong>Rif -> Proveedor</strong></td><td width="20%"><strong>Telefono</strong></td><td width="30%"><strong>Direccion</strong></td><td width="20%"><strong>Documento</strong></td>
-			</tr>
-			<tr><td>{{$ingreso->rif}} -> {{$ingreso->nombre}} </td><td>{{$ingreso->telefono}}</td><td>{{$ingreso->direccion}}</td><td>{{$ingreso->tipo_comprobante}} {{$ingreso->num_comprobante}} {{$ingreso->serie_comprobante}} </td>
-			</tr>
-			</table></br>
-		</div>				
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">		
+	<table width="100%" border="1">
+	<tr><td><small><b>DOCUMENTO: </small></b> {{$ingreso->tipo_comprobante}} {{$ingreso->num_comprobante}} {{$ingreso->serie_comprobante}} </td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo " ".date("d-m-Y",strtotime($ingreso->fecha_hora)); ?></td><td><small><b>CONDICION: </small></b>{{$ingreso->condicion}}<?php if($ingreso->condicion=="Credito"){ echo "(".$ingreso->diascre.") dias";}?></td></tr>
+	<tr><td colspan="4"><small><b>PROVEEDOR: </b> </small> {{$ingreso->nombre}}  <b>RIF: </b> {{$ingreso->rif}}</td></tr>
+	<tr><td colspan="4"  width="50%"><small><b>DOMICILIO FISCAL: </b> {{$ingreso->direccion}} </small><b>TELF: </b> {{$ingreso->telefono}}</td></tr>
+	</table></br>
+	</div>			
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="table-responsive">
                   <table id="detalles" width="100%">
@@ -79,6 +79,7 @@ return $insertar_ceros = $recibo.$numero;
 						<strong>    Exento: </strong><?php echo number_format( $ingreso->exento, 2,',','.'); ?>
 						</th>
 					</table>
+					<label>Nota: </label><span> {{$ingreso->nota}}</span>	
 				  </div>
     
         </div>
