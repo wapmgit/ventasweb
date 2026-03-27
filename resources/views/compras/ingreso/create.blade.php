@@ -328,12 +328,10 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 			})
 			$('#cbs').click(function(){
 			 auxcompra=1;
-			//	alert(auxcompra);
 				$('#tasacompra').attr("readonly",false);
 			})
 				$('#dls').click(function(){
 			 auxcompra=0;
-				//alert(auxcompra);
 				$('#tasacompra').attr("readonly",true);
 			})
 
@@ -520,6 +518,7 @@ $("#guardar").hide();
         }
     }
 	    function agregarbs(){ 	
+		var precio=0;
 		tasacompra=$('#tasacompra').val();
         idarticulo=$("#pidarticulo").val();
         articulo= $("#pidarticulo option:selected").text();
@@ -529,6 +528,13 @@ $("#guardar").hide();
         precio_venta=($("#pprecio_venta").val()/tasacompra);
         precio_tasa=(precio_compra*tasacompra);
 		precio_tasa=precio_tasa.toFixed(2);
+		 descuento=$("#pprecio_venta").val();
+		pdesc=((100-descuento)/100);
+		if(descuento>0){
+		precondesc= trunc((precio_compra*pdesc),8);
+		precio=precondesc; }else{
+			precio= trunc((precio_compra),8);
+		}
         artiva=articulo.split('-');
 		newartiva=newarticulo.split('_');
          viva=newartiva[1];
@@ -536,8 +542,7 @@ $("#guardar").hide();
          narticulo=artiva[1];
 		idarticulo=newartiva[0]; 
         if (idarticulo!="" && cantidad > 0 &&  precio_compra!=""){  
-            neto=((cantidad*precio_compra)-precio_venta);
-			//neto=neto.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' });      
+		neto=(cantidad*precio);
             if (viva==0){ subtotal[cont]=neto; miva=0; arrayiva[cont]=0;  
 			arraybase[cont]=0; texe=texe+neto;  arrayexento[cont]=neto; }
               else
@@ -549,7 +554,7 @@ $("#guardar").hide();
 				tneto=tneto+neto; }
 				tmiva=tmiva+miva;
 				total=total+subtotal[cont];
-            var fila='<tr class="selected" id="fila'+cont+'"><td><button class="btn btn-warning btn-xs" onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+narticulo+'</td><td><input type="text" style="width: 60px" name="cantidad[]" readonly="true" value="'+cantidad+'"></td><td><input type="text" name="precio_compra[]" style="width: 60px" readonly="true" value="'+precio_compra.toFixed(2)+'"></td><td><input type="text" name="ptasa[]" style="width: 60px" readonly="true" value="'+precio_tasa+'"></td><td><input type="number" readonly="true" style="width: 60px" name="precio_venta[]" value="'+precio_venta+'"></td><td>'+neto.toFixed(2)+'</td><td><input type="hidden" name="iva[]" value="'+arrayiva[cont].toFixed(2)+'"><input type="hidden" name="exento[]" value="'+arrayexento[cont]+'"><input type="hidden" name="base[]" value="'+arraybase[cont].toFixed(2)+'"><input type="number" style="width: 60px" name="stotal[]" readonly="true" value="'+subtotal[cont].toFixed(2)+'"></td></tr>';
+           var fila='<tr class="selected" id="fila'+cont+'"><td><button class="btn btn-warning btn-xs" onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+narticulo+'</td><td><input type="text" style="width: 50px" name="cantidad[]" readonly="true" value="'+cantidad+'"></td><td><input type="text" name="precio_compra[]" readonly="true"  style="width: 100px" value="'+precio_compra+'"></td><td><input type="text" name="ptasa[]" readonly="true" style="width: 100px" value="'+precio_tasa+'"></td><td><input type="number" readonly="true" name="descuento[]" style="width: 100px" value="'+descuento+'"></td><td><input type="number" readonly="true" name="precio[]" style="width: 100px" value="'+precio+'"></td><td>'+neto.toFixed(2)+'</td><td><input type="hidden" name="iva[]" value="'+arrayiva[cont]+'"><input type="hidden" name="exento[]" value="'+arrayexento[cont]+'"><input type="hidden" name="base[]" value="'+arraybase[cont]+'"><input type="number" name="stotal[]" style="width: 100px" readonly="true" value="'+subtotal[cont].toFixed(2)+'"></td></tr>';
             cont++;
             limpiar();
 			//alert(total);

@@ -66,7 +66,9 @@
 $(document).ready(function(){
 	$(function () {
     $("#comprastable").DataTable({
-		"searching": false,
+		"bSort" : false,
+		"order":[0,'desc'],
+		"searching": true,
 		"bPaginate": false,
 		"bInfo":false,
       "responsive": true, "lengthChange": false, "autoWidth": false,
