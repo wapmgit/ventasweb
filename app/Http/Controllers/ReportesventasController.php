@@ -175,12 +175,12 @@ class ReportesventasController extends Controller
 			->where('ve.devolu','=',0)
 			-> groupby('art.iva')
 			->get();
-		//dd($impuestos);
+		//
         //datos devolucion     
              $detvol=DB::table('notasadm as d')
 			-> join('venta as ve','ve.idventa','=','d.iddocnc')
 			-> join('recibos as r','r.idventa','=','ve.idventa')
-            -> select('r.idbanco','r.referencia','r.idrecibo','d.idnota')
+            -> select('r.idbanco','d.referencia','r.idrecibo','d.idnota','d.monto')
 			->where('ve.tipo_comprobante','=',"FAC")
 			->where('d.pordevolucion','=',1)
             ->whereBetween('d.fecha', [$query, $query2])
@@ -189,7 +189,7 @@ class ReportesventasController extends Controller
             -> select(DB::raw('sum(monto) as totaldev'))
 			->where('pordevolucion','=',1)
             ->whereBetween('fecha', [$query, $query2])
-            ->first();
+            ->first(); //dd($detvol);
 			//cobros directos
 			$pagos=DB::table('recibos as re')
 			-> join('venta as v','v.idventa','=','re.idventa')
@@ -226,7 +226,8 @@ class ReportesventasController extends Controller
 			$ingresos=DB::table('recibos as re')
 			-> join('monedas as m','m.idmoneda','=','re.idpago')
 			 -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','m.sumcaja')
-            -> whereBetween('re.fecha', [$query, $query2])
+			->whereRaw('DATE(re.fecha) = DATE(re.fecharecibo)')
+			-> whereBetween('re.fecha', [$query, $query2])			  
 			-> groupby('re.idpago','re.idbanco')
             ->get();	
 			//	dd($cobranza); 
@@ -269,15 +270,17 @@ class ReportesventasController extends Controller
 		    -> where ('usuario','=',$user)
             ->whereBetween('d.fecha', [$query, $query2])
             ->first();
+
 			    $detvol=DB::table('notasadm as d')
 			-> join('venta as ve','ve.idventa','=','d.iddocnc')
 			-> join('recibos as r','r.idventa','=','ve.idventa')
-            -> select('r.idbanco','r.referencia','r.idrecibo','d.idnota')
+            -> select('r.idbanco','d.referencia','r.idrecibo','d.idnota','d.monto')
 			->where('ve.tipo_comprobante','=',"FAC")
 			 -> where ('d.usuario','=',$user)
 			->where('d.pordevolucion','=',1)
-            ->whereBetween('d.fecha', [$query, $query2])
+            ->whereBetween('d.fecha', [$query, $query2])      
             ->get();
+	
 			//cobros directos
 			$pagos=DB::table('recibos as re')
 			-> join('venta as v','v.idventa','=','re.idventa')
@@ -290,7 +293,7 @@ class ReportesventasController extends Controller
             ->get();
 			//apartados
 			
-      // dd($query);   
+      //  
 			$cobranza=DB::table('recibos as re')
 			-> join('monedas as m','m.idmoneda','=','re.idpago')
             -> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago','m.sumcaja')
@@ -375,11 +378,12 @@ class ReportesventasController extends Controller
 			$detvol=DB::table('notasadm as d')
 			-> join('venta as ve','ve.idventa','=','d.iddocnc')
 			-> join('recibos as r','r.idventa','=','ve.idventa')
-            -> select('r.idbanco','r.referencia','r.idrecibo','d.idnota')
+            -> select('r.idbanco','r.referencia','r.idrecibo','d.idnota','d.monto')
 			->where('ve.tipo_comprobante','=',"FAC")
 			->where('d.pordevolucion','=',1)
             ->whereBetween('d.fecha', [$query, $query2])
             ->get();
+			//	dd($detvol);  
 			//cobros directos
 			$pagos=DB::table('recibos as re')
 			-> join('venta as v','v.idventa','=','re.idventa')

@@ -267,7 +267,7 @@ catch(\Exception $e)
 		if ($rol->anularventa==1){
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select ('v.fecha_emi','v.tasa','v.idventa','v.fecha_hora','v.devolu','p.cedula','p.nombre','p.telefono','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta')
+            -> select ('v.fecha_emi','v.tasa','v.idventa','v.fecha_hora','v.devolu','p.cedula','p.nombre','p.telefono','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.saldo')
             ->where ('v.idventa','=',$id)
             -> first();
 
@@ -420,6 +420,7 @@ public function devolucion(Request $request){
 	$aux= $detalleventa->cantidad*$detalleventa->precio_venta;
 	$nc=($detalleventa->cantidad-$request -> get('cantidad'));
 	$aux2=$request -> get('cantidad')*$request -> get('precio');	
+	$mnc=$aux-$aux2;
 	$costo=$detalleventa->costoarticulo;
 
 			$artcomi=Articulos::findOrFail($idar);
@@ -473,6 +474,25 @@ public function devolucion(Request $request){
 		$kar->tipo=1; 
 		$kar->user=$user;	
 		 $kar->save();	
+		 		if($request -> get('nc')=="on"){
+	$contador=DB::table('notasadm')->select(DB::raw('count(ndocumento) as doc'))->where('tipo','=',2)->first();
+
+   if ($contador==NULL){$numero=0;}else{$numero=$contador->doc;}
+		$paciente=new Notasadm;
+        $paciente->tipo=2;
+        $paciente->ndocumento=$numero+1;
+        $paciente->idcliente= $aventa->idcliente;
+        $paciente->descripcion="N/C por Devolucion";
+        $paciente->referencia=$aventa->tipo_comprobante." ".$aventa->serie_comprobante." ".$aventa->num_comprobante;
+        $paciente->monto=$mnc;
+		$mytime=Carbon::now('America/Caracas');
+		$paciente->fecha=$mytime->toDateTimeString();
+        $paciente->pendiente=$mnc;
+        $paciente->pordevolucion=1;
+        $paciente->iddocnc=$request->get('idventa');
+		$paciente->usuario=Auth::user()->name;
+        $paciente->save();
+			}    
 /* DB::commit();
 }
 catch(\Exception $e)

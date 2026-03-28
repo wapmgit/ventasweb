@@ -230,7 +230,8 @@ $this->middleware('auth');
     }
 	public function pagocxc(Request $request)
     {	
-		///dd($request);
+		try{
+		DB::beginTransaction();
 		$moneda=explode("_",$request->get('pidpagomodal'));
 		$fac=$request->get('factura');
 		$saldo=$request->get('saldo'); 		
@@ -285,11 +286,22 @@ $this->middleware('auth');
 									$mov->save(); 
 							}	
 			$cont=$cont+1;
-            } 
+            } 		
+
+			DB::commit();
+}
+catch(\Exception $e)
+{
+	$logsc=new Errores();
+	$mensaje=$logsc->logs($e->getMessage(),$user);
+    DB::rollback();
+	return view("reportes.mensajes.msgerror",["mensaje"=>$mensaje]);
+} 
 		return Redirect::to('cxc');
 	}
 	public function multiple (Request $request){
-		//dd($request);
+		 try{
+   DB::beginTransaction();
 		$user=Auth::user()->name;
 		$ventas=DB::table('venta as ve')
             -> select('ve.idventa as cod','ve.saldo')
@@ -410,6 +422,15 @@ $this->middleware('auth');
 		$abono=$monto;
 		}
 		}
+			DB::commit();
+}
+catch(\Exception $e)
+{
+	$logsc=new Errores();
+	$mensaje=$logsc->logs($e->getMessage(),$user);
+    DB::rollback();
+	return view("reportes.mensajes.msgerror",["mensaje"=>$mensaje]);
+} 
 		return Redirect::to('cxc');
 	}
 	public function aplicanc(Request $request)

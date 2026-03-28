@@ -100,7 +100,7 @@ $cefe=0;?>
       <table  width="100%">
       <thead >
         
-          <tr><td colspan="3" align="center" style="background-color: #E6E6E6"> <strong>Desglose de Ventas</strong></td></tr>
+          <tr><td colspan="3" align="center" style="background-color: #E6E6E6"> <strong>(A)Desglose de Ventas</strong></td></tr>
           <th>Moneda</th>
           <th>Recibido</th>
           <th>monto</th>
@@ -123,7 +123,7 @@ $cefe=0;?>
 	 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
 	    <table  width="100%">
       <thead>
-          <tr><td colspan="3" align="center" style="background-color: #E6E6E6"> <strong>Desglose de Cobranza</strong></td></tr>
+          <tr><td colspan="3" align="center" style="background-color: #E6E6E6"> <strong>(B)Desglose de Cobranza</strong></td></tr>
 		<th>Moneda</th>
 		<th>Recibido</th>
 		<th>Monto</th> </thead>
@@ -143,7 +143,7 @@ $cefe=0;?>
 	  	 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
 	    <table  width="100%">
       <thead>
-          <tr><td colspan="3" align="center" style="background-color: #E6E6E6"> <strong>Cobranza Dias Anteriores</strong></td></tr>
+          <tr><td colspan="3" align="center" style="background-color: #E6E6E6"> <strong>(C)Cobranza Dias Anteriores</strong></td></tr>
 		<th>Moneda</th>
 		<th>Recibido</th>
 		<th>Monto</th> </thead>
@@ -164,7 +164,7 @@ $cefe=0;?>
       <table  width="100%">
       <thead >
         
-          <tr><td colspan="3" align="center" style="background-color: #E6E6E6"> <strong>Desglose de Apartados</strong></td></tr>
+          <tr><td colspan="3" align="center" style="background-color: #E6E6E6"> <strong>(D)Desglose de Apartados</strong></td></tr>
           <th>Moneda</th>
           <th>Recibido</th>
           <th>monto</th>
@@ -186,17 +186,20 @@ $cefe=0;?>
       <thead>
           <tr><td colspan="3" align="center" style="background-color: #E6E6E6"> <strong>Detalle N/C Devoluciones</strong></td></tr>
 		<th>Moneda</th>
-		<th>Monto</th> </thead>
+		<th>Monto</th> </thead>	 
+		 <?php 	if(count($detdevol)>0){ ?>
          @foreach ($detdevol as $de)
 		 <?php 
 		 $soloNumeros = preg_replace('/[^0-9.]/', '',$de->referencia);
-		 $acumncdev=$acumncdev+$soloNumeros;
-		 ?> 
+		 $acumncdev=$acumncdev+$de->monto;
+		?>
         <tr>
           <td><?php  echo $de->idbanco; ?></td>
-          <td>{{$soloNumeros}} $</td>
-        </tr>
-        @endforeach
+          <td>{{$de->monto}} $</td>
+        </tr> 
+	
+        @endforeach	
+		<?php } ?> 
 		    <tr><td align="center"><strong>Total</strong></td><td><strong><?php  echo number_format($acumncdev, 2,',','.')." $"; ?></strong></td></tr>
       </table>
    </br>
@@ -204,7 +207,7 @@ $cefe=0;?>
 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
 	    <table width="100%">
       <thead>
-          <tr><td colspan="3" align="center" style="background-color: #E6E6E6"> <strong>Distribucion de Ingresos</strong></td></tr>
+          <tr><td colspan="3" align="center" style="background-color: #E6E6E6"> <strong>(E)Distribucion de Ingresos de Caja</strong><small><small>(A+B+D)</small></small></td></tr>
 		<th>Moneda</th>
 		<th>Recibido</th>
 		<th>Monto</th> </thead>
@@ -226,16 +229,16 @@ $cefe=0;?>
     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
   <table  width="100%">
         <thead style="background-color: #E6E6E6">
-          <th>Monto N/C Devoluciones</th>
-		  <th>Monto Comisiones</th>
+          <th>(F)Monto N/C Devoluciones</th>
+		  <th>(G)Monto Comisiones</th>
 		  <th>Cobranza Anterior</th>
-          <th>Total Caja</th>       
+          <th>Total Ingresos<small><small>(E+C+F-G)</small></small></th>       
         </thead>   
         <tr>       
           <td><strong><?php $devolu=$devolucion->totaldev; echo number_format($devolucion->totaldev, 2,',','.')." $"; ?></strong></td>
 		    <td><strong><?php  echo number_format($comision->monto, 2,',','.')." $"; ?></strong></td>
 		    <td><strong><?php  echo number_format($acumcnt, 2,',','.')." $"; ?></strong></td>
-          <td><strong><?php $caja=($tingreso+$tcobranza+$devolu)-($comision->monto); echo "$ ".number_format($caja, 2,',','.'); ?></strong></td>
+          <td><strong><?php $caja=($tingreso+$tcobranza+$devolu+$acumcnt)-($comision->monto); echo "$ ".number_format($caja, 2,',','.'); ?></strong></td>
         
         </tr>
     </table></br>

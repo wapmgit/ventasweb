@@ -34,6 +34,7 @@
 
             		</div>
             	</div>
+				<p align="center"><span> <?php if ($venta->saldo ==0){?> <b>¿Generar Nota de Credito? </b><input type="checkbox" name="nc"></input><?php } ?></span></p>
 			</div>
 	
 			<div class="modal-footer">
