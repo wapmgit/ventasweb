@@ -459,7 +459,7 @@ class ReportesventasController extends Controller
   }
   	public function cobranza(Request $request)
     {   
-
+//dd($request);
         $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
       if ($request)
         {	
@@ -480,7 +480,7 @@ class ReportesventasController extends Controller
 			->join('venta','venta.idventa','=','re.idventa' )
 			->join('clientes','clientes.id_cliente','=','venta.idcliente')
 			->join('vendedores as vende','vende.id_vendedor','=','clientes.vendedor')
-			-> select('clientes.nombre','re.referencia','re.tiporecibo','venta.tipo_comprobante','venta.num_comprobante','re.idbanco','re.idpago','re.idrecibo','re.monto','re.recibido','re.fecha','re.fecharecibo','vende.nombre as vendedor')    
+			-> select('clientes.nombre','idmovban','re.referencia','re.tiporecibo','venta.tipo_comprobante','venta.num_comprobante','re.idbanco','re.idpago','re.idrecibo','re.monto','re.recibido','re.fecha','re.fecharecibo','vende.nombre as vendedor')    
 			-> where('venta.devolu','=',0)
             -> whereBetween('re.fecha', [$query, $query2])
 			-> groupby('re.idrecibo','re.idbanco')
@@ -517,7 +517,7 @@ class ReportesventasController extends Controller
 				->join('venta','venta.idventa','=','re.idventa' )
 				->join('clientes','clientes.id_cliente','=','venta.idcliente')
 				->join('vendedores as vende','vende.id_vendedor','=','clientes.vendedor')
-			 -> select('clientes.nombre','re.referencia','re.tiporecibo','venta.tipo_comprobante','venta.num_comprobante','re.idbanco','re.idrecibo','re.idpago','re.monto','re.recibido','re.fecha','re.fecharecibo','vende.nombre as vendedor')
+			 -> select('clientes.nombre','idmovban','re.referencia','re.tiporecibo','venta.tipo_comprobante','venta.num_comprobante','re.idbanco','re.idrecibo','re.idpago','re.monto','re.recibido','re.fecha','re.fecharecibo','vende.nombre as vendedor')
 				->where('clientes.vendedor','=',$request->get('vendedor'))  
 				-> where('venta.devolu','=',0)
 				-> whereBetween('re.fecha', [$query, $query2])

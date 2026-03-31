@@ -765,39 +765,66 @@ public function nota2ds($id){
 	}
 	}
 	public function anular(Request $request){
-	//	dd($request);
+		
     $id=$request->get('id');
     $tipo=$request->get('tipo');
 	if($tipo==1){
 		$user=Auth::user()->name;
 			 $recibo=Recibos::findOrFail($id);
-			 $venta=$recibo->idventa;
-			 $monton=$recibo->monto;
-			 $nota=$recibo->idnota;
-			 $recibo->referencia='Anulado ->'.$monton;
-			 $recibo->monto='0';
-			 $recibo->recibido='0';
-			 $recibo->update();
-				$mbanco=DB::table('mov_ban')
-				->where('tipodoc','=',$request->get('doc'))
-				->where('iddocumento','=',$request->get('id'))->first();
-			
-				if($mbanco!= NULL){	
-				$delmov=MovBancos::findOrFail($mbanco->id_mov);
-				$delmov->monto=0;
-				$delmov->concepto="Anul.".$request->get('doc')."Rec".$request->get('id')."M:".$monton;
-				$delmov->estatus=1;
-				$delmov->update();
-				}
+			 if($recibo->idmovban==0){			
+				 $venta=$recibo->idventa;
+				 $monton=$recibo->monto;
+				 $nota=$recibo->idnota;
+				 $recibo->referencia='Anulado ->'.$monton;
+				 $recibo->monto='0';
+				 $recibo->recibido='0';
+				 $recibo->update();
+					$mbanco=DB::table('mov_ban')
+					->where('tipodoc','=',$request->get('doc'))
+					->where('iddocumento','=',$request->get('id'))->first();
 				
-		if($request->get('doc')=="FAC"){
-			$ingreso=Ventas::findOrFail($venta);
-			$ingreso->saldo=($ingreso->saldo+$monton);
-			$ingreso->update(); }else{
-			$nd=Notasadm::findOrFail($nota);
-			$nd->pendiente=($nd->pendiente+$monton);
-			$nd->update();
-		}
+					if($mbanco!= NULL){	
+					$delmov=MovBancos::findOrFail($mbanco->id_mov);
+					$delmov->monto=0;
+					$delmov->concepto="Anul.".$request->get('doc')."Rec".$request->get('id')."M:".$monton;
+					$delmov->estatus=1;
+					$delmov->update();
+					}
+					
+					if($request->get('doc')=="FAC"){
+						$ingreso=Ventas::findOrFail($venta);
+						$ingreso->saldo=($ingreso->saldo+$monton);
+						$ingreso->update(); }else{
+						$nd=Notasadm::findOrFail($nota);
+						$nd->pendiente=($nd->pendiente+$monton);
+						$nd->update();
+					}
+			 }else{
+				
+				$recibos=DB::table('recibos')
+				-> select('idrecibo','idventa')
+				-> where ('idmovban','=',$recibo->idmovban)
+				->get();
+				$long = count($recibos);
+				$array = array();
+					foreach($recibos as $ct){
+					$arrayid[] = $ct->idrecibo;
+					$arrayidv[] = $ct->idventa;
+					}		 
+				for ($j=0;$j<$long;$j++){
+					$recibo=Recibos::findOrFail($arrayid[$j]);
+					$mrecibo=$recibo->monto;	
+					 $recibo->referencia='Anulado ->'.$mrecibo;
+					 $recibo->monto='0';
+					 $recibo->recibido='0';
+					 $recibo->update();
+			
+				$actventa=Ventas::findOrFail($arrayidv[$j]);
+				$actventa->saldo=$actventa->saldo+$mrecibo;
+				$actventa->update();				
+				}		
+	
+			 }
 	}
 	{if($tipo==2){
 		$nota=Movnotas::findOrFail($id);

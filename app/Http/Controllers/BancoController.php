@@ -421,8 +421,8 @@ class BancoController extends Controller
     }
 	public function delete(Request $request)
     {		
-	//dd($request);
-$id=$request->get('id');
+	
+		$id=$request->get('id');
 		$delmov=MovBancos::findOrFail($id);
 		$montobanco=$delmov->monto;
 		$idbanco=$delmov->idbanco;
@@ -489,6 +489,32 @@ $id=$request->get('id');
 			$actventa=comisiones::findOrFail($delmov->docrelacion);
 			$actventa->pendiente=$actventa->pendiente+$mrecibo;
 			$actventa->update();
+	}
+		if($delmov->tipodoc == 0){		
+		
+			$recibos=DB::table('recibos')
+            -> select('idrecibo','idventa')
+            -> where ('idmovban','=',$id)
+            ->get();
+				$long = count($recibos);
+				$array = array();
+			foreach($recibos as $ct){
+			$arrayid[] = $ct->idrecibo;
+			$arrayidv[] = $ct->idventa;
+			}		 
+				for ($j=0;$j<$long;$j++){
+			$recibo=Recibos::findOrFail($arrayid[$j]);
+			$mrecibo=$recibo->monto;	
+			 $recibo->referencia='Anulado ->'.$mrecibo;
+			 $recibo->monto='0';
+			 $recibo->recibido='0';
+			 $recibo->update();
+			
+				$actventa=Ventas::findOrFail($arrayidv[$j]);
+				$actventa->saldo=$actventa->saldo+$mrecibo;
+				$actventa->update();
+				
+				}		
 	}
 	return Redirect::to('showbanco/'.$idbanco);
     }

@@ -16,9 +16,11 @@ role="dialog" tabindex="-1" id="modal-{{$q->id_mov}}">
 	    	</div>
 			<div class="modal-body">
 
-		<p>Confirme si desea Eliminar el Movimiento en Banco</p>
+		<p>Confirme si desea Eliminar el Movimiento en Banco</br>
+		<small><small>*Elimina procesos Vinculados al Movimiento Bancario*</small></small>
+		</p>
 		<input type="hidden" name="id"  value="{{$q->id_mov}}" >
-	</p>
+
 		</div>  <!-- del modal body-->
 			<div class="modal-primary">
 			    <div class="modal-footer">

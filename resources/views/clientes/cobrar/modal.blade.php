@@ -23,6 +23,7 @@
 						<label>Monto</label>
 		<input type="text" value="{{$salpt}}" name="mntpt" id="mntpt" readonly class ="form-control"></input>
 		<input type="hidden" value="{{$salpt}}" name="mntptreal" id="mntptreal" class ="form-control"></input>
+		  <input type="hidden" name="cliente" value="{{$cliente->id_cliente}}" >
 			</div>
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>

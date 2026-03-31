@@ -19,7 +19,10 @@ role="dialog" tabindex="-1" id="modal-delete-{{$cob->idrecibo}}">
 		<p>¿Confirme si desea Anular el Recibo # {{$cob->idrecibo}}?
 		<input type="hidden" name="id"  value="{{$cob->idrecibo}}" >
 		<input type="hidden" name="tipo"  value="1" >
-		<input type="hidden" name="doc"  value="FAC" >
+		<input type="hidden" name="doc"  value="FAC" ></br>
+		<?php if($cob->idmovban >0){?><small><span style="color: red;">Este Recibo proviene de un pago Multiple, </br>
+		 todos los Procesos vinculados seran anulados.
+		</span></small><?php } ?>
 	</p>
 		</div>  <!-- del modal body-->
 			<div class="modal-primary">
