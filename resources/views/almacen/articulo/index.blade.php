@@ -72,7 +72,7 @@
 			</table>
 		</div>
 				{!!$articulos->links() !!}
-	</div>
+	</div> 
 </div>
 @push ('scripts')
 <script>

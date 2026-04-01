@@ -40,7 +40,7 @@
 						<?php if ($codempresa==300){ $pventa=$q->precio; $pventaneta=$q->ventad; }
 						else{ $pventa=$q->precio_venta;  $pventaneta=$q->ventaneta;}
 						if($empresa->utilpre1==1){
-						$pventa=$q->precioriginal; $pventaneta=$q->precioriginal*$q->cantidad; }
+						$pventa=$q->precioriginal; $pventaneta=$q->ventanetaori; }
 						
 						?>						
 						<tr> 

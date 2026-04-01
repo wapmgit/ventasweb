@@ -382,6 +382,7 @@ $("#impuesto").change(actprecio);
 	function conMayusculas(field) {
             field.value = field.value.toUpperCase()
 	}
+</script>
 	</script>
 	@endpush  
 @endsection
