@@ -325,21 +325,24 @@ class ArticulosController extends Controller
 	}
 	public function reporteetiquetas(Request $request)
 	{	 
+	 $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$categorias=DB::table('categoria')->where('condicion','=','1')->get();
 		if ($request->get('grupo') != "")
         {
-		$datos=DB::table('articulos as art')
-		->where('art.idcategoria','=',$request->get('grupo'))
-		->where('art.stock','>',0)
-		->where('art.estado','=',"Activo")
+		$datos=DB::table('articulos as a')
+		     -> select('a.nombre as articulo','a.'.$empresa->precioeti.' as precio1','a.codigo')
+		->where('a.idcategoria','=',$request->get('grupo'))
+		->where('a.stock','>',0)
+		->where('a.estado','=',"Activo")
 		->get();	
 		}else{				 
-		$datos=DB::table('articulos as art')
-		->where('art.stock','>',0)
-		->where('art.estado','=',"Activo")
+		$datos=DB::table('articulos as a')
+		-> select('a.nombre as articulo','a.'.$empresa->precioeti.' as precio1','a.codigo')
+		->where('a.stock','>',0)
+		->where('a.estado','=',"Activo")
 		->get();	
 		}
 	 
-	       return view("reportes.articulos.etiquetas.index",["datos"=>$datos,"categorias"=>$categorias]);
+	       return view("reportes.articulos.etiquetas.".$empresa->formatoeti,["datos"=>$datos,"categorias"=>$categorias]);
     }
 }

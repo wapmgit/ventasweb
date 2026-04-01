@@ -106,6 +106,7 @@ class VentasController extends Controller
     public function store(Request $request){
 	//	dd($request);
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$cal_comi=$empresa->calc_comi;
 		$user=Auth::user()->name;
    try{
    DB::beginTransaction();
@@ -236,12 +237,20 @@ class VentasController extends Controller
 				}
 				}
 			}
+				if($cal_comi==3){
+				$mcomi=$mcomi+(($cantidad[$cont]*$precio_venta[$cont])*($articulo->pcomision/100));  }
+				
             $cont=$cont+1;
             }
 
 		$cli=Clientes::findOrFail($idcliente[0]);
         $cli->lastfact=$mytime->toDateTimeString();
         $cli->update();
+		if($cal_comi==3){
+			$actv=Venta::findOrFail($venta->idventa);
+			$actv->montocomision=$mcomi;	
+			$actv->update();
+		}
 	DB::commit();
 }
 catch(\Exception $e)
