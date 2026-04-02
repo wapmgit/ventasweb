@@ -61,7 +61,7 @@ $idv=0;
             			<input type="number" name="fraccion"  min="0.1" required value="{{old('fraccion')}}" class="form-control" placeholder="1,0.25,0.5">
             		</div>
             </div>
-			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Unidad </label>  
 						<select name="unidad" class="form-control">          			            			
@@ -77,7 +77,7 @@ $idv=0;
             			</select>						       			
             		</div>
             </div>
-			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+		<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">CantxUnd</label>
             			<input type="number" name="cntxund" min="1"   value="1" class="form-control">
@@ -96,6 +96,11 @@ $idv=0;
                   <input type="number" name="peso"  id="peso" required value="0" min="0.01" class="form-control">         			
             		</div>
             </div>
+      	<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+                 <div class="form-group">
+                              <label for="costo">Comision	<input type="checkbox" name="comi" id="cbx1" value="0">%</label>
+                              <input type="number" min="0.01" step="0.01" disabled value="0" id="porcentaje"  name="porcentaje"  class="form-control" placeholder="%">
+                 </div>         </div>
 			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12" style="display:none">
             	 <div class="form-group">
             			<label for="stock">Grados </label>          
@@ -105,7 +110,7 @@ $idv=0;
 		<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Cnt.Grupo</label>          
-                  <input type="number" name="cntgrupo"  required value="1" min="1" class="form-control">         			
+                  <input type="number" name="cntgrupo" id="cntgrupo" required value="1" min="1" class="form-control">         			
             		</div>
             </div>
 				<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
@@ -252,6 +257,19 @@ $(document).ready(function(){
 		$("#grados").attr("disabled","true");  
 	}		
 	});
+		$("#cbx1").click(function() {
+       if ($(this).is(":checked")){
+        $("#cbx1").val(1);
+	
+		$("#porcentaje").attr("disabled",false);
+		$("#porcentaje").focus();
+       } else {
+         $("#cbx1").val(0);
+		 $("#porcentaje").val(0);
+		 $("#porcentaje").attr("disabled",true);
+		 $("#cntgrupo").focus();
+       }
+   });
 })
 $("#utilidad").change(calculo);
 $("#util2").change(calculo2);

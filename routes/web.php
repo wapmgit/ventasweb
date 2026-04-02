@@ -276,6 +276,7 @@ Route::post('updatecta', [CtasconController::class, 'update'])->name('updatecta'
  //comisiones
 Route::get('comisiones', [ComisionesController::class, 'index'])->name('comisiones');
 Route::get('detallecomision/{id}', [ComisionesController::class, 'detalle'])->name('detallecomision');
+Route::get('vercomisiondetallada/{id}', [ComisionesController::class, 'vercomisiondetallada'])->name('vercomisiondetallada');
 Route::get('detallecomisionp/{id}', [ComisionesController::class, 'detallepagadas'])->name('detallecomisionp');
 Route::get('showcomision/{id}', [ComisionesController::class, 'show'])->name('showcomision');
 Route::post('guardarcomision', [ComisionesController::class, 'store'])->name('guardarcomision');

@@ -20,9 +20,10 @@
             		 <div class="form-group">
             			<label for="nombre">Nueva Cantidad</label>
             			<input type="number" step="any" name="cantidad" id="idcantidad" min="1"  required value="" class="form-control">
+					<input type="hidden" name="cntold"  id="cntold"  value="" >
 					<input type="hidden" name="idventa"  value="{{$venta->idventa}}" >
 					<input type="hidden" name="tasa"  value="{{$venta->tasa}}" >
-						<input type="hidden" name="idarticulo"  id="idarticulo" value >
+					<input type="hidden" name="idarticulo"  id="idarticulo" value >
 					<input type="hidden" name="iddetalle" id="iddetalle"  value="" >
 					<input type="hidden" name="plink"  value="1" >
             		</div>

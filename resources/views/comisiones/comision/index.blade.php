@@ -19,18 +19,20 @@
 					<th>Opciones</th>
 				</thead>
 				<?php $total=0; $totalc=0; ?>
-               @foreach ($ventas as $cat)
-				<tr>
-				
-					<td>{{ $cat->nombre}}</td>
-					<td>{{ $cat->telefono}}</td>
-					<td><?php $total=$total+$cat->monto; echo number_format( $cat->monto, 2,',','.')." $"; ?></td>
-					<td><?php $totalc=$totalc+$cat->montocomision; echo number_format( $cat->montocomision, 2,',','.')." $"; ?></td>
-					<td>
-				<a href="{{route('detallecomision',['id'=>$cat->id_vendedor])}}"><button class="btn btn-primary btn-xs">Detalles</button></a>
-                  
-					</td>
-				</tr>
+               @foreach ($vendedor as $vend)
+			          @foreach ($ventas as $cat)
+					  <?php if ($vend->id_vendedor==$cat->idvendedor){?>
+						<tr>				
+							<td>{{ $vend->nombre}}</td>
+							<td>{{ $vend->telefono}}</td>
+							<td><?php $total=$total+$cat->monto; echo number_format( $cat->monto, 2,',','.')." $"; ?></td>
+							<td><?php $totalc=$totalc+$cat->montocomision; echo number_format( $cat->montocomision, 2,',','.')." $"; ?></td>
+							<td>
+							<a href="{{route('detallecomision',['id'=>$vend->id_vendedor])}}"><button class="btn btn-primary btn-xs">Detalles</button></a>                 
+							</td>
+						</tr>
+					  <?php } ?>
+					@endforeach
 				@endforeach
 				<tr ><td colspan="5"><button type="button" class="btn bg-olive btn-flat margin"><strong><?php echo "Comisiones por Pagar: ".number_format( $totalc, 2,',','.')." $";?></strong></button></td></tr>
 			</table>

@@ -162,6 +162,9 @@ Swal.fire({
 });
     });
 $('#pdevolu').click(function(){
+	var ncnt=$("#idcantidad").val();
+	var cntold=$("#cntold").val();
+	if(parseFloat(ncnt) < parseFloat(cntold)){
 Swal.fire({
   title: "¿ Confirma Devolucion Parcial?",
   text: "",
@@ -181,13 +184,21 @@ Swal.fire({
 	document.getElementById('formulario').submit(); 
   }
 });
+	}else{
+		alert('No es Posible devolver mas de lo Facturado');
+		$("#idcantidad").val(cntold);
+	}
+
     });
+	
+	
     });
 	function abrirdiv(ida,iddet,precio,cnt,na){
 //alert(na);
 $("#idarticulo").val(ida);
 $("#iddetalle").val(iddet);
 $("#idprecio").val(precio);
+$("#cntold").val(cnt);
 $("#idcantidad").val(cnt);
 $("#art").text(na);
 $("#idcantidad").prop('max', cnt);

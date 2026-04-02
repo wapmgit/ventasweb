@@ -108,8 +108,9 @@ class VentasController extends Controller
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$cal_comi=$empresa->calc_comi;
 		$user=Auth::user()->name;
+		$mcomi=0;
    try{
-   DB::beginTransaction();
+  DB::beginTransaction();
    $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->first();
    if ($contador==NULL){$numero=0;}else{$numero=$contador->idventa;}
 
@@ -195,6 +196,12 @@ class VentasController extends Controller
         $cont = 0;
             while($cont < count($idarticulo)){
 			$articulo=Articulos::findOrFail($idarticulo[$cont]);
+				if($articulo->comi){ $pcomiarti=$articulo->pcomision;
+					$mcomiarti=(($cantidad[$cont]*$precio_venta[$cont])*($articulo->pcomision/100));
+					$mcomi=$mcomi+$mcomiarti; }else{
+					$pcomiarti=$request->get('comision');
+					$mcomiarti=(($cantidad[$cont]*$precio_venta[$cont])*($request->get('comision')/100));
+					$mcomi=$mcomi+$mcomiarti; }
             $detalle=new DetalleVentas();
             $detalle->idventa=$venta->idventa;
             $detalle->idarticulo=$idarticulo[$cont];
@@ -204,6 +211,8 @@ class VentasController extends Controller
             $detalle->precio=$precio[$cont];
             $detalle->descuento=$descuento[$cont];
             $detalle->precio_venta=$precio_venta[$cont];
+            $detalle->pcomiarti=$pcomiarti;
+            $detalle->mcomiarti=$mcomiarti;
 			 $detalle->fecha_emi=$mytime->toDateTimeString();	
             $detalle->save();
 
@@ -236,21 +245,16 @@ class VentasController extends Controller
 				$ser->update();
 				}
 				}
-			}
-				if($cal_comi==3){
-				$mcomi=$mcomi+(($cantidad[$cont]*$precio_venta[$cont])*($articulo->pcomision/100));  }
-				
+			}						
             $cont=$cont+1;
             }
 
 		$cli=Clientes::findOrFail($idcliente[0]);
         $cli->lastfact=$mytime->toDateTimeString();
         $cli->update();
-		if($cal_comi==3){
-			$actv=Venta::findOrFail($venta->idventa);
+			$actv=Ventas::findOrFail($venta->idventa);
 			$actv->montocomision=$mcomi;	
 			$actv->update();
-		}
 	DB::commit();
 }
 catch(\Exception $e)
@@ -419,15 +423,17 @@ public function devolucion(Request $request){
 	}
 }
 	public function devoluparcial(Request $request){
-	//dd($request);
-	//    try{
-	//DB::beginTransaction();
+
+	    try{
+	DB::beginTransaction();
 	$user=Auth::user()->name;
 	$vdolar=$request -> get('tasa');
     $detalleventa=DetalleVentas::findOrFail($request->iddetalle);
 	$idar=$detalleventa->idarticulo;
+	$oldcomi=$detalleventa->mcomiarti;
 	$aux= $detalleventa->cantidad*$detalleventa->precio_venta;
 	$nc=($detalleventa->cantidad-$request -> get('cantidad'));
+	$newcomi=(($request -> get('cantidad')*$request -> get('precio'))*($detalleventa->pcomiarti/100));
 	$aux2=$request -> get('cantidad')*$request -> get('precio');	
 	$mnc=$aux-$aux2;
 	$costo=$detalleventa->costoarticulo;
@@ -463,10 +469,11 @@ public function devolucion(Request $request){
 					$aventa->total_venta=(($aventa->total_venta-($aux+$descuento))+$aux2);
 					$aventa->total_pagar=0;	 
 					$aventa->saldo=($aventa->total_venta-$abono);
-					$aventa->montocomision=($aventa->total_venta*($aventa->comision/100));						
+					$aventa->montocomision=($aventa->montocomision-$oldcomi)+($newcomi);						
 					$aventa->update();	
 		
 		$detalleventa->cantidad=$request -> get('cantidad');
+		$detalleventa->mcomiarti=$newcomi;
 		$detalleventa->precio_venta=$request -> get('precio');
 		$detalleventa->update();
 		//actualizo stock
@@ -502,12 +509,12 @@ public function devolucion(Request $request){
 		$paciente->usuario=Auth::user()->name;
         $paciente->save();
 			}    
-/* DB::commit();
+ DB::commit();
 }
 catch(\Exception $e)
 {
     DB::rollback();
-} */
+} 
 
   return Redirect::to('showdevolucion/'.$request -> get('idventa'));
 }

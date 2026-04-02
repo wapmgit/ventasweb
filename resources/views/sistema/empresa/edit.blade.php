@@ -106,6 +106,19 @@
 						</div>
                     </td>
 				</tr>
+				<tr>
+                    <td>Metodo calculo de Comisiones
+					</div></td>     
+                    <td>
+						<div class="form-group">
+							<select name="calc_util"  class="form-control">
+							<option value="1" <?php if($empresa->calc_comi==1){ echo "Selected";} ?>>Sobre Total de Ventas</option>
+							<option value="2" <?php if($empresa->calc_comi==2){ echo "Selected";} ?>>Sobre Cobros</option>													
+							</select>
+										
+						</div>
+                    </td>
+				</tr>
                   <tr>
                     <td>Usa forma Libre</td>
                   

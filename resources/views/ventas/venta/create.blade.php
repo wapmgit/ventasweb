@@ -136,7 +136,7 @@ $idv=0;
 				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                     <div class="form-group">
                         <label for="cantidad">Cantidad</label>
-                        <input type="number" name="pcantidad" id="pcantidad" min="0.001" class ="form-control" placeholder="Cantidad">
+                        <input type="number" name="pcantidad" id="pcantidad" min="0.001"  class ="form-control" placeholder="Cantidad">
                     </div>
                 </div>
 				<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12">
@@ -607,18 +607,18 @@ function trunc (x, posiciones = 0) {
       tpc= tipo_precio[1];
 	    if (tpc==3){  preopt="P3"; tpc=8;}
 		if (tpc==2){  preopt="P2"; tpc=3;}
-		if (tpc==1){  preopt="P1"; tpc=2;}
-	
-	  $("#nprecioventa").html(preopt);
-      //de los articulos	
-	    document.getElementById('pcantidad').focus();
+		if (tpc==1){  preopt="P1"; tpc=2;}	
+	  $("#nprecioventa").html(preopt);	   
       datosarticulo=document.getElementById('pidarticulo').value.split('_');
       $("#pprecio_venta").val(datosarticulo[tpc]);
       $("#pstock").val(datosarticulo[1]);
-	  $("#pcostoarticulo").val(datosarticulo[4]);
-      $("#pcantidad").val(datosarticulo[7]);
-      $("#pcantidad").attr("step",datosarticulo[7]);
-      $("#pdescuento").val("0");
+	  $("#pcostoarticulo").val(datosarticulo[4]);     
+	  var nuevoStep = parseFloat(datosarticulo[7]);
+      $("#pcantidad").attr("min", nuevoStep); 
+		$("#pcantidad").attr("step", nuevoStep);
+	  $("#pcantidad").val(datosarticulo[7]);
+      $("#pdescuento").val("0"); 
+	  document.getElementById('pcantidad').focus();
     }
 	$("#changeprice").on("click",function(){
 	  datosarticulo=document.getElementById('pidarticulo').value.split('_');

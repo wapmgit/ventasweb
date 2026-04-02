@@ -64,7 +64,7 @@
             		</div>
             		</div>
 
-			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Unidad </label>                      
 					<select name="unidad" class="form-control">          			            			
@@ -80,7 +80,7 @@
             			</select>				
             		</div>
             </div>
-			<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">CantxUnd </label>
            
@@ -108,10 +108,15 @@
                   <input type="number" name="peso"  id="peso" required value="{{$articulo->peso}}" min="0.01" class="form-control">         			
             		</div>
             </div>
+			      	<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+                 <div class="form-group">
+                              <label for="costo">Comision	<input type="checkbox" name="comi" id="cbx1"  <?php if ($articulo->comi ==1){?> checked value="1" <?php }else{ ?>value="0"<?php } ?>>%</label>
+                              <input type="number" min="0.01" step="0.01"  <?php if ($articulo->comi ==1){?> value="{{$articulo->pcomision}}" <?php }else{ ?>value="0" disabled <?php } ?>  id="porcentaje"  name="porcentaje"  class="form-control" placeholder="%">
+                 </div>         </div>
 					<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Cnt.Grupo</label>          
-                  <input type="number" name="cntgrupo"  required value="{{$articulo->cntgrupo}}" min="1" class="form-control">         			
+                  <input type="number" name="cntgrupo"  id="cntgrupo" required value="{{$articulo->cntgrupo}}" min="1" class="form-control">         			
             		</div>
             </div>
 	<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
@@ -234,6 +239,18 @@ $("#precio3").change(reverso3);
 		$("#grados").attr("disabled","true");  
 	}		
 	});
+		$("#cbx1").click(function() {
+       if ($(this).is(":checked")){
+        $("#cbx1").val(1);
+		$("#porcentaje").attr("disabled",false);
+		$("#porcentaje").focus();
+       } else {
+         $("#cbx1").val(0);
+		$("#porcentaje").val(0);
+		 $("#porcentaje").attr("disabled",true);
+		 $("#cntgrupo").focus();
+       }
+   });
 })
 	 $('#btncancelar').click(function(){  
 	   window.location="{{route('articulos')}}";

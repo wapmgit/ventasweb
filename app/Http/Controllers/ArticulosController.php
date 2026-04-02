@@ -67,7 +67,6 @@ class ArticulosController extends Controller
     }
 	public function store (Request $request)
     {
-		//dd($request);
 		$this->validate($request,[
             'nombre' => 'required',
             'codigo' => 'required',
@@ -89,6 +88,8 @@ class ArticulosController extends Controller
         $articulo->cntxund=$request->get('cntxund');
         $articulo->cntgrupo=$request->get('cntgrupo');
         $articulo->fraccion=$request->get('fraccion');
+        $articulo->comi=$request->get('comi');
+        $articulo->pcomision=$request->get('porcentaje');
         $articulo->volumen=$request->get('volumen');
         $articulo->peso=$request->get('peso');
 		$articulo->minimo=$request->get('min');
@@ -157,6 +158,8 @@ class ArticulosController extends Controller
 		$articulo->cntxund=$request->get('cntxund');
 		$articulo->cntgrupo=$request->get('cntgrupo');
 		$articulo->fraccion=$request->get('fraccion');
+		 $articulo->comi=$request->get('comi');
+        $articulo->pcomision=$request->get('porcentaje');
         $articulo->volumen=$request->get('volumen');
 		$articulo->peso=$request->get('peso');
 		$articulo->minimo=$request->get('min');

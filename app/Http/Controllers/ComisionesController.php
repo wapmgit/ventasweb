@@ -23,21 +23,19 @@ $this->middleware('auth');
         if ($request)
         {
 			$rol=DB::table('roles')-> select('comisiones')->where('iduser','=',$request->user()->id)->first();	
-			if ($rol->comisiones==1){
-			 $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
-            $query=trim($request->get('searchText'));
+			if ($rol->comisiones==1){ 
+				$query=trim($request->get('searchText'));
+				$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+				$vendedor=DB::table('vendedores')-> where('nombre','LIKE','%'.$query.'%')->get();
             $ventas=DB::table('venta as v')
-            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> join ('vendedores as ve','p.vendedor','=','ve.id_vendedor')
-            -> select (DB::raw('sum(v.total_venta) as monto'),DB::raw('sum(v.montocomision) as montocomision'),'ve.id_vendedor','ve.nombre','ve.telefono')
+            -> select (DB::raw('sum(v.total_venta) as monto'),DB::raw('sum(v.montocomision) as montocomision'),'v.idvendedor')
 			 -> where ('v.devolu','=',0)
 			 -> where ('v.saldo','=',0)
 			  -> where ('v.idcomision','=',0)
-            -> where ('ve.nombre','LIKE','%'.$query.'%')
-            -> groupBy('p.vendedor')
+				-> groupBy('v.idvendedor')
                 ->paginate(30);
-     //dd($ventas);
-     return view ('comisiones.comision.index',["ventas"=>$ventas,"searchText"=>$query,"empresa"=>$empresa]);
+     //dd($vendedor);
+     return view ('comisiones.comision.index',["ventas"=>$ventas,"searchText"=>$query,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	     } else { 
 	return view("reportes.mensajes.noautorizado");
 	}
@@ -53,12 +51,38 @@ $this->middleware('auth');
            	 -> where ('v.devolu','=',0)
 			 -> where ('v.saldo','=',0)
 			 -> where ('v.idcomision','=',0)
-			->where ('p.vendedor','=',$id)
+			->where ('v.idvendedor','=',$id)
             ->get();
-            return view("comisiones.comision.detalle",["venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
+			$detalle=[];
+            return view("comisiones.comision.detalle",["detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
+	}
+		public function vercomisiondetallada($id){
+	
+		$vendedor=DB::table('vendedores')-> where('id_vendedor','=',$id)->first();
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			$venta=DB::table('venta as v')
+            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
+			 -> join ('vendedores as ve','v.idvendedor','=','ve.id_vendedor')
+            -> select ('v.idventa','v.fecha_hora','v.fecha_emi','p.nombre','p.cedula','v.comision','v.montocomision','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+           	 -> where ('v.devolu','=',0)
+			 -> where ('v.saldo','=',0)
+			 -> where ('v.idcomision','=',0)
+			->where ('v.idvendedor','=',$id)
+            ->get();
+				$detalle=DB::table('venta as v')
+            -> join ('detalle_venta as dv','dv.idventa','=','v.idventa')
+            -> join ('articulos as art','art.idarticulo','=','dv.idarticulo')
+            -> select ('dv.idventa','art.nombre','dv.cantidad','dv.precio_venta','dv.pcomiarti','dv.mcomiarti')
+           	 -> where ('v.devolu','=',0)
+			 -> where ('v.saldo','=',0)
+			 -> where ('v.idcomision','=',0)
+			->where ('v.idvendedor','=',$id)
+            ->get();
+			
+            return view("comisiones.comision.detalle",["detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
 	public function store(Request $request){
-		//dd($request);
+	;
 			$user=Auth::user()->name;      
 			$mov=new Comisiones;
 			$mov->id_vendedor=$request->get('vendedor');
@@ -192,7 +216,6 @@ $this->middleware('auth');
 	}
 			}
 	public function detallepagadas($id){
-		//dd($id);
 		$vendedor=DB::table('comisiones')-> join('vendedores','vendedores.id_vendedor','=','comisiones.id_vendedor')->where('id_comision','=',$id)->first();
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$venta=DB::table('venta as v')
