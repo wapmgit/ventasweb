@@ -45,10 +45,12 @@ role="dialog" tabindex="-1" id="modalpedido">
 						<?php if($cat1->cantidad > 0 ){ ?>
                 <input type="hidden" value="{{$cat1->idarticulo}}" name="idarticulo[]" class ="form-control"></input>
 				<input type="hidden" value="{{$cat1->cantidad}}" name="cantidad[]" class ="form-control"></input>
-                <input type="hidden" value="{{$cat1->costo}}" name="costo[]" class ="form-control"></input>
+                <input type="hidden" value="{{$cat1->costo*$cat1->cntgrp}}" name="costo[]" class ="form-control"></input>
                 <input type="hidden" value="{{$cat1->precio}}" name="preciop[]" class ="form-control"></input>
                 <input type="hidden" value="{{$cat1->precio_venta}}" name="precio[]" class ="form-control"></input>
                 <input type="hidden" value="{{$cat1->descuento}}" name="descuento[]" class ="form-control"></input>
+                <input type="hidden" value="{{$cat1->cntgrp}}" name="cntgrp[]" class ="form-control"></input>
+                <input type="hidden" value="{{$cat1->unidad}}" name="unidad[]" class ="form-control"></input>
 						<?php } ?>
                         @endforeach
             		</div>

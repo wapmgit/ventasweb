@@ -1,7 +1,7 @@
 @extends ('layouts.master')
 @section ('contenido')
 
-<?php $aux=0; $ceros=5; $acumexe=0; $exe=0;$acumiva=0; $fserver=date('Y-m-d');
+<?php $aux=0; $ceros=5; $acumexe=0; $exe=0;$acumiva=0; $fserver=date('Y-m-d'); $nstock=0;
 function add_ceros($numero,$ceros) {
   $numero=$numero+1;
 $digitos=strlen($numero);
@@ -61,6 +61,7 @@ if (is_null($cxc)) {
 						<th>Edit.</yh>
                           <th>Articulo <a href="" data-target="#modalaggart" data-toggle="modal"><span class="label label-success"><i class="fa-solid fa-square-plus fa-lg"></i></span></a></th>
                           <th>Cantidad</th>
+                          <th>Unidad</th>
                           <th>Stock</th>
 						  <th>Precio</th>
                           <th>Descuento</th>
@@ -69,12 +70,13 @@ if (is_null($cxc)) {
                       </thead>
                       <tbody>
                         @foreach($detalles as $det)										
-						<?php if ($det->cantidad>$det->stock){ $auxf=1;}?>
+						<?php $nstock=$det->stock/$det->cntgrp;
+						if ($det->cantidad>$nstock){ $auxf=1;}?>
                         <tr ><td>@if($rol->editpedido==1)
-						<?php if ($det->cantidad>$det->stock){?> <a href="" data-target="#modaldevolucion-{{$det->idarticulo}}" data-toggle="modal"><i class="fa fa-fw fa-exclamation-circle fa-lg" style="color:red"></i></a> <?php 
+						<?php if ($det->cantidad>$nstock){?> <a href="" data-target="#modaldevolucion-{{$det->idarticulo}}" data-toggle="modal"><i class="fa fa-fw fa-exclamation-circle fa-lg" style="color:red"></i></a> <?php 
 						} else{?> <a href="" data-target="#modaldevolucion-{{$det->idarticulo}}" data-toggle="modal"><i class="fa fa-fw fa-check-circle fa-lg"></i></a><?php  } ?>
 						@else <i class="fa fa-fw fa-lock"></i> @endif</td>
-                          <td> {{$det->articulo}}
+                          <td> {{$det->articulo}} @if($det->cntgrp>1) *{{$det->cntgrp}}UND  @endif
 						  <?php if($det->iva>0){echo "(G)"; 
 						  $aux=($det->precio_venta/(($det->iva/100)+1));
 						  $aux=truncar($aux,2);
@@ -99,7 +101,8 @@ if (is_null($cxc)) {
 						 {{$det->cantidad}}
 						  <?php } else { echo $det->cantidad;} ?> 
 						  </td> 
-                          <td align="center">{{$det->stock}}</td>
+                          <td align="center">{{$det->unidad}}</td>
+                          <td align="center"><?php echo number_format($nstock, 2,',','.'); ?></td>
                           <td>{{$det->precio}}</td>
                           <td>{{$det->descuento}}</td>
                           <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
@@ -109,7 +112,7 @@ if (is_null($cxc)) {
                         @endforeach
                       </tbody>
 						    <tfoot style="background-color: #A9D0F5"> 
-						  <th colspan="3">Total</th>
+						  <th colspan="4">Total</th>
 							  <th></th>
 							  <th>Exe:<input type="number" style="width: 70px" readonly  name="totalexe" value="<?php echo $acumexe; ?>"  id="texe">Bs</th>
 							  <th>Iva:<input type="number" style="width: 70px" readonly  name="total_iva" value="<?php echo $acumiva; ?>" id="total_iva">Bs</th> 
@@ -181,7 +184,8 @@ $(document).ready(function(){
      $("#pcantidad").attr("step",datosarticulo[7]);
      $("#pcantidad").attr("min",datosarticulo[7]);
 	 $("#pcantidad").val(datosarticulo[7]);
-      $("#idarticulo").val(datosarticulo[0]);
+	 $("#usag").val(datosarticulo[9]); 
+     $("#idarticulo").val(datosarticulo[0]);
 		  document.getElementById('btnsubmit').style.display="";
 	});
 	$('#btnsubmit').click(function(){

@@ -2,7 +2,7 @@
 <div class="modal fade" id="modalaggart" >
 <form action="{{route('addarticulo')}}" id="formularioadd" method="POST" enctype="multipart/form-data" >         
         {{csrf_field()}}
-	<div class="modal-dialog" >	
+	<div class="modal-dialog modal-lg" >	
 		<div class="modal-content bg-primary">
 			    <div class="modal-header ">
                      <h5 class="modal-title">Agregar Articulo a Pedido <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); ?></h5>
@@ -19,7 +19,7 @@
 			<select name="pidarticulo" id="pidarticulo" class="form-control selectpicker" data-live-search="true" >
                               <option value="1000" selected="selected">Seleccione..</option>
                              @foreach ($articulos as $articulo)
-                              <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}_{{$articulo->precio3}}">{{$articulo -> articulo}}</option>
+                              <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}_{{$articulo->precio3}}_{{$articulo->usagrupo}}">{{$articulo -> articulo}}</option>
                              @endforeach
                               </select></td></tr>
 			<tr><td><label>Cantidad:</label>
@@ -36,6 +36,7 @@
 				<input type="hidden" value="0" name="pcostoarticulo" id="pcostoarticulo" step="0.001" class ="form-control" >
 				<input type="hidden" value="0" name="idarticulo" id="idarticulo" class ="form-control" >
 				<input type="hidden" value="{{$venta->idpedido}}" name="idpedido"  class ="form-control" >
+				<input type="hidden" value="0" name="usag"  id="usag" class ="form-control" class ="form-control" >
 				<button type="button"  class="btn btn-outline-light" id="btncerrar"  data-dismiss="modal">Cerrar</button>
 				  <input name="_token" value="{{ csrf_token() }}" type="hidden" ></input>
 				<button  style="display:none" type="submit" id="btnsubmit"  class="btn btn-outline-light" >Confirmar</button>

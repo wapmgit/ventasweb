@@ -57,7 +57,7 @@ $cntline=$cntser=0; $acumpeso=0;
 						<?php
 						if ($det->cantidad>0){ 
 							$cntline++; 
-							$acumpeso=$acumpeso+($det->cantidad*$det->peso);
+							$acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);
 							?>
                         <tr >
 						  <td><?php echo $det->codigo; ?></td>

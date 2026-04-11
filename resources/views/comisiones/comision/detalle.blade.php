@@ -43,11 +43,11 @@
 			<table width="100%">
 				<thead style="background-color: #A9D0F5">
 					<th>Cliente</th>
-						<th>Cedula</th>
+					<th>Cedula</th>
 					<th>N° Comprobante</th>
-					<th>Fecha Fac.</th>
+					<th>Fecha Doc.</th>
 					<th>Fecha Emi.</th>
-					<th>Monto Factura</th>
+					<th>Monto Doc.</th>
 					<th>Monto Comision</th>
 									
 				</thead>
@@ -69,17 +69,17 @@
 				</tr>
 				<?php if(count($detalle)>0){ ?>
 				<tr><td colspan="2"><b>Articulo</b></td><td><b>Cantidad</b></td><td><b>Precio</b></td><td><b>%Comi.</b></td><td><b>Moto. Comi</b></td></tr>
-					 @foreach ($detalle as $det)
-					 <?php if($cat->idventa==$det->idventa){ ?>
-					 <tr style="background-color: #DFF2FE">
-				<td colspan="2"><small>{{$det->nombre}}</small></td>
-				<td><small>{{$det->cantidad}}</small></td>
-				<td><small>{{$det->precio_venta}}</small></td>
-				<td><small>{{$det->pcomiarti}}</small></td>
-				<td><small>{{$det->mcomiarti}}</small></td>
-					 </tr>
-					 	<?php } ?>
-					@endforeach
+							 @foreach ($detalle as $det)
+							 <?php if($cat->idventa==$det->idventa){ ?>
+							 <tr style="background-color: #DFF2FE">
+								<td colspan="2"><small>{{$det->nombre}}</small></td>
+								<td><small>{{$det->cantidad}}</small></td>
+								<td><small>{{$det->precio_venta}}</small></td>
+								<td><small>{{$det->pcomiarti}}</small></td>
+								<td><small>{{$det->mcomiarti}}</small></td>
+							 </tr>
+								<?php } ?>
+							@endforeach
 				<?php } ?>
 				@endforeach
 				<tr>
@@ -87,7 +87,9 @@
 				<td style="background-color: #A9D0F5"><?php echo number_format($acum2, 2,',','.')." $"; ?> </td><td style="background-color: #A9D0F5"><?php echo number_format($acum, 2,',','.')." $"; ?> </td><td></td>
 				</tr>
 			</table>
-	<span><small>Se Incluye Comision individual por Articulos.</small></span>
+			@if($empresa->calc_comi==1)
+			<span><small>Se Incluye Comision individual por Articulos.</small></span>
+			@endif
 		</div>
 		
 	</div>
@@ -96,9 +98,11 @@
 				<input type="hidden" name="vendedor"  value="{{$vendedor->id_vendedor}}">
 				<input type="hidden" name="mventas"  value="<?php echo $acum2; ?>">
 				<input type="hidden" name="mcomision"  value="<?php echo $acum; ?>">
-            	<button class="btn btn-primary btn-sm" id="btnsubmit" type="submit">Generar Comision</button>
+            	<button class="btn btn-info btn-sm" id="btnsubmit" type="submit">Generar Comision</button>
+				@if($empresa->calc_comi==1)
 			<?php if(count($detalle)==0){ ?>	<a  href="{{route('vercomisiondetallada',['id'=>$vendedor->id_vendedor])}}"><button  class="btn btn-success btn-sm"   type="button" id="btnvdet">Ver Detalles</button></a> <?php }else{ ?>
 				<a  href="{{route('detallecomision',['id'=>$vendedor->id_vendedor])}}"><button  class="btn btn-success btn-sm"type="button" id="btnodet" >ocultar Detalles</button></a>  <?php } ?>
+				@endif
 			<button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
 			<a href="{{route('comisiones')}}"><button  class="btn btn-danger btn-sm"  type="button" id="btnback">Regresar</button></a>
             </div>
@@ -114,11 +118,12 @@
 $(document).ready(function(){
     $('#imprimir').click(function(){
 	document.getElementById('btnes').style.display="none";
-
   window.print(); 
   window.location="{{route('comisiones')}}";
     });
-
+    $('#imprimir').click(function(){
+	document.getElementById('btnsubmit').style.display="none";
+    });
 });
 
 </script>

@@ -667,7 +667,11 @@ class ReportesventasController extends Controller
 				if ($resumen=="on"){    
 				$datos=DB::table('venta as v')
 				-> join('detalle_venta as dv','v.idventa','=','dv.idventa')
-				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante',DB::raw('sum(dv.costoarticulo) as costo'),DB::raw('avg(dv.precio) as precio'),DB::raw('sum(dv.precioriginal) as precioriginal'),DB::raw('avg(dv.precio_venta) as precio_venta'),DB::raw('sum(dv.cantidad) as cantidad'),DB::raw('sum(dv.cantidad*dv.costoarticulo) as costoneto'),DB::raw('sum(dv.cantidad*dv.precioriginal) as ventanetaori'),DB::raw('sum(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('sum(dv.cantidad*dv.precio) as ventad'))
+				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante',DB::raw('sum(dv.costoarticulo) as costo'),
+				DB::raw('avg(dv.cantidad*dv.precio) as precio'),DB::raw('sum(dv.precioriginal) as precioriginal'),
+				DB::raw('avg(dv.precio_venta) as precio_venta'),DB::raw('sum(dv.cantidad*dv.cntgrp) as cantidad'),
+				DB::raw('sum(dv.cantidad*dv.costoarticulo) as costoneto'),DB::raw('sum(dv.cantidad*dv.precioriginal) as ventanetaori'),
+				DB::raw('sum(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('sum(dv.cantidad*dv.precio) as ventad'))
 				->where('v.devolu','=',0)
 				-> whereBetween('dv.fecha_emi', [$query, $query2])
 				-> Groupby('dv.idventa')      
@@ -677,7 +681,11 @@ class ReportesventasController extends Controller
 				$datos=DB::table('venta as v')
 				-> join('detalle_venta as dv','v.idventa','=','dv.idventa')
 				-> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.total_venta','v.fecha_hora','a.idarticulo','dv.cantidad as cantidad','dv.costoarticulo as costo','a.iva','dv.precio','dv.precioriginal','dv.precio_venta',DB::raw('sum(dv.cantidad*dv.precioriginal) as ventanetaori'),DB::raw('(dv.cantidad * dv.costoarticulo) as costoneto'),DB::raw('(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('(dv.cantidad*dv.precio)as ventad'))  
+				-> select('v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.total_venta','v.fecha_hora','a.idarticulo',
+				'dv.cantidad','a.iva','dv.precio','dv.precioriginal'
+				,'dv.precio_venta',DB::raw('(dv.costoarticulo*(dv.cantidad)) as costoneto'),
+				DB::raw('sum((dv.cantidad*dv.cntgrp)*dv.precioriginal) as ventanetaori'),'dv.costoarticulo as costo',
+				DB::raw('(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('(dv.cantidad*dv.precio) as ventad') ) 
 				->where('v.devolu','=',0)
 				-> whereBetween('v.fecha_hora', [$query, $query2])
 				-> Groupby('dv.iddetalle_venta')  
@@ -716,13 +724,13 @@ class ReportesventasController extends Controller
 			->join ('venta as ve', 've.idventa','=','dv.idventa') 			
              ->join ('articulos as a', 'a.idarticulo','=','dv.idarticulo') 
              ->join ('categoria as ca','ca.idcategoria','=','a.idcategoria')      
-            -> select(DB::raw('avg(dv.precio_venta) as vpromedio'),DB::raw('sum(dv.cantidad) as vendido'),'a.nombre','a.precio1 as pventa','a.idarticulo','a.peso','ca.nombre as grupo')
+            -> select(DB::raw('avg(dv.precio_venta/dv.cntgrp) as vpromedio'),DB::raw('sum(dv.cantidad*dv.cntgrp) as vendido'),'a.nombre',DB::raw('sum(dv.precio_venta/dv.cntgrp) as pventa'),'a.precio1 as pventa1','a.idarticulo','a.peso','ca.nombre as grupo')
             ->whereBetween('dv.fecha', [$query, $query2])
             ->where('ve.devolu','=',0)
 			->groupby('dv.idarticulo','a.nombre')
 			->OrderBy('a.nombre')
             ->get();
-		
+	
 			$nvendedor="";
 		if($request->get('opcion')>0){	
 			if($request->get('opcion')==1){		
@@ -732,7 +740,7 @@ class ReportesventasController extends Controller
              ->join ('venta as ve', 've.idventa','=','dv.idventa') 
              ->join ('articulos as a', 'a.idarticulo','=','dv.idarticulo') 
              ->join ('categoria as ca','ca.idcategoria','=','a.idcategoria')      
-            -> select(DB::raw('avg(dv.precio_venta) as vpromedio'),DB::raw('sum(dv.cantidad) as vendido'),'a.nombre','a.precio1 as pventa','a.idarticulo','a.peso','ca.nombre as grupo')
+           -> select(DB::raw('avg(dv.precio_venta/dv.cntgrp) as vpromedio'),DB::raw('sum(dv.cantidad*dv.cntgrp) as vendido'),'a.nombre',DB::raw('sum(dv.precio_venta/dv.cntgrp) as pventa'),'a.precio1 as pventa1','a.idarticulo','a.peso','ca.nombre as grupo')
 			->where('ve.idvendedor','=',$request->get('vendedor'))
 			->where('ve.devolu','=',0)
             ->whereBetween('dv.fecha', [$query, $query2])
@@ -747,7 +755,7 @@ class ReportesventasController extends Controller
              ->join ('venta as ve', 've.idventa','=','dv.idventa') 
              ->join ('articulos as a', 'a.idarticulo','=','dv.idarticulo') 
              ->join ('categoria as ca','ca.idcategoria','=','a.idcategoria')      
-            -> select(DB::raw('avg(dv.precio_venta) as vpromedio'),DB::raw('sum(dv.cantidad) as vendido'),'a.nombre','a.precio1 as pventa','a.peso','a.idarticulo','ca.nombre as grupo')
+           -> select(DB::raw('avg(dv.precio_venta/dv.cntgrp) as vpromedio'),DB::raw('sum(dv.cantidad*dv.cntgrp) as vendido'),'a.nombre',DB::raw('sum(dv.precio_venta/dv.cntgrp) as pventa'),'a.precio1 as pventa1','a.idarticulo','a.peso','ca.nombre as grupo')
 			->where('ve.idcliente','=',$request->get('cliente'))
 			->where('ve.devolu','=',0)
             ->whereBetween('dv.fecha', [$query, $query2])
@@ -764,7 +772,7 @@ class ReportesventasController extends Controller
 			->join ('clientes as cli', 'cli.id_cliente','=','ve.idcliente') 
              ->join ('articulos as a', 'a.idarticulo','=','dv.idarticulo') 
              ->join ('categoria as ca','ca.idcategoria','=','a.idcategoria')      
-            -> select(DB::raw('avg(dv.precio_venta) as vpromedio'),DB::raw('sum(dv.cantidad) as vendido'),'a.nombre','a.precio1 as pventa','a.peso','a.idarticulo','ca.nombre as grupo')
+            -> select(DB::raw('avg(dv.precio_venta/dv.cntgrp) as vpromedio'),DB::raw('sum(dv.cantidad*dv.cntgrp) as vendido'),'a.nombre',DB::raw('sum(dv.precio_venta/dv.cntgrp) as pventa'),'a.precio1 as pventa1','a.idarticulo','a.peso','ca.nombre as grupo')
 			->where('ve.idvendedor','=',$request->get('vendedorr'))
 			->where('cli.ruta','=',$request->get('ruta'))
 			->where('ve.devolu','=',0)

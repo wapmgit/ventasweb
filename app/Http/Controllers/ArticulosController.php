@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 use App\Models\Articulos;
 use App\Models\Categoria;
+use App\Models\Agrupados;
 use Carbon\Carbon;
 use DB;
 use Auth;
@@ -67,6 +68,7 @@ class ArticulosController extends Controller
     }
 	public function store (Request $request)
     {
+		//dd($request);
 		$this->validate($request,[
             'nombre' => 'required',
             'codigo' => 'required',
@@ -75,7 +77,7 @@ class ArticulosController extends Controller
             'impuesto' => 'required|numeric',
             'precio1' => 'required|numeric'
         ]);
-			$cat=explode("_",$request->get('idcategoria'));
+		$cat=explode("_",$request->get('idcategoria'));
 		$articulo=new Articulos;
         $articulo->idcategoria=$cat[0];
         $articulo->codigo=$request->get('codigo');
@@ -86,42 +88,57 @@ class ArticulosController extends Controller
         $articulo->estado='Activo';
         $articulo->unidad=$request->get('unidad');
         $articulo->cntxund=$request->get('cntxund');
-        $articulo->cntgrupo=$request->get('cntgrupo');
+        $articulo->cntgrupo=$request->get('cntgrupoold');
         $articulo->fraccion=$request->get('fraccion');
         $articulo->comi=$request->get('comi');
         $articulo->pcomision=$request->get('porcentaje');
         $articulo->volumen=$request->get('volumen');
         $articulo->peso=$request->get('peso');
 		$articulo->minimo=$request->get('min');
-      if($request->get('showlista')=="on"){$articulo->showlista=1;}else{$articulo->showlista=0;}
+			if($request->get('showlista')=="on"){$articulo->showlista=1;}else{$articulo->showlista=0;}
+			if($request->get('showgroup')==1){$articulo->usagrupo=1;}else{$articulo->usagrupo=0;}
         $articulo->grados=$request->get('grados');
         $articulo->utilidad=$request->get('utilidad');
         $articulo->precio1=$request->get('precio1');
-			if($request->get('precio2')==NULL){
-			$articulo->precio2=$request->get('precio1');}else{
-			$articulo->precio2=$request->get('precio2');}
-			if($request->get('util2')==NULL){
-			$articulo->util2=$request->get('utilidad');}else{
-			$articulo->util2=$request->get('util2');}
-			if($request->get('precio3')==NULL){
-			$articulo->precio3=$request->get('precio1');}else{
-			$articulo->precio3=$request->get('precio3');}
-			if($request->get('util2')==NULL){
-			$articulo->util3=$request->get('utilidad');}else{
-			$articulo->util3=$request->get('util3');}
-        $articulo->costo=$request->get('costo');
-        //validar iva vacio
-        $articulo->iva=$request->get('impuesto');
-		if($request->get('serial')=="on"){$articulo->serial=1;}		
-			if(!empty($request->file('imagen'))){
-			$file = $request->file('imagen');
-			$img = $file->getClientOriginalName();		
-        	\Storage::disk('local')->put($img, \File::get($file));
-			$articulo->imagen=$img;
-			}
-		$mytime=Carbon::now('America/Caracas');
+				if($request->get('precio2')==NULL){
+				$articulo->precio2=$request->get('precio1');}else{
+				$articulo->precio2=$request->get('precio2');}
+				if($request->get('util2')==NULL){
+				$articulo->util2=$request->get('utilidad');}else{
+				$articulo->util2=$request->get('util2');}
+				if($request->get('precio3')==NULL){
+				$articulo->precio3=$request->get('precio1');}else{
+				$articulo->precio3=$request->get('precio3');}
+				if($request->get('util2')==NULL){
+				$articulo->util3=$request->get('utilidad');}else{
+				$articulo->util3=$request->get('util3');}
+		$articulo->costo=$request->get('costo');
+		$articulo->iva=$request->get('impuesto');
+				if($request->get('serial')=="on"){$articulo->serial=1;}		
+					if(!empty($request->file('imagen'))){
+					$file = $request->file('imagen');
+					$img = $file->getClientOriginalName();		
+					\Storage::disk('local')->put($img, \File::get($file));
+					$articulo->imagen=$img;
+					}
+			$mytime=Carbon::now('America/Caracas');
 			$articulo->created_at=$mytime->toDateTimeString();
-        $articulo->save();
+		
+		$articulo->save();
+				if($request->get('showgroup')==1){		
+					$grupo=new Agrupados;
+					$grupo->idarticulo=$articulo->idarticulo;
+					$grupo->descripcion=$request -> get('pngrupo');
+					$grupo->cantidad=$request -> get('pcntgrupo');
+					if(($request -> get('pcntgrupo') % 2) == 0){$grupo->fraccion=0.25;}else{$grupo->fraccion=0.5;}
+					$grupo->utilidad=$request -> get('utilgrupo');
+					$grupo->precio1= $request -> get('ppreciogrupo');
+					$grupo->util2=$request -> get('util2grupo');
+					$grupo->precio2=$request -> get('pprecio2grupo');
+					$grupo->save();								
+			}	
+		
+
        return Redirect::to('articulos');
 
     }
@@ -130,8 +147,9 @@ class ArticulosController extends Controller
 		$articulos=Articulos::find($id);
 		$categorias=DB::table('categoria')->where('condicion','=','1')->get();
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$agrupado=DB::table('agrupados')->where('idarticulo','=',$id)->first();
 			return view('almacen.articulo.edit')
-			->with(["articulo"=>$articulos,"categorias"=>$categorias,"empresa"=>$empresa]);
+			->with(["agrupado"=>$agrupado,"articulo"=>$articulos,"categorias"=>$categorias,"empresa"=>$empresa]);
 
     }
 	public function update(Request $request)
@@ -156,7 +174,7 @@ class ArticulosController extends Controller
         $articulo->estado='Activo';
 		$articulo->unidad=$request->get('unidad');
 		$articulo->cntxund=$request->get('cntxund');
-		$articulo->cntgrupo=$request->get('cntgrupo');
+		$articulo->cntgrupo=$request->get('cntgrupoold');
 		$articulo->fraccion=$request->get('fraccion');
 		 $articulo->comi=$request->get('comi');
         $articulo->pcomision=$request->get('porcentaje');
@@ -183,6 +201,7 @@ class ArticulosController extends Controller
         $articulo->iva=$request->get('impuesto');
 		if($request->get('serial')=="on"){$articulo->serial=1;}	
 		if(!$request->get('showlista')){$articulo->showlista=0;}else{$articulo->showlista=1;}
+		if($request->get('showgroup')=="on"){$articulo->usagrupo=1;}else{$articulo->usagrupo=0;}
 		if(!empty($request->file('imagen'))){
 			$file = $request->file('imagen');
 			$img = $file->getClientOriginalName();		
@@ -192,7 +211,33 @@ class ArticulosController extends Controller
 			$mytime=Carbon::now('America/Caracas');
 			$articulo->updated_at=$mytime->toDateTimeString();
         $articulo->update();
-
+			if($request->get('showgroup')=="on"){
+				$existe=DB::table('agrupados')-> where ('idarticulo','=',$articulo->idarticulo)
+				->first();
+				if($existe != NULL){
+					$actgrp=Agrupados::findOrFail($existe->id);
+					$actgrp->idarticulo=$articulo->idarticulo;
+					$actgrp->descripcion=$request -> get('pngrupo');
+					$actgrp->cantidad=$request -> get('pcntgrupo');
+					if(($request -> get('pcntgrupo') % 2) == 0){$actgrp->fraccion=0.25;}else{$grupo->fraccion=0.5;}
+					$actgrp->utilidad=$request -> get('utilgrupo');
+					$actgrp->precio1= $request -> get('ppreciogrupo');
+					$actgrp->util2=$request -> get('util2grupo');
+					$actgrp->precio2=$request -> get('pprecio2grupo');
+					$actgrp->update();	
+				}else{
+					$grupo=new Agrupados;
+					$grupo->idarticulo=$articulo->idarticulo;
+					$grupo->descripcion=$request -> get('pngrupo');
+					$grupo->cantidad=$request -> get('pcntgrupo');
+					if(($request -> get('pcntgrupo') % 2) == 0){$grupo->fraccion=0.25;}else{$grupo->fraccion=0.5;}
+					$grupo->utilidad=$request -> get('utilgrupo');
+					$grupo->precio1= $request -> get('ppreciogrupo');
+					$grupo->util2=$request -> get('util2grupo');
+					$grupo->precio2=$request -> get('pprecio2grupo');
+					$grupo->save();											
+				}	
+			}
        return Redirect::to('articulos');
     }
 	public function destroy(Request $request)
@@ -211,6 +256,24 @@ class ArticulosController extends Controller
 		->get();
 	       return view("almacen.articulo.kardex",["datos"=>$datos,"articulo"=>$articulo]);
     }
+	public function aggnuevogrupo(Request $request) 
+   {	
+					$grupo=new Agrupados;
+					$grupo->idarticulo=$request->get('art');
+					$grupo->descripcion=$request->get('nombreg');
+					$grupo->cantidad=$request->get('cantidadg');
+					$grupo->preciov=$request->get('pventag');
+					$grupo->save();
+		  return Redirect::to('editarticulo/'.$request->get('art'));
+    }
+		public function deletegrupo(Request $request) 
+   {	
+
+    $grupo=Agrupados::findOrFail($request->get('idgrupo'));
+	$grupo->delete();
+		  return Redirect::to('editarticulo/'.$request->get('idarticulo'));
+    }
+	
 	    public function show($id)
     {
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
@@ -267,7 +330,7 @@ class ArticulosController extends Controller
             -> first();
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.idarticulo','a.nombre as articulo','a.iva','a.unidad','dv.cantidad','dv.descuento','dv.precio_venta')
+            -> select('a.idarticulo','a.nombre as articulo','a.iva','dv.unidad','dv.cantidad','dv.descuento','dv.precio_venta')
             -> where ('dv.idventa','=',$venta->idventa)
             ->get();
 			

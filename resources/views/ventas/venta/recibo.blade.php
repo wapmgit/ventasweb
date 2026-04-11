@@ -106,7 +106,7 @@ $acumpeso=0;
                       </thead>
                   
                       <tbody>
-                        @foreach($detalles as $det)<?php  $cntline++; $acumpeso=$acumpeso+($det->cantidad*$det->peso);
+                        @foreach($detalles as $det)<?php  $cntline++; $acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);
 						if($det->cantidad>0){
 						?>
                         <tr height="10px"> 						

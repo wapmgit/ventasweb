@@ -18,7 +18,7 @@
 					<th>#comision</th>
 					<th>Vendedor</th>
 					<th>Telefono</th>
-					<th>monto Faturado</th>
+					<th>monto </th>
 					<th>Monto Comision</th>
 					<th>Fecha cierre</th>
 					<th>usuario</th>

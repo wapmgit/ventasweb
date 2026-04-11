@@ -447,4 +447,114 @@ $this->middleware('auth');
 			}
 		return Redirect::to('showcxp/'.$request->get('idcliente'));
 	}
+		public function multiple (Request $request){
+//	// try{
+ //  DB::beginTransaction();
+ 
+		$user=Auth::user()->name;
+		$ventas=DB::table('compras as ve')
+            -> select('ve.idcompra as cod','ve.saldo')
+            -> where ('ve.idproveedor','=',$request->get('cliente'))
+			->where('ve.saldo','>',0)
+			->where('ve.estatus','=',0)
+			->orderBy('ve.idcompra','asc')
+            ->get(); // dd($ventas);
+		$moneda=explode("_",$request->get('pidpagom'));
+		$longitud = count($ventas);
+		
+		if($moneda[1]==1){$abono=$request->get('montom')/$moneda[2];}
+		if($moneda[1]==2){$abono=$request->get('montom')*$moneda[2];}
+		if($moneda[1]==0){$abono=$request->get('montom');}
+			$movban=0;
+			$mon=Monedas::findOrFail($moneda[0]);
+							if($mon->idbanco>0){
+								$contador=DB::table('mov_ban')->select('id_mov')->where('idbanco',$mon->idbanco)->orderby('id_mov','desc')->first();
+								$numero=$contador->id_mov+1;
+								$paciente=Proveedores::findOrFail($request->get('cliente'));
+								    $movb=new MovBancos;
+									$movb->idbanco=$mon->idbanco;
+									$movb->clasificador=3;
+									$movb->tipodoc=0;
+									$movb->docrelacion=0;
+									$movb->iddocumento=0;
+									$movb->tipo_mov="N/D";
+									$movb->numero="BCO-PM".$numero;
+									$movb->concepto="Pagos";
+									$movb->moneda="PMul. ".$request->get('nmoneda');
+									$movb->idbeneficiario=$paciente->idproveedor;	
+									$movb->identificacion=$paciente->nombre;
+									$movb->ced=$paciente->rif;	
+									$movb->tipo_per="P";
+									$movb->monto=$abono;
+									$movb->tasadolar=$moneda[2];
+									$mytime=Carbon::now('America/Caracas');
+									$movb->fecha_mov=$mytime->toDateTimeString();	
+									$movb->user=Auth::user()->name;
+									$movb->save(); 
+									$movban=$movb->id_mov;
+							}
+							
+		$array = array();
+			foreach($ventas as $t){
+			$arraycod[] = $t->cod;
+			}
+			for ($i=0;$i<$longitud;$i++){
+			$mov=Compras::findOrFail($arraycod[$i]);
+			if($abono>0){
+			$monto=$abono-$mov->saldo;
+			$saldo=$mov->saldo;
+			if($monto>0){
+				if($moneda[1]==0){$recibe=$saldo;}
+				if($moneda[1]==1){$recibe=$saldo*$moneda[2];}
+				if($moneda[1]==2){$recibe=$saldo/$moneda[2];}				
+				$mov->saldo=0;	
+				$recibo=new Comprobantes;
+				$recibo->idcompra= $arraycod[$i];
+				$recibo->monto=$saldo;
+				$recibo->idpago=$moneda[0];
+				$recibo->idbanco=$request->get('nmoneda');	
+				$recibo->recibido=$recibe;			 
+				$recibo->referencia=="Pago Multiple";
+				$recibo->tasap=0;
+				$recibo->tasab=$moneda[2];
+				$recibo->aux=0;
+				$mytime=Carbon::now('America/Caracas');
+				$recibo->fecha_comp=$mytime->toDateTimeString();						
+				$recibo->save();	
+			}else{ 
+			$mov->saldo=($monto*-1);
+				$recibo=new Comprobantes;
+				$recibo->idcompra=$arraycod[$i];
+				$recibo->idpago=$moneda[0];
+				$recibo->idbanco=$request->get('nmoneda');			
+				$recibo->monto=$abono;
+					if($moneda[1]==0){$recibe=$abono;}
+					if($moneda[1]==1){$recibe=$abono*$moneda[2];}
+					if($moneda[1]==2){$recibe=$abono/$moneda[2];}
+				$recibo->referencia="Pago Multiple";
+				$recibo->id_banco=0;
+				$recibo->recibido=$recibe;
+				 $recibo->tasab=$moneda[2];
+				 $recibo->tasap=0;
+				$recibo->aux=$mov->saldo;
+				$mytime=Carbon::now('America/Caracas');
+				$recibo->fecha_comp=$mytime->toDateTimeString();
+				$recibo->save();
+
+			}
+		$mov->update();
+		$abono=$monto;
+		}
+		}
+	/*		DB::commit();
+}
+catch(\Exception $e)
+{
+	$logsc=new Errores();
+	$mensaje=$logsc->logs($e->getMessage(),$user);
+    DB::rollback();
+	return view("reportes.mensajes.msgerror",["mensaje"=>$mensaje]);
+} */
+		return Redirect::to('cxp');
+	}
 }

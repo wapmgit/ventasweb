@@ -111,7 +111,7 @@
 					</div></td>     
                     <td>
 						<div class="form-group">
-							<select name="calc_util"  class="form-control">
+							<select name="calc_comi"  class="form-control">
 							<option value="1" <?php if($empresa->calc_comi==1){ echo "Selected";} ?>>Sobre Total de Ventas</option>
 							<option value="2" <?php if($empresa->calc_comi==2){ echo "Selected";} ?>>Sobre Cobros</option>													
 							</select>

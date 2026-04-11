@@ -77,6 +77,8 @@
             				<option <?php if($articulo->unidad=="DISP"){ echo "selected"; } ?> value="DISP">Display</option>
             				<option <?php if($articulo->unidad=="PR"){ echo "selected"; } ?> value="PR">Par</option>
             				<option <?php if($articulo->unidad=="LTR"){ echo "selected"; } ?>  value="LTR">Litros</option>		
+            				<option <?php if($articulo->unidad=="MNG"){ echo "selected"; } ?>  value="LTR">Manga</option>		
+            				<option <?php if($articulo->unidad=="FDO"){ echo "selected"; } ?>  value="LTR">Fardo</option>		
             			</select>				
             		</div>
             </div>
@@ -116,7 +118,7 @@
 					<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Cnt.Grupo</label>          
-                  <input type="number" name="cntgrupo"  id="cntgrupo" required value="{{$articulo->cntgrupo}}" min="1" class="form-control">         			
+                  <input type="number" name="cntgrupoold"  id="cntgrupoold" required value="{{$articulo->cntgrupo}}" min="1" class="form-control">         			
             		</div>
             </div>
 	<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
@@ -134,6 +136,10 @@
 					<div class="custom-control custom-switch  custom-switch-on-success custom-switch-off-danger">
                       <input type="checkbox" name="showlista"  <?Php if($articulo->showlista==1) echo "checked"; ?> class="custom-control-input" id="customSwitch4">
                       <label class="custom-control-label" for="customSwitch4">¿lista de Precios?</label>
+                    </div>
+					<div class="custom-control custom-switch  custom-switch-on-success custom-switch-off-danger ">
+                      <input type="checkbox" name="showgroup"  <?Php if($articulo->usagrupo==1) echo "checked"; ?>  class="custom-control-input" id="customSwitch5">
+                      <label class="custom-control-label" for="customSwitch5">¿Agrupado?</label>
                     </div>
                   </div>
             </div>
@@ -192,6 +198,19 @@
                               <label for="precio2">Precio 3</label>
                               <input type="text" value="{{$articulo->precio3}}" name="precio3" step="0.01"  id="precio3" class="form-control">
                  </div>         </div>
+	<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" id="tagrupado" <?Php if($articulo->usagrupo==0){ echo "style='display:none'"; }?> >
+			<table id="detalles" class="table table-striped table-bordered table-condensed table-hover">
+                      <thead style="background-color: #A9D0F5">
+							<th>Nombre Grupo <input type="varchar" name="pngrupo" id="pngrupo" class ="form-control" <?Php if($articulo->usagrupo==1){ echo "value='".$agrupado->descripcion."'";}else{ echo "value=''"; } ?>  ></th>
+							<th>Cant Unid. <input type="number"  name="pcntgrupo" id="pcntgrupo" class ="form-control"  <?Php if($articulo->usagrupo==1){ echo "value='".$agrupado->cantidad."'";}else{ echo "value=''"; } ?>  ></th>
+							<th>Util 1 <input type="number"  name="utilgrupo" id="utilgrupo" class ="form-control"  <?Php if($articulo->usagrupo==1){ echo "value='".$agrupado->utilidad."'";}else{ echo "value=''"; } ?> ></th>			
+							<th>Precio 1 <input type="number" name="ppreciogrupo" id="ppreciogrupo" class ="form-control"   <?Php if($articulo->usagrupo==1){ echo "value='".$agrupado->precio1."'";}else{ echo "value=''"; } ?>  ></th>
+							<th>Util 2 <input type="number" name="util2grupo"  id="util2grupo" class ="form-control"  <?Php if($articulo->usagrupo==1){ echo "value='".$agrupado->util2."'";}else{ echo "value=''"; } ?>  ></th>			
+							<th>Precio 2 <input type="number" name="pprecio2grupo" id="pprecio2grupo" class ="form-control"   <?Php if($articulo->usagrupo==1){ echo "value='".$agrupado->precio2."'";}else{ echo "value=''"; } ?>  ></th>						  		
+                      </thead>
+                      <tbody></tbody>
+                  </table>
+				</div>	
  			<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" align="center">
             	 <div class="form-group">
             		<button class="btn btn-primary btn-sm" type="button" id="btnguardar">Guardar</button>
@@ -202,9 +221,7 @@
            
             	</form>
             </div>
-          
-
-            
+              @include('almacen.articulo.modalgarticulo')   
        @push('scripts')
       <script>
 $(document).ready(function(){
@@ -221,6 +238,12 @@ $("#util3").change(calculo3);
 $("#precio1").change(reverso); 
 $("#precio2").change(reverso2); 
 $("#precio3").change(reverso3); 
+//delgrupo
+$("#utilgrupo").change(calculogrp);
+$("#ppreciogrupo").change(reversogrp); 
+$("#util2grupo").change(calculo2grp);
+$("#pprecio2grupo").change(reverso2grp);
+
 		 $('#btnguardar').click(function(){   
 		document.getElementById('loading').style.display=""; 
 		document.getElementById('btnguardar').style.display="none"; 
@@ -249,6 +272,14 @@ $("#precio3").change(reverso3);
 		$("#porcentaje").val(0);
 		 $("#porcentaje").attr("disabled",true);
 		 $("#cntgrupo").focus();
+       }
+
+   });	
+   $("#customSwitch5").click(function() {
+       if ($(this).is(":checked")){
+		document.getElementById('tagrupado').style.display=""; 
+       } else {
+		 	document.getElementById('tagrupado').style.display="none";
        }
    });
 })
@@ -395,6 +426,90 @@ function trunc (x, posiciones = 0) {
       }
 	function conMayusculas(field) {
             field.value = field.value.toUpperCase()
+	}
+	//de el agrupado
+		function calculogrp(){
+      $("#ppreciogrupo").val("");
+	  var mutil= $("#mutil").val();
+    	var  p1 =0;
+		var ctound=$("#costo").val();
+		var cntgrp=$("#pcntgrupo").val();
+    	var costo= ctound*cntgrp;
+    	var impuesto= $("#impuesto").val();
+    	var utilidad= $("#utilgrupo").val();
+        p1=parseFloat((utilidad/100));
+       if(mutil==1){
+        p2=parseFloat(costo) + parseFloat(p1*costo);
+		}else{
+		p2=(costo/((100-utilidad)/100));
+		}
+        iva=p2*(impuesto/100);
+        pt=(parseFloat(p2)+parseFloat(iva));
+    	$("#ppreciogrupo").val(pt.toFixed(2));
+	}
+		function reversogrp(){
+        var  p30 =0;  
+		var mutil= $("#mutil").val();
+       p30= $("#ppreciogrupo").val();
+		var ctound=$("#costo").val();
+		var cntgrp=$("#pcntgrupo").val();
+    	var costo= ctound*cntgrp;
+		var utilidad= $("#impuesto").val();       
+		var    p31=parseFloat((utilidad/100));  
+		if(mutil==1){
+		var    p32=parseFloat(costo) + parseFloat(p31*costo);     
+        iva=(p30/p32);
+        var util=((iva-1)*100);
+        pt=(parseFloat(util));
+		}else{
+		var  p32=parseFloat(costo) + parseFloat(p31*costo);    
+		util=(100-((p32*100)/p30));
+		 pt=(parseFloat(util));
+		}
+        var nv=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt));
+      $("#utilgrupo").val(parseFloat(nv));
+	}
+		function calculo2grp(){
+      $("#pprecio2grupo").val("");
+	   var mutil= $("#mutil").val();
+      var  p1 =0;
+     var ctound=$("#costo").val();
+		var cntgrp=$("#pcntgrupo").val();
+    	var costo= ctound*cntgrp;
+      var impuesto= $("#impuesto").val();
+      var utilidad= $("#util2grupo").val();
+        p1=parseFloat((utilidad/100));
+         	if(mutil==1){
+        p2=parseFloat(costo) + parseFloat(p1*costo);
+		}else{
+		p2=(costo/((100-utilidad)/100));
+		}
+        iva=p2*(impuesto/100);
+        pt=(parseFloat(p2)+parseFloat(iva));
+      $("#pprecio2grupo").val(pt.toFixed(2));
+	}
+	function reverso2grp(){
+        var  p30 =0;  
+		var mutil= $("#mutil").val();
+       p30= $("#pprecio2grupo").val();
+		 var ctound=$("#costo").val();
+		var cntgrp=$("#pcntgrupo").val();
+    	var costo= ctound*cntgrp;
+		var utilidad= $("#impuesto").val();       
+		var    p31=parseFloat((utilidad/100));  
+		if(mutil==1){
+		var    p32=parseFloat(costo) + parseFloat(p31*costo);     
+        iva=(p30/p32);
+        var util=((iva-1)*100);
+        pt=(parseFloat(util));
+		}else{
+		var  p32=parseFloat(costo) + parseFloat(p31*costo);    
+		util=(100-((p32*100)/p30));
+		 pt=(parseFloat(util));
+		}
+        var nv=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt));
+  //      alert(nv);
+      $("#util2grupo").val(parseFloat(nv));
 	}
     </script>
       @endpush

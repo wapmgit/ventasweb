@@ -63,13 +63,14 @@ return $insertar_ceros = $recibo.$numero;
 			<thead style="background-color: #A9D0F5">                      
 			  <th>Articulo</th>
 			  <th>Cantidad</th>
+			  <th>Unidad</th>
 			  <th>Descuento</th>
 			  <th>Precio venta</th>
 			  <th>Subtotal</th>
 			</thead>
 			<tfoot> 
 			
-			  <th colspan="4">TOTAL:</th>
+			  <th colspan="5">TOTAL:</th>
 			  <th ><h4 id="total"><b><?php echo "$ ".number_format($venta->total_venta, 2,',','.'); ?> </b></h4></th>
 			  </tfoot>
 			<tbody>
@@ -77,11 +78,12 @@ return $insertar_ceros = $recibo.$numero;
 			<tr >
 			  <td><input type="hidden" name="idarticulo[]" value="{{$det->idarticulo}}">{{$det->articulo}}</td>
 			   <td> <?php 
-						    if(($det->cantidad>0)and ($venta->devolu==0)){
+					if(($det->cantidad>0)and ($venta->devolu==0)){
 						  ?>
-						  <button type="button" onclick="javascript:abrirdiv({{$det->idarticulo}},{{$det->iddetalle_venta}},{{$det->precio_venta}},{{$det->cantidad}},'{{$det->articulo}}');">  <a href="" data-target="#modaldevolucion" data-toggle="modal">{{$det->cantidad}}</a></button>
-						  <?php } else { echo $det->cantidad;} ?> 
+					<button type="button" onclick="javascript:abrirdiv({{$det->idarticulo}},{{$det->iddetalle_venta}},{{$det->precio_venta}},{{$det->cantidad}},'{{$det->articulo}}');">  <a href="" data-target="#modaldevolucion" data-toggle="modal">{{$det->cantidad}}</a></button>
+					<?php } else { echo $det->cantidad;} ?> 
 			<input type="hidden" name="cantidad[]" value="{{$det->cantidad}}"></td>
+			  <td><input type="hidden" name="cntgrp[]" value="{{$det->cntgrp}}">{{$det->unidad}}</td>
 			  <td><input type="hidden" name="descuento[]" value="{{$det->descuento}}">{{$det->descuento}}</td>
 			  <td><input type="hidden" name="precio_venta[]" value="{{$det->precio_venta}}"><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
 			  <td><?php echo number_format( ($det->cantidad*$det->precio_venta), 2,',','.'); ?></td>

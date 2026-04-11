@@ -128,7 +128,7 @@ $idv=0;
 						  <option value="5000" selected="selected">Seleccione Articulo..</option>
 						 @foreach ($articulos as $articulo)
 						 <?Php if($empresa->tasadif > 0){ $preciom=number_format(($articulo -> precio_promedio *((100-$empresa -> tasadif)/100)), 2,',','.');}else{ $preciom=$articulo -> precio2;} ?>
-						  <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}_{{$articulo->precio3}}">{{$articulo -> articulo}} | {{$articulo -> precio_promedio}} | {{$preciom}}</option>
+						  <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}_{{$articulo->precio3}}_{{$articulo->usagrupo}}">{{$articulo -> articulo}} | {{$articulo -> precio_promedio}} | {{$preciom}}</option>
 						 @endforeach
 						  </select>
                     </div>
@@ -670,7 +670,7 @@ function trunc (x, posiciones = 0) {
 		vdolar=$("#valortasa").val();
 		nlineas=$("#nlineas").val();
 		factsinexis=$("#factsinexis").val();
-      var cantidad=0; var stock=0;
+		var cantidad=0; var stock=0;
         datosarticulo=document.getElementById('pidarticulo').value.split('_');
         idarticulo=datosarticulo[0];
         artext= $("#pidarticulo option:selected").text();
@@ -690,6 +690,7 @@ function trunc (x, posiciones = 0) {
 		costoarticulo=datosarticulo[4];
 		alicuota=datosarticulo[5];
 		mserial=datosarticulo[6];
+		usag=datosarticulo[9];
 		cantidad=cantidad*1;
         if (idarticulo!="" && cantidad != "" && cantidad > "0" &&  precio_venta!=""){
 
@@ -729,7 +730,7 @@ function trunc (x, posiciones = 0) {
                 subtotal[cont]=((cantidad*precio_venta));
                 total=parseFloat(total)+parseFloat(subtotal[cont].toFixed(2));
 
-              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" id="varticulo'+cont+'" name="articulo[]" value="'+articulo+'"><input type="hidden"  name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" id="vcantidad'+cont+'" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" id="precio'+cont+'" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number" id="vdescuento'+cont+'" name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" id="pventa'+cont+'" name="precio_venta[]" value="'+precio_venta+'"></td><td><span id="subt'+cont+'">'+subtotal[cont].toFixed(2)+'</span><input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
+              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" id="varticulo'+cont+'" name="articulo[]" value="'+articulo+'"><input type="hidden"  name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" id="vcantidad'+cont+'" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" id="precio'+cont+'" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number" id="vdescuento'+cont+'" name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" id="pventa'+cont+'" name="precio_venta[]" value="'+precio_venta+'"></td><td><span id="subt'+cont+'">'+subtotal[cont].toFixed(2)+'</span><input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"><input type="hidden" name="usag[]" readonly="true" value="'+usag+'"></td></tr>';
 				cont++;
 				contl++;
               limpiar();
@@ -972,7 +973,7 @@ function trunc (x, posiciones = 0) {
 				for (j=0;j<rows;j++){
 					if($("#tasadif").val()>0){preciom=r3[j].precio_promedio*((100-$("#tasadif").val())/100);}else{preciom=r3[j].precio2;}
 				$("#pidarticulo")
-				.append( '<option value="'+r3[j].idarticulo+'_'+r3[j].stock+'_'+r3[j].precio_promedio+'_'+r3[j].precio2+'_'+r3[j].costo+'_'+r3[j].iva+'_'+r3[j].serial+'_'+r3[j].fraccion+'">'+r3[j].articulo+' | '+r3[j].precio_promedio+' | '+preciom+'</option>');
+				.append( '<option value="'+r3[j].idarticulo+'_'+r3[j].stock+'_'+r3[j].precio_promedio+'_'+r3[j].precio2+'_'+r3[j].costo+'_'+r3[j].iva+'_'+r3[j].serial+'_'+r3[j].fraccion+'_'+r3[j].usagrupo+'">'+r3[j].articulo+' | '+r3[j].precio_promedio+' | '+trunc(preciom,2)+'</option>');
 				}
 				$("#pidarticulo").selectpicker('refresh');
 				$("#pidarticulo").selectpicker('toggle');

@@ -54,6 +54,8 @@ Route::get('showarticulo/{id}', [ArticulosController::class, 'show'])->name('sho
 Route::post('updatearticulo', [ArticulosController::class, 'update'])->name('updatearticulo');
 Route::post('validart', [ArticulosController::class, 'validar'])->name('validart');
 Route::get('reporteetiquetas', [ArticulosController::class, 'reporteetiquetas'])->name('reporteetiquetas');
+Route::get('aggnuevogrupo', [ArticulosController::class, 'aggnuevogrupo'])->name('aggnuevogrupo');
+Route::get('deletegrupo', [ArticulosController::class, 'deletegrupo'])->name('deletegrupo');
 
 Route::get('clientes', [ClientesController::class, 'index'])->name('clientes');
 Route::get('newcliente', [ClientesController::class, 'create'])->name('newcliente');
@@ -208,6 +210,7 @@ Route::post('abonarcxp', [CxpagarController::class, 'store'])->name('abonarcxp')
 Route::get('retcompra', [CxpagarController::class, 'retencion'])->name('retcompra');
 Route::get('retgasto', [CxpagarController::class, 'retenciongasto'])->name('retgasto');
 Route::get('pagocxp', [CxpagarController::class, 'pago'])->name('pagocxp');
+Route::get('multiplecxp', [CxpagarController::class, 'multiple'])->name('multiplecxp');
 
 //informes de ventas
 Route::get('resumenventas', [ReportesventasController::class, 'ventas'])->name('resumenventas');

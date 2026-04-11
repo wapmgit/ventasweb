@@ -232,7 +232,7 @@ $cefe=0;?>
           <th>(F)Monto N/C Devoluciones</th>
 		  <th>(G)Monto Comisiones</th>
 		  <th>Cobranza Anterior</th>
-          <th>Total Ingresos<small><small>(E+C+F-G)</small></small></th>       
+          <th>Total Ingresos Caja<small><small>(E+C+F-G)</small></small></th>       
         </thead>   
         <tr>       
           <td><strong><?php $devolu=$devolucion->totaldev; echo number_format($devolucion->totaldev, 2,',','.')." $"; ?></strong></td>

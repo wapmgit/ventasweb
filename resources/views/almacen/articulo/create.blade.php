@@ -74,6 +74,8 @@ $idv=0;
             				<option value="DISP">Display</option>
             				<option value="PR">Par</option>
             				<option value="LTR">Litros</option>           				
+            				<option value="MNG">Manga</option>           				
+            				<option value="FDO">Fardo</option>           				
             			</select>						       			
             		</div>
             </div>
@@ -110,7 +112,7 @@ $idv=0;
 		<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
             	 <div class="form-group">
             			<label for="stock">Cnt.Grupo</label>          
-                  <input type="number" name="cntgrupo" id="cntgrupo" required value="1" min="1" class="form-control">         			
+                  <input type="number" name="cntgrupoold" required value="1" min="1" class="form-control">         			
             		</div>
             </div>
 				<div class="col-lg-1 col-sm-1 col-md-1 col-xs-12">
@@ -128,6 +130,10 @@ $idv=0;
 					<div class="custom-control custom-switch  custom-switch-on-success custom-switch-off-danger ">
                       <input type="checkbox" name="showlista" class="custom-control-input" id="customSwitch4">
                       <label class="custom-control-label" for="customSwitch4">¿lista de Precios?</label>
+                    </div>
+					<div class="custom-control custom-switch  custom-switch-on-success custom-switch-off-danger ">
+                      <input type="checkbox" name="showgroup" class="custom-control-input" id="customSwitch5">
+                      <label class="custom-control-label" for="customSwitch5">¿Agrupado?</label>
                     </div>
                   </div>
             </div>
@@ -191,11 +197,23 @@ $idv=0;
                  </div>         </div>
                  <div class="col-lg-2 col-sm-2 col-md-2 col-xs-6">
                  <div class="form-group">
-                              <label for="precio2">Precio 3</label>
+                              <label for="precio3">Precio 3</label>
                               <input type="text" value="" name="precio3" step="0.01"  id="precio3" placeholder="Precio 3"  class="form-control">
                  </div>         </div>			
             </div> 
-			
+				<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" id="tagrupado" style="display:none">
+			<table id="detalles" class="table table-striped table-bordered table-condensed table-hover">
+                      <thead style="background-color: #A9D0F5">
+							<th>Nombre Grupo <input type="varchar" name="pngrupo" id="pngrupo" class ="form-control" placeholder="Nombre grupo"></th>
+							<th>Cant Unid. <input type="number"  name="pcntgrupo" id="pcntgrupo" class ="form-control" placeholder="Cantidad"></th>
+							<th>Util 1 <input type="number"  name="utilgrupo" id="utilgrupo" class ="form-control" placeholder="Utilidad"></th>			
+							<th>Precio 1 <input type="number" name="ppreciogrupo" id="ppreciogrupo" class ="form-control" placeholder="Precio"></th>
+							<th>Util 2 <input type="number" name="util2grupo"  id="util2grupo" class ="form-control" placeholder="Utilidad"></th>			
+							<th>Precio 2 <input type="number" name="pprecio2grupo" id="pprecio2grupo" class ="form-control" placeholder="Precio"></th>						  		
+                      </thead>
+                      <tbody></tbody>
+                  </table>
+				</div>	
  			<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" align="center" <?php if ($cntcat=0){?>  style="display: none" <?php } ?>>
             	 <div class="form-group">
 					<button class="btn btn-danger btn-sm" type="reset" id="btncancelar">Cancelar</button>
@@ -270,16 +288,37 @@ $(document).ready(function(){
 		 $("#cntgrupo").focus();
        }
    });
+   	$("#customSwitch5").click(function() {
+       if ($(this).is(":checked")){
+        $("#customSwitch5").val(1);
+		document.getElementById('tagrupado').style.display=""; 
+       } else {
+         $("#customSwitch5").val(0);
+		 	document.getElementById('tagrupado').style.display="none";
+       }
+   });
+   $('#bt_add').click(function(){			
+			agregar();	
+	});
 })
+var cont=0;
+var total=0;
+ subtotal=[];
+
 $("#utilidad").change(calculo);
 $("#util2").change(calculo2);
 $("#util3").change(calculo3);
 $("#precio1").change(reverso); 
+$("#precio2").change(reverso2); 
 $("#precio3").change(reverso3); 
 $("#nombre").change(revisar); 
 $("#costo").change(actprecio); 
 $("#impuesto").change(actprecio); 
-
+//delgrupo
+$("#utilgrupo").change(calculogrp);
+$("#ppreciogrupo").change(reversogrp); 
+$("#util2grupo").change(calculo2grp);
+$("#pprecio2grupo").change(reverso2grp);
 	function actprecio(){
 			var costo= $("#costo").val();
 			var iva= $("#impuesto").val();   
@@ -372,6 +411,27 @@ $("#impuesto").change(actprecio);
   //      alert(nv);
       $("#utilidad").val(parseFloat(nv));
 	}
+		function reverso2(){
+        var  p30 =0;  
+		var mutil= $("#mutil").val();
+       p30= $("#precio2").val();
+		var costo= $("#costo").val();
+		var utilidad= $("#impuesto").val();       
+		var    p31=parseFloat((utilidad/100));  
+		if(mutil==1){
+		var    p32=parseFloat(costo) + parseFloat(p31*costo);     
+        iva=(p30/p32);
+        var util=((iva-1)*100);
+        pt=(parseFloat(util));
+		}else{
+		var  p32=parseFloat(costo) + parseFloat(p31*costo);    
+		util=(100-((p32*100)/p30));
+		 pt=(parseFloat(util));
+		}
+        var nv=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt));
+  //      alert(nv);
+      $("#util2").val(parseFloat(nv));
+	}
 	function reverso3(){		
         var  p302 =0;  
        p302= $("#precio3").val();
@@ -400,6 +460,91 @@ $("#impuesto").change(actprecio);
 	function conMayusculas(field) {
             field.value = field.value.toUpperCase()
 	}
+	//de el agrupado
+		function calculogrp(){
+      $("#ppreciogrupo").val("");
+	  var mutil= $("#mutil").val();
+    	var  p1 =0;
+		var ctound=$("#costo").val();
+		var cntgrp=$("#pcntgrupo").val();
+    	var costo= ctound*cntgrp;
+    	var impuesto= $("#impuesto").val();
+    	var utilidad= $("#utilgrupo").val();
+        p1=parseFloat((utilidad/100));
+       if(mutil==1){
+        p2=parseFloat(costo) + parseFloat(p1*costo);
+		}else{
+		p2=(costo/((100-utilidad)/100));
+		}
+        iva=p2*(impuesto/100);
+        pt=(parseFloat(p2)+parseFloat(iva));
+    	$("#ppreciogrupo").val(pt.toFixed(2));
+	}
+		function reversogrp(){
+        var  p30 =0;  
+		var mutil= $("#mutil").val();
+       p30= $("#ppreciogrupo").val();
+		var ctound=$("#costo").val();
+		var cntgrp=$("#pcntgrupo").val();
+    	var costo= ctound*cntgrp;
+		var utilidad= $("#impuesto").val();       
+		var    p31=parseFloat((utilidad/100));  
+		if(mutil==1){
+		var    p32=parseFloat(costo) + parseFloat(p31*costo);     
+        iva=(p30/p32);
+        var util=((iva-1)*100);
+        pt=(parseFloat(util));
+		}else{
+		var  p32=parseFloat(costo) + parseFloat(p31*costo);    
+		util=(100-((p32*100)/p30));
+		 pt=(parseFloat(util));
+		}
+        var nv=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt));
+      $("#utilgrupo").val(parseFloat(nv));
+	}
+		function calculo2grp(){
+      $("#pprecio2grupo").val("");
+	   var mutil= $("#mutil").val();
+      var  p1 =0;
+     var ctound=$("#costo").val();
+		var cntgrp=$("#pcntgrupo").val();
+    	var costo= ctound*cntgrp;
+      var impuesto= $("#impuesto").val();
+      var utilidad= $("#util2grupo").val();
+        p1=parseFloat((utilidad/100));
+         	if(mutil==1){
+        p2=parseFloat(costo) + parseFloat(p1*costo);
+		}else{
+		p2=(costo/((100-utilidad)/100));
+		}
+        iva=p2*(impuesto/100);
+        pt=(parseFloat(p2)+parseFloat(iva));
+      $("#pprecio2grupo").val(pt.toFixed(2));
+	}
+	function reverso2grp(){
+        var  p30 =0;  
+		var mutil= $("#mutil").val();
+       p30= $("#pprecio2grupo").val();
+		 var ctound=$("#costo").val();
+		var cntgrp=$("#pcntgrupo").val();
+    	var costo= ctound*cntgrp;
+		var utilidad= $("#impuesto").val();       
+		var    p31=parseFloat((utilidad/100));  
+		if(mutil==1){
+		var    p32=parseFloat(costo) + parseFloat(p31*costo);     
+        iva=(p30/p32);
+        var util=((iva-1)*100);
+        pt=(parseFloat(util));
+		}else{
+		var  p32=parseFloat(costo) + parseFloat(p31*costo);    
+		util=(100-((p32*100)/p30));
+		 pt=(parseFloat(util));
+		}
+        var nv=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt));
+  //      alert(nv);
+      $("#util2grupo").val(parseFloat(nv));
+	}
+	//
 </script>
 	</script>
 	@endpush  

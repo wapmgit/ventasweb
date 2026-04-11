@@ -59,7 +59,7 @@ function truncar($numero, $digitos)
                         @foreach($detalles as $det)
 						<?php $cntline++; 
 						$acumsub=$acumsub+($det->precio_venta*$det->cantidad);
-						$acumpeso=$acumpeso+($det->cantidad*$det->peso);?>
+						$acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);?>
                         <tr>
                           <td width="80%">{{$det->cantidad}} {{$det->unidad}} - {{$det->articulo}}</td>                        
                           <td width="10%"><?php echo number_format( ($det->precio_venta), 2,',','.'); ?></td>

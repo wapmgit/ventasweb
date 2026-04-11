@@ -3,7 +3,7 @@
 <?php $acum=0; $acum2=0;$cont=0;?>
 <div class="row">
 	<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-		<h3>Detalle de Documentos en Comision Aperturada  </h3>
+		<h3>Detalle de  Comision   </h3>
 	</div>
 </div>
 	

@@ -123,7 +123,7 @@ $idv=0;
                              <select name="pidarticulo" id="pidarticulo" class="form-control selectpicker" data-live-search="true" >
                               <option value="5000" selected="selected">Seleccione..</option>
                              @foreach ($articulos as $articulo)
-                              <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}_{{$articulo->precio3}}">{{$articulo -> articulo}}</option>
+                              <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}_{{$articulo->precio3}}_{{$articulo->usagrupo}}">{{$articulo -> articulo}}</option>
                              @endforeach
                               </select>
                         </div>
@@ -378,18 +378,21 @@ function trunc (x, posiciones = 0) {
     function mostrarvalores(){      
       tipo_precio=document.getElementById('id_cliente').value.split('_');
       var tpc= tipo_precio[1];
-      if (tpc==1){  preopt="P1"; tpc=2;}
-	  if (tpc==2) {  preopt="P2"; tpc=3;}	 
-	  else {  preopt="P3"; tpc=8;}
+
+         if (tpc==3){  preopt="P3"; tpc=8;}
+		if (tpc==2){  preopt="P2"; tpc=3;}
+		if (tpc==1){  preopt="P1"; tpc=2;}
       //de los articulos
 	    document.getElementById('pcantidad').focus();
       datosarticulo=document.getElementById('pidarticulo').value.split('_');
-      $("#pprecio_venta").val(datosarticulo[tpc]);
-      $("#pstock").val(datosarticulo[1]);
-	  $("#pcostoarticulo").val(datosarticulo[4]);
+		$("#pprecio_venta").val(datosarticulo[tpc]);
+		$("#pstock").val(datosarticulo[1]);
+		$("#pcostoarticulo").val(datosarticulo[4]);
+		 var nuevoStep = parseFloat(datosarticulo[7]);
+		$("#pcantidad").attr("min", nuevoStep); 
+		$("#pcantidad").attr("step", nuevoStep);
 		$("#pcantidad").val(datosarticulo[7]);
-      $("#pcantidad").attr("step",datosarticulo[7]);
-      $("#pdescuento").val("0");
+		$("#pdescuento").val("0");
     }
 	$("#changeprice").on("click",function(){
 	  datosarticulo=document.getElementById('pidarticulo').value.split('_');
@@ -449,13 +452,14 @@ function trunc (x, posiciones = 0) {
 		}
         stock=$("#pstock").val();
 		costoarticulo=datosarticulo[4];
+		usag=datosarticulo[9];
 		cantidad=cantidad*1;
         if (idarticulo!="" && cantidad != "" && cantidad > "0" &&  precio_venta!=""){
 
                 subtotal[cont]=((cantidad*precio_venta));
                 total=parseFloat(total)+parseFloat(subtotal[cont].toFixed(2));
 
-              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td><input type="number" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number"  name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" name="precio_venta[]" value="'+precio_venta+'"></td><td>'+subtotal[cont].toFixed(2)+'<input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
+              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td><input type="number" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number"  name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" name="precio_venta[]" value="'+precio_venta+'"></td><td>'+subtotal[cont].toFixed(2)+'<input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"><input type="hidden" name="usag[]" readonly="true" value="'+usag+'"></td></tr>';
               cont++;
               limpiar();
 			 // alert(total);

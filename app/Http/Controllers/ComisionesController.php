@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Comisiones;
 use App\Models\Reciboscomision;
 use App\Models\Ventas;
+use App\Models\Recibos;
 use App\Models\MovBancos;
 use Carbon\Carbon;
 use DB;
@@ -27,14 +28,25 @@ $this->middleware('auth');
 				$query=trim($request->get('searchText'));
 				$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 				$vendedor=DB::table('vendedores')-> where('nombre','LIKE','%'.$query.'%')->get();
+				if($empresa->calc_comi==1){
             $ventas=DB::table('venta as v')
-            -> select (DB::raw('sum(v.total_venta) as monto'),DB::raw('sum(v.montocomision) as montocomision'),'v.idvendedor')
-			 -> where ('v.devolu','=',0)
-			 -> where ('v.saldo','=',0)
-			  -> where ('v.idcomision','=',0)
+				-> select (DB::raw('count(v.idventa) as tdocu'),DB::raw('sum(v.total_venta) as monto'),DB::raw('sum(v.montocomision) as montocomision'),'v.idvendedor')
+				-> where ('v.devolu','=',0)
+				-> where ('v.saldo','=',0)
+				-> where ('v.idcomision','=',0)
 				-> groupBy('v.idvendedor')
                 ->paginate(30);
-     //dd($vendedor);
+				
+			}else{					
+				$ventas=DB::table('recibos as re')
+				->join('venta as v','v.idventa','=','re.idventa')
+				  -> select (DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.monto*(v.comision/100)) as montocomision'),'v.idvendedor')
+				-> where ('re.idcomision','=',0)
+				-> where ('v.devolu','=',0)			
+				-> groupBy('v.idvendedor')
+				->paginate(30);
+			//dd($ventas);
+				}			
      return view ('comisiones.comision.index',["ventas"=>$ventas,"searchText"=>$query,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	     } else { 
 	return view("reportes.mensajes.noautorizado");
@@ -42,22 +54,38 @@ $this->middleware('auth');
         }
     } 
 	public function detalle($id){
+		//dd($id);
 		$vendedor=DB::table('vendedores')-> where('id_vendedor','=',$id)->first();
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
-			$venta=DB::table('venta as v')
-            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-			 -> join ('vendedores as ve','p.vendedor','=','ve.id_vendedor')
-            -> select ('v.idventa','v.fecha_hora','v.fecha_emi','p.nombre','p.cedula','v.comision','v.montocomision','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
-           	 -> where ('v.devolu','=',0)
-			 -> where ('v.saldo','=',0)
-			 -> where ('v.idcomision','=',0)
-			->where ('v.idvendedor','=',$id)
-            ->get();
+		if($empresa->calc_comi==1){
+				$venta=DB::table('venta as v')
+				-> join ('clientes as p','p.id_cliente','=','v.idcliente')
+				 -> join ('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
+				-> select ('v.idventa','v.fecha_hora','v.fecha_emi','p.nombre','p.cedula','v.comision','v.montocomision','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+				 -> where ('v.devolu','=',0)
+				 -> where ('v.saldo','=',0)
+				 -> where ('v.idcomision','=',0)
+				->where ('v.idvendedor','=',$id)
+			
+				->get();
+			}else{
+				$venta=DB::table('recibos as re')
+				-> join ('venta as v','v.idventa','=','re.idventa')
+				-> join ('clientes as p','v.idcliente','=','p.id_cliente')
+				 -> join ('vendedores as ve','p.vendedor','=','ve.id_vendedor')
+				-> select ('re.idrecibo as idventa','re.fecha as fecha_hora','re.fecharecibo as fecha_emi','p.nombre','p.cedula','v.comision',DB::raw('sum(re.monto*(v.comision/100)) as montocomision'),'p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','re.monto as total_venta','v.devolu')
+				 -> where ('v.devolu','=',0)
+				 -> where ('v.idcomision','=',0)
+				->where ('v.idvendedor','=',$id)	
+				-> groupBy('re.idrecibo')
+				->get();
+		//dd($venta);
+		}
 			$detalle=[];
             return view("comisiones.comision.detalle",["detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
 		public function vercomisiondetallada($id){
-	
+
 		$vendedor=DB::table('vendedores')-> where('id_vendedor','=',$id)->first();
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$venta=DB::table('venta as v')
@@ -82,8 +110,9 @@ $this->middleware('auth');
             return view("comisiones.comision.detalle",["detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
 	public function store(Request $request){
-	;
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$user=Auth::user()->name;      
+			dd($request);
 			$mov=new Comisiones;
 			$mov->id_vendedor=$request->get('vendedor');
 			$mov->montoventas=$request->get('mventas');
@@ -95,23 +124,47 @@ $this->middleware('auth');
 			$mov-> save();
 	        $idventa=$request->get('idventa');         
 			$contp=0;
-              while($contp < count($idventa)){
-				$paciente=Ventas::findOrFail($idventa[$contp]);
-				$paciente->idcomision=$mov->id_comision;
-				$paciente->update();
-				 $contp=$contp+1;
-			  }  
+		
+			if($empresa->calc_comi==1){
+				  while($contp < count($idventa)){
+					$paciente=Ventas::findOrFail($idventa[$contp]);
+					$paciente->idcomision=$mov->id_comision;
+					$paciente->update();
+					 $contp=$contp+1;
+				  } 
+			}else{	
+				  while($contp < count($idventa)){
+					$paciente=Recibos::findOrFail($idventa[$contp]);
+					$paciente->idcomision=$mov->id_comision;
+					$paciente->update();
+					 $contp=$contp+1;
+				  } 
+			}
 		return Redirect::to('showcomision/'.$mov->id_comision);
   }
 	public function show($id){
+
 		$vendedor=DB::table('comisiones')-> join('vendedores','vendedores.id_vendedor','=','comisiones.id_vendedor')->where('id_comision','=',$id)->first();
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			if($empresa->calc_comi==1){
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
 			 -> join ('vendedores as ve','p.vendedor','=','ve.id_vendedor')
             -> select ('v.idventa','v.fecha_hora','v.fecha_emi','p.nombre','p.cedula','v.comision','v.montocomision','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
            	 -> where ('v.idcomision','=',$id)
             ->get();
+			}else{
+			$venta=DB::table('recibos as re')
+				-> join ('venta as v','v.idventa','=','re.idventa')
+				-> join ('clientes as p','v.idcliente','=','p.id_cliente')
+				 -> join ('vendedores as ve','p.vendedor','=','ve.id_vendedor')
+				-> select ('re.idrecibo as idventa','re.fecha as fecha_hora','re.fecharecibo as fecha_emi','p.nombre','p.cedula','v.comision',DB::raw('sum(re.monto*(v.comision/100)) as montocomision'),'p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','re.monto as total_venta','v.devolu')
+				 -> where ('v.devolu','=',0)
+				 -> where ('v.idcomision','=',0)
+				->where ('re.idcomision','=',$id)	
+				-> groupBy('re.idrecibo')
+				->get();
+			}
 		return view("comisiones.comision.show",["venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
 	public function comixpagar(Request $request){
@@ -218,12 +271,26 @@ $this->middleware('auth');
 	public function detallepagadas($id){
 		$vendedor=DB::table('comisiones')-> join('vendedores','vendedores.id_vendedor','=','comisiones.id_vendedor')->where('id_comision','=',$id)->first();
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			if($empresa->calc_comi==1){
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
 			 -> join ('vendedores as ve','p.vendedor','=','ve.id_vendedor')
             -> select ('v.idventa','v.fecha_hora','v.fecha_emi','p.nombre','p.cedula','v.comision','v.montocomision','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
            	 -> where ('v.idcomision','=',$id)
             ->get();
+			}else{
+			
+				$venta=DB::table('recibos as re')
+				-> join ('venta as v','v.idventa','=','re.idventa')
+				-> join ('clientes as p','v.idcliente','=','p.id_cliente')
+				 -> join ('vendedores as ve','p.vendedor','=','ve.id_vendedor')
+				-> select ('re.idrecibo as idventa','re.fecha as fecha_hora','re.fecharecibo as fecha_emi','p.nombre','p.cedula','v.comision',DB::raw('sum(re.monto*(v.comision/100)) as montocomision'),'p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','re.monto as total_venta','v.devolu')
+				 -> where ('v.devolu','=',0)
+				 -> where ('v.idcomision','=',0)
+				->where ('re.idcomision','=',$id)	
+				-> groupBy('re.idrecibo')
+				->get();
+			}
             return view("comisiones.comision.detallecomision",["venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
 }

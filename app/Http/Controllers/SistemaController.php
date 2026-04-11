@@ -266,6 +266,7 @@ class SistemaController extends Controller
         $emp->precioeti=$request->get('precioeti');
         $emp->formatoeti=$request->get('formatoeti');
         $emp->calc_util=$request->get('calc_util');
+        $emp->calc_comi=$request->get('calc_comi');
         $emp->nlineas=$request->get('nlineas');
         $emp->claveauto=$request->get('claveauto');
 		if($request->get('usaserie')){

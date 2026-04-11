@@ -19,6 +19,7 @@ use App\Models\Devolucion;
 use App\Models\Detalledevolucion;
 use App\Models\Formalibre;
 use App\Models\Clientes;
+use App\Models\Agrupados;
 use App\clase\Errores;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -74,7 +75,7 @@ class VentasController extends Controller
     public function create(Request $request){
 		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa','factsinexis')->where('iduser','=',$request->user()->id)->first();	
 		 $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
-		 if ($empresa->orderart==1){$order="art.nombre";}else{$order="art.idarticulo";}
+		 if ($empresa->orderart==1){$order="nombre";}else{$order="idarticulo";}
 		if ($rol->crearventa==1){
 			 if($rol->factsinexis==0){ $exi='0';}else{$exi='-10000';} 
 		$monedas=DB::table('monedas')->get();
@@ -87,13 +88,35 @@ class VentasController extends Controller
 		-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->OrderBy('clientes.nombre','asc')->get();
          $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
       //dd($contador);
-        $articulos =DB::table('articulos as art')
-        -> select('art.nombre',DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3')
+	  
+		$q2=DB::table('articulos as art')
+		->join('agrupados as pre','pre.idarticulo','=','art.idarticulo')
+        -> select('art.nombre',DB::raw('CONCAT(art.codigo," ",art.nombre," ",pre.descripcion) as articulo'),'art.idarticulo',DB::raw('(art.stock/pre.cantidad) as stock'),DB::raw('(art.costo*pre.cantidad) as costo'),'pre.precio1 as precio_promedio','pre.precio2 as precio2','art.iva','art.serial','pre.fraccion','pre.precio2 as precio3','pre.id as usagrupo')
+        -> where('art.estado','=','Activo')
+        -> where ('art.stock','>','0')
+        -> where ('art.usagrupo','=','1')
+        ->groupBy(
+				'art.idarticulo', 
+				'art.nombre', 
+				'art.codigo', 
+				'pre.descripcion', 
+				'art.stock', 
+				'pre.cantidad', 
+				'art.costo', 
+				'pre.precio1', 
+				'art.iva', 
+				'art.serial', 
+				'art.fraccion', 
+				'pre.id'
+			);
+		
+       $q3 =DB::table('articulos as art')
+        -> select('art.nombre',DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3',DB::raw('(space(1)*0) as usagrupo'))
         -> where('art.estado','=','Activo')   
 		-> where ('art.stock','>',$exi) 
-        ->groupby('art.idarticulo')
-        ->OrderBy($order,'asc')
-        -> get();
+        ->groupby('art.idarticulo');
+
+		$articulos= $q2->union($q3)->orderBy($order, 'asc')->get();
 		//dd($articulos);
 		   $seriales =DB::table('seriales')->where('estatus','=',0)->get();
      if ($contador==""){$contador=0;}
@@ -104,10 +127,11 @@ class VentasController extends Controller
 	}
 	}	
     public function store(Request $request){
-	//	dd($request);
+	//dd($request);
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$cal_comi=$empresa->calc_comi;
-		$user=Auth::user()->name;
+		$user=Auth
+		::user()->name;
 		$mcomi=0;
    try{
   DB::beginTransaction();
@@ -192,22 +216,33 @@ class VentasController extends Controller
         $precio_venta = $request -> get('precio_venta');
         $precio = $request -> get('precio');
         $costoarticulo = $request -> get('costoarticulo');
+        $usag = $request -> get('usag');
 
         $cont = 0;
             while($cont < count($idarticulo)){
-			$articulo=Articulos::findOrFail($idarticulo[$cont]);
+				$articulo=Articulos::findOrFail($idarticulo[$cont]);
+				$unidad=$articulo->unidad; $cntgrp=1;
+			if($usag[$cont]>0){
+				$opgrupo=Agrupados::findOrFail($usag[$cont]);
+				$unidad=$opgrupo->descripcion;	
+				$cntgrp=$opgrupo->cantidad;		
+				}				
 				if($articulo->comi){ $pcomiarti=$articulo->pcomision;
 					$mcomiarti=(($cantidad[$cont]*$precio_venta[$cont])*($articulo->pcomision/100));
 					$mcomi=$mcomi+$mcomiarti; }else{
 					$pcomiarti=$request->get('comision');
 					$mcomiarti=(($cantidad[$cont]*$precio_venta[$cont])*($request->get('comision')/100));
 					$mcomi=$mcomi+$mcomiarti; }
+					
             $detalle=new DetalleVentas();
             $detalle->idventa=$venta->idventa;
             $detalle->idarticulo=$idarticulo[$cont];
-            $detalle->costoarticulo=$costoarticulo[$cont];
+            $detalle->costoarticulo=$costoarticulo[$cont]*(($articulo->iva/100)+1);
+            $detalle->iva=$articulo->iva;
             $detalle->precioriginal=$articulo->precio1;
             $detalle->cantidad=$cantidad[$cont];
+            $detalle->unidad=$unidad;
+            $detalle->cntgrp=$cntgrp;
             $detalle->precio=$precio[$cont];
             $detalle->descuento=$descuento[$cont];
             $detalle->precio_venta=$precio_venta[$cont];
@@ -220,13 +255,13 @@ class VentasController extends Controller
 		$kar->fecha=$mytime->toDateTimeString();
 		$kar->documento="VENT-".$venta->idventa;
 		$kar->idarticulo=$idarticulo[$cont];
-		$kar->cantidad=$cantidad[$cont];
+		$kar->cantidad=$cantidad[$cont]*$cntgrp;
 		$kar->costo=$costoarticulo[$cont];
 		$kar->tipo=2; 
 		$kar->user=$user;
 		 $kar->save();  
                       //actualizo stock   
-        $articulo->stock=$articulo->stock-$cantidad[$cont];
+        $articulo->stock=$articulo->stock-($cantidad[$cont]*$cntgrp);
         $articulo->update();
 			if ($request->has('pidserial') && is_array($request->get('pidserial'))) {
 				$seriales_ids = $request->get('pidserial');
@@ -286,7 +321,7 @@ catch(\Exception $e)
 
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.nombre as articulo','dv.iddetalle_venta','dv.idarticulo','dv.cantidad','dv.descuento','dv.precio_venta')
+            -> select('a.nombre as articulo','dv.iddetalle_venta','dv.idarticulo','dv.unidad','dv.cntgrp','dv.cantidad','dv.descuento','dv.precio_venta')
             -> where ('dv.idventa','=',$id)
             ->get();
 			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
@@ -296,16 +331,6 @@ catch(\Exception $e)
 		} else { 
 			return view("reportes.mensajes.noautorizado");
 		}
-    }
-	 public function ajusfechafac(Request $request)
-    {   
-	 $venta=Ventas::findOrFail($request->get('vidventa'));
-    $venta->fecha_emi=$request->get('vfecha_emi');
-    $venta->update();
-	$detalle = DetalleVentas::where('idventa','=',$request->get('vidventa'))->get();
-	$detalle->toQuery()->update([
-		'fecha_emi' => $request->get('vfecha_emi')]);
-	return Redirect::to('showdevolucion/'.$request->get('vidventa'));      
     }
 public function devolucion(Request $request){
 
@@ -346,6 +371,7 @@ public function devolucion(Request $request){
 //registra el detalle de la devolucion
         $idarticulo = $request -> get('idarticulo');
         $cantidad = $request -> get('cantidad');
+        $cntgrp = $request -> get('cntgrp');
         $descuento = $request -> get('descuento');
         $precio_venta = $request -> get('precio_venta');
         $recibos = $request -> get('idrecibo');
@@ -361,13 +387,13 @@ public function devolucion(Request $request){
             $detalle->precio_venta=$precio_venta[$cont];
             $detalle->save();
            $articulo=Articulos::findOrFail($idarticulo[$cont]);
-            $articulo->stock=($articulo->stock+$cantidad[$cont]);
+            $articulo->stock=($articulo->stock+($cantidad[$cont]*$cntgrp[$cont]));
             $articulo->update();
 		$kar=new Kardex;
 		$kar->fecha=$mytime->toDateTimeString();
 		$kar->documento="DEV:V-".$request->get('comprobante');
 		$kar->idarticulo=$idarticulo[$cont];
-		$kar->cantidad=$cantidad[$cont];
+		$kar->cantidad=$cantidad[$cont]*$cntgrp[$cont];
 		$kar->costo=$precio_venta[$cont];
 		$kar->tipo=1; 
 		$kar->user=$user;
@@ -422,6 +448,16 @@ public function devolucion(Request $request){
 		return Redirect::to('ventacaja');
 	}
 }
+	 public function ajusfechafac(Request $request)
+    {   
+	 $venta=Ventas::findOrFail($request->get('vidventa'));
+    $venta->fecha_emi=$request->get('vfecha_emi');
+    $venta->update();
+	$detalle = DetalleVentas::where('idventa','=',$request->get('vidventa'))->get();
+	$detalle->toQuery()->update([
+		'fecha_emi' => $request->get('vfecha_emi')]);
+	return Redirect::to('showdevolucion/'.$request->get('vidventa'));      
+    }
 	public function devoluparcial(Request $request){
 
 	    try{
@@ -477,7 +513,7 @@ public function devolucion(Request $request){
 		$detalleventa->precio_venta=$request -> get('precio');
 		$detalleventa->update();
 		//actualizo stock
-		$artcomi->stock=($artcomi->stock+$nc);
+		$artcomi->stock=($artcomi->stock+($nc*$detalleventa->cntgrp));
 		$artcomi->update();
 				
 		$kar=new Kardex;
@@ -485,7 +521,7 @@ public function devolucion(Request $request){
 		$kar->fecha=$mytime->toDateTimeString();
 		$kar->documento="DEVP-".$request -> get('idventa');
 		$kar->idarticulo=$idar;
-		$kar->cantidad=$nc;
+		$kar->cantidad=$nc*$detalleventa->cntgrp;
 		$kar->costo=$costo;
 		$kar->tipo=1; 
 		$kar->user=$user;	
@@ -528,7 +564,7 @@ public function recibo($id){
             -> first();
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.nombre as articulo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','a.unidad','a.peso')
+            -> select('a.nombre as articulo','a.iva','dv.cantidad','dv.descuento','dv.cntgrp','dv.precio_venta','a.unidad','a.peso')
             -> where ('dv.idventa','=',$id)
               ->OrderBy($order,'asc')
 			->get();
@@ -570,7 +606,7 @@ public function show(Request $request, $id){
             -> first();
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.peso','a.codigo','a.idarticulo','a.nombre as articulo','a.iva','a.unidad','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
+            -> select('a.peso','a.codigo','a.idarticulo','a.nombre as articulo','a.iva','dv.cntgrp','dv.unidad','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
             -> where ('dv.idventa','=',$id)
             ->get();
 			
@@ -600,7 +636,7 @@ public function fbs($id){
 			//dd($venta);
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','a.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
+            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','dv.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
             -> where ('dv.idventa','=',$id)
              ->OrderBy($order,'asc')
 			->get();
@@ -627,7 +663,7 @@ public function notabs($id){
 			//dd($venta);
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','a.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','dv.precio')
+            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','dv.cntgrp','dv.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','dv.precio')
             -> where ('dv.idventa','=',$id)
              ->OrderBy($order,'asc')
 		   ->get();
@@ -654,7 +690,7 @@ public function notads($id){
 			//dd($venta);
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','a.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','dv.precio')
+            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','dv.unidad','a.codigo','a.iva','dv.cantidad','dv.cntgrp','dv.descuento','dv.precio_venta','dv.precio')
             -> where ('dv.idventa','=',$id)
            ->OrderBy($order,'asc')
 		  ->get();
@@ -681,7 +717,7 @@ public function nota2ds($id){
 		//dd($venta);
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','a.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','dv.precio')
+            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','dv.cntgrp','dv.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','dv.precio')
             -> where ('dv.idventa','=',$id)
            ->OrderBy($order,'asc')
 		  ->get();
@@ -732,14 +768,37 @@ public function nota2ds($id){
     {
 		$rol=DB::table('roles')-> select('factsinexis')->where('iduser','=',$request->user()->id)->first();	
 		 $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
+		  if ($empresa->orderart==1){$order="nombre";}else{$order="idarticulo";}
 		 if($rol->factsinexis==0){ $exi='0';}else{$exi='-10000';} 
 		if($request->ajax()){
-        $articulos =DB::table('articulos as art')
-         -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3')
+		$q2=DB::table('articulos as art')
+		->join('agrupados as pre','pre.idarticulo','=','art.idarticulo')
+        -> select('art.nombre',DB::raw('CONCAT(art.codigo," ",art.nombre," ",pre.descripcion) as articulo'),'art.idarticulo',DB::raw('(art.stock/pre.cantidad) as stock'),DB::raw('(art.costo*pre.cantidad) as costo'),'pre.precio1 as precio_promedio','pre.precio2 as precio2','art.iva','art.serial','pre.fraccion','pre.precio2 as precio3','pre.id as usagrupo')
         -> where('art.estado','=','Activo')
         -> where ('art.stock','>',$exi)
-        ->groupby('articulo','art.idarticulo')
-        -> get();
+        -> where ('art.usagrupo','=','1')
+        ->groupBy(
+				'art.idarticulo', 
+				'art.nombre', 
+				'art.codigo', 
+				'pre.descripcion', 
+				'art.stock', 
+				'pre.cantidad', 
+				'art.costo', 
+				'pre.precio1', 
+				'art.iva', 
+				'art.serial', 
+				'art.fraccion', 
+				'pre.id'
+			);
+		
+       $q3 =DB::table('articulos as art')
+        -> select('art.nombre',DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3',DB::raw('(space(1)*0) as usagrupo'))
+        -> where('art.estado','=','Activo')   
+		-> where ('art.stock','>',$exi) 
+        ->groupby('art.idarticulo');
+
+		$articulos= $q2->union($q3)->orderBy($order, 'asc')->get();
            return response()->json($articulos);
 		}
     }

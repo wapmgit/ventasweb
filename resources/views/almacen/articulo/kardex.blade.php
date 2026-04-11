@@ -62,7 +62,7 @@
 				?> </td>
 				<td> <?php  if($compra->tipo == 1){ $entra=$entra+ $compra->cantidad; ?>{{ $compra->cantidad}}<?php } ?></td>
 				<td> <?php  if($compra->tipo == 2){ $sale=$sale+ $compra->cantidad;?>{{ $compra->cantidad}}<?php } ?></td>
-				<td><?php $de=$entra-$sale; echo $de;?></td>
+				<td><?php $de=$entra-$sale; echo number_format( $de, 3,',','.'); ?> </td>
 				@endforeach
 				</tr>
 		</table>
@@ -80,7 +80,7 @@
 		<td><b>Entradas:</b> <?Php echo $entra;?></td>
 		<td><b>Salidas:</b> <?Php echo $sale;?></td>		
 		<td><b>Apartado:</b> {{$articulo->apartado}}</td>		
-		<td><b>Existencia:</b> <?Php $exis=(($entra)-($sale+$articulo->apartado)); echo $exis;?></td>
+		<td><b>Existencia:</b> <?Php $exis=(($entra)-($sale+$articulo->apartado));  echo number_format( $exis, 3,',','.'); ?></td>
 		</tr>
 		</table>
   </div>

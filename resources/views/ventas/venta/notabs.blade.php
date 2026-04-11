@@ -50,7 +50,7 @@ function truncar($numero, $digitos)
                  
                       <tbody>
                         @foreach($detalles as $det)
-						<?php $cntline++; $acumpeso=$acumpeso+($det->cantidad*$det->peso); ?>
+						<?php $cntline++; $acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso); ?>
                         <tr >
 						     <td>{{$det->codigo}}-{{$det->idarticulo}}</td>
                           <td>{{$det->articulo}} <?php if($det->iva>0){echo "(G)"; 

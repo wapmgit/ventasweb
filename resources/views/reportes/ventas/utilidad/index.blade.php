@@ -45,7 +45,7 @@
 						?>						
 						<tr> 
 						  <td>{{ $q->tipo_comprobante.':'.$q->serie_comprobante.'-'.$q->num_comprobante}}</td>
-						  <td><?php $tcosto=$tcosto+$q->costo; echo number_format($q->costo, 2,',','.'); ?></td>
+						  <td><?php $tcosto=$tcosto+$q->costo; echo number_format($q->costo, 3,',','.'); ?></td>
 						  <td><?php $tpv=$tpv+$pventa; echo number_format($pventa, 2,',','.'); ?></td>
 						  <td><?php $tcant=$tcant+$q->cantidad; echo number_format($q->cantidad, 2,',','.'); ?></td>
 						  <td><?php $tcn=$tcn+$q->costoneto; echo number_format($q->costoneto, 2,',','.'); ?></td>
