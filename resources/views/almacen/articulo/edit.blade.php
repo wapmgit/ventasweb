@@ -220,8 +220,7 @@
             </div>
            
             	</form>
-            </div>
-              @include('almacen.articulo.modalgarticulo')   
+            </div> 
        @push('scripts')
       <script>
 $(document).ready(function(){
