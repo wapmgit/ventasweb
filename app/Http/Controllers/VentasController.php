@@ -810,7 +810,8 @@ public function nota2ds($id){
 		 $rutas=DB::table('rutas')->get();
 		 $categoria=DB::table('categoriaclientes')->get();	
 	     $vendedor=DB::table('vendedores')->get();
-		 $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
+		  $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
+		  if ($empresa->orderart==1){$order="nombre";}else{$order="idarticulo";}
           if($rol->factsinexis==0){ $exi='0';}else{$exi='-10000';} 
 		 $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.nombre','clientes.cedula','clientes.tipo_cliente','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre')
          -> where('status','=','A')
@@ -819,20 +820,45 @@ public function nota2ds($id){
          ->get();
          $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
       //dd($contador);
-         $articulos =DB::table('articulos as art')
-          -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3')
+	$q2=DB::table('articulos as art')
+		->join('agrupados as pre','pre.idarticulo','=','art.idarticulo')
+        -> select('art.nombre',DB::raw('CONCAT(art.codigo," ",art.nombre," ",pre.descripcion) as articulo'),'art.idarticulo',DB::raw('(art.stock/pre.cantidad) as stock'),DB::raw('(art.costo*pre.cantidad) as costo'),'pre.precio1 as precio_promedio','pre.precio2 as precio2','art.iva','art.serial','pre.fraccion','pre.precio2 as precio3','pre.id as usagrupo')
         -> where('art.estado','=','Activo')
-        -> where ('art.stock','>',$exi)
-        ->groupby('art.idarticulo')
-        -> get();
+        -> where ('art.stock','>','0')
+        -> where ('art.usagrupo','=','1')
+        ->groupBy(
+				'art.idarticulo', 
+				'art.nombre', 
+				'art.codigo', 
+				'pre.descripcion', 
+				'art.stock', 
+				'pre.cantidad', 
+				'art.costo', 
+				'pre.precio1', 
+				'art.iva', 
+				'art.serial', 
+				'art.fraccion', 
+				'pre.id'
+			);
+		
+       $q3 =DB::table('articulos as art')
+        -> select('art.nombre',DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3',DB::raw('(space(1)*0) as usagrupo'))
+        -> where('art.estado','=','Activo')   
+		-> where ('art.stock','>',$exi) 
+        ->groupby('art.idarticulo');
+
+		$articulos= $q2->union($q3)->orderBy($order, 'asc')->get();
 		  $cxcc=DB::table('venta as v')
         ->select(DB::raw('SUM(v.saldo) as monto' ),'v.idcliente')
         ->where('v.idcliente','=',$idcliente)
         ->where('v.devolu','=',0)
          ->groupby('v.idcliente')
-        -> first();
-		$cxc=$cxcc->monto;
-		//dd($cxc);
+        -> first();	
+			if (!$cxcc) {
+				$cxc=0;
+				}else{
+			$cxc=$cxcc->monto; }
+	
 		    $seriales =DB::table('seriales')->where('estatus','=',0)->get();
      return view("ventas.venta.create",["cxcc"=>$cxc,"categoria"=>$categoria,"rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"monedas"=>$monedas,"articulos"=>$articulos,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
 	    } else { 
