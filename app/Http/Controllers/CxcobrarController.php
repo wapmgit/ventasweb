@@ -227,7 +227,7 @@ $this->middleware('auth');
 				$ventaup->pendiente=$request->get('tdeuda');
 				$ventaup->update();
 		}
-	return Redirect::to('cxc');
+	return Redirect::to('showcxc/'.$cliente->idcliente);
     }
 	public function pagocxc(Request $request)
     {	
