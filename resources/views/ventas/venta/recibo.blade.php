@@ -85,9 +85,9 @@ return $contenido_formateado;
 $acumpeso=0;
 ?>  
 <table border="0" style="line-height:95%" align="center" id="tablecabecera" class="tabla-principal">
- <thead> <th><b><font size="4"><?Php echo nl2br(adjustext($empresa->nombre,30)); ?></font></b></th> </thead> 
-<thead><th><b><font size="3">{{$empresa->rif}}</font></b></th></thead>
-<thead><th><b><font size="2"><?Php echo nl2br(adjustext($empresa->direccion,40)); ?></font><small>{{$empresa->telefono}}</small></b></th></thead>
+	<thead> <th><b><font size="4"><?Php echo nl2br(adjustext($empresa->nombre,30)); ?></font></b></th> </thead> 
+	<thead><th><b><font size="3">{{$empresa->rif}}</font></b></th></thead>
+	<thead><th><b><font size="2"><?Php echo nl2br(adjustext($empresa->direccion,40)); ?></font><small>{{$empresa->telefono}}</small></b></th></thead>
 </table>			
 <div align="left">				 
 	<font size="4">{{$venta->cedula}} -> {{$venta->nombre}}</br></font>
@@ -108,11 +108,11 @@ $acumpeso=0;
                       <tbody>
                         @foreach($detalles as $det)<?php  $cntline++; $acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);
 						if($det->cantidad>0){
+							$texto=$det->cantidad." ".$det->unidad."-".strtolower($det->articulo)." ".number_format( $det->precio_venta, 2,',','.');
 						?>
                         <tr height="10px"> 						
                          <td align="left"><span class="lista">
-						   {{$det->cantidad}} {{$det->unidad}}  -
-						  <?php echo strtolower($det->articulo);?><?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?> - <?php echo number_format( $det->precio_venta, 2,',','.'); ?> </span></td>                       
+						<?Php echo $resultado = wordwrap($texto, 25, "\n", true); ?> </span></td>                       
                           <td><span class="lista"><?php echo "$ ".number_format( (($det->cantidad*$det->precio_venta)), 2,',','.'); ?></span></td>
                         </tr>
 						<?php } ?>

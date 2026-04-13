@@ -93,7 +93,7 @@ class VentasController extends Controller
 		->join('agrupados as pre','pre.idarticulo','=','art.idarticulo')
         -> select('art.nombre',DB::raw('CONCAT(art.codigo," ",art.nombre," ",pre.descripcion) as articulo'),'art.idarticulo',DB::raw('(art.stock/pre.cantidad) as stock'),DB::raw('(art.costo*pre.cantidad) as costo'),'pre.precio1 as precio_promedio','pre.precio2 as precio2','art.iva','art.serial','pre.fraccion','pre.precio2 as precio3','pre.id as usagrupo')
         -> where('art.estado','=','Activo')
-        -> where ('art.stock','>','0')
+        -> where ('art.stock','>',$exi) 
         -> where ('art.usagrupo','=','1')
         ->groupBy(
 				'art.idarticulo', 
