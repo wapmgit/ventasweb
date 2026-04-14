@@ -112,7 +112,6 @@ $this->middleware('auth');
 	public function store(Request $request){
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$user=Auth::user()->name;      
-			dd($request);
 			$mov=new Comisiones;
 			$mov->id_vendedor=$request->get('vendedor');
 			$mov->montoventas=$request->get('mventas');

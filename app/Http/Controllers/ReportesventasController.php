@@ -584,6 +584,7 @@ class ReportesventasController extends Controller
 			->select(DB::raw('sum(n.pendiente) as acumulado'),'c.nombre','c.cedula','c.telefono','c.id_cliente')
 			->where('n.tipo','=',1)->where('n.pendiente','>',0)
 			->groupby('n.idcliente')
+			->orderby('c.nombre','asc')
 			->get(); 
 			$filtro="Todos los vendedores, Todas las rutas.";
 			$vendedor="";
@@ -616,6 +617,7 @@ class ReportesventasController extends Controller
 			-> where ('c.ruta',$c,$v)
 			->where('n.tipo','=',1)->where('n.pendiente','>',0)
 			->groupby('n.idcliente')
+			->orderby('c.nombre','asc')
 			->get(); 
 			//dd($clientes);
 			
