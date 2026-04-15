@@ -28,7 +28,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
         {{csrf_field()	}}
 <div class="row">   
 
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                 <div class="form-group">
 						<input type="hidden" value="{{$empresa->tc}}" id="valortasa" name="tc" class="form-control">
 						<input type="hidden" value="{{$empresa->peso}}" id="valortasap" name="peso" class="form-control">
@@ -40,7 +40,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
                         </select>
                 </div>
             </div>
-<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                 <div class="form-group">
                     <label for="concepto">Factura</label>
                     <input type="text" name="documento" id="concepto" value="{{old('concepto')}}" class="form-control"placeholder="Documento Fac" > 
@@ -52,12 +52,22 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
                     <input type="text" name="control"  value="{{old('control')}}" class="form-control"placeholder="Nro Control" > 
                 </div>
             </div>
-									<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                 <div class="form-group">
                     <label for="concepto">Tasa</label>
                     <input type="number" name="tasa"  value="{{$empresa->tc}}" class="form-control" > 
                 </div>
-            </div>
+		</div>
+		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+			<div class="form-group">
+                    	<label for="proveedor">Tipo Gasto </label>
+                    	<select name="tgasto" class="form-control selectpicker" data-live-search="true">
+                           @foreach ($tgasto as $per)
+                           <option value="{{$per -> idgasto}}">{{$per -> nombregasto}}</option> 
+                           @endforeach
+                        </select>
+			</div>
+		</div>
 </div>
 <div class ="row" <?php if ($vali==0){?>  style="display: none" <?php } ?> id="cgasto">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">

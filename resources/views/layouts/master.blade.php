@@ -234,6 +234,12 @@
                   <p>Vendedores</p>
                 </a>
               </li>
+				<li class="nav-item">
+                <a href="{{route('articulos')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Articulos</p>
+                </a>
+              </li>
 			   <li class="nav-item">
                 <a href="{{route('iruta')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
@@ -244,12 +250,6 @@
                 <a href="{{route('icategoria')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Grupos</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{route('articulos')}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Articulos</p>
                 </a>
               </li>
             </ul>

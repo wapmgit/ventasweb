@@ -29,31 +29,16 @@ return $insertar_ceros = $recibo.$numero;
 			@include('gastos.gasto.empresa')
 
               </div>
-			  <div class="row">	
-                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <div class="form-group">
-                    	<label for="concepto">Razon: </label> {{$gasto->nombre}} {{$gasto->rif}}
-                    </div>
-                </div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <div class="form-group">
-                    	<label for="concepto">Direccion: </label> {{$gasto->direccion}} <b>Telefono: </b> {{$gasto->telefono}}
-                    </div>
-                </div>
-          
+		<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">		
+	<table width="100%" border="1">
+	<tr><td><small><b>DOCUMENTO: </small></b> {{$gasto->documento}} {{$gasto->control}} </td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo " ".date("d-m-Y",strtotime($gasto->fecha)); ?></td><td><small><b>TIPO GASTO:</b></small> {{$gasto->nombregasto}}</td></tr>
+	<tr><td colspan="4"><small><b>PROVEEDOR: </b> </small> {{$gasto->nombre}}  <b>RIF: </b> {{$gasto->rif}}</td></tr>
+	<tr><td colspan="4"  width="50%"><small><b>DOMICILIO FISCAL: </b> {{$gasto->direccion}} </small><b>TELF: </b>{{$gasto->telefono}}</td></tr>
+	</table></br>
+	</div>
 	</div>
 <div class="row">
-	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                    <div class="form-group">
-                    	<label for="concepto">Documento: </label> {{$gasto->documento}}
-                    </div>
-	</div>
-	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                <div class="form-group">
-                	<label for="monto">Nro Control: </label>{{$gasto->control}} <b> Fecha: </b> <?php echo date("d-m-Y",strtotime($gasto->fecha)); ?>
-                     <p></p>
-                </div>
-	</div>	
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="form-group">
                     	<label for="concepto">Descripcion: </label> {{$gasto->descripcion}}
@@ -67,9 +52,10 @@ return $insertar_ceros = $recibo.$numero;
 	</tr></table>
 
 	</div>
-	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><h6 align="center">Desglose de pago</h6>
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+	<h6 align="center">Desglose de pago</h6>
 					<div class="table-responsive">
-                  <table id="desglose" class="table table-striped table-bordered table-condensed table-hover">
+                  <table id="desglose" width="100%">
                       <thead style="background-color: #A9D0F5">
 						<th>Tipo</th>
                           <th>Monto</th>

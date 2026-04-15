@@ -40,10 +40,11 @@ class GastosController extends Controller
 		$rol=DB::table('roles')-> select('creargasto')->where('iduser','=',$request->user()->id)->first();	
 			if ($rol->creargasto==1){
 			$monedas=DB::table('monedas')->get();
+			$tgasto=DB::table('tipo_gasto')->get();
 			$personas=DB::table('proveedores')
 			-> where('estatus','=','A')->get();
 			$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
-			return view("gastos.gasto.create",["monedas"=>$monedas,"personas"=>$personas,"empresa"=>$empresa]);
+			return view("gastos.gasto.create",["tgasto"=>$tgasto,"monedas"=>$monedas,"personas"=>$personas,"empresa"=>$empresa]);
 		} else { 
 			return view("reportes.mensajes.noautorizado");
 		}
@@ -56,6 +57,7 @@ try{
 			$ajuste=new Gastos;
 			$ajuste->idpersona=$request->get('idproveedor');
 			$ajuste->documento=$request->get('documento');
+			$ajuste->tipogasto=$request->get('tgasto');
 			$ajuste->control=$request->get('control');
 			$ajuste->descripcion=$request->get('descripcion');
 			$ajuste->monto=$request->get('monto');
@@ -134,7 +136,8 @@ return Redirect::to('gastos');
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$gasto=DB::table('gastos as g')
             -> join ('proveedores as p','p.idproveedor','=','g.idpersona')
-            -> select ('g.*','p.nombre','p.rif','p.telefono','p.direccion')
+            -> join ('tipo_gasto as tg','tg.idgasto','=','g.tipogasto')
+            -> select ('g.*','tg.nombregasto','p.nombre','p.rif','p.telefono','p.direccion')
             ->where ('g.idgasto','=',$id)
             -> first();
             $comprobante=DB::table('comprobante as co')
