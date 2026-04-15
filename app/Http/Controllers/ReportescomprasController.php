@@ -68,17 +68,25 @@ class ReportescomprasController extends Controller
             $query2=date_format($query2, 'Y-m-d');
             $datos=DB::table('gastos as c')
             ->join ('proveedores as p', 'c.idpersona','=','p.idproveedor')
-			->select ('c.*','p.nombre','p.rif')
+			-> join ('tipo_gasto as tg','tg.idgasto','=','c.tipogasto')
+			->select ('c.*','tg.nombregasto','p.nombre','p.rif')
             ->whereBetween('c.fecha', [$query, $query2])
             ->groupby('c.idgasto')
             ->get();
+			 $tiposg=DB::table('gastos as c')
+			-> join ('tipo_gasto as tg','tg.idgasto','=','c.tipogasto')
+			->select (DB::raw('sum(c.monto) as mgasto'),DB::raw('sum(c.saldo) as saldogasto'),'tg.nombregasto')
+            ->whereBetween('c.fecha', [$query, $query2])
+            ->groupby('tg.idgasto')
+            ->get();
+	
 			$pagos=DB::table('comprobante as re')->join('gastos','gastos.idgasto','=','re.idgasto')
 			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
             -> whereBetween('re.fecha_comp', [$query, $query2])
 			-> groupby('re.idpago','re.idbanco')
             ->get();
 		$query2=date("Y-m-d",strtotime($query2."- 1 days"));
-        return view('reportes.compras.gastos.index',["datos"=>$datos,"pagos"=>$pagos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);    
+        return view('reportes.compras.gastos.index',["tiposg"=>$tiposg,"datos"=>$datos,"pagos"=>$pagos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);    
 		} else { 
 			return view("reportes.mensajes.noautorizado");
 			}  

@@ -24,11 +24,13 @@ $cefe=0;?>
               <!-- /.row -->
               <!-- Table row -->
             <div class="row">
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">	
 				<div class="col-12 table-responsive">
 					<table width="100%">
 						<thead style="background-color: #E6E6E6">
 						  <th>Rif</th>
 						  <th>Proveedor</th>
+						  <th>Tipo</th>
 						  <th>Documento</th>
 						  <th>Monto</th> 
 						  <th>Pagado</th>		
@@ -37,6 +39,7 @@ $cefe=0;?>
 							<tr> <?php $count++; ?> 
 							<td>{{ $q->rif}}</td>
 							<td>{{ $q->nombre}}</td>
+								   <td>{{$q->nombregasto}}</td>
 								   <td>GTO-{{$q->documento}}</td>
 							<td><?php $tmonto=($tmonto+$q->monto);
 							$tdeuda=($tdeuda+$q->saldo);
@@ -45,15 +48,17 @@ $cefe=0;?>
 							<td><?php $deuda=($q->monto-$q->saldo); echo number_format($deuda, 2,',','.')." $"; ?></td>	
 							</tr>
 						@endforeach
-						<tr><td colspan="3"><strong>Total</strong></td><td><strong><?php echo number_format( $tmonto, 2,',','.'); ?></strong></td>
+						<tr><td colspan="4"><strong>Total</strong></td><td><strong><?php echo number_format( $tmonto, 2,',','.'); ?></strong></td>
 
 						<td><strong><?php echo "Por pagar: ".number_format( $tdeuda, 2,',','.')." $"; ?></strong></td></tr>
 					</table>
 				</div>
+			</div>
+			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">	
 				<div class="col-12 table-responsive">
 					<table width="100%">
 						<thead >        
-						  <tr><td colspan="3" style="background-color: #E6E6E6" align="center"><strong>DESGLOSE DE PAGOS<strong></td></tr>
+						  <tr><td colspan="3" style="background-color: #E6E6E6" align="center"><strong>Desglose de Pagos<strong></td></tr>
 						  <th>Moneda</th>
 						  <th>Entregado</th>
 						  <th>Monto</th>
@@ -68,6 +73,26 @@ $cefe=0;?>
 							<tr><td align="center" colspan="3"> <strong> Total Pagos: <?php echo number_format($acump, 2,',','.')." $"; ?></strong></td></tr>
 					</table>
 				</div>
+			</div>
+			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="col-12 table-responsive">
+					<table width="100%">
+						<thead >        
+						  <tr><td colspan="3" style="background-color: #E6E6E6" align="center"><strong>Resumen Tipo Gasto<strong></td></tr>
+						  <th>Gasto</th>
+						  <th>Monto</th>
+						  <th>Saldo</th>
+						</thead>
+							 @foreach ($tiposg as $g)
+							<tr >
+							<td>{{$g->nombregasto}}</td>
+							<td><?php echo number_format($g->mgasto, 2,',','.'); ?></td>
+							<td><?php echo number_format($g->saldogasto, 2,',','.')." $"; ?></td>
+							</tr>   
+							@endforeach
+					</table>
+				</div>
+			</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> 		       
 					<label>Usuario: </label>  {{ Auth::user()->name }}  
 					<div class="form-group" align="center">
