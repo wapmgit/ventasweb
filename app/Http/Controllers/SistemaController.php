@@ -290,6 +290,7 @@ class SistemaController extends Controller
 		if($request->get('facfiscalcre')=="on"){$emp->facfiscalcredito=1;}else{$emp->facfiscalcredito=0;}
 		if($request->get('relapedido')=="on"){$emp->relapedido=1;}else{$emp->relapedido=0;}
 		if($request->get('bordefac')=="on"){$emp->bordefac=1;}else{$emp->bordefac=0;}
+		if($request->get('printimgfact')=="on"){$emp->printimgfact=1;}else{$emp->printimgfact=0;}
 		if($request->get('printpeso')=="on"){$emp->printpeso=1;}else{$emp->printpeso=0;}
 		if($request->get('orderart')=="on"){$emp->orderart=1;}else{$emp->orderart=0;}
 		if($request->get('relaprecios')=="on"){$emp->relaprecios=1;}else{$emp->relaprecios=0;}

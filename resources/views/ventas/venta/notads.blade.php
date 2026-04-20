@@ -17,6 +17,16 @@ function truncar($numero, $digitos)
     return intval($numero * $truncar) / $truncar;
 }
 ?>
+<style>
+@media print {
+    #detalles {
+        /* Fuerza la impresión de fondos en Chrome, Edge y Safari */
+        -webkit-print-color-adjust: exact !important;
+        /* Fuerza la impresión de fondos en Firefox */
+        print-color-adjust: exact !important;
+    }
+}
+</style>
 <div class="invoice p-3 mb-3">
 <div class="row">
 	<div class="col-sm-6 invoice-col">
@@ -47,8 +57,12 @@ function truncar($numero, $digitos)
                                               
         <div class="col-md-12">
 	
-            <table id="detalles" width="100%" border="1">
-                      <thead>                    
+          <table id="detalles" width="100%" border="1" 
+		  <?php if($empresa->printimgfact==1){?>
+		  style="background: linear-gradient(rgba(255,255,255,0.91), rgba(255,255,255,0.91)), url('{{ asset('dist/img/'.$empresa->logo)}}'); background-size: cover; background-repeat: no-repeat; 
+    background-position: center; 
+		  background-size: 500px;" <?php } ?> >
+                      <thead >                    
 							<th>Codigo</th>
                           <th>Descripcion</th>
                           <th>Cantidad</th>
@@ -59,14 +73,14 @@ function truncar($numero, $digitos)
                           <th>Subtotal</th>
                       </thead>
                  
-                      <tbody>
+                      <tbody >
                         @foreach($detalles as $det)
 						<?php $cntline++; 
 						$acumsub=$acumsub+($det->precio_venta*$det->cantidad);
-						$acumpeso=$acumpeso+($det->cantidad*$det->peso);?>
+						$acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);?>
                         <tr >
 						     <td>{{$det->codigo}}</td>
-                          <td>{{$det->articulo}}</td>
+                          <td>{{$det->articulo}}@if ($det->cntgrp>1) *{{$det->cntgrp}} UNDS @endif</td>
                           <td>{{$det->cantidad}}</td>
                           <td>{{$det->unidad}}</td>
 						     <td><?php echo number_format( ($det->precio), 2,',','.'); ?></td>
