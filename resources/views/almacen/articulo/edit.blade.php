@@ -311,7 +311,10 @@ function trunc (x, posiciones = 0) {
         pt=(parseFloat(p2)+parseFloat(iva));
 		pt=trunc(pt,2);
       $("#precio1").val(pt);
- 
+		 if ($("#customSwitch5").is(":checked")){
+			 calculogrp();
+			 calculo2grp();
+		}
       }
       function calculo2(){
       $("#precio2").val("");
