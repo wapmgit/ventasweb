@@ -651,11 +651,13 @@ class ReportesventasController extends Controller
 		}
 	public function utilidad(Request $request)
     {   
+	//dd($request);
 		$rol=DB::table('roles')-> select('rutilventa')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->rutilventa==1){
         $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			if ($request)
 			{
+			$con=">"; $valor=-1;
 			$corteHoy = date("Y-m-d");
             $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
             $query=trim($request->get('searchText'));
@@ -664,7 +666,9 @@ class ReportesventasController extends Controller
 			if (($query)==""){$query=$corteHoy; }
             date_add($query2, date_interval_create_from_date_string('1 day'));
             $query2=date_format($query2, 'Y-m-d');
+			  $resumen=($request->get('')); 
 			//datos venta
+			if($request->get('condicion')==1){$con="="; $valor=0;}
 		    $resumen=($request->get('check'));    
 				if ($resumen=="on"){    
 				$datos=DB::table('venta as v')
@@ -675,6 +679,7 @@ class ReportesventasController extends Controller
 				DB::raw('sum(dv.cantidad*dv.costoarticulo) as costoneto'),DB::raw('sum(dv.cantidad*dv.precioriginal) as ventanetaori'),
 				DB::raw('sum(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('sum(dv.cantidad*dv.precio) as ventad'))
 				->where('v.devolu','=',0)
+				->where('v.saldo',$con,$valor)
 				-> whereBetween('dv.fecha_emi', [$query, $query2])
 				-> Groupby('dv.idventa')      
 				->get();
@@ -689,6 +694,7 @@ class ReportesventasController extends Controller
 				DB::raw('sum((dv.cantidad*dv.cntgrp)*dv.precioriginal) as ventanetaori'),'dv.costoarticulo as costo',
 				DB::raw('(dv.cantidad*dv.precio_venta)as ventaneta'),DB::raw('(dv.cantidad*dv.precio) as ventad') ) 
 				->where('v.devolu','=',0)
+				->where('v.saldo',$con,$valor)
 				-> whereBetween('v.fecha_hora', [$query, $query2])
 				-> Groupby('dv.iddetalle_venta')  
 				->get();

@@ -72,7 +72,7 @@ $cefe=0;?>
 			?>
 				 @foreach ($notas as $not)
 				 <?php for ($i=0;$i<$longitud;$i++){
-						if ($not->id_cliente==$arrayidcliente[$i]){?>
+						if ($not->id_cliente==$arrayidcliente[$i]){ $count++;?>
 				<tr>
 				<td>{{$not->nombre}}</td>
 				<td></td>
