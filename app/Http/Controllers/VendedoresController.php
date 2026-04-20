@@ -76,6 +76,7 @@ class VendedoresController extends Controller
     {
 			 $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$clientes=DB::table('clientes')->where('vendedor','=',$id)
+			->orderby('nombre','asc')
 				->get();
 				
 			$maventas=DB::table('venta as v')
