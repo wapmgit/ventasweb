@@ -310,7 +310,7 @@ catch(\Exception $e)
 	}
 	public function multiple (Request $request){
 	 try{
-   DB::beginTransaction();
+  DB::beginTransaction();
    //dd($request);
 		$user=Auth::user()->name;
 		$ventas=DB::table('venta as ve')
@@ -345,7 +345,7 @@ catch(\Exception $e)
 									$movb->identificacion=$paciente->nombre;	;
 									$movb->ced=$paciente->cedula;	;
 									$movb->tipo_per="C";
-									$movb->monto=$abono;
+									$movb->monto=$request->get('montom');
 									$movb->tasadolar=$moneda[2];
 									$mytime=Carbon::now('America/Caracas');
 									$movb->fecha_mov=$mytime->toDateTimeString();	
