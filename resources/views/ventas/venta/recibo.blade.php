@@ -13,6 +13,7 @@ return $insertar_ceros = $recibo.$numero;
 };
 $acumpeso=0;
 $cntline=0;
+$acumsub=0;
 ?>   	 
 
 <style>
@@ -108,6 +109,7 @@ $acumpeso=0;
                       <tbody>
                         @foreach($detalles as $det)<?php  $cntline++; $acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);
 						if($det->cantidad>0){
+								$acumsub=$acumsub+($det->precio_venta*$det->cantidad);
 							$texto=$det->cantidad." ".$det->unidad."-".strtolower($det->articulo)." ".number_format( $det->precio_venta, 2,',','.');
 						?>
                         <tr height="10px"> 						
@@ -120,7 +122,7 @@ $acumpeso=0;
                       </tbody>
 					     <tfoot>  
 					  <th colspan="2" ><div align="center"><font size="4">Bs: <?php echo number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> <-->
-                       $: <?php echo number_format($venta->total_venta, 2,',','.'); ?> </font></div></th>                      
+                       $: <?php echo number_format($acumsub, 2,',','.'); ?> </font></div></th>                      
 						</tfoot>
 				<?php if($empresa->printpeso ==1){?>  
 					 <tfoot>  
