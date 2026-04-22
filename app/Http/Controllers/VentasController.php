@@ -168,6 +168,7 @@ class VentasController extends Controller
 	$venta->montocomision=($request->get('total_venta')*($request->get('comision')/100));
 	$venta->user=$user;
    $venta-> save();
+   	$cli=Clientes::findOrFail($idcliente[0]);
 		if(($request->get('convertir')=="on")){
 			$pnro=DB::table('formalibre')
 			->select(DB::raw('MAX(idforma) as pnum'))
@@ -205,7 +206,7 @@ class VentasController extends Controller
         // Lógica de Movimiento Bancario
         $moneda = Monedas::find($pago_id);
         if ($moneda && $moneda->idbanco > 0) {
-            $this->registrarMovimientoBancario($venta, $recibo, $moneda, $idcliente[0], $denomina[$contp],$idbanco[$contp]);
+            $this->registrarMovimientoBancario($venta, $recibo, $moneda, $idcliente[0],$cli->nombre, $cli->cedula, $denomina[$contp],$idbanco[$contp]);
         }
     }
 }
@@ -284,7 +285,7 @@ class VentasController extends Controller
             $cont=$cont+1;
             }
 
-		$cli=Clientes::findOrFail($idcliente[0]);
+	
         $cli->lastfact=$mytime->toDateTimeString();
         $cli->update();
 			$actv=Ventas::findOrFail($venta->idventa);
@@ -997,7 +998,7 @@ public function nota2ds($id){
     $ventaf->update();
     return Redirect::to('correlativof');
 }
-private function registrarMovimientoBancario($venta, $recibo, $moneda, $idCliente, $monto, $tmoneda)
+private function registrarMovimientoBancario($venta, $recibo, $moneda, $idCliente, $clinombre,$clicedula, $monto, $tmoneda)
 {
     $mov = new MovBancos;
     $mov->idbanco = $moneda->idbanco;
@@ -1011,6 +1012,8 @@ private function registrarMovimientoBancario($venta, $recibo, $moneda, $idClient
     $mov->moneda = $recibo->idbanco;
 	$mov->tipo_per="C";
     $mov->idbeneficiario = $idCliente;
+    $mov->identificacion = $clinombre;
+    $mov->ced = $clicedula;
     $mov->monto = $monto;
     $mov->tasadolar = $venta->tasa;
     $mov->fecha_mov = Carbon::now('America/Caracas');

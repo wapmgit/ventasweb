@@ -77,8 +77,8 @@
             				<option <?php if($articulo->unidad=="DISP"){ echo "selected"; } ?> value="DISP">Display</option>
             				<option <?php if($articulo->unidad=="PR"){ echo "selected"; } ?> value="PR">Par</option>
             				<option <?php if($articulo->unidad=="LTR"){ echo "selected"; } ?>  value="LTR">Litros</option>		
-            				<option <?php if($articulo->unidad=="MNG"){ echo "selected"; } ?>  value="LTR">Manga</option>		
-            				<option <?php if($articulo->unidad=="FDO"){ echo "selected"; } ?>  value="LTR">Fardo</option>		
+            				<option <?php if($articulo->unidad=="MNG"){ echo "selected"; } ?>  value="MNG">Manga</option>		
+            				<option <?php if($articulo->unidad=="FDO"){ echo "selected"; } ?>  value="FDO">Fardo</option>		
             			</select>				
             		</div>
             </div>
@@ -333,6 +333,10 @@ function trunc (x, posiciones = 0) {
         pt=(parseFloat(p2)+parseFloat(iva));
 		pt=trunc(pt,2);
       $("#precio2").val(pt);
+	   if ($("#customSwitch5").is(":checked")){
+			 calculogrp();
+			 calculo2grp();
+		}
       } 
 	function calculo3(){
       $("#precio3").val("");
