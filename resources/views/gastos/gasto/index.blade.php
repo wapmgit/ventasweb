@@ -15,6 +15,7 @@
 				<thead>
 				
 					<th>Fecha</th>
+					<th>Emision</th>
 					<th>Documento</th>
 					<th>Razon</th>
 					<th>Monto</th>
@@ -25,6 +26,7 @@
 				<tr>
 					
 					<td><?php echo date("d-m-Y",strtotime($ing->fecha)); ?></td>
+					<td><?php echo date("d-m-Y",strtotime($ing->emision)); ?></td>
 					<td>{{ $ing->documento}}</td>
 
 					<td>{{ $ing->nombre}}</td>

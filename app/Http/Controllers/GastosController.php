@@ -65,6 +65,7 @@ try{
 			$ajuste->iva=$request->get('iva');
 			$ajuste->exento=$request->get('exento');
 			$ajuste->tasa=$request->get('tasa');
+			$ajuste->emision=$request->get('emision');
 			if($request->get('tdeuda')>0){
 			$ajuste->saldo=$request->get('tdeuda');}else{$ajuste->saldo=0;}
 			$mytime=Carbon::now('America/Caracas');
@@ -78,6 +79,7 @@ try{
            $idbanco=$request->get('tidbanco');
 		   $denomina=$request->get('denominacion');
            $tmonto=$request->get('tmonto');
+           $fecha=$request->get('fecha');
            $tref=$request->get('tref');		 
            $contp=0;
               while($contp < count($idpago)){
@@ -93,7 +95,7 @@ try{
 				$recibo->tasab=$request->get('tc');
 				$recibo->aux=$request->get('tdeuda');
 				$mytime=Carbon::now('America/Caracas');
-				$recibo->fecha_comp=$mytime->toDateTimeString();						
+				$recibo->fecha_comp=$fecha[$contp];						
 				$recibo->save();
 							$mon=Monedas::findOrFail($idpago[$contp]);
 							if($mon->idbanco>0){
@@ -113,7 +115,7 @@ try{
 									$mov->monto=$denomina[$contp];
 									$mov->tasadolar=$request->get('tc');
 									$mytime=Carbon::now('America/Caracas');
-									$mov->fecha_mov=$mytime->toDateTimeString();	
+									$mov->fecha_mov=$fecha[$contp];	
 									$mov->user=Auth::user()->name;
 									$mov->save();
 							}

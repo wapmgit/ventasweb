@@ -70,12 +70,18 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 		</div>
 </div>
 <div class ="row" <?php if ($vali==0){?>  style="display: none" <?php } ?> id="cgasto">
-	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
 		<div class="form-group">
 			<label for="responsable">Descripcion</label>
 			<input type="text"  name="descripcion"  value="" class="form-control" placeholder="Descripcion Gasto">
 		</div>
 	</div>
+		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                <div class="form-group">
+                	<label for="tipo_comprobante">Emision</label>
+                         <input type="date" name="emision" class="form-control" value="<?php echo $fserver;?>">
+                </div>
+				</div>
 	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                     <div class="form-group">
                         <label for="costo">Base Imponible</label>
@@ -125,16 +131,21 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 						</select>
 						</div>
 	</div>
-	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
 						<div class="form-group">
 						<input type="number" class="form-control" name="pmonto" id="pmonto" placeholder=""  min="1" step="0.01">
 						</div>
 	</div>
-	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
 						<div class="form-group">
 						<input type="text" name="preferencia" class="form-control" id="preferencia" onchange="conMayusculas(this);" placeholder="Referencia...">
 						</div>
 	</div>
+	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+						<div class="form-group">
+		<input type="date" name="fecha_emi"  id="fecha_emi" value="<?php echo $fserver;?>" class="form-control control">
+							</div>
+		</div>
 	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
 						<div class="form-group">
 						<button type="button" id="bt_pago" class="form-control" > <i class="fa fa-fw fa-plus-square"></i> </button>
@@ -148,6 +159,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 										   <th width="15%">Monto</th>
 										  <th>Monto $</th>
 										  <th>Referencia</th>
+										  <th>Fecha</th>
 									  </thead>
 									  <tfoot> 
 									  <th></th>
@@ -255,7 +267,7 @@ function agregarpago(){
         tpago= $("#pidpago option:selected").text();
         pmonto= $("#pmonto").val();
         pref= $("#preferencia").val();
-
+		fecha= $("#fecha_emi").val();
 			moneda= $("#pidpago").val();
 		tm=moneda.split('_');
 		tipom=tm[1];
@@ -287,7 +299,7 @@ function agregarpago(){
 			tresta=(parseFloat(tventa)-parseFloat(pagototal));
             $("#resta").val(tresta.toFixed(2));
             $("#tdeuda").val(tresta.toFixed(2));	
-            var fila='<tr  id="filapago'+contp+'"><td align="center"><span onclick="eliminarpago('+contp+');"><i class="fa fa-fw fa-eraser"></i></span></td><td><input type="hidden" name="tidpago[]" value="'+idpago+'"><input type="hidden" name="tidbanco[]" value="'+tpago+'">'+tpago+'</td><td><input type="hidden" name="denominacion[]" value="'+denomina+'">'+denomina+'</td><td><input type="hidden" name="tmonto[]" value="'+pmonto+'">'+pmonto+'</td><td><input type="hidden" name="tref[]" value="'+pref+'">'+pref+'</td></tr>';
+            var fila='<tr  id="filapago'+contp+'"><td align="center"><span onclick="eliminarpago('+contp+');"><i class="fa fa-fw fa-eraser"></i></span></td><td><input type="hidden" name="tidpago[]" value="'+idpago+'"><input type="hidden" name="tidbanco[]" value="'+tpago+'">'+tpago+'</td><td><input type="hidden" name="denominacion[]" value="'+denomina+'">'+denomina+'</td><td><input type="hidden" name="tmonto[]" value="'+pmonto+'">'+pmonto+'</td><td><input type="hidden" name="tref[]" value="'+pref+'">'+pref+'</td><td><input type="hidden" name="fecha[]" value="'+fecha+'">'+fecha+'</td></tr>';
             contp++;
             document.getElementById('bt_pago').style.display="none";
 			$("#pidpago").val('10');

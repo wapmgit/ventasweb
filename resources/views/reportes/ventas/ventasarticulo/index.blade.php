@@ -36,15 +36,15 @@
 					</thead>
 						<?php $ctra= 0; $cche=0; $cdeb=0; $acumpeso=0; $credito=0; $contado=0;$real=0; $count=0;$tventa=0; $auxp=$auxpv=0;?>
 					@foreach ($datos as $q)
-					<?php $tventa=$tventa +($q->vendido*$q->pventa); 
+					<?php $tventa=$tventa +(($q->pventa/$q->vendido)*$q->vendido); 
 					$auxp=number_format($q->vpromedio, 2,',','.'); $auxpv=number_format($q->pventa, 2,',','.');
 					$acumpeso=$acumpeso +($q->vendido*$q->peso); 
 						?>
 					<tr>        
-					  <td>{{ $q->nombre}} - <?php echo number_format($q->vpromedio, 2,',','.');?></td>
+					  <td>{{ $q->nombre}} - <?php echo number_format($q->pventa1, 2,',','.');?></td>
 					  <td>{{ $q->grupo}}</td>
-					  <td><?php if ($auxp==$auxpv) {$real=$q->pventa; echo number_format($real, 2,',','.'); }
-					  else { $real=($q->pventa); echo number_format(($real), 2,',','.');}
+					  <td><?php if ($auxp==$auxpv) {$real=$q->pventa/$q->vendido; echo number_format($real, 2,',','.'); }
+					  else { $real=($q->pventa/$q->vendido); echo number_format(($real), 2,',','.');}
 					  ?></td>
 					   <td><?php echo number_format(($q->vendido), 2,',','.'); ?></td>
 					   <td><?php echo number_format(($q->vendido*$real), 2,',','.'); ?></td>       

@@ -32,7 +32,7 @@ return $insertar_ceros = $recibo.$numero;
 		<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">		
 	<table width="100%" border="1">
-	<tr><td><small><b>DOCUMENTO: </small></b> {{$gasto->documento}} {{$gasto->control}} </td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo " ".date("d-m-Y",strtotime($gasto->fecha)); ?></td><td><small><b>TIPO GASTO:</b></small> {{$gasto->nombregasto}}</td></tr>
+	<tr><td><small><b>DOCUMENTO: </small></b> {{$gasto->documento}} {{$gasto->control}} </td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo " ".date("d-m-Y",strtotime($gasto->emision)); ?></td><td><small><b>TIPO GASTO:</b></small> {{$gasto->nombregasto}}</td></tr>
 	<tr><td colspan="4"><small><b>PROVEEDOR: </b> </small> {{$gasto->nombre}}  <b>RIF: </b> {{$gasto->rif}}</td></tr>
 	<tr><td colspan="4"  width="50%"><small><b>DOMICILIO FISCAL: </b> {{$gasto->direccion}} </small><b>TELF: </b>{{$gasto->telefono}}</td></tr>
 	</table></br>
@@ -62,6 +62,7 @@ return $insertar_ceros = $recibo.$numero;
 						  <th>Tasa</th>
                           <th>Monto$</th>
                           <th>Referencia</th>
+                          <th>Fecha</th>
                           
                       </thead>
               
@@ -74,6 +75,7 @@ return $insertar_ceros = $recibo.$numero;
 							  if ($re->idpago==3){echo number_format( $re->tasab, 2,',','.'); }?></td>
 						   <td><?php echo number_format( $re->monto, 2,',','.'); ?></td>
                           <td>{{$re->referencia}}</td>                        
+                          <td><?php echo " ".date("d-m-Y",strtotime($re->fecha_comp));?></td>                        
                         </tr>
                         @endforeach
                         <tfoot>                    
@@ -89,7 +91,7 @@ return $insertar_ceros = $recibo.$numero;
  </div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="form-group">
-                    <label for="num_comprobante">Usuario: {{$gasto->usuario}}</label>
+                    <label for="num_comprobante">Usuario: {{$gasto->usuario}} Fecha: <?php echo " ".date("d-m-Y",strtotime($gasto->emision)); ?></label>
                 </div>
             </div> 
 		<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
