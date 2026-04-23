@@ -94,7 +94,7 @@ class ComprasController extends Controller
     $ingreso->tasa=$request->get('tasacompra');
     $ingreso->user=$user;
     $ingreso-> save();	
-		
+	$datpro=Proveedores::findOrFail($request->get('idproveedor'));
 	if($request->get('totala')>0){
   // inserta el recibo
           $idpago=$request->get('tidpago');
@@ -130,8 +130,8 @@ class ComprasController extends Controller
 									$mov->numero="COMP-".$recibo->idcompra." Rec-".$recibo->idrecibo;
 									$mov->concepto="Compras";
 									$mov->idbeneficiario= $ingreso->idproveedor;	
-									$mov->identificacion="";
-									$mov->ced="";
+									$mov->identificacion=$datpro->nombre;
+									$mov->ced=$datpro->rif;
 									$mov->tipo_per="P";
 									$mov->monto=$denomina[$contp];
 									$mov->tasadolar=$request->get('tasacompra');

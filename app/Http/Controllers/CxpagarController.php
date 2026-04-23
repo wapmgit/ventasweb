@@ -149,6 +149,7 @@ $this->middleware('auth');
 				$recibo->save();
 						$mon=Monedas::findOrFail($idpago[$contp]);
 							if($mon->idbanco>0){
+								$datpro=Proveedores::findOrFail($person);
 								    $mov=new MovBancos;
 									$mov->idbanco=$mon->idbanco;
 									$mov->clasificador=$clasi;
@@ -159,8 +160,8 @@ $this->middleware('auth');
 									$mov->numero=$doc."-".$ndoc." Rec-".$recibo->idrecibo;
 									$mov->concepto="Pago ".$doc;
 									$mov->idbeneficiario= $person;	
-									$mov->identificacion="";
-									$mov->ced="";
+									$mov->identificacion=$datpro->nombre;
+									$mov->ced=$datpro->rif;
 									$mov->tipo_per="P";
 									$mov->monto=$denomina[$contp];
 									$mov->tasadolar=$request->get('tc');

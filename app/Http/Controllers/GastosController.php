@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Gastos;
 use App\Models\Monedas;
 use App\Models\MovBancos;
+use App\Models\Proveedores;
 use App\Models\Comprobantes;
 
 
@@ -72,6 +73,7 @@ try{
 			$ajuste->fecha=$mytime->toDateTimeString();
 			$ajuste->usuario=$user;
 			$ajuste-> save();
+			$datpro=Proveedores::findOrFail($request->get('idproveedor'));
 			//dd($request);
 				if($request->get('totala')>0){
 			// inserta el recibo
@@ -109,8 +111,8 @@ try{
 									$mov->numero="GAST-".$ajuste->idgasto." Rec-".$recibo->idrecibo;
 									$mov->concepto="Gastos";
 									$mov->idbeneficiario= $ajuste->idpersona;	
-									$mov->identificacion="";
-									$mov->ced="";
+									$mov->identificacion=$datpro->nombre;
+									$mov->ced=$datpro->rif;
 									$mov->tipo_per="P";
 									$mov->monto=$denomina[$contp];
 									$mov->tasadolar=$request->get('tc');
