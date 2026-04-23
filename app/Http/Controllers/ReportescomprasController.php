@@ -22,11 +22,22 @@ class ReportescomprasController extends Controller
 	}
     public function compras(Request $request)
     {
+			$cond="";$fil="";
 		$rol=DB::table('roles')-> select('rcompras')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->rcompras==1){
 		$corteHoy = date("Y-m-d");
         $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		//dd($request);
 		$tipo=$request->get('tipodoc');
+		if (($tipo)==""){ $cond="<>"; $fil="";}
+		else{
+			if($tipo=="FAC"){$cond="="; $fil=$tipo;}
+			if($tipo=="N/E"){$cond="="; $fil=$tipo;}
+			if($tipo=="ALL"){$cond="<>"; $fil="";}
+			
+		}
+		
+		
         $query=trim($request->get('searchText'));
         $query2=trim($request->get('searchText2'));
 			if (($query)==""){$query=$corteHoy; }
@@ -36,14 +47,15 @@ class ReportescomprasController extends Controller
             $datos=DB::table('compras as c')
             ->join ('proveedores as p', 'c.idproveedor','=','p.idproveedor')
 			->select ('c.idcompra as idingreso','c.base','c.miva','c.exento','c.num_comprobante','c.condicion as estado','c.total','c.saldo','c.fecha_hora','p.nombre','p.rif','tipo_comprobante')
-			->where('tipo_comprobante','=',$tipo)
+			->where('tipo_comprobante',$cond,$fil)
             ->whereBetween('c.fecha_hora', [$query, $query2])
             ->groupby('c.idcompra')
             ->get();
-         // dd($datos);
+       
 			$pagos=DB::table('comprobante as re')->join('compras','compras.idcompra','=','re.idcompra')
-			-> where('compras.tipo_comprobante','=',$tipo)
-			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
+			->join('monedas as mo','mo.idmoneda','=','re.idpago')
+			->where('tipo_comprobante',$cond,$fil)
+			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago','mo.sumcaja')
             -> whereBetween('re.fecha_comp', [$query, $query2])
 			-> groupby('re.idpago','re.idbanco')
             ->get();

@@ -67,13 +67,15 @@ $cefe=0;?>
 							<th>Monto</th>     
 						</thead>
 						@foreach ($pagos as $q)
+							<?php $acump=$acump+$q->monto;
+								if( $q->sumcaja==0){$acump=$acump-$q->monto;}		 ?> 
 							<tr >
 							<td>{{$q->idbanco}}</td>
 							<td><?php echo number_format($q->recibido, 2,',','.'); ?></td>
-							<td><?php $acump=$acump+$q->monto; echo number_format($q->monto, 2,',','.')." $"; ?></td>
+							<td><?php if( $q->sumcaja==0){echo "-";} echo number_format($q->monto, 2,',','.')." $"; ?></td>
 							</tr>  
 						@endforeach
-						<tr><td align="center" colspan="3"> <strong> Total Pagos: <?php echo number_format($acump, 2,',','.')." $"; ?></strong></td></tr>
+						<tr><td align="right" colspan="3"> <strong> Total Pagos: <?php echo number_format($acump, 2,',','.')." $"; ?></strong></td></tr>
 					</table>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> 		       

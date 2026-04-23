@@ -33,7 +33,7 @@
 	<div class="form-group">
 	<div class="input-group">	
 		<select name="tipodoc" class="form-control selectpicker" data-live-search="true">
-                        <option value="">Tipo Documento:</option> 
+                        <option value="ALL">Todos Los Documentos</option> 
                         <option value="FAC">Facturas</option>
 						<option value="N/E">Notas de Entrega</option>						   
                           
