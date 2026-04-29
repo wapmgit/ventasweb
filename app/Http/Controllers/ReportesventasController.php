@@ -738,7 +738,7 @@ class ReportesventasController extends Controller
 			->groupby('dv.idarticulo','a.nombre')
 			->OrderBy('a.nombre')
             ->get();
-	
+
 			$nvendedor="";
 		if($request->get('opcion')>0){	
 			if($request->get('opcion')==1){		

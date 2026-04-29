@@ -31,11 +31,12 @@ $cntline=$cntser=0; $acumpeso=0;
 		</div>
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			<table width="100%"><tr><td width="30%"><strong>Cliente</strong></td><td width="20%"><strong>Telefono</strong></td><td width="30%"><strong>Direccion</strong></td><td width="20%"><strong># Control</strong></td>
-				</tr>
-				<tr><td>{{$venta->cedula}} -> {{$venta->nombre}}</td><td>{{$venta->telefono}}</td><td>{{$venta->direccion}}</td><td>{{$venta->control}}</td>
-				</tr>
-			</table></br>
+	<table width="100%" border="1">
+	<tr><td><small><b>DOCUMENTO:</small></b><?php  $idv=$venta->idventa; echo "NOT".add_ceros($idv,$ceros); ?></td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo date("d-m-Y",strtotime($venta->fecha_emi)); ?></td><td><small><b>CONDICION: </small></b>{{$venta->estado}}</td></tr>
+	<tr><td colspan="4"><small><b>NOMBRE Y APELLIDO O RAZON SOCIAL: </b> </small>{{$venta->nombre}} <b>RIF: </b> {{$venta->cedula}}</td></tr>
+	<tr><td colspan="4"  width="50%"><small><b>DOMICILIO FISCAL: </b> {{$venta->direccion}} </small><b>TELF: </b> {{$venta->telefono}}</td></tr>
+	</table>
+	</br>
 		</div>
 	</div>
 	<div class ="row">                                           
@@ -52,6 +53,9 @@ $cntline=$cntser=0; $acumpeso=0;
                           <th>P. Venta</th>
                           <th>Subtotal</th>
                       </thead>
+					        <div style="position: absolute; top: 30%; left: 40%; transform: translate(-30%, -40%); width: 500px; opacity: 0.12; pointer-events: none;">
+                <img src="{{ asset('dist/img/'.$empresa->logo) }}" style="width: 100%;">
+            </div>
                       <tbody>
                         @foreach($detalles as $det)
 						<?php
@@ -87,7 +91,7 @@ $cntline=$cntser=0; $acumpeso=0;
 						<?php for($i=($cntline+$cntser);$i<30;$i++){ echo "<tr><td>&nbsp;</td></tr>"; }?>
                       </tbody>
 					       <tfoot>  
-						<th>Codigo <?php echo " :".number_format(($venta->total_venta), 2,',','.'); ?></th>						   
+						<th>REF<?php echo " :".number_format(($venta->total_venta), 2,',','.'); ?></th>						   
                           <th colspan="7"><div align="right">TOTAL: </div></th>
                           <th align="center"><b><font size="4"><?php echo " Bs ".number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> </b></font></th>
                         <?php if($empresa->printpeso ==1){?>  
