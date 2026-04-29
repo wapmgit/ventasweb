@@ -61,7 +61,7 @@
 				<tr <?php if (($i%2)==0){ echo "style='background-color: #D4E6F1 !important'";}?>> <?php $count++; 
 				$apart=$apart+$q->apartado;
 					$costoacum=$q->stock+$costoacum;
-					$costo=$costo+($q->costo*$q->stock);
+					$costo=$costo+(($q->costo*(($q->iva/100)+1))*$q->stock);
 					$precioacum=$q->stock*$q->precio1+$precioacum;
 					?> 
 
@@ -72,7 +72,7 @@
 					<td>{{ $q->peso}}</td>
 					<td>{{ $q->stock}}</td>
 					<td class="filaad">{{ $q->apartado}}</td>
-					<td><?php echo number_format( $q->costo, 2,',','.'); ?></td>
+					<td><?php echo number_format( ($q->costo*(($q->iva/100)+1)), 2,',','.'); ?></td>
 					<td>{{ $q->iva}}</td>
 					<td class="filap11" >{{$q->utilidad}} %</td>
 					<td class="filap11" ><?php echo number_format( $q->precio1, 2,',','.'); ?></td>	
