@@ -25,16 +25,18 @@
                 <!-- /.col -->
 					<div class="col-sm-4 invoice-col">
 
-				  <h4>Detalle de Documentos Incluidos en Comision </h4>
+				  <h5>Detalle de Documentos Incluidos en Comision #{{$vendedor->id_comision}}</h5>
              
 				</div>
               </div>
 
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-		<table width="100%"><tr><td width="30%"><strong>Vendedor</strong></td><td width="20%"><strong>Telefono</strong></td><td width="30%"><strong> Comision</strong></td><td width="20%"><strong>Monto Comision</strong></td>
+		<table width="100%"><tr><td width="30%"><strong>Vendedor</strong></td><td width="20%"><strong>Telefono</strong></td><td width="30%"><strong> Fecha</strong></td><td width="20%"><strong>Monto Comision</strong></td>
 			</tr>
-			<tr><td>{{$vendedor->cedula}} -> {{$vendedor->nombre}}</td><td>{{$vendedor->telefono}}</td><td>{{$vendedor->id_comision}}</td><td>{{$vendedor->montocomision}} $</td>
+			<tr><td>{{$vendedor->cedula}} -> {{$vendedor->nombre}}</td>
+			<td>{{$vendedor->telefono}}</td>
+			<td>del <?php echo date("d-m-Y",strtotime($vendedor->desde)); ?> al <?php echo date("d-m-Y",strtotime($vendedor->hasta)); ?></td><td>{{$vendedor->montocomision}} $</td>
 			</tr>
 		</table></br>
 	</div>
@@ -49,9 +51,9 @@
 					<th>Cliente</th>
 						<th>Cedula</th>
 					<th>N° Comprobante</th>
-					<th>Fecha Fac.</th>
+					<th>Fecha Doc.</th>
 					<th>Fecha Emi.</th>
-					<th>Monto Factura</th>
+					<th>Monto</th>
 					<th>Comision</th>
 					<th>Monto Comision</th>
 									

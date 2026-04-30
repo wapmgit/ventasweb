@@ -57,18 +57,15 @@ function truncar($numero, $digitos)
                                               
         <div class="col-md-12">
 	
-            <table id="detalles" width="100%" border="1"
-			 <?php if($empresa->printimgfact==1){?>
-		  style="background: linear-gradient(rgba(255,255,255,0.91), rgba(255,255,255,0.91)), url('{{ asset('dist/img/'.$empresa->logo)}}'); background-size: cover; background-repeat: no-repeat; 
-			background-position: center; 
-			background-size: 500px;" <?php } ?>	>
-                      <thead>   
-				  
+            <table id="detalles" width="100%" border="1">
+                      <thead>   			  
 							<th>Descripcion</th>
 							<th>Precio</th>                    
 							<th>Subtotal</th>
                       </thead>
-                 
+                      <div style="position: absolute; top: 30%; left: 40%; transform: translate(-30%, -40%); width: 500px; opacity: 0.12; pointer-events: none;">
+                <img src="{{ asset('dist/img/'.$empresa->logo) }}" style="width: 100%;">
+            </div>
                       <tbody>
                         @foreach($detalles as $det)
 						<?php $cntline++; 

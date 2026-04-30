@@ -288,6 +288,7 @@ Route::post('pagarcomision', [ComisionesController::class, 'pagar'])->name('paga
 Route::get('recibocomision/{id}', [ComisionesController::class, 'recibo'])->name('recibocomision');
 Route::get('listarecibos/{id}', [ComisionesController::class, 'lista'])->name('listarecibos');
 Route::get('comisionespagadas', [ComisionesController::class, 'pagadas'])->name('comisionespagadas');
+Route::get('detallecomisionfiltro', [ComisionesController::class, 'detallecomisionfiltro'])->name('detallecomisionfiltro');
 // sistema
 Route::get('tasas', [SistemaController::class, 'acttasas'])->name('tasas');
 Route::post('updatetasas', [SistemaController::class, 'update'])->name('updatetasas');

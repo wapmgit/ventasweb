@@ -39,7 +39,7 @@
 					<td><?php echo number_format($cat->montoventas, 3,',','.')." $"; ?> </td>
 					<td><?php echo number_format($cat->montocomision, 3,',','.')." $"; ?> </td>
 					<td><?php echo number_format($cat->pendiente, 3,',','.')." $"; ?> </td>
-					<td><?php echo date("d-m-Y",strtotime($cat->fecha)); ?></td>
+					<td><?php echo date("d-m-Y",strtotime($cat->hasta)); ?></td>
 					<td>{{ $cat->usuario}}</td>
 					<td>
 	<a href="javascript:abrirespecialpago({{$cat->id_comision}},{{$cat->pendiente}},'{{$cat->nombre}}');"><button  id="abono" class="btn btn-warning btn-xs">Pagar</button></a>

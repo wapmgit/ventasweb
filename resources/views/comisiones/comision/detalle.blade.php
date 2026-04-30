@@ -1,24 +1,18 @@
 @extends ('layouts.master')
 @section ('contenido')
-<?php $acum=0; $acum2=0;$cont=0;?>
+<?php $acum=0; $acum2=0;$cont=0; $reg=count($venta); ?>
 <div class="row">
 	<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 		<h3>Documentos activos para Comision</h3>
 
 	</div>
 </div>
-	
+	@include('comisiones.comision.modalfecha')
 <div class="row">
 	  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 			<div class="form-group">
                       <label for="proveedor">Vendedor</label>
-                   <p>{{$vendedor->nombre}}</p>
-                    </div>
-            </div>
-             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
-                 <div class="form-group">
-                      <label for="proveedor">Cedula</label>
-                   <p>{{$vendedor->cedula}}</p>
+                   <p>{{$vendedor->cedula}} {{$vendedor->nombre}}</p>
                     </div>
             </div>
             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
@@ -33,7 +27,11 @@
                    <p>{{$vendedor->comision}}</p>
                     </div>
             </div>
-</div>
+			             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+<a href="" data-target="#modalfecha" data-toggle="modal"><button  class="btn btn-warning btn-xs">Filtrar Fechas</button></a>
+                    </div>	
+					
+            </div>
 
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -86,6 +84,7 @@
 				<td><?php echo $cont." Documentos"; ?></td><td></td><td></td><td></td><td><strong>TOTAL:</strong></td>
 				<td style="background-color: #A9D0F5"><?php echo number_format($acum2, 2,',','.')." $"; ?> </td><td style="background-color: #A9D0F5"><?php echo number_format($acum, 2,',','.')." $"; ?> </td><td></td>
 				</tr>
+				<tr><td colspan="7">  Desde: <?php  echo date("d-m-Y",strtotime($venta[0]->fecha_emi)); ?> Hasta: <?php  echo date("d-m-Y",strtotime($venta[$reg-1]->fecha_emi)); ?></td></tr>
 			</table>
 			@if($empresa->calc_comi==1)
 			<span><small>Se Incluye Comision individual por Articulos.</small></span>
@@ -96,6 +95,8 @@
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="btnes"  align="center"></br>
 			<div class="form-group">				
 				<input type="hidden" name="vendedor"  value="{{$vendedor->id_vendedor}}">
+				<input type="hidden" name="desde"  value="<?php echo $venta[0]->fecha_emi; ?>">
+				<input type="hidden" name="hasta"  value="<?php echo $venta[$reg-1]->fecha_emi; ?>">
 				<input type="hidden" name="mventas"  value="<?php echo $acum2; ?>">
 				<input type="hidden" name="mcomision"  value="<?php echo $acum; ?>">
             	<button class="btn btn-info btn-sm" id="btnsubmit" type="submit">Generar Comision</button>

@@ -25,7 +25,7 @@
 		<tr><td colspan="2"> <b>La Cantidad de</b>: {{$datos->monto}} $<tr>
 		<tr><td colspan="2"> <b>Por Concepto de:</b> comision N° {{$datos->id_comision}}, de fecha <?Php echo date("d/m/Y",strtotime($datos->fechacomision)); ?>, por un monto de {{$datos->montocomision}} $<tr>
 		<tr><td colspan="2"><b>Emitido por:</b> {{$datos->user}} </td><tr>
-		<tr><td colspan="2"><b>Observacion:</b> {{$datos->observacion}} </td><tr>
+		<tr><td colspan="2"><b>Observacion:</b> {{$datos->observacion}}, del {{$datos->desde}} al {{$datos->hasta}}</td><tr>
 		<tr><td colspan="2"></br> </td><tr>
 		<tr><td colspan="2"> </td><tr>
 		<tr><td colspan="2" align="center">{{$datos->cedula}}-{{$datos->nombre}}</br>Recibi de Conformidad <tr>

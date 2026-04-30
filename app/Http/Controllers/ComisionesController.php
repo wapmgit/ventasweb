@@ -75,11 +75,51 @@ $this->middleware('auth');
 				 -> join ('vendedores as ve','p.vendedor','=','ve.id_vendedor')
 				-> select ('re.idrecibo as idventa','re.fecha as fecha_hora','re.fecharecibo as fecha_emi','p.nombre','p.cedula','v.comision',DB::raw('sum(re.monto*(v.comision/100)) as montocomision'),'p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','re.monto as total_venta','v.devolu')
 				 -> where ('v.devolu','=',0)
-				 -> where ('v.idcomision','=',0)
+				 -> where ('re.idcomision','=',0)
 				->where ('v.idvendedor','=',$id)	
 				-> groupBy('re.idrecibo')
 				->get();
 		//dd($venta);
+		}
+			$detalle=[];
+            return view("comisiones.comision.detalle",["detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
+	}
+	
+	
+		public function detallecomisionfiltro(Request $request){
+		//dd($request);
+		$id=$request->get('vendedor');
+			$vendedor=DB::table('vendedores')-> where('id_vendedor','=',$id)->first();
+		    $desde=trim($request->get('desde'));
+		    $hasta=trim($request->get('hasta'));
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		if($empresa->calc_comi==1){
+				$venta=DB::table('venta as v')
+				-> join ('clientes as p','p.id_cliente','=','v.idcliente')
+				 -> join ('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
+				-> select ('v.idventa','v.fecha_hora','v.fecha_emi','p.nombre','p.cedula','v.comision','v.montocomision','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+				 -> where ('v.devolu','=',0)
+				 -> where ('v.saldo','=',0)
+				 -> whereBetween('v.fecha_emi', [$desde, $hasta])
+				 -> where ('v.idcomision','=',0)
+				->where ('v.idvendedor','=',$id)
+			
+				->get();
+			}else{
+				$venta=DB::table('recibos as re')
+				-> join ('venta as v','v.idventa','=','re.idventa')
+				-> join ('clientes as p','v.idcliente','=','p.id_cliente')
+				 -> join ('vendedores as ve','p.vendedor','=','ve.id_vendedor')
+				-> select ('re.idrecibo as idventa','re.fecha as fecha_hora','re.fecharecibo as fecha_emi','p.nombre','p.cedula','v.comision',DB::raw('sum(re.monto*(v.comision/100)) as montocomision'),'p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','re.monto as total_venta','v.devolu')
+				 -> where ('v.devolu','=',0)
+				 -> where ('re.idcomision','=',0)
+				 -> whereBetween('re.fecharecibo', [$desde, $hasta])
+				->where ('v.idvendedor','=',$id)	
+				-> orderBy('re.fecharecibo','ASC')
+				-> groupBy('re.idrecibo')
+				->get();
+				
+		//dd($venta[0]->fecha_emi);
 		}
 			$detalle=[];
             return view("comisiones.comision.detalle",["detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
@@ -110,6 +150,7 @@ $this->middleware('auth');
             return view("comisiones.comision.detalle",["detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
 	public function store(Request $request){
+		//dd($request);
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$user=Auth::user()->name;      
 			$mov=new Comisiones;
@@ -119,6 +160,8 @@ $this->middleware('auth');
 			$mov->pendiente=$request->get('mcomision');
 			$mytime=Carbon::now('America/Caracas');
 			$mov->fecha=$mytime->toDateTimeString();
+			$mov->desde=$request->get('desde');
+			$mov->hasta=$request->get('hasta');
 			$mov->usuario=$user;
 			$mov-> save();
 	        $idventa=$request->get('idventa');         
@@ -236,7 +279,7 @@ $this->middleware('auth');
 			$datos=DB::table('reciboscomision as r')
             -> join ('comisiones as p','r.id_comision','=','p.id_comision')
 			 -> join ('vendedores as ve','p.id_vendedor','=','ve.id_vendedor')
-            -> select ('ve.nombre','ve.cedula','p.montoventas','p.montocomision','p.fecha as fechacomision','p.id_comision','r.monto','r.observacion','r.fecha','r.user')
+            -> select ('ve.nombre','ve.cedula','p.montoventas','p.montocomision','p.fecha as fechacomision','p.desde','p.hasta','p.id_comision','r.monto','r.observacion','r.fecha','r.user')
            	 -> where ('r.id_recibo','=',$id)
             ->first();
             return view("comisiones.comision.recibo",["datos"=>$datos,"empresa"=>$empresa]);
