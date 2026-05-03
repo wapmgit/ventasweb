@@ -37,27 +37,36 @@ role="dialog" tabindex="-1" id="modaldebito">
 										 <div class="form-group">
 											    <label for="nombre">Beneficiario</label>
 										    <select name="cliente"  id="ncliente" class="form-control selectpicker" data-live-search="true">
-											      <option value="">Seleccione...</option> 
+											      <option value="0">Seleccione...</option> 
 				                      @foreach ($clientes as $cli)
 				                              <option value="{{$cli->id}}_{{$cli->nombre}}_{{$cli->cedula}}_{{$cli->tipo}}">{{$cli->cedula}} - {{$cli->nombre}}</option> 
 				                              @endforeach
 				                              </select>
 										</div>
 									</div>
-									<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+								<?php if ($tipom >0){?>	<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"><?php }else{ ?>
+								<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12"><?php } ?>
 										 <div class="form-group">
 											    <label for="nombre">Concepto</label>
 											<input type="text" name="concepto"  required value="" class="form-control" placeholder="Concepto...">
 										</div>
-									</div>	
+									</div>
+									<?php if ($tipom >0){?>									
+											<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+										 <div class="form-group">
+											    <label for="nombre">Tasa</label>
+											<input type="number" required name="tasac" step="0.001" value="{{$tasa}}" class="form-control" >
+										</div>
+									</div>
+									<?php } ?>
 									<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
-<div class="form-group">
-	<div class="form-group">
-	<label for="nombre">Fecha</label>
-		<input type="date" class="form-control" name="fecha"  value="">
-	</div>
-</div>
-</div>
+										<div class="form-group">
+											<div class="form-group">
+											<label for="nombre">Fecha</label>
+												<input type="date" class="form-control" name="fecha" id="fechand" value="">
+											</div>
+										</div>
+										</div>
 						<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
 										 <div class="form-group">
 											    <label for="nombre">Monto</label>

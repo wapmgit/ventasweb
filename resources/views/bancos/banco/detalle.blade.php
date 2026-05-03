@@ -1,5 +1,17 @@
 @extends ('layouts.master')
 @section ('contenido')
+<?php $cal=0;
+switch ($datmoneda->tipo){
+	case "1":
+       $cal="/";
+        break;
+	case "2":
+       $cal="*";
+        break;
+		default:
+		$cal="/";
+		break;
+} ?>
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
    @include('bancos.banco.searchdetalle')
    </div>
@@ -15,8 +27,7 @@
 		<th>Concepto</th>
 		<th width="25%">Beneficiario</th>
         <th>Tipo</th>
-        <th>Monto</th>
-		<?Php echo "<th align='center'> Ref $</th>";  ?>
+        <th>Monto</th><?Php if($datmoneda->tipo >0 ){  echo "<th align='center'> Ref $</th>";  }?>
         <th>Usuario</th>
 		</thead>
         <TBODY>
@@ -34,8 +45,13 @@
           <td><small>{{ $q->tipo_mov}}</small></td>
           <td><small><?php
 			echo number_format(($q->monto),'2','.',','); ?></small></td>	
-	<td align="center"><small> <?php
-		echo number_format(($q->tasadolar),'2','.',','); ?> </small></td> 
+		 <?php  if($datmoneda->tipo >0 ){  
+			$monto = $q->monto;
+			$tasa = $q->tasadolar;
+			if($cal == '*') { $resultado = $monto * $tasa; }
+			else { $resultado = $monto / $tasa; }
+		 ?>	<td align="center"><small>
+			 {{number_format(($resultado),'2','.',',')}}</small></td> <?php } ?> 
           <td><small>{{  $q->user}}</small></td>
 				</tr> @endforeach
  
@@ -49,16 +65,16 @@
           <th>Beneficiario</th>
             <th>Tipo</th>
           <th>Monto</th>
-		<?Php	 echo "<th align='center'>Ref $</th>"; ?>
+		<?Php if($datmoneda->tipo >0 ){	 echo "<th align='center'>Ref $</th>"; }?>
           <th>Usuario</th>
       </TFOOT>
 			</table>
 
   </div>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">
-    <a ><button class="btn btn-primary btn-sm   pull-right" id="imprimir">Imprimir</button></a>
-          <a href="{{route('showbanco',['id'=>$banco->idbanco])}}"  id="regresar"><button  class="btn btn-danger btn-sm btn-pull-left" >Regresar</button></a> 
-                
+ 
+	<a href="{{route('showbanco',['id'=>$banco->idbanco])}}"  id="regresar"><button  class="btn btn-danger btn-sm btn-pull-left" >Regresar</button></a> 
+        <a ><button class="btn btn-primary btn-sm   pull-right" id="imprimir">Imprimir</button></a>           
 	</div>
  
 

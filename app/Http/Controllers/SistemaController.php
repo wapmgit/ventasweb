@@ -63,6 +63,7 @@ class SistemaController extends Controller
 				if($idm[$contp]==4){
 					$empresa=Empresa::findOrFail('1');
 					$empresa->tc=$valor[$contp];
+					$empresa->tasa_banco=$valor[$contp];
 					$empresa->difpre=$difc;
 					$empresa->update();
 				}

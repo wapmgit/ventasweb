@@ -4,7 +4,20 @@
 <?php $mostrar=1; ?>
 
 <?php $acum=0;$efe=0;$deb=0;$che=0;$tra=0;
-$cefe=0;?>
+$cefe=0;
+$cal=0;
+switch ($datmoneda->tipo){
+	case "1":
+       $cal="/";
+        break;
+	case "2":
+       $cal="*";
+        break;
+		default:
+		$cal="/";
+		break;
+} 
+?>
 
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	<div class="col-sm-8 invoice-col">
@@ -37,6 +50,14 @@ $cefe=0;?>
         <?php $ctra= 0; $cche=0; $cdeb=0; $credito=0; $contado=0; $count=0; $tcompras=0;?>
 
                @foreach ($datos as $q)
+			   	<?php  if($datmoneda->tipo >0 ){  
+				$monto = $q->monto;
+				$tasa = $q->tasadolar;
+				if($cal == '*') { $resultado = $monto * $tasa; }
+				else { $resultado = $monto / $tasa; }
+				$tcompras=$tcompras+$resultado;
+				}
+			?>	
         <tr >
           <td>{{ $q->concepto }} -> {{$q->moneda}}</td> 
 		      <td> {{$q->numero }}</td>
@@ -44,7 +65,7 @@ $cefe=0;?>
           <td>{{ $q->cliente }}</td>
           <td><?php  echo $fecha=date_format(date_create($q->fecha_mov),'d-m-Y h:i:s');?></td>
 		    
-          <td><?php $acum=$acum+ $q->monto;  echo number_format($q->monto, 2,',','.'); ?></td> 
+          <td><?php $acum=$acum+ $q->monto;  echo number_format($q->monto, 2,',','.');  if($datmoneda->tipo > 0){ echo " | $".number_format(($resultado), 2,',','.'); }   ?></td> 
           <td>{{ $q->user }}</td>
         </tr>
        
@@ -52,7 +73,7 @@ $cefe=0;?>
 	
          <tr>
         <td colspan="4"> <strong>TOTAL:</strong></td>
-          <td colspan="3" align="center"><strong><strong><?php echo number_format($acum, 2,',','.'); ?></strong></strong></td>
+          <td colspan="3" align="center"><strong><strong><?php echo number_format($acum, 2,',','.'); if($datmoneda->tipo > 0){ echo " | $".number_format($tcompras, 2,',','.'); } ?></strong></strong></td>
    
         
         </tr>
@@ -68,12 +89,11 @@ $cefe=0;?>
                   		</div>
              
       <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
-                    <div class="form-group" align="center">
-                          <a ><button class="btn  pull-right" id="imprimir">Imprimir</button></a>
-          <a href="{{route('showbanco',['id'=>$datosbanco->idbanco])}}" id="regresar"><button class="btn  pull-left" >Regresar</button></a> 
-
-                    </div>
-                </div>
+			<div class="form-group" align="center">
+			<a href="{{route('showbanco',['id'=>$datosbanco->idbanco])}}" id="regresar"><button class="btn  pull-left" >Regresar</button></a> 
+			<a ><button class="btn  pull-right" id="imprimir">Imprimir</button></a>       
+			</div>
+		</div>
       
              
 

@@ -93,13 +93,14 @@ class BancoController extends Controller
 	    public function show(Request $request,$id)
     {  
         if ($id)
-        {
+        {		
 			$rol=DB::table('roles')-> select('newndbanco','newncbanco','transferenciabanco','anularopbanco')->where('iduser','=',$request->user()->id)->first();
 			$listbanco=DB::table('bancos')->get();
             $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$contador=DB::table('mov_ban')->select('id_mov')->limit('1')->orderby('id_mov','desc')->get();
-            $banco=DB::table('bancos')->where('idbanco','=',$id)
-            ->first();	
+            $banco=DB::table('bancos')->where('idbanco','=',$id)->first();	
+			 $datmoneda=DB::table('monedas')->where('idbanco','=',$id)->first();
+		
 			 $clasificador=DB::table('ctascon')->where('inactiva','=',0)->get();
 			$movimiento=DB::table('mov_ban')->where('idbanco','=',$id)->where('estatus','=',0)->get();
         $q1=DB::table('proveedores')->select('idproveedor as id','nombre','rif as cedula','tipo');
@@ -108,13 +109,15 @@ class BancoController extends Controller
 		$clientes= $q1->union($q)->union($q2)->get(); 
 			
 			
-	return view('bancos.banco.show',["rol"=>$rol,"listbanco"=>$listbanco,"clasificador"=> $clasificador,"clientes"=>$clientes,"movimiento"=>$movimiento,"contador"=>$contador,"banco"=>$banco,"empresa"=>$empresa]);
+	return view('bancos.banco.show',["datmoneda"=> $datmoneda,"rol"=>$rol,"listbanco"=>$listbanco,"clasificador"=> $clasificador,"clientes"=>$clientes,"movimiento"=>$movimiento,"contador"=>$contador,"banco"=>$banco,"empresa"=>$empresa]);
         }
     }
 	   public function adddebito(Request $request)
-    {    
+    {	
 	     $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$idcliente=explode("_",$request->get('cliente'));
+		 $tasac=$request->get('tasac');
+			if (($tasac)==""){$tasac=1; }			
 		$user=Auth::user()->name;
          $mov=new MovBancos;
         $mov->idbanco=$request->get('idbanco');
@@ -127,7 +130,7 @@ class BancoController extends Controller
 		$mov->ced=$idcliente[2];
 		$mov->tipo_per=$idcliente[3];
         $mov->monto=$request->get('monto');
-		$mov->tasadolar=$empresa->tasa_banco;
+		$mov->tasadolar=$tasac;
         $mytime=Carbon::now('America/Caracas');
         $mov->fecha_mov=$request->get('fecha');
         $mov->user=Auth::user()->name;
@@ -135,8 +138,8 @@ class BancoController extends Controller
 		  $valort=DB::table('monedas')->where('idbanco','=',$request->get('idbanco'))->first();
 		if($valort != NULL){
 			if($valort->tipo==0){ $mmov=$request->get('monto'); }
-			if($valort->tipo==1){ $mmov=($request->get('monto')/$valort->valor); }
-			if($valort->tipo==2){ $mmov=($request->get('monto')*$valort->valor); } 
+			if($valort->tipo==1){ $mmov=($request->get('monto')/$tasac); }
+			if($valort->tipo==2){ $mmov=($request->get('monto')*$tasac); } 
 		}else{ $mmov=$request->get('monto');}
 	if (isset($_POST["cxc"])) {
 		$contador=DB::table('notasadm')->select(DB::raw('count(idnota) as doc'))->where('tipo','=',1)->first();
@@ -177,6 +180,8 @@ class BancoController extends Controller
     {    
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$idcliente=explode("_",$request->get('cliente'));
+			$tasac=$request->get('tasac');
+			if (($tasac)==""){$tasac=1; }
 		$user=Auth::user()->name;
          $mov=new MovBancos;
         $mov->idbanco=$request->get('idbanco');
@@ -189,7 +194,7 @@ class BancoController extends Controller
 		$mov->ced=$idcliente[2];
 		$mov->tipo_per=$idcliente[3];
         $mov->monto=$request->get('monto');
-		$mov->tasadolar=$empresa->tasa_banco;
+		$mov->tasadolar=$tasac;
         $mytime=Carbon::now('America/Caracas');
         $mov->fecha_mov=$request->get('fecha');
         $mov->user=Auth::user()->name;
@@ -198,8 +203,8 @@ class BancoController extends Controller
 			  $valort=DB::table('monedas')->where('idbanco','=',$request->get('idbanco'))->first();
 			  if($valort != NULL){
 			if($valort->tipo==0){ $mmov=$request->get('monto'); }
-			if($valort->tipo==1){ $mmov=($request->get('monto')/$valort->valor); }
-			if($valort->tipo==2){ $mmov=($request->get('monto')*$valort->valor); }
+			if($valort->tipo==1){ $mmov=($request->get('monto')/$tasac); }
+			if($valort->tipo==2){ $mmov=($request->get('monto')*$tasac); }
 			}else{ $mmov=$request->get('monto');}
 	if (isset($_POST["cxc"])) {
 			$contador=DB::table('notasadm')->select(DB::raw('count(idnota) as doc'))->where('tipo','=',2)->first();
@@ -285,9 +290,9 @@ class BancoController extends Controller
 		$corteHoy = date("Y-m-d");
 		$query=trim($request->get('searchText'));
 		 $query2=trim($request->get('searchText2'));
-			if (($query)==""){$query=$corteHoy; $query2=$corteHoy; }
+			if (($query)==""){$query=$corteHoy; $query=$corteHoy; }
             
-//dd($request);
+
 	$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
        $banco=DB::table('bancos')->where('idbanco','=',$id)->first();
         $movimiento=DB::table('mov_ban as mov')
@@ -296,9 +301,9 @@ class BancoController extends Controller
 		-> whereBetween('fecha_mov', [$query, $query2])
 		->where('mov.estatus','=',0)
         ->get();
-  
+   $datmoneda=DB::table('monedas')->where('idbanco','=',$id)->first();
      //dd($movimiento);
-        return view("bancos.banco.detalle",["movimiento"=>$movimiento,"banco"=>$banco]);
+        return view("bancos.banco.detalle",["datmoneda"=> $datmoneda,"movimiento"=>$movimiento,"banco"=>$banco]);
     }
 	public function consulta($var1)
     {    
@@ -380,12 +385,13 @@ class BancoController extends Controller
             $query2=date_format($query2, 'Y-m-d');
             $banco=$request->get('id');
             $clasi=$request->get('clasi');
+			  $datmoneda=DB::table('monedas')->where('idbanco','=',$banco)->first();
                 if ($clasi == 0){
-                    $datosbanco= DB::table('bancos as bco')->where('bco.idbanco','=',$banco)->first();
+			$datosbanco= DB::table('bancos as bco')->where('bco.idbanco','=',$banco)->first();
             $datos=DB::table('mov_ban as mb')
             ->join ('bancos as b', 'mb.idbanco','=','b.idbanco')
             ->join('ctascon as cta','mb.clasificador','=','cta.idcod')
-            ->select (DB::raw('SUM(mb.monto) as monto' ),DB::raw('SUM(mb.tasadolar) as dolares' ),'mb.clasificador','cta.descrip','mb.tipo_mov')
+            ->select (DB::raw('SUM(mb.monto) as monto' ),DB::raw('avg(mb.tasadolar) as dolares' ),'mb.clasificador','cta.descrip','mb.tipo_mov')
             ->where('mb.idbanco','=',$banco)
 			 ->where('mb.estatus','=',0)
             ->whereBetween('mb.fecha_mov', [$query, $query2])      
@@ -407,20 +413,20 @@ class BancoController extends Controller
 	  ->where('mov_ban.estatus','=',0)
 	  -> whereBetween('fecha_mov', ['2023-012-01', $query])
 	 ->groupby('tipo_mov')->get();
-          return view('reportes.banco.indexagrupado',["detallado"=>$detallado,"datosbanco"=>$datosbanco,"datos"=>$datos,"empresa"=>$empresa,"saldo"=>$saldo,"searchText"=>$query,"searchText2"=>$query2]);
+          return view('reportes.banco.indexagrupado',["datmoneda"=>$datmoneda,"detallado"=>$detallado,"datosbanco"=>$datosbanco,"datos"=>$datos,"empresa"=>$empresa,"saldo"=>$saldo,"searchText"=>$query,"searchText2"=>$query2]);
                 }else{
 			$datosbanco= DB::table('bancos as bco')->where('bco.idbanco','=',$banco)->first();
             $datos=DB::table('mov_ban as mb')
             ->join ('bancos as b', 'mb.idbanco','=','b.idbanco')
             ->join('ctascon as cta','mb.clasificador','=','cta.idcod')
-            ->select ('cta.descrip','b.nombre','mb.tipo_mov','mb.moneda','mb.clasificador','mb.concepto','mb.numero','mb.monto','mb.fecha_mov','mb.user','mb.identificacion as cliente','mb.ced')              
+            ->select ('cta.descrip','b.nombre','mb.tipo_mov','mb.moneda','mb.clasificador','mb.concepto','mb.numero','mb.monto','mb.fecha_mov','mb.user','mb.identificacion as cliente','mb.ced','mb.tasadolar')              
             ->where('mb.idbanco','=',$banco)
 			 ->where('mb.estatus','=',0)
             ->where('mb.clasificador','=',$clasi)
             ->whereBetween('mb.fecha_mov', [$query, $query2])      
            ->groupby('mb.id_mov') 
             ->get();
-                 return view('reportes.banco.index',["detallado"=>$datos,"datosbanco"=>$datosbanco,"datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]); 
+                 return view('reportes.banco.index',["datmoneda"=>$datmoneda,"detallado"=>$datos,"datosbanco"=>$datosbanco,"datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]); 
             }
 
             

@@ -4,7 +4,19 @@
 <?php $mostrar=1; ?>
 
 <?php $acumdebe=0;$acumhaber=0;$efe=0;$deb=0;$che=0;$tra=0;
-$cefe=0;?>
+$cefe=0;
+$cal=0;
+switch ($datmoneda->tipo){
+	case "1":
+       $cal="/";
+        break;
+	case "2":
+       $cal="*";
+        break;
+		default:
+		$cal="/";
+		break;
+} ?>
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	<div class="col-sm-8 invoice-col">
 				{{$empresa->nombre}}
@@ -30,25 +42,32 @@ $cefe=0;?>
         </thead>
         <?php $ctra= 0; $cche=0; $cdeb=0; $credito=0; $contado=0; $count=0; $tcompras=0; $acumdebe=$acumdebedolar=$acumhaber=$acumhaberdolar=0;?>
 
-               @foreach ($datos as $q)
+		@foreach ($datos as $q)
+			<?php  if($datmoneda->tipo >0 ){  
+				$monto = $q->monto;
+				$tasa = $q->dolares;
+				if($cal == '*') { $resultado = $monto * $tasa; }
+				else { $resultado = $monto / $tasa; }
+				}
+			?>	
         <tr >
           <td>{{ $q->descrip }}</td> 
 		         <td>	  
 		<?php 
-		 if ($q->tipo_mov == "PAG"){  $acumhaber=$acumhaber+ $q->monto;  echo $q->tipo_mov."  ->  ".number_format($q->monto, 2,',','.'); } 
-         if ($q->tipo_mov == "RET") {  $acumhaber=$acumhaber+ $q->monto;  echo $q->tipo_mov."  ->  ".number_format($q->monto, 2,',','.'); }
-         if ($q->tipo_mov == "N/D")  {  $acumhaber=$acumhaber+ $q->monto;  echo $q->tipo_mov."  ->  ".number_format($q->monto, 2,',','.'); }
-         if ($q->tipo_mov == "PPR") {  $acumhaber=$acumhaber+ $q->monto;  echo $q->tipo_mov."  ->  ".number_format($q->monto, 2,',','.'); }
- ?></td> 
+		 if ($q->tipo_mov == "PAG"){  $acumhaber=$acumhaber+ $q->monto;  echo $q->tipo_mov."  ->  ".number_format($q->monto, 2,',','.'); if($datmoneda->tipo > 0){ echo " | $".number_format(($resultado), 2,',','.'); } } 
+         if ($q->tipo_mov == "RET") {  $acumhaber=$acumhaber+ $q->monto;  echo $q->tipo_mov."  ->  ".number_format($q->monto, 2,',','.'); if($datmoneda->tipo > 0){ echo " | $".number_format(($resultado), 2,',','.'); } } 
+         if ($q->tipo_mov == "N/D")  {  $acumhaber=$acumhaber+ $q->monto;  echo $q->tipo_mov."  ->  ".number_format($q->monto, 2,',','.'); if($datmoneda->tipo > 0){ echo " | $".number_format(($resultado), 2,',','.'); } } 
+         if ($q->tipo_mov == "PPR") {  $acumhaber=$acumhaber+ $q->monto;  echo $q->tipo_mov."  ->  ".number_format($q->monto, 2,',','.'); if($datmoneda->tipo > 0){ echo " | $".number_format(($resultado), 2,',','.'); } } 
+ ?> </td> 
 
 		  <td><?php 
-		     if ($q->tipo_mov == "DEP"){  $acumdebe=$acumdebe+ $q->monto;  echo $q->tipo_mov."  ->  ".number_format($q->monto, 2,',','.'); }
-             if ($q->tipo_mov == "N/C"){ $acumdebe=$acumdebe+ $q->monto;  echo $q->tipo_mov."  ->  ".number_format($q->monto, 2,',','.');}	  
+		     if ($q->tipo_mov == "DEP"){  $acumdebe=$acumdebe+ $q->monto;  echo $q->tipo_mov."  ->  ".number_format($q->monto, 2,',','.'); if($datmoneda->tipo > 0){ echo " | $".number_format(($resultado), 2,',','.'); } } 
+             if ($q->tipo_mov == "N/C"){ $acumdebe=$acumdebe+ $q->monto;  echo $q->tipo_mov."  ->  ".number_format($q->monto, 2,',','.');if($datmoneda->tipo > 0){ echo " | $".number_format(($resultado), 2,',','.'); } } 
 		 ?> </td>
 
    
           <td><?php $credito=( $acumdebe - $acumhaber);
-echo number_format($credito, 2,',','.');
+			echo number_format($credito, 2,',','.');
 		  ?></td>
 
         </tr>

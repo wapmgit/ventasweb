@@ -2,6 +2,7 @@
 @section ('contenido')
 <?php $mingreso=$megreso=0; $bc=0;?>
 <?php
+$fecha_actual= date("d/m/Y");
 $ceros=5;
 function add_ceros($numero,$ceros,$bco) {
   $numero=$numero+1;
@@ -13,7 +14,7 @@ $digitos=strlen($numero);
 return $insertar_ceros = $bco.$recibo.$numero;
 };
 $idv=0;
-
+ $tasa=$datmoneda->valor; $tipom=$datmoneda->tipo; 
 ?> 
  @foreach ($contador as $p)
               <?php  $idv=$p -> id_mov; ?> 
@@ -65,7 +66,6 @@ $idv=0;
 	
 
  </td>
- 
   </tr>
 </table>
 </div>
@@ -125,7 +125,8 @@ $idv=0;
  @push ('scripts')
 <script>
 $(document).ready(function(){
-   
+   document.getElementById("fechand").valueAsDate = new Date();
+   document.getElementById("fechanc").valueAsDate = new Date();
     $('#c_cliente').click(function(){
 $('#modalcliente').modal('hide')
     });
@@ -133,10 +134,14 @@ $('#modalcliente').modal('hide')
 $('#modalclientecre').modal('hide')
     });
 	$('#btn_nd').click(function(){
-		document.getElementById('btn_nd').style.display="none"; 
+	var cli=$("#ncliente").val();
+		if(cli==0){ alert('Debe indicar un Beneficiario.');}else{
+		document.getElementById('btn_nd').style.display="none"; }
     });
 	$('#btn_nc').click(function(){
-		document.getElementById('btn_nc').style.display="none"; 
+		var cli=$("#clientecre").val();
+		if(cli==0){ alert('Debe indicar Razon.');}else{
+		document.getElementById('btn_nc').style.display="none"; }
     });
 	$('#cerrarnc').click(function(){
 		   $("#formcredito")[0].reset();
@@ -187,6 +192,12 @@ $('#modalclientecre').modal('hide')
 				document.getElementById('divncp').style.display="none"; 
 			}
 
+    });
+	$('#montond').on("change",function(){
+				document.getElementById('btn_nd').style.display=""; 	
+    });
+	$('#montonc').on("change",function(){
+				document.getElementById('btn_nc').style.display=""; 	
     });
     $("#Cenviar_cli").on("click",function(){    
          var form1= $('#formulariocliente');
