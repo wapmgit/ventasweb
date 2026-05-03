@@ -83,6 +83,7 @@ class ReportescomprasController extends Controller
 			-> join ('tipo_gasto as tg','tg.idgasto','=','c.tipogasto')
 			->select ('c.*','tg.nombregasto','p.nombre','p.rif')
             ->whereBetween('c.fecha', [$query, $query2])
+            ->where('c.estatus','0')
             ->groupby('c.idgasto')
             ->get();
 			 $tiposg=DB::table('gastos as c')

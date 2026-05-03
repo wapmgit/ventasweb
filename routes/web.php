@@ -11,6 +11,7 @@ use App\Http\Controllers\VentasController;
 use App\Http\Controllers\ApartadoController;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\GastosController;
+use App\Http\Controllers\TgastoController;
 use App\Http\Controllers\AjustesController;
 use App\Http\Controllers\CxcobrarController;
 use App\Http\Controllers\CxpagarController;
@@ -141,7 +142,12 @@ Route::get('newgasto', [GastosController::class, 'create'])->name('newgasto');
 Route::post('guardargasto', [GastosController::class, 'store'])->name('guardargasto');
 Route::post('anulargasto/{id}', [GastosController::class, 'destroy'])->name('anulargasto');
 Route::get('showgasto/{id}', [GastosController::class, 'show'])->name('showgasto');
-
+//tipogasto
+Route::get('itgasto', [TgastoController::class, 'index'])->name('itgasto');
+Route::get('newtgasto', [TgastoController::class, 'create'])->name('newtgasto');
+Route::post('savetgasto', [TgastoController::class, 'store'])->name('savetgasto');
+Route::get('edittgasto/{id}', [TgastoController::class, 'edit'])->name('edittgasto');
+Route::post('updatetgasto', [TgastoController::class, 'update'])->name('updatetgasto');
 //pedidos
 Route::get('pedidos', [PedidosController::class, 'index'])->name('pedidos');
 Route::get('newpedido', [PedidosController::class, 'create'])->name('newpedido');
