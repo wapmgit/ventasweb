@@ -280,14 +280,20 @@ class BancoController extends Controller
 	return Redirect::to('showbanco/'.$request->get('idbanco'));
    
     }
-	public function detalle($id)
+	public function detalle(Request $request, $id)
     {    
-	//dd($id);
+		$corteHoy = date("Y-m-d");
+		$query=trim($request->get('searchText'));
+		 $query2=trim($request->get('searchText2'));
+			if (($query)==""){$query=$corteHoy; $query2=$corteHoy; }
+            
+//dd($request);
 	$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
        $banco=DB::table('bancos')->where('idbanco','=',$id)->first();
         $movimiento=DB::table('mov_ban as mov')
         ->join('ctascon','idcod','=','mov.clasificador')
         ->where('idbanco','=',$id)
+		-> whereBetween('fecha_mov', [$query, $query2])
 		->where('mov.estatus','=',0)
         ->get();
   

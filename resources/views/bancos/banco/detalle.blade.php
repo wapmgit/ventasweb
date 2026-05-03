@@ -1,6 +1,9 @@
 @extends ('layouts.master')
 @section ('contenido')
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+   @include('bancos.banco.searchdetalle')
+   </div>
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <h3 align="center">DETALLE DE MOVIMIENTOS BANCARIOS {{$banco->nombre}}</h3> 
 
       <table id="ing" class="table table-striped table-bordered table-condensed table-hover">
