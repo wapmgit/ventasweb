@@ -748,8 +748,10 @@ function trunc (x, posiciones = 0) {
 				$("#total_venta").val(total);
 				evaluar();
 				$("#item").html(contl);
-				$('#detalles').append(fila);
+				$('#detalles').append(fila);	
+				$('#pidarticulo').closest('.bootstrap-select').find('button').focus();
 				$("#pidarticulo").selectpicker('toggle');
+
 						if(mserial==1){ 
 							var data = <?php echo json_encode($seriales);?>;
 								for(var i=0;i<data.length;i++){
