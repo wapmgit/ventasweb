@@ -51,20 +51,22 @@ class GastosController extends Controller
 		}
     }
 	public function store(Request $request){
-		
+	//	dd($request);
 		$user=Auth::user()->name;
 try{
     DB::beginTransaction();
+	$tasa=1;
+	if($request->get('tregistro')==2){ $tasa=$request->get('tasa');}
 			$ajuste=new Gastos;
 			$ajuste->idpersona=$request->get('idproveedor');
 			$ajuste->documento=$request->get('documento');
 			$ajuste->tipogasto=$request->get('tgasto');
 			$ajuste->control=$request->get('control');
 			$ajuste->descripcion=$request->get('descripcion');
-			$ajuste->monto=$request->get('monto');
-			$ajuste->base=$request->get('base');
-			$ajuste->iva=$request->get('iva');
-			$ajuste->exento=$request->get('exento');
+			$ajuste->monto=$request->get('monto')/$tasa;
+			$ajuste->base=$request->get('base')/$tasa;
+			$ajuste->iva=$request->get('iva')/$tasa;
+			$ajuste->exento=$request->get('exento')/$tasa;
 			$ajuste->tasa=$request->get('tasa');
 			$ajuste->emision=$request->get('emision');
 			if($request->get('tdeuda')>0){
@@ -74,7 +76,7 @@ try{
 			$ajuste->usuario=$user;
 			$ajuste-> save();
 			$datpro=Proveedores::findOrFail($request->get('idproveedor'));
-			//dd($request);
+			
 				if($request->get('totala')>0){
 			// inserta el recibo
           $idpago=$request->get('tidpago');

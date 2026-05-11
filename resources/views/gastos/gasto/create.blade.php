@@ -17,6 +17,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
       <H2>LICENCIA DE USO DE SOFTWARE VENCIDA!!!</H2> contacte su Tecnico de soporte.
       </div>";
 };
+$count=0;
 ?>
 @include('compras.ingreso.modalproveedor')
 <div class="row">		
@@ -52,12 +53,17 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
                     <input type="text" name="control"  value="{{old('control')}}" class="form-control"placeholder="Nro Control" > 
                 </div>
             </div>
-		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+
+					     	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                 <div class="form-group">
-                    <label for="concepto">Tasa</label>
-                    <input type="number" name="tasa" step="0.001" value="{{$empresa->tc}}" class="form-control" > 
-                </div>
-		</div>
+                    <label for="num_comprobante">Gasto: 
+					<input name="tregistro" type="radio" id="cbs" value="2">Bs
+					<input name="tregistro" type="radio" id="dls" value="1" checked="checked">$ 
+					Tasa </label>
+                    <input type="number" name="tasa" step="any" id="tasacompra" readonly value="{{$empresa->tc}}"  class="form-control">
+                <input type="hidden" value="1" id="optasa"  >
+				</div>
+				</div>
 		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
 			<div class="form-group">
                     	<label for="proveedor">Tipo Gasto </label>
@@ -102,8 +108,9 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 	</div>
 	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                     <div class="form-group">
-                        <label for="costo">Total</label>
+                        <label for="costo">Total <span style ="display:none" id="idmends"> </span></label>
                         <input type="number" name="monto" id="pcosto" step="0.01" class ="form-control"  placeholder="Total">
+                        <input type="hidden" name="montods" id="pcostods" step="0.01" class ="form-control">
                     </div>
 	</div>
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="guardar" align="right">
@@ -114,19 +121,21 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
                     </div>
 	</div>
      
-</div>
+</div>@include('proveedores.pagar.modalmonedas')
 		<div class ="row" id="divdesglose" style="display: none">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					   <h3 align="center">TOTAL <input type="number" id="divtotal" value="" disabled ><span id="pasapago" title="haz click para hacer cobro total">RESTA</span> <input type="number" id="resta" disabled value="">
-						<input type="hidden" name="tdeuda" id="tdeuda" value=""  >
-						</h3></br>
+						<input type="hidden" name="tdeuda" id="tdeuda" value=""  ><a href="#" data-target="#modalm" data-toggle="modal"><button  class="btn btn-warning">Act. Tasas </button></a>
+						</h3>
+						
+						</br>
 	</div>		  
 	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
 			<div class="form-group">
 			<select name="pidpago" id="pidpago" class="form-control">
 							<option value="100" selected="selected">Selecione...</option>
-					@foreach ($monedas as $m)
-                           <option value="{{$m-> idmoneda}}_{{$m->tipo}}_{{$m->valor}}">{{$m -> nombre}}</option> 
+					@foreach ($monedas as $m)<?php $count++;?>
+                           <option id=vm<?php echo $count; ?>  value="{{$m-> idmoneda}}_{{$m->tipo}}_{{$m->valor}}">{{$m -> nombre}}</option> 
                            @endforeach
 						</select>
 						</div>
@@ -186,7 +195,6 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 $(document).ready(function(){
 	
 $("#guardar").hide();
-
 $("#bi").change(sumtotal); 
 $("#iva").change(sumtotal); 
 $("#exe").change(sumtotal); 
@@ -243,20 +251,41 @@ $('#divdesglose').fadeIn("fast"); }	 }
 			  document.getElementById('Nenviar2').style.display="";
 				   }
 				 });
+				 
+				 $('#cbs').click(function(){
+				$('#tasacompra').attr("readonly",false);
+				$('#optasa').val(2);
+			})
+				$('#dls').click(function(){
+				$('#tasacompra').attr("readonly",true);
+				$('#optasa').val(1);
+			})
           });
 
 
 	 function sumtotal(){  
+	var opt=$('#optasa').val();
+	var tasa=$('#tasacompra').val();
+
 	var total=$("#bi").val();  	
 	var total2=$("#iva").val();  	
 	var total3=$("#exe").val();
 	var ttp=parseFloat(total)+parseFloat(total2)+parseFloat(total3);
+	var ttpds=(parseFloat(ttp)/parseFloat(tasa)).toFixed(3);
 	 $("#pcosto").val(ttp);
+	 $("#pcostods").val(ttpds);
+	 $("#idmends").text("$ "+ttpds); 
 	 var total=$("#pcosto").val();  	
 	$("#guardar").show();
 	$("#divtotal").val(total);
 	 $("#resta").val(total);
 	 $("#tdeuda").val(total);
+	 	if(opt==2){  
+	document.getElementById('idmends').style.display=""; 
+	$("#divtotal").val(ttpds);
+	 $("#resta").val(ttpds);
+	 $("#tdeuda").val(ttpds);
+	}
     }
 	//agrego tipo pago
 	acumpago=[];var contp=0; var pagototal=0; var tresta=0;
@@ -364,7 +393,15 @@ $("#pidpago").val('100');
 		  
 		
     }
-	
+	function actmonedas(aux,id,t){
+	var dato=$("#vm"+aux).val();
+var nv=$("#valor"+aux).val();
+var ndato=id+'_'+t+'_'+nv;	
+$("#vm"+aux).val(ndato);
+$("#vmm"+aux).val(ndato);
+$("#vmpt"+aux).val(ndato);
+alert('Monto Actualizado.');
+}
 </script>
 @endpush
 @endsection

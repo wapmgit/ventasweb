@@ -18,7 +18,7 @@
 				<td><input  type="text" readonly value="{{$cat1->nombre}}" name="nombre" class ="form-control"></input></td>
 				<td><input type="number" id="valor<?php echo $count2; ?>" value="{{$cat1->valor}}" name="valor" class ="form-control"></input>
 				</td>
-				<td><a href="javascript:actmonedas('<?php echo $count2; ?>',{{$cat1->idmoneda}},{{$cat1->tipo}});"> <button type="submit" class="btn btn-outline-light">Actualizar</button><a></td></tr>
+				<td><a href="javascript:actmonedas('<?php echo $count2; ?>',{{$cat1->idmoneda}},{{$cat1->tipo}});"> <button type="button" class="btn btn-outline-light">Actualizar</button><a></td></tr>
 				<?php } ?>
 					@endforeach
 			</table>
