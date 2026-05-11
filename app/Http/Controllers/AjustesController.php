@@ -45,7 +45,7 @@ class AjustesController extends Controller
 			$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
 		if ($empresa->orderart==1){$order="art.nombre";}else{$order="art.idarticulo";}
 			$articulos =DB::table('articulos as art')
-			-> select(DB::raw('CONCAT(art.codigo,"-",art.nombre," - ",art.stock," - ",art.costo,"-",art.iva) as articulo'),'art.idarticulo','art.stock','art.costo','art.fraccion')
+			-> select(DB::raw('CONCAT(art.'.$empresa->codart.',"-",art.nombre," - ",art.stock," - ",art.costo,"-",art.iva) as articulo'),'art.idarticulo','art.stock','art.costo','art.fraccion')
 			-> where('art.estado','=','Activo')
 			 ->OrderBy($order,'asc')
 			-> get();

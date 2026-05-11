@@ -58,7 +58,7 @@ class ComprasController extends Controller
         $personas=DB::table('proveedores')
         -> where('estatus','=','A')->get();
         $articulos =DB::table('articulos as art')
-        -> select(DB::raw('CONCAT(art.codigo,"-",art.nombre," - ",stock," - ",costo,"-",iva) as articulo'),'art.idarticulo','art.costo','art.serial','art.iva')
+        -> select(DB::raw('CONCAT(art.'.$empresa->codart.',"-",art.nombre," - ",stock," - ",costo,"-",iva) as articulo'),'art.idarticulo','art.costo','art.serial','art.iva')
         -> where('art.estado','=','Activo')
         -> get();
         return view("compras.ingreso.create",["cnt"=>$contador,"monedas"=>$monedas,"personas"=>$personas,"articulos"=>$articulos,"categorias"=>$categorias,"empresa"=>$empresa]);

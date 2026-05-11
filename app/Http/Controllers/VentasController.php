@@ -607,7 +607,7 @@ public function show(Request $request, $id){
             -> first();
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.peso','a.codigo','a.idarticulo','a.nombre as articulo','a.iva','dv.cntgrp','dv.unidad','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
+            -> select('a.peso','a.'.$empresa->codart.' as codigo','a.idarticulo','a.nombre as articulo','a.iva','dv.cntgrp','dv.unidad','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
             -> where ('dv.idventa','=',$id)
             ->get();
 			
@@ -637,7 +637,7 @@ public function fbs($id){
 			//dd($venta);
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','dv.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
+            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','dv.unidad','a.'.$empresa->codart.' as codigo','a.iva','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
             -> where ('dv.idventa','=',$id)
              ->OrderBy($order,'asc')
 			->get();
@@ -691,7 +691,7 @@ public function notads($id){
 			//dd($venta);
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','dv.unidad','a.codigo','a.iva','dv.cantidad','dv.cntgrp','dv.descuento','dv.precio_venta','dv.precio')
+            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','dv.unidad','a.'.$empresa->codart.' as codigo','a.iva','dv.cantidad','dv.cntgrp','dv.descuento','dv.precio_venta','dv.precio')
             -> where ('dv.idventa','=',$id)
            ->OrderBy($order,'asc')
 		  ->get();
@@ -718,7 +718,7 @@ public function nota2ds($id){
 		//dd($venta);
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','dv.cntgrp','dv.unidad','a.codigo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','dv.precio')
+            -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','dv.cntgrp','dv.unidad','a.'.$empresa->codart.' as codigo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','dv.precio')
             -> where ('dv.idventa','=',$id)
            ->OrderBy($order,'asc')
 		  ->get();
