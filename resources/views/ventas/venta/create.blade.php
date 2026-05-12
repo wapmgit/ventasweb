@@ -335,9 +335,10 @@ $(document).ready(function(){
       $("#comision").val(comi);
 	  $("#nvendedor").val(dato[0]);
 	});
-	$("#pcantidad").change(function(){	  
+	$("#pcantidad").change(function(){		
 	   datosarticulo=document.getElementById('pidarticulo').value.split('_');
 	  var fraccion_art=datosarticulo[7];
+	 // alert('change');
 	  var cntventa=$("#pcantidad").val();
 	var nf=parseFloat(fraccion_art*100);
 	var ncnt=parseFloat(cntventa*100);
@@ -346,6 +347,39 @@ $(document).ready(function(){
 		  $("#pcantidad").val(fraccion_art);
 	  }
     });
+	$("#pcantidad").keydown(function(e) {
+	//	alert('keydown');
+    // fracción del artículo
+    var datosarticulo = document.getElementById('pidarticulo').value.split('_');
+    var fraccion_art = parseFloat(datosarticulo[7]);
+
+    // Si no hay una fracción válida, no hacemos nada
+    if (isNaN(fraccion_art) || fraccion_art <= 0) return;
+
+    var valorActual = parseFloat($(this).val()) || 0;
+    var tecla = e.key;
+    var code = e.which || e.keyCode;
+
+    // 2. Detectar Tecla "+" (Suma)
+    if (tecla === "+" || code === 107 || code === 187) {
+        e.preventDefault();
+        var nuevoValor = (valorActual + fraccion_art).toFixed(2);
+        $(this).val(parseFloat(nuevoValor)).trigger('change');
+    }
+
+    // 3. Detectar Tecla "-" (Resta)
+    if (tecla === "-" || code === 109 || code === 189) {
+        e.preventDefault();
+        var nuevoValor = (valorActual - fraccion_art).toFixed(2);
+        
+        // Evitar que la cantidad sea menor a la fracción mínima o cero
+        if (nuevoValor >= fraccion_art) {
+            $(this).val(parseFloat(nuevoValor)).trigger('change');
+        } else {
+            $(this).val(fraccion_art).trigger('change');
+        }
+    }
+});
 	$('#pasapago').click(function(){
 		datosbanco=$("#pidpago").val();
 		if(datosbanco==100){
@@ -576,11 +610,14 @@ function trunc (x, posiciones = 0) {
   return Number(numStr)
 }
 	function validar(e){
+		//alert('keypress');
 		let tecla = (document.all) ? e.keyCode : e.which;
 			if(tecla==13) { 
 				agregar();
 				event.preventDefault();
-			} }
+			}
+			
+			}
 	function validarno(e){
 		let tecla = (document.all) ? e.keyCode : e.which;
 			if(tecla==13) { 
@@ -749,8 +786,8 @@ function trunc (x, posiciones = 0) {
 				evaluar();
 				$("#item").html(contl);
 				$('#detalles').append(fila);	
-				$('#pidarticulo').closest('.bootstrap-select').find('button').focus();
 				$("#pidarticulo").selectpicker('toggle');
+				document.getElementById("pidarticulo").focus();
 
 						if(mserial==1){ 
 							var data = <?php echo json_encode($seriales);?>;
