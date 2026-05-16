@@ -154,6 +154,7 @@ class BancoController extends Controller
 		$mytime=Carbon::now('America/Caracas');
 		$paciente->fecha=$mytime->toDateTimeString();
         $paciente->pendiente=$mmov;
+		$paciente->movban=$mov->id_mov;
 		$paciente->usuario=Auth::user()->name;
         $paciente->save();
 	} 
@@ -170,6 +171,7 @@ class BancoController extends Controller
 		$mytime=Carbon::now('America/Caracas');
 		$paciente->fecha=$mytime->toDateTimeString();
         $paciente->pendiente=$mmov;
+		$paciente->movban=$mov->id_mov;
 		$paciente->usuario=Auth::user()->name;
         $paciente->save();
 	} 
@@ -183,7 +185,7 @@ class BancoController extends Controller
 			$tasac=$request->get('tasac');
 			if (($tasac)==""){$tasac=1; }
 		$user=Auth::user()->name;
-         $mov=new MovBancos;
+        $mov=new MovBancos;
         $mov->idbanco=$request->get('idbanco');
         $mov->clasificador=$request->get('clasificador');
         $mov->tipo_mov="N/C";
@@ -219,6 +221,7 @@ class BancoController extends Controller
 		$mytime=Carbon::now('America/Caracas');
 		$paciente->fecha=$mytime->toDateTimeString();
         $paciente->pendiente=$mmov;
+        $paciente->movban=$mov->id_mov;
 		$paciente->usuario=Auth::user()->name;
         $paciente->save();
 	} 
@@ -235,6 +238,7 @@ class BancoController extends Controller
 		$mytime=Carbon::now('America/Caracas');
 		$paciente->fecha=$mytime->toDateTimeString();
         $paciente->pendiente=$mmov;
+		 $paciente->movban=$mov->id_mov;
 		$paciente->usuario=Auth::user()->name;
         $paciente->save();
 	} 
@@ -434,6 +438,7 @@ class BancoController extends Controller
 	public function delete(Request $request)
     {		
 	
+	//dd($request->get('id'));
 		$id=$request->get('id');
 		$delmov=MovBancos::findOrFail($id);
 		$montobanco=$delmov->monto;
@@ -526,7 +531,23 @@ class BancoController extends Controller
 				$actventa->saldo=$actventa->saldo+$mrecibo;
 				$actventa->update();
 				
-				}		
+				}		//para las notas
+		  $datnadm=DB::table('notasadm')->where('movban','=',$delmov->id_mov)->first();
+		  if($datnadm<>NULL){
+				$actadm=Notasadm::findOrFail($datnadm->idnota);
+				$actadm->monto=0;
+				$actadm->pendiente=0;
+				$actadm->referencia="Anulado";
+				$actadm->update();
+		  }
+				$datnadmp=DB::table('notasadmp')->where('movban','=',$delmov->id_mov)->first();
+				if($datnadmp<>NULL){
+				$actadmp=Notasadmp::findOrFail($datnadmp->idnota);
+				$actadmp->monto=0;
+				$actadmp->pendiente=0;
+				$actadmp->referencia="Anulado";
+				$actadmp->update();
+				}
 	}
 	return Redirect::to('showbanco/'.$idbanco);
     }
