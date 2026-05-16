@@ -20,6 +20,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 $count=0;
 ?>
 @include('compras.ingreso.modalproveedor')
+@include('proveedores.pagar.modalmonedas')
 <div class="row">		
 	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 		<h3>Nuevo Gasto</h3>
@@ -121,7 +122,7 @@ $count=0;
                     </div>
 	</div>
      
-</div>@include('proveedores.pagar.modalmonedas')
+</div>
 		<div class ="row" id="divdesglose" style="display: none">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					   <h3 align="center">TOTAL <input type="number" id="divtotal" value="" disabled ><span id="pasapago" title="haz click para hacer cobro total">RESTA</span> <input type="number" id="resta" disabled value="">
@@ -204,8 +205,8 @@ $("#exe").change(sumtotal);
  $('#guardar').fadeOut("fast"); 
 $('#divdesglose').fadeIn("fast"); }	 }
     })
-				 $('#regresar').click(function(){
-			  $('#divdesglose').fadeOut("fast");
+	$('#regresar').click(function(){
+	$('#divdesglose').fadeOut("fast");
 			})
 			$('#pasapago').click(function(){
 			datosbanco=$("#pidpago").val();

@@ -91,7 +91,7 @@ $idv=0;
 						<input type="hidden" value="{{$empresa->peso}}" id="valortasap" name="peso" class="form-control">
                     		 <input type="hidden" value="" id="nvendedor" name="nvendedor" class="form-control">
 						<label for="cliente">Cliente <a href="" data-target="#modalcliente" data-toggle="modal"><span class="label label-success"> <i class="fa fa-fw  fa-user-plus "> </i></span></a></label><?php if($cntvend==0){ echo "<span class='text-danger'>Debe Registrar Cliente¡¡</span>";} ?>
-                    	<select name="id_cliente" id="id_cliente" class="form-control selectpicker" data-live-search="true">						
+                    	<select name="id_cliente" id="id_cliente" class="form-control selectpicker" data-live-search="true" autofocus>						
                            @foreach ($personas as $per)
                            <option value="{{$per -> id_cliente}}_{{$per -> tipo_precio}}_{{$per -> comision}}_{{$per -> nombrev}}_{{$per -> tipo_cliente}}_{{$per->limitecre}}">{{$per -> cedula}}-{{$per -> nombre}}</option> 
                            @endforeach
@@ -785,9 +785,11 @@ function trunc (x, posiciones = 0) {
 				$("#total_venta").val(total);
 				evaluar();
 				$("#item").html(contl);
-				$('#detalles').append(fila);	
+				$('#detalles').append(fila);			
+				
+				$("#pidarticulo").selectpicker('refresh');
 				$("#pidarticulo").selectpicker('toggle');
-				document.getElementById("pidarticulo").focus();
+				//document.getElementById("pidarticulo").focus();
 
 						if(mserial==1){ 
 							var data = <?php echo json_encode($seriales);?>;
@@ -841,8 +843,6 @@ function trunc (x, posiciones = 0) {
 			evaluar();
     }
     function limpiar(){
-		$("#pidarticulo").val('1000');
-		$("#pidarticulo").selectpicker('refresh');
         $("#pcantidad").val("");
         $("#pdescuento").val("");
         $("#pstock").val("");
