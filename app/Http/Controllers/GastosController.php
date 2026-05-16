@@ -133,7 +133,7 @@ catch(\Exception $e)
 {
     DB::rollback();
 }
-return Redirect::to('gastos');
+ return Redirect::to('showgasto/'.$ajuste->idgasto.'-1');
 }
 	public function show($id){
 		$data=explode("-",$id);
