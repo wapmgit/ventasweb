@@ -786,9 +786,10 @@ function trunc (x, posiciones = 0) {
 				evaluar();
 				$("#item").html(contl);
 				$('#detalles').append(fila);			
-				
+				$("#pidarticulo").val('5000');
 				$("#pidarticulo").selectpicker('refresh');
 				$("#pidarticulo").selectpicker('toggle');
+				
 				//document.getElementById("pidarticulo").focus();
 
 						if(mserial==1){ 
@@ -841,6 +842,9 @@ function trunc (x, posiciones = 0) {
 				document.getElementById('bt_add').style.display="";
 				  }
 			evaluar();
+			$("#pidarticulo").val('5000');
+			$("#pidarticulo").selectpicker('refresh');
+			$("#pidarticulo").selectpicker('toggle');
     }
     function limpiar(){
         $("#pcantidad").val("");
@@ -1008,7 +1012,7 @@ function trunc (x, posiciones = 0) {
 				console.log(r3); 
 				rows=r3.length; 
 				   $("#pidarticulo")
-				.append('<option value="1000" selected="selected">Seleccione..</option>');
+				.append('<option value="5000" selected="selected">Seleccione..</option>');
 				for (j=0;j<rows;j++){
 					if($("#tasadif").val()>0){preciom=r3[j].precio_promedio*((100-$("#tasadif").val())/100);}else{preciom=r3[j].precio2;}
 				$("#pidarticulo")
