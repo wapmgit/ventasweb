@@ -190,6 +190,7 @@ Route::get('apartadosresumen', [ApartadoController::class, 'apartadosresumen'])-
 Route::get('ajustes', [AjustesController::class, 'index'])->name('ajustes');
 Route::get('newajuste', [AjustesController::class, 'create'])->name('newajuste');
 Route::post('guardaajuste', [AjustesController::class, 'store'])->name('guardaajuste');
+Route::post('anulaajuste', [AjustesController::class, 'anulaajuste'])->name('anulaajuste');
 Route::get('showajuste/{id}', [AjustesController::class, 'show'])->name('showajuste');
 Route::post('loadcsv', [AjustesController::class, 'loadcsv'])->name('loadcsv');
 Route::get('etiquetasajuste/{id}', [AjustesController::class, 'etiquetas'])->name('etiquetasajuste');

@@ -29,7 +29,7 @@ class AjustesController extends Controller
             $query=trim($request->get('searchText'));
             $ajustes=DB::table('ajustes as a')
             -> join ('detalle_ajustes as da','a.idajuste','=','da.idajuste')
-            -> select ('a.idajuste','a.fecha_hora','a.concepto','a.responsable','a.monto')
+            -> select ('a.idajuste','a.fecha_hora','a.concepto','a.responsable','a.monto','a.estatus')
             -> where ('a.concepto','LIKE','%'.$query.'%')
             -> orderBy('a.idajuste','desc')
             -> groupBy('a.idajuste','a.fecha_hora')
@@ -143,17 +143,71 @@ class AjustesController extends Controller
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$ajuste=DB::table('ajustes as a')
             -> join ('detalle_ajustes as da','a.idajuste','=','da.idajuste')
-            -> select ('a.idajuste','a.fecha_hora','a.concepto','a.responsable','a.monto')
+            -> select ('a.idajuste','a.fecha_hora','a.concepto','a.responsable','a.monto','a.estatus')
             ->where ('a.idajuste','=',$id)
             -> first();
 
             $detalles=DB::table('detalle_ajustes as da')
             -> join('articulos as a','da.idarticulo','=','a.idarticulo')
-            -> select('a.nombre as articulo','da.cantidad','da.tipo_ajuste','da.costo')
+            -> select('a.nombre as articulo','da.cantidad','da.tipo_ajuste','da.costo','da.idarticulo')
             -> where ('da.idajuste','=',$id)
             ->get();
 
 		return view("compras.ajuste.show",["ajuste"=>$ajuste,"detalles"=>$detalles,"empresa"=>$empresa]);
+	}
+	public function anulaajuste(Request $request){
+		$user=Auth::user()->name;
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		//dd($request);
+		$dev=Ajustes::findOrFail( $request -> get('id'));
+		$dev->estatus=1;
+		$dev->update();
+			$ajuste=new Ajustes;
+			$ajuste->concepto="Ajuste ".$request -> get('id')." Anulado";
+			$ajuste->responsable=$user;
+			$ajuste->monto=$dev->monto*-1;
+			$mytime=Carbon::now('America/Caracas');
+			$ajuste->fecha_hora=$mytime->toDateTimeString();	 
+			$ajuste-> save();
+
+//registra el detalle de la devolucion
+        $idarticulo = $request -> get('idart');
+        $cantidad = $request -> get('cnt');
+        $tipo = $request -> get('tipo');
+        $costo = $request -> get('cost');
+        $cont = 0;
+
+
+            while($cont < count($idarticulo)){
+				$detalle=new DetalleAjustes();
+				$detalle->idajuste=$ajuste->idajuste;
+				$detalle->idarticulo=$idarticulo[$cont];
+				 if( $tipo[$cont]=="Descargo"){ 
+				 $detalle->tipo_ajuste="Cargo";}else{ $detalle->tipo_ajuste="Descargo";}
+				$detalle->cantidad=$cantidad[$cont];
+				$detalle->costo=$costo[$cont];
+				$detalle->valorizado=($costo[$cont]*$cantidad[$cont]);
+				$detalle->save();  
+				
+           $articulo=Articulos::findOrFail($idarticulo[$cont]);
+			   if( $tipo[$cont]=="Descargo"){ $tipom=1;
+			   $articulo->stock=($articulo->stock+$cantidad[$cont]);}else{
+					$tipom=2;
+				$articulo->stock=($articulo->stock-$cantidad[$cont]);
+			   }
+            $articulo->update();
+		$kar=new Kardex;
+		$kar->fecha=$mytime->toDateTimeString();
+		$kar->documento="AJUS-".$ajuste->idajuste;
+		$kar->idarticulo=$idarticulo[$cont];
+		$kar->cantidad=$cantidad[$cont];
+		$kar->costo=$costo[$cont];
+		$kar->tipo=$tipom; 
+		$kar->user=$user;
+		 $kar->save(); 
+            $cont=$cont+1;
+            }
+		return Redirect::to('ajustes');
 	}
 	public function loadcsv(Request $request){
 		//dd($request);

@@ -352,7 +352,7 @@ class ArticulosController extends Controller
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$ajuste=DB::table('ajustes as a')
             -> join ('detalle_ajustes as da','a.idajuste','=','da.idajuste')
-            -> select ('a.idajuste','a.fecha_hora','a.concepto','a.responsable','a.monto')
+            -> select ('a.idajuste','a.fecha_hora','a.concepto','a.responsable','a.monto','estatus')
             ->where ('a.idajuste','=',$id)
             -> first();
 

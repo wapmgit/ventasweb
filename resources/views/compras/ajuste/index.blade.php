@@ -32,7 +32,7 @@
 				
 					<td>
 					<a href="{{route('etiquetasajuste',['id'=>$ing->idajuste])}}" ><button class="btn btn-secondary btn-xs"> Etiquetas</button></a>
-				<a href="{{route('showajuste',['id'=>$ing->idajuste])}}"><button class="btn btn-primary btn-xs">Detalles</button></a>
+				<a href="{{route('showajuste',['id'=>$ing->idajuste])}}"><button class="btn <?php if($ing->estatus==0){ echo "btn-primary";}else{ echo "btn-danger"; }?> btn-xs">Detalles</button></a>
 					</td>
 				</tr>
 			@include('compras.ajuste.modal')

@@ -8,7 +8,9 @@
 	</div>
                 <!-- /.col -->
 	<div class="col-sm-3 invoice-col">
-		<h2 align="center">  Ajuste de Inventario </h2><div align="center"><span><strong><?php echo add_ceros($ajuste-> idajuste,$ceros); ?></span></strong></div>		
+		<h2 align="center">  Ajuste de Inventario </h2><div align="center"><span><strong><?php echo add_ceros($ajuste-> idajuste,$ceros); ?></span></strong>
+		<?php if($ajuste->estatus==1){?><h6>**Anulado**</h6><?php } ?>
+		</div>		
 	</div>	
 	<div class="col-sm-3 invoice-col" align="center">
 <img src="{{ asset('dist/img/'.$empresa->logo)}}" width="50%" height="80%" title="NKS">

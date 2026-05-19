@@ -84,11 +84,12 @@ return $insertar_ceros = $recibo.$numero;
 
                 </div>
                   
- 
+ 		@include('compras.ajuste.modalanular')
 			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
                     <div class="form-group" align="center">
 
 					 <button type="button" id="regresar" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
+				<?php if($ajuste->estatus==0){?>	<a  href=""  data-target="#modal-delete-{{$ajuste->idajuste}}" data-toggle="modal"><button type="button" id="anular" class="btn btn-warning btn-sm" data-dismiss="modal">Anular</button></a> <?php } ?>
                      <button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
                     </div>
                 </div> 
@@ -108,6 +109,11 @@ $('#regresar').on("click",function(){
   window.location="{{route('ajustes')}}";
   
 });
+$('#btnanular').on("click",function(){
+  document.getElementById('btnanular').style.display="none";
+  
+});
+
 });
 </script>
 @endpush
