@@ -89,7 +89,8 @@ return $insertar_ceros = $recibo.$numero;
                     <div class="form-group" align="center">
 
 					 <button type="button" id="regresar" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
-				<?php if($ajuste->estatus==0){?>	<a  href=""  data-target="#modal-delete-{{$ajuste->idajuste}}" data-toggle="modal"><button type="button" id="anular" class="btn btn-warning btn-sm" data-dismiss="modal">Anular</button></a> <?php } ?>
+				<?php if($rol->anularaj==1){
+				if($ajuste->estatus==0){?>	<a  href=""  data-target="#modal-delete-{{$ajuste->idajuste}}" data-toggle="modal"><button type="button" id="anular" class="btn btn-warning btn-sm" data-dismiss="modal">Anular</button></a> <?php } } ?>
                      <button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
                     </div>
                 </div> 

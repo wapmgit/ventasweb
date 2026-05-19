@@ -139,7 +139,8 @@ class AjustesController extends Controller
 	}
 	return Redirect::to('ajustes');
 	} 	
-	public function show($id){
+	public function show(Request $request, $id){
+			$rol=DB::table('roles')-> select('anularaj')->where('iduser','=',$request->user()->id)->first();
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$ajuste=DB::table('ajustes as a')
             -> join ('detalle_ajustes as da','a.idajuste','=','da.idajuste')
@@ -153,7 +154,7 @@ class AjustesController extends Controller
             -> where ('da.idajuste','=',$id)
             ->get();
 
-		return view("compras.ajuste.show",["ajuste"=>$ajuste,"detalles"=>$detalles,"empresa"=>$empresa]);
+		return view("compras.ajuste.show",["rol"=>$rol,"ajuste"=>$ajuste,"detalles"=>$detalles,"empresa"=>$empresa]);
 	}
 	public function anulaajuste(Request $request){
 		$user=Auth::user()->name;

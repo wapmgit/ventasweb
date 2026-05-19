@@ -189,7 +189,13 @@
 					 <label>Crear Ajuste: </label><label>
 					  <input type="checkbox" name="op17" class="minimal" @if($q->crearajuste==1) checked @endif ></label>			
 					</div>
-				</div>		
+				</div>	
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+						<div class="form-group">
+						<label>Anular Ajuste: </label><label>
+						<input type="checkbox" name="op76" class="minimal" @if($q->anularaj==1) checked @endif ></label>
+						</div>
+				</div>				
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Abonar Gastos: </label><label>
