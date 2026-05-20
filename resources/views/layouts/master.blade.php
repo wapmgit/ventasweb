@@ -536,6 +536,12 @@
                   <p>Lista de Precios</p>
                 </a>
 			</li>
+			    <li class="nav-item">
+                <a href="{{route('tomainventario')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Toma de Inventario</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a href="{{route('listapreciosdesc')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>

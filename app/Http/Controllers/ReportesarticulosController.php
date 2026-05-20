@@ -236,5 +236,30 @@ class ReportesarticulosController extends Controller
 			return view("reportes.mensajes.noautorizado");
 		}    
   }
-   
+   		public function tomainventario(Request $request)
+    {  
+	$categorias=DB::table('categoria')->where('condicion','=','1')->get();
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();   
+		if($request->get('grupo')){	
+        $lista=DB::table('articulos')
+		->select('nombre','unidad')
+		->where('estado','=',"Activo")
+		->where('idcategoria','=',$request->get('grupo'))
+		->OrderBy('articulos.nombre','asc')
+			->get();
+			$data=DB::table('categoria')->select('nombre')-> where('idcategoria','=',$request->get('grupo'))->first(); 
+			$filtro=$data->nombre;
+			}else{
+			$lista=DB::table('articulos')
+				->select('nombre','unidad')
+				->where('estado','=',"Activo")
+		->where('estado','=',"Activo")
+		->OrderBy('articulos.nombre','asc')
+			->get();
+			$filtro="";
+			}
+		return view('reportes.articulos.tomainventario.index',["filtro"=>$filtro,"lista"=>$lista,"empresa"=>$empresa,"categorias"=>$categorias]);
+		}         
+
+	
 }
