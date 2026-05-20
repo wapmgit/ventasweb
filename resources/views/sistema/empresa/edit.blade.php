@@ -185,7 +185,22 @@
                       <label class="custom-control-label" for="customSwitch6"></label>
                     </div>
                     </td>
+</tr>           <tr>
+                    <td>Index Articulo Mostrar</td>     
+                    <td class="text-right py-0 align-middle">
+ <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                          <input class="custom-control-input" type="checkbox" <?Php if($empresa->mp2==1) echo "checked"; ?> name="mp2" id="customCheckbox1">
+                          <label for="customCheckbox1" class="custom-control-label">Precio2</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                          <input class="custom-control-input" type="checkbox"  <?Php if($empresa->mp3==1) echo "checked"; ?> name="mp3" id="customCheckbox2" >
+                          <label for="customCheckbox2" class="custom-control-label">Precio3</label>
+                        </div>
+                    </div>
+                    </td>
 </tr>
+
                 </tbody>
               </table>
             </div>

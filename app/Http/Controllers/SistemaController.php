@@ -296,6 +296,8 @@ class SistemaController extends Controller
 		if($request->get('printpeso')=="on"){$emp->printpeso=1;}else{$emp->printpeso=0;}
 		if($request->get('orderart')=="on"){$emp->orderart=1;}else{$emp->orderart=0;}
 		if($request->get('relaprecios')=="on"){$emp->relaprecios=1;}else{$emp->relaprecios=0;}
+		if($request->get('mp2')=="on"){$emp->mp2=1;}else{$emp->mp2=0;}
+		if($request->get('mp3')=="on"){$emp->mp3=1;}else{$emp->mp3=0;}
         $emp->update();
 
 		 if ($tasa>0){

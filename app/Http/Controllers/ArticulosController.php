@@ -34,6 +34,8 @@ class ArticulosController extends Controller
 					'a.idarticulo', 
 					'a.nombre', 
 					'a.precio1', 
+					'a.precio2', 
+					'a.precio3', 
 					'a.codigo', 
 					'a.stock', 
 					'c.nombre as categoria', 
