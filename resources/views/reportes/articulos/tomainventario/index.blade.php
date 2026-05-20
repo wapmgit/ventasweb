@@ -71,7 +71,7 @@ $(document).ready(function(){
   //  alert ('si');
   document.getElementById('imprimir').style.display="none";
   window.print(); 
-window.location="{{route('cortecaja')}}";
+window.location="{{route('tomainventario')}}";
     });
 
 });
