@@ -29,8 +29,8 @@
 					<th>Imagen</th>
 					<th>$</th>
 					<th>BsP1.</th>
-				 @if($empresa->mp2==1)	<th>BsP2.</th> @endif
-				 @if($empresa->mp3==1)	<th>BsP3.</th>  @endif
+				 @if($empresa->mp2==1)	<th>$P2.</th> @endif
+				 @if($empresa->mp3==1)	<th>$P3.</th>  @endif
 					<th>Opciones</th>
 				</thead>
                @foreach ($articulos as $cat)
