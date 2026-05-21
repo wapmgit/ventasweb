@@ -44,8 +44,8 @@
 						<td  > <?php if ($cat->imagen==""){?> <img src="{{ asset('/img/articulos/ninguna.jpg')}}" alt="{{$cat->nombre}}" height="20px" width="20px" class="img-thumbnail"><?php }else{ ?><img src="{{ asset('/img/articulos/'.$cat->imagen)}}" alt="{{$cat->nombre}}" height="15px" width="30px" class="img-thumbnail"><?php } ?> </td>
 					<td><small><?php echo number_format($cat->precio1, 2,',','.'); ?></small></td>
 					<td><small><?php echo number_format(($cat->precio1*$empresa->tc), 2,',','.'); ?></small></td>
-					@if($empresa->mp2==1)<td><small><?php echo number_format(($cat->precio2*$empresa->tc), 2,',','.'); ?></small></td>@endif
-					@if($empresa->mp3==1)<td><small><?php echo number_format(($cat->precio3*$empresa->tc), 2,',','.'); ?></small></td>@endif
+					@if($empresa->mp2==1)<td><small><?php echo number_format(($cat->precio2), 2,',','.'); ?></small></td>@endif
+					@if($empresa->mp3==1)<td><small><?php echo number_format(($cat->precio3), 2,',','.'); ?></small></td>@endif
 					<td>																		                                         
 				<div class="btn-group">
                     <button type="button" class="btn btn-primary btn-xs">Opc.</button>
