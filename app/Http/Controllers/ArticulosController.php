@@ -258,6 +258,12 @@ class ArticulosController extends Controller
 		->get();
 	       return view("almacen.articulo.kardex",["datos"=>$datos,"articulo"=>$articulo]);
     }
+		public function etiquetarticulo($id)
+   {	
+				
+	 	 $articulo=Articulos::findOrFail($id);		 
+	       return view("almacen.articulo.etiqueta_art",["articulo"=>$articulo]);
+    }
 	public function aggnuevogrupo(Request $request) 
    {	
 					$grupo=new Agrupados;
