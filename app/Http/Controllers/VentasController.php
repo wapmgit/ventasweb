@@ -602,7 +602,8 @@ public function show(Request $request, $id){
 
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select ('v.fecha_emi','v.idventa','v.tasa','v.fecha_hora','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            -> leftjoin ('devolucion as dev','dev.idventa','=','v.idventa')
+            -> select ('v.fecha_emi','v.idventa','v.tasa','v.fecha_hora','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu','dev.fecha_hora as fechadev','dev.user as userdev')
             ->where ('v.idventa','=',$id)
             -> first();
             $detalles=DB::table('detalle_venta as dv')
@@ -617,7 +618,7 @@ public function show(Request $request, $id){
             ->get();
 			$retencion=DB::table('retencionventas')-> where ('idFactura','=',$id)
             ->first();
-			//dd($detalles);
+			//dd($venta);
 			$recibonc=DB::table('mov_notas as mov')-> where ('mov.iddoc','=',$id)-> where ('mov.tipodoc','=',"FAC")
             ->get();
 
