@@ -193,6 +193,7 @@ class SistemaController extends Controller
 		if ($request->get('op74')){ $data->rvencicobro=1; }else{ $data->rvencicobro=0; }
 		if ($request->get('op75')){ $data->editcompra=1; }else{ $data->editcompra=0; }
 		if ($request->get('op76')){ $data->anularaj=1; }else{ $data->anularaj=0; }
+		if ($request->get('op77')){ $data->cargarapida=1; }else{ $data->cargarapida=0; }
 		$data ->update();
 
 	$user = User::find($data->iduser);

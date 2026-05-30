@@ -51,6 +51,7 @@ $idv=0;
 			<input type="hidden" value="{{$empresa->tasadif}}" id="tasadif" ></input>
 			<input type="hidden" value="{{$rol->factsinexis}}" id="factsinexis" ></input>
 			<input type="hidden" value="{{$empresa->claveauto}}" id="claveaut" ></input>
+			<input type="hidden" value="{{$rol->cargarapida}}" id="cargarapida" ></input>
         </div>
 			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
 			<h4 id="nombrevendedor"></h4>
@@ -63,8 +64,8 @@ $idv=0;
             			</select>            			
             	</div>
 		</div>		
-			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12" align="center">	<label for="tipo_precio">Saldo </label> </br>
-			<span class="badge bg-yellow"><label id="cxc" style="font-size: 20px" >0</label></span>
+			<div class="col-lg-1 col-md-1 col-sm-1 col-xs-12" align="center">	<label for="tipo_precio">Saldo </label> </br>
+			<span class="badge bg-yellow"><label id="cxc" style="font-size: 15px" >0</label></span>
 			<input type="hidden" value="{{$cxcc}}" id="cxccli" ></input>
 			</div>
 		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
@@ -74,7 +75,7 @@ $idv=0;
 				</div>            
             </div>
 		</div>
-		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
 			<div class="small-box bg-blue">
 				<div class="inner">
 					<h1 id="muestramontobs" align="center"><sup style="font-size: 25px"><?php ?>Bs   0.00</sup></h1>
@@ -180,7 +181,7 @@ $idv=0;
 							
 						  </thead>
 						  <tfoot style="background-color: #A9D0F5"> 
-						  <th colspan="3">Total items: <span id="item">0</span> 
+						  <th colspan="2">Total items: <span id="item">0</span> 
 						 <!--  <div class="btn-group">
                         <button type="button" class="btn btn-default btn-flat">
                          <a href="javascript:recalcularfac('3');">P1</a>
@@ -194,17 +195,24 @@ $idv=0;
                       </div> -->
 						  </th>
 	
-							  <th>Exe:<input type="number" style="width: 70px" readonly  name="totalexe" id="texe">Bs</th>
-							  <th>Iva:<input type="number" style="width: 70px" readonly  name="total_iva" id="total_iva">Bs</th> 
-							  <th>BI:<input type="number" style="width: 80px" readonly name="totalbase" id="totalbase">Bs</th>
-							  <th><h4 id="total">$.  0.00</h4><input type="hidden" name="total_venta" id="total_venta"></th>
+							  <th><input type="hidden" style="width: 70px" readonly  name="totalexe" id="texe"></th>
+							  <th><input type="hidden" style="width: 70px" readonly  name="total_iva" id="total_iva"></th> 
+							  <th><input type="hidden" style="width: 80px" readonly name="totalbase" id="totalbase"></th>
+							  <th colspan="2" align="right"><h4 id="total" align="right">$.  0.00</h4><input type="hidden" name="total_venta" id="total_venta"></th>
 							 
 							  </tfoot>
 						  <tbody></tbody>
 						</table>
 					</div>
 				</div>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="botones"  align="right">
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"  align="left">
+				  <div class="form-group"></br>
+	<p><b>Base Imp.:</b> <span id="vtotalbase">0 Bs.</span> <b>IVA:</b> <span id="vtotal_iva">0 Bs.</span> <b>Exento:</b> <span id="vtexe">0 Bs.</span> 
+	</p>
+
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"  id="botones"  align="right">
 				  <div class="form-group"></br>
 						<button class="btn btn-primary" id="guardar" type="button" accesskey="l">Tota<u>l</u>izar</button>
 						<button class="btn btn-danger" type="button"  id="btncancelar">Cancelar</button>
@@ -295,11 +303,24 @@ $idv=0;
 @push ('scripts')
 <script>
 $(document).ready(function(){
-
+	$('[data-widget="pushmenu"]').PushMenu('collapse');
 	$('[data-mask]').inputmask();
 	document.getElementById('pcantidad').addEventListener('keypress',function(e){ validar(e); });	
 	document.getElementById('pprecio_venta').addEventListener('keypress',function(e){ validarno(e); });	
 	document.getElementById('pdescuento').addEventListener('keypress',function(e){ validarno(e); });	
+	   document.addEventListener('keydown', function(event) {
+            // Verificamos si la tecla presionada es 'Spacebar' o ' '
+            if (event.code === 'Space' || event.key === ' ') {
+				event.preventDefault();
+				$("#pidarticulo").selectpicker('refresh');
+				$("#pidarticulo").selectpicker('toggle');
+				
+            }
+        });
+		$('#pidarticulo').on('shown.bs.select', function () {
+    // Busca la caja de texto interna del selectpicker actual y le mete el foco
+    $(this).parent().find('.bs-searchbox input').focus();
+});
 	var count =document.getElementById('id_cliente').options.length;
 	if(count ==1 ){
 		dato=document.getElementById('id_cliente').value.split('_');
@@ -498,8 +519,8 @@ $(document).ready(function(){
 	   $("#divtotal").val(total);
 	    $("#resta").val(total);
 		$("#tdeuda").val(total);
-		$("#totalbase").val(total);
-		$("#totalexe").val(total);
+		$("#totalbase").val(total); 
+		$("#totalexe").val(total); 
 		$("#total_iva").val(total);
         $("#total_venta").val(total);
 		for(var i=0;i<cont;i++){
@@ -634,12 +655,34 @@ function trunc (x, posiciones = 0) {
 	subiva=[];
 	base=[];
 	subexe=[];
+	artventa=[];
+	stcventa=[];
 	
 	$("#botones").hide();
 	$("#pidarticulo").change(mostrarvalores);
 	$("#id_cliente").change(mostrarcomision);
 
-    function mostrarvalores(){      
+    function mostrarvalores(){ 
+		optcarga= $("#cargarapida").val();
+		if(optcarga==1){ 
+		 tipo_precio=document.getElementById('id_cliente').value.split('_');
+      tpc= tipo_precio[1];
+	    if (tpc==3){  preopt="P3"; tpc=8;}
+		if (tpc==2){  preopt="P2"; tpc=3;}
+		if (tpc==1){  preopt="P1"; tpc=2;}	
+	  $("#nprecioventa").html(preopt);	   
+      datosarticulo=document.getElementById('pidarticulo').value.split('_');
+      $("#pprecio_venta").val(datosarticulo[tpc]);
+      $("#pstock").val(datosarticulo[1]);
+	  $("#pcostoarticulo").val(datosarticulo[4]);     
+	  var nuevoStep = parseFloat(datosarticulo[7]);
+      $("#pcantidad").attr("min", nuevoStep); 
+		$("#pcantidad").attr("step", nuevoStep);
+	  $("#pcantidad").val(datosarticulo[7]);
+      $("#pdescuento").val("0");	
+	  agregar();
+			
+		}else{
       tipo_precio=document.getElementById('id_cliente').value.split('_');
       tpc= tipo_precio[1];
 	    if (tpc==3){  preopt="P3"; tpc=8;}
@@ -657,6 +700,7 @@ function trunc (x, posiciones = 0) {
       $("#pdescuento").val("0"); 
 	  document.getElementById('pcantidad').focus();
     }
+	}
 	$("#changeprice").on("click",function(){
 	  datosarticulo=document.getElementById('pidarticulo').value.split('_');
 		var  p1=datosarticulo[2]; 
@@ -671,6 +715,7 @@ function trunc (x, posiciones = 0) {
 	  $("#nprecioventa").html(preopt);
 	  
 	});
+
 	function mostrarcomision(){  
 			var formc= $('#formventa');
 			var urlc = '{{route("ventacxc")}}';
@@ -766,8 +811,9 @@ function trunc (x, posiciones = 0) {
 				totalexe=parseFloat(totalexe)+parseFloat(subexe[cont]);
                 subtotal[cont]=((cantidad*precio_venta));
                 total=parseFloat(total)+parseFloat(subtotal[cont].toFixed(2));
-
-              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" id="varticulo'+cont+'" name="articulo[]" value="'+articulo+'"><input type="hidden"  name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" id="vcantidad'+cont+'" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" id="precio'+cont+'" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number" id="vdescuento'+cont+'" name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" id="pventa'+cont+'" name="precio_venta[]" value="'+precio_venta+'"></td><td><span id="subt'+cont+'">'+subtotal[cont].toFixed(2)+'</span><input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"><input type="hidden" name="usag[]" readonly="true" value="'+usag+'"></td></tr>';
+				artventa[cont]=cantidad;
+				stcventa[cont]=stock;
+              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" id="varticulo'+cont+'" name="articulo[]" value="'+articulo+'"><input type="hidden"  name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" id="vcantidad'+cont+'" name="cantidad[]" onchange="adjcnt('+cont+');" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" id="precio'+cont+'" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number" id="vdescuento'+cont+'" name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" id="pventa'+cont+'" name="precio_venta[]" value="'+precio_venta+'"></td><td><span id="subt'+cont+'">'+subtotal[cont].toFixed(2)+'</span><input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"><input type="hidden" name="usag[]" readonly="true" value="'+usag+'"></td></tr>';
 				cont++;
 				contl++;
               limpiar();
@@ -779,13 +825,13 @@ function trunc (x, posiciones = 0) {
 				$("#divtotal").val(total);
 				$("#tdeuda").val(total);
 				$("#resta").val(total);
-				$("#total_iva").val(totaliva);
-				$("#totalbase").val(totalbase);
-				$("#texe").val(totalexe.toFixed(2));
+				$("#total_iva").val(totaliva); $("#vtotal_iva").html(totaliva);
+				$("#totalbase").val(totalbase); $("#vtotalbase").html(totalbase);
+				$("#texe").val(totalexe.toFixed(2)); $("#vtexe").html(totalexe.toFixed(2));
 				$("#total_venta").val(total);
 				evaluar();
 				$("#item").html(contl);
-				$('#detalles').append(fila);			
+				$('#detalles').prepend(fila);			
 				$("#pidarticulo").val('5000');
 				$("#pidarticulo").selectpicker('refresh');
 				$("#pidarticulo").selectpicker('toggle');
@@ -831,9 +877,9 @@ function trunc (x, posiciones = 0) {
 		$("#muestramonto").html("$  : " + mon_tasad.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' }));
 		$("#muestramontobs").html("Bs  : " + (mon_tasad*vdolar).toLocaleString('de-DE', { style: 'decimal',  decimal: '2' }));
         $("#total_venta").val(mon_tasad);
-        $("#total_iva").val(totaliva.toFixed(2));
-        $("#totalbase").val(totalbase.toFixed(2));
-		$("#texe").val(totalexe.toFixed(2));
+        $("#total_iva").val(totaliva.toFixed(2));$("#vtotal_iva").html(totaliva);
+        $("#totalbase").val(totalbase.toFixed(2)); $("#vtotalbase").html(totalbase);
+		$("#texe").val(totalexe.toFixed(2)); $("#vtexe").html(totalexe.toFixed(2));						
         $("#tdeuda").val(mon_tasad);
         $("#fila" + index).remove();
 		contl--;		
@@ -845,7 +891,57 @@ function trunc (x, posiciones = 0) {
 			$("#pidarticulo").val('5000');
 			$("#pidarticulo").selectpicker('refresh');
 			$("#pidarticulo").selectpicker('toggle');
-    }
+    }		
+
+	function adjcnt(index){
+		vdolar=$("#valortasa").val();
+		cntant=artventa[index];
+		ncntart=$("#vcantidad"+index).val(); 
+		stccant=stcventa[index];
+		//alert(stccant);
+		if(ncntart==0){ alert('Cantidad Incorrecta'); $("#vcantidad"+index).val(cntant); }else{
+			if(parseFloat(ncntart) > parseFloat(stccant)){ alert('Cantidad Supera el Stock'); $("#vcantidad"+index).val(cntant); }else{
+		subtant=subtotal[index]; //totalanterior
+		npre=$("#precio"+index).val(); //precio
+		nsubt=trunc((ncntart*npre).toFixed(2),2); //nuevo subtotal
+			//calculo iva			
+		var ivaart= parseFloat(subiva[index]);
+			totaliva=$("#total_iva").val();
+			niva=((ivaart*ncntart)/cntant);
+			subiva[index]=niva.toFixed(2);			
+		var ntiva=(parseFloat(totaliva)-parseFloat(ivaart))+parseFloat(niva);
+			$("#total_iva").val(ntiva.toFixed(2));
+			$("#vtotal_iva").html(ntiva.toFixed(2));
+			 
+		 		//calculo base		
+			totalbase=$("#totalbase").val();				
+		var baseart=parseFloat(base[index]); 
+			nbase=((baseart*ncntart)/cntant);
+			base[index]=nbase.toFixed(2);
+		var ntbase=(parseFloat(totalbase)-parseFloat(baseart))+parseFloat(nbase);
+			$("#vtotalbase").html(ntbase.toFixed(2));
+			$("#totalbase").val(ntbase.toFixed(2));
+			//calculo exento
+			totalexe=$("#texe").val();
+		var exeart=parseFloat(subexe[index]); 
+			nexe=((exeart*ncntart)/cntant);
+			subexe[index]=nexe.toFixed(2);
+		var ntexe=(parseFloat(totalexe)-parseFloat(exeart))+parseFloat(nexe);	
+			$("#texe").val(ntexe.toFixed(2));
+			 $("#vtexe").html(ntexe.toFixed(2));
+			 
+		artventa[index]=ncntart;
+		subtotal[index]=(nsubt);
+		
+		total=((total-subtant)+subtotal[index]).toFixed(2);
+		$("#total_venta").val(total);
+		$("#total").html(total);
+		$("#muestramonto").html("$  : " + total.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' }));
+		$("#muestramontobs").html("Bs  : " + (total*vdolar).toLocaleString('de-DE', { style: 'decimal',  decimal: '2' }));
+		$("#subt"+index).html(subtotal[index]);
+		}
+		}
+	}
     function limpiar(){
         $("#pcantidad").val("");
         $("#pdescuento").val("");

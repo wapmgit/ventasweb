@@ -73,7 +73,7 @@ class VentasController extends Controller
         }
     }
     public function create(Request $request){
-		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa','factsinexis')->where('iduser','=',$request->user()->id)->first();	
+		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
 		 $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
 		 if ($empresa->orderart==1){$order="nombre";}else{$order="idarticulo";}
 		if ($rol->crearventa==1){
@@ -595,6 +595,8 @@ public function recibo($id){
             return view("ventas.venta.recibobs",["venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
 }
 public function show(Request $request, $id){
+
+			$rol=DB::table('roles')-> select('cargarapida')->where('iduser','=',$request->user()->id)->first();	
 			$ruta=$_SERVER["HTTP_REFERER"];
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$c1= substr($ruta,$empresa->caracteres);				//modelo juancho
@@ -606,19 +608,47 @@ public function show(Request $request, $id){
             -> select ('v.fecha_emi','v.idventa','v.tasa','v.fecha_hora','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu','dev.fecha_hora as fechadev','dev.user as userdev')
             ->where ('v.idventa','=',$id)
             -> first();
+			if($rol->cargarapida==0){
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
             -> select('a.peso','a.'.$empresa->codart.' as codigo','a.idarticulo','a.nombre as articulo','a.iva','dv.cntgrp','dv.unidad','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
             -> where ('dv.idventa','=',$id)
-            ->get();
+            ->get();}else{
 			
+			$detalles = DB::table('detalle_venta as dv')
+    ->join('articulos as a', 'dv.idarticulo', '=', 'a.idarticulo')
+    ->select(
+        'a.idarticulo',
+        'a.peso',
+        'a.'.$empresa->codart.' as codigo',
+        'a.nombre as articulo',
+        'a.iva',
+        'dv.cntgrp',
+        'dv.unidad',
+        DB::raw('SUM(dv.cantidad) as cantidad'),
+        DB::raw('AVG(dv.descuento) as descuento'),
+        DB::raw('AVG(dv.precio) as precio'),
+        DB::raw('AVG(dv.precio_venta) as precio_venta')
+    )
+    ->where('dv.idventa', '=', $id)
+    ->groupBy(
+        'a.idarticulo',
+        'a.peso',
+        'a.'.$empresa->codart,
+        'a.nombre',
+        'a.iva',
+        'dv.cntgrp',
+        'dv.unidad'
+    )
+    ->get();
+			}
 			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
             ->get();
 			$seriales=DB::table('seriales as se')-> where ('se.idventa','=',$id)
             ->get();
 			$retencion=DB::table('retencionventas')-> where ('idFactura','=',$id)
             ->first();
-			//dd($venta);
+			
 			$recibonc=DB::table('mov_notas as mov')-> where ('mov.iddoc','=',$id)-> where ('mov.tipodoc','=',"FAC")
             ->get();
 
@@ -806,7 +836,7 @@ public function nota2ds($id){
     }
 	public function facturar(Request $request, $idcliente){
 		//dd($request);
-		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa','factsinexis')->where('iduser','=',$request->user()->id)->first();	
+		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->crearventa==1){
 	     $monedas=DB::table('monedas')->get();
 		 $rutas=DB::table('rutas')->get();

@@ -58,6 +58,7 @@
                  @if($rol->editarticulo==1) <div class="bg-warning color-palette" align="center"><a  href="{{route('editarticulo',['id'=>$cat->idarticulo])}}">Editar</a></div>	@endif
                   <div class="bg-danger color-palette" align="center">	<a  href=""  data-target="#modal-delete-{{$cat->idarticulo}}" data-toggle="modal">Alta</a></div>
                   <div class="bg-success color-palette" align="center"><a  href="{{route('kardexarticulo',['id'=>$cat->idarticulo])}}"> kardex</a> </div>
+                  <div class="bg-info color-palette" align="center"><a  href="{{route('etiquetarticulo',['id'=>$cat->idarticulo])}}"> Etiqueta</a> </div>
                 </div> 						
 				
 				

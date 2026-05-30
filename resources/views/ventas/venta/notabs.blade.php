@@ -111,14 +111,16 @@ function truncar($numero, $digitos)
 			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
                     <div class="form-group" align="center">
 					 <button type="button" id="regresar" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
-                     <button type="button" id="imprimir" onclick="printdiv('areaimprimir');" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
+                    <button type="button" id="nventa" class="btn btn-info btn-sm" data-dismiss="modal">Facturar</button> 
+					<button type="button" id="imprimir" onclick="printdiv('areaimprimir');" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
                     </div>
 			</div>  
 		@else
 			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
                     <div class="form-group" align="center">
 					 <button type="button" id="regresarvc" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
-                     <button type="button" id="imprimirvc" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
+                     	 <button type="button" id="nventavc" class="btn btn-info btn-sm" data-dismiss="modal">Facturar</button>  
+					 <button type="button" id="imprimirvc" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
                     </div>
 			</div> 
 			@endif
@@ -139,6 +141,7 @@ $('#regresar').on("click",function(){
   //  alert ('si');
   document.getElementById('imprimirvc').style.display="none";
   document.getElementById('regresarvc').style.display="none";
+    document.getElementById('nventavc').style.display="none";
   window.print(); 
   window.location="{{route('ventacaja')}}";
     });
@@ -146,10 +149,19 @@ $('#regresarvc').on("click",function(){
   window.location="{{route('ventacaja')}}";
   
 });
+$('#nventavc').on("click",function(){
+window.location.href="/newventa";
+  
+});
+$('#nventa').on("click",function(){
+window.location.href="/newventa";
+  
+});
 });
 function printdiv(divname){
 		document.getElementById('imprimir').style.display="none";
 		document.getElementById('regresar').style.display="none";
+		document.getElementById('nventa').style.display="none";
 		document.getElementById('encabezado').style.display="";
 	 	var printcontenido =document.getElementById(divname).innerHTML;
 		var originalcontenido = document.body.innerHTML;
