@@ -308,15 +308,15 @@ $(document).ready(function(){
 	document.getElementById('pcantidad').addEventListener('keypress',function(e){ validar(e); });	
 	document.getElementById('pprecio_venta').addEventListener('keypress',function(e){ validarno(e); });	
 	document.getElementById('pdescuento').addEventListener('keypress',function(e){ validarno(e); });	
-	   document.addEventListener('keydown', function(event) {
-            // Verificamos si la tecla presionada es 'Spacebar' o ' '
+	 /*  document.addEventListener('keydown', function(event) {
+            Verificamos si la tecla presionada es 'Spacebar' o ' '
             if (event.code === 'Space' || event.key === ' ') {
 				event.preventDefault();
 				$("#pidarticulo").selectpicker('refresh');
 				$("#pidarticulo").selectpicker('toggle');
 				
             }
-        });
+        }); */
 		$('#pidarticulo').on('shown.bs.select', function () {
     // Busca la caja de texto interna del selectpicker actual y le mete el foco
     $(this).parent().find('.bs-searchbox input').focus();
