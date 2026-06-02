@@ -55,9 +55,9 @@
 					<th>N/C</th>
 					<th>Opciones</th>
 				</thead>
-				<?php $acumnd=$acumnc=0; $nd=$nc=0;?>
+				<?php $nd=$nc=0;?>
                @foreach ($proveedores as $cat)
-			   <?php $tmonto=($tmonto+$cat->acumulado); $nd=$nc=0;?>
+			   <?php $tmonto=($tmonto+$cat->acumulado); $acumnd=$acumnc=0; $nd=$nc=0;?>
 				<tr>
 					
 					<td><small>{{ $cat->nombre}}</small></td>
