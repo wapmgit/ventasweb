@@ -939,6 +939,7 @@ function trunc (x, posiciones = 0) {
 		$("#muestramonto").html("$  : " + total.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' }));
 		$("#muestramontobs").html("Bs  : " + (total*vdolar).toLocaleString('de-DE', { style: 'decimal',  decimal: '2' }));
 		$("#subt"+index).html(subtotal[index]);
+		 $("#divtotal").val(total);
 		}
 		}
 	}
