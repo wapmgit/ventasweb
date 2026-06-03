@@ -205,6 +205,7 @@ $(document).ready(function(){
 	document.getElementById('imprimir').style.display="none";
 	document.getElementById('regresar').style.display="none";
 	document.getElementById('nventa').style.display="none";
+	document.getElementById('footerp').style.display="none";
 	window.print(); 
 	window.location.href="/{{$ruta}}";
     });
@@ -217,6 +218,7 @@ $(document).ready(function(){
 	document.getElementById('imprimirvc').style.display="none";
 	document.getElementById('regresarvc').style.display="none";
 	  document.getElementById('nventavc').style.display="none";
+	  document.getElementById('footerp').style.display="none";
 	window.print(); 
 	window.location.href="/{{$ruta}}";
     });

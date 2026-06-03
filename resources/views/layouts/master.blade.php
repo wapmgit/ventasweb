@@ -791,7 +791,7 @@
        @yield('contenido')
   </div>
   <!-- /.content-wrapper -->
-  <footer class="main-footer">
+  <footer class="main-footer" id="footerp">
 <strong>Copyright &copy; 2015-2024 <a href="#">W&W Sistemas</a>.</strong> All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
       <b>Version</b> 3.2.1

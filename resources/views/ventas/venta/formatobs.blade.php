@@ -137,6 +137,7 @@ $('#regresar').on("click",function(){
   document.getElementById('imprimirvc').style.display="none";
   document.getElementById('regresarvc').style.display="none";
    document.getElementById('nventavc').style.display="none";
+   document.getElementById('footerp').style.display="none";
   window.print(); 
   window.location="{{route('ventacaja')}}";
     });

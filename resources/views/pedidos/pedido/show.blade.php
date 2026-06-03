@@ -156,6 +156,7 @@ $(document).ready(function(){
 	 	$(".filaoc").remove();
 	  document.getElementById('linkmodal').style.display="none";
 	  document.getElementById('divbtn').style.display="none";
+	  document.getElementById('footerp').style.display="none";
 	  window.print(); 
 	  window.location="{{route('pedidos')}}";
     });
