@@ -58,11 +58,11 @@ if (is_null($cxc)) {
 				  <div class="table-responsive">
                   <table id="detalles" width="100%">
                       <thead style="background-color: #A9D0F5">
-						<th>Edit.</yh>
-                          <th>Articulo <a href="" data-target="#modalaggart" data-toggle="modal"><span class="label label-success"><i class="fa-solid fa-square-plus fa-lg"></i></span></a></th>
+						<th class="filaoc">Edit.</th>
+                          <th>Articulo <a  id="linkmodal" href="" data-target="#modalaggart" data-toggle="modal"><span class="label label-success"><i class="fa-solid fa-square-plus fa-lg"></i></span></a></th>
                           <th>Cantidad</th>
                           <th>Unidad</th>
-                          <th>Stock</th>
+                          <th class="filaoc">Stock</th>
 						  <th>Precio</th>
                           <th>Descuento</th>
                           <th>precio venta</th>
@@ -72,7 +72,7 @@ if (is_null($cxc)) {
                         @foreach($detalles as $det)										
 						<?php $nstock=$det->stock/$det->cntgrp;
 						if ($det->cantidad>$nstock){ $auxf=1;}?>
-                        <tr ><td>@if($rol->editpedido==1)
+                        <tr ><td  class="filaoc" >@if($rol->editpedido==1)
 						<?php if ($det->cantidad>$nstock){?> <a href="" data-target="#modaldevolucion-{{$det->idarticulo}}" data-toggle="modal"><i class="fa fa-fw fa-exclamation-circle fa-lg" style="color:red"></i></a> <?php 
 						} else{?> <a href="" data-target="#modaldevolucion-{{$det->idarticulo}}" data-toggle="modal"><i class="fa fa-fw fa-check-circle fa-lg"></i></a><?php  } ?>
 						@else <i class="fa fa-fw fa-lock"></i> @endif</td>
@@ -102,7 +102,7 @@ if (is_null($cxc)) {
 						  <?php } else { echo $det->cantidad;} ?> 
 						  </td> 
                           <td align="center">{{$det->unidad}}</td>
-                          <td align="center"><?php echo number_format($nstock, 2,',','.'); ?></td>
+                          <td class="filaoc" align="center"><?php echo number_format($nstock, 2,',','.'); ?></td>
                           <td>{{$det->precio}}</td>
                           <td>{{$det->descuento}}</td>
                           <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
@@ -112,8 +112,9 @@ if (is_null($cxc)) {
                         @endforeach
                       </tbody>
 						    <tfoot style="background-color: #A9D0F5"> 
-						  <th colspan="4">Total</th>
-							  <th></th>
+						  <th colspan="3">Total</th>
+						  <th class="filaoc"></th>
+							  <th class="filaoc"></th>
 							  <th>Exe:<input type="number" style="width: 70px" readonly  name="totalexe" value="<?php echo $acumexe; ?>"  id="texe">Bs</th>
 							  <th>Iva:<input type="number" style="width: 70px" readonly  name="total_iva" value="<?php echo $acumiva; ?>" id="total_iva">Bs</th> 
 							  <th>BI:<input type="number" style="width: 80px" readonly name="totalbase" value="<?php echo $acumbase; ?>"  id="totalbase">Bs</th>
@@ -134,7 +135,7 @@ if (is_null($cxc)) {
                     <p>{{$venta->fecha_hora}}</p>
                 </div>
             </div> 
-				<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
+				<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12" id="divbtn">
                     <div class="form-group" align="center">
                      <button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
 					@if($rol->importarpedido==1) 
@@ -152,9 +153,9 @@ if (is_null($cxc)) {
 $(document).ready(function(){
 	 document.getElementById('bt_pago').style.display="none";
     $('#imprimir').click(function(){
-	//  alert ('si');
-	  document.getElementById('imprimir').style.display="none";
-	  document.getElementById('link').style.display="none";
+	 	$(".filaoc").remove();
+	  document.getElementById('linkmodal').style.display="none";
+	  document.getElementById('divbtn').style.display="none";
 	  window.print(); 
 	  window.location="{{route('pedidos')}}";
     });
