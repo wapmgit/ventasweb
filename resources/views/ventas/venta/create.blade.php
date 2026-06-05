@@ -317,10 +317,6 @@ $(document).ready(function(){
 				
             }
         }); */
-		$('#pidarticulo').on('shown.bs.select', function () {
-    // Busca la caja de texto interna del selectpicker actual y le mete el foco
-    $(this).parent().find('.bs-searchbox input').focus();
-});
 	var count =document.getElementById('id_cliente').options.length;
 	if(count ==1 ){
 		dato=document.getElementById('id_cliente').value.split('_');

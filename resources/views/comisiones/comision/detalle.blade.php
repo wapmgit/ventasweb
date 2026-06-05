@@ -41,12 +41,12 @@
 			<table width="100%">
 				<thead style="background-color: #A9D0F5">
 					<th>Cliente</th>
-					<th>Cedula</th>
+					<th>Categoria</th>
 					<th>N° Comprobante</th>
 					<th>Fecha Doc.</th>
 					<th>Fecha Emi.</th>
 					<th>Monto Doc.</th>
-					<th>Monto Comision</th>
+					<th>Monto Comi.</th>
 									
 				</thead>
                @foreach ($venta as $cat)
@@ -57,8 +57,8 @@
 			   
 				<tr>   <div class="form-group">
 				<input type="hidden" name="idventa[]"  value="{{$cat->idventa}}"></div>
-					<td>{{$cat->nombre}}</td>
-					<td>{{$cat->cedula}}</td>
+					<td><small>{{$cat->cedula}}</small> {{$cat->nombre}}</td>
+					<td><small>{{$cat->nombrecategoria}}</small></td>
 					<td>{{$cat->tipo_comprobante}}:{{$cat->serie_comprobante}}-{{$cat->num_comprobante}}</td>
 					<td><?php echo date("d-m-Y h:i:s a",strtotime($cat->fecha_hora)); ?></td>
 					<td><?php echo date("d-m-Y",strtotime($cat->fecha_emi)); ?></td>

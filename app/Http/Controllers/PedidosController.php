@@ -168,7 +168,7 @@ catch(\Exception $e)
   return Redirect::to('pedidos');
 }
 public function show(Request $request,$id){
-	
+	//dd($request);
 	$rol=DB::table('roles')-> select('importarpedido','editpedido')->where('iduser','=',$request->user()->id)->first();	
     $user=Auth::user()->name;
     $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
@@ -222,9 +222,7 @@ public function show(Request $request,$id){
 
     return view("pedidos.pedido.show",["cxc"=>$cxc,"monedas"=>$monedas,"personas"=>$personas,"rol"=>$rol,"venta"=>$venta,"empresa"=>$empresa,"detalles"=>$detalles,"articulos"=>$articulos]);
 }
-	public function ajuste(Request $request){
-		//dd($request);
-	
+	public function ajuste(Request $request){	
 	try{
 	DB::beginTransaction();
 	$user=Auth::user()->name;
