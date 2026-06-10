@@ -109,8 +109,8 @@ $idv=0;
 							<input type="hidden" name="tipo_comprobante" class="form-control" value="FAC">
 						</div></td><td><div class="form-group">
 							<label for="serie_comprobante">#Control</label>
-							<input type="hidden" style="background-color:#edefef" name="serie_comprobante" value="{{$empresa->serie}}" size="5" class="form-control"placeholder="serie del comprobante" > 
-							<input type="text" style="background-color:#edefef" name="control" value="00-" size="8" class="form-control" placeholder="Num de Control" > 
+							<input type="hidden" style="background-color:#edefef" name="serie_comprobante"  value="{{$empresa->serie}}" size="5" class="form-control"> 
+							<input type="text" style="background-color:#edefef" name="control" value="00-" maxlength="10" size="8" class="form-control" placeholder="Num de Control" > 
 						</div>	</td><td>	<div class="form-group">
 							<label for="num_comprobante">Documento</label>
 						 <input type="text" name="num_comprobante" style="background-color:#edefef"value="<?php echo add_ceros($idv,$ceros); ?>" class="form-control" placeholder="numero del comprobante" > 

@@ -109,7 +109,7 @@ class VentasController extends Controller
 				'art.fraccion', 
 				'pre.id'
 			);
-		
+	
        $q3 =DB::table('articulos as art')
         -> select('art.nombre',DB::raw('CONCAT(art.'.$empresa->codart.'," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3',DB::raw('(space(1)*0) as usagrupo'))
         -> where('art.estado','=','Activo')   
@@ -133,8 +133,9 @@ class VentasController extends Controller
 		$user=Auth
 		::user()->name;
 		$mcomi=0;
-   try{
-  DB::beginTransaction();
+  
+  DB::beginTransaction(); 
+  try{
    $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->first();
    if ($contador==NULL){$numero=0;}else{$numero=$contador->idventa;}
 
@@ -461,8 +462,9 @@ public function devolucion(Request $request){
     }
 	public function devoluparcial(Request $request){
 
-	    try{
-	DB::beginTransaction();
+	   	DB::beginTransaction(); 
+		try{
+
 	$user=Auth::user()->name;
 	$vdolar=$request -> get('tasa');
     $detalleventa=DetalleVentas::findOrFail($request->iddetalle);
