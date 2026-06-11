@@ -42,7 +42,7 @@
 					<td>			
 					<a href="{{route('showpedido',['id'=>$ven->idpedido])}}">
 					<button class="btn btn-success btn-xs">Detalles</button></a>
-					<a  href="{{route('recibop',['id'=>$ven->idpedido])}}"><button class="btn btn-info btn-xs"> Tikect</button></a>
+					<a  href="{{route('recibopedido',['id'=>$ven->idpedido])}}"><button class="btn btn-info btn-xs"> Tikect</button></a>
                   @if($rol->anularpedido==1) <a href="" data-target="#modal-delete-{{$ven->idpedido}}" data-toggle="modal" ><button class="btn btn-danger btn-xs">anular</button></a>
 					@endif
 					</td>

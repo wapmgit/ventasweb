@@ -649,7 +649,29 @@ public function show(Request $request,$id){
 
 			  return Redirect::to('pedidos');
 	}
-public function recibo($id){
+	public function recibo($id){
+		
+			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			if ($empresa->orderart==1){$order="a.nombre";}else{$order="a.idarticulo";}
+			$venta=DB::table('venta as v')
+            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
+            -> select ('v.tasa','v.idventa','v.fecha_hora','p.nombre','p.cedula','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            ->where ('v.idventa','=',$id)
+            -> first();
+            $detalles=DB::table('detalle_venta as dv')
+            -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
+            -> select('a.nombre as articulo','a.iva','dv.cantidad','dv.descuento','dv.cntgrp','dv.precio_venta','a.unidad','a.peso')
+            -> where ('dv.idventa','=',$id)
+              ->OrderBy($order,'asc')
+			->get();
+			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
+            ->get();
+			$recibonc=DB::table('mov_notas as mov')-> where ('mov.iddoc','=',$id)-> where ('mov.tipodoc','=',"FAC")
+            ->get();
+
+            return view("pedidos.pedido.recibo",["venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
+}
+public function recibopedido($id){
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			if ($empresa->orderart==1){$order="a.nombre";}else{$order="a.idarticulo";}
 			$venta=DB::table('pedidos as v')
@@ -668,8 +690,9 @@ public function recibo($id){
 			$recibonc=DB::table('mov_notas as mov')-> where ('mov.iddoc','=',$id)-> where ('mov.tipodoc','=',"FAC")
             ->get();
 
-            return view("pedidos.pedido.recibo",["venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
-}public function recibobs($id){
+            return view("pedidos.pedido.recibopedido",["venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
+}
+public function recibobs($id){
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
