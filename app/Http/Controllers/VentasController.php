@@ -807,7 +807,7 @@ public function nota2ds($id){
 		if($request->ajax()){
 		$q2=DB::table('articulos as art')
 		->join('agrupados as pre','pre.idarticulo','=','art.idarticulo')
-        -> select('art.nombre',DB::raw('CONCAT(art.'.$empresa->codart.'," ",art.nombre," ",pre.descripcion) as articulo'),'art.idarticulo',DB::raw('(art.stock/pre.cantidad) as stock'),DB::raw('(art.costo*pre.cantidad) as costo'),'pre.precio1 as precio_promedio','pre.precio2 as precio2','art.iva','art.serial','pre.fraccion','pre.precio2 as precio3','pre.id as usagrupo')
+       -> select('art.nombre',DB::raw('CONCAT(IFNULL(art.'.$empresa->codart.',art.idarticulo)," ",art.nombre," ",pre.descripcion) as articulo'),'art.idarticulo',DB::raw('(art.stock/pre.cantidad) as stock'),DB::raw('(art.costo*pre.cantidad) as costo'),'pre.precio1 as precio_promedio','pre.precio2 as precio2','art.iva','art.serial','pre.fraccion','pre.precio2 as precio3','pre.id as usagrupo')
         -> where('art.estado','=','Activo')
         -> where ('art.stock','>',$exi)
         -> where ('art.usagrupo','=','1')
@@ -827,7 +827,7 @@ public function nota2ds($id){
 			);
 		
        $q3 =DB::table('articulos as art')
-        -> select('art.nombre',DB::raw('CONCAT(art.'.$empresa->codart.'," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3',DB::raw('(space(1)*0) as usagrupo'))
+         -> select('art.nombre',DB::raw('CONCAT(IFNULL(art.'.$empresa->codart.',art.idarticulo)," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3',DB::raw('(space(1)*0) as usagrupo'))
         -> where('art.estado','=','Activo')   
 		-> where ('art.stock','>',$exi) 
         ->groupby('art.idarticulo');
@@ -856,7 +856,7 @@ public function nota2ds($id){
       //dd($contador);
 	$q2=DB::table('articulos as art')
 		->join('agrupados as pre','pre.idarticulo','=','art.idarticulo')
-        -> select('art.nombre',DB::raw('CONCAT(art.'.$empresa->codart.'," ",art.nombre," ",pre.descripcion) as articulo'),'art.idarticulo',DB::raw('(art.stock/pre.cantidad) as stock'),DB::raw('(art.costo*pre.cantidad) as costo'),'pre.precio1 as precio_promedio','pre.precio2 as precio2','art.iva','art.serial','pre.fraccion','pre.precio2 as precio3','pre.id as usagrupo')
+        -> select('art.nombre',DB::raw('CONCAT(IFNULL(art.'.$empresa->codart.',art.idarticulo)," ",art.nombre," ",pre.descripcion) as articulo'),'art.idarticulo',DB::raw('(art.stock/pre.cantidad) as stock'),DB::raw('(art.costo*pre.cantidad) as costo'),'pre.precio1 as precio_promedio','pre.precio2 as precio2','art.iva','art.serial','pre.fraccion','pre.precio2 as precio3','pre.id as usagrupo')
         -> where('art.estado','=','Activo')
         -> where ('art.stock','>','0')
         -> where ('art.usagrupo','=','1')
@@ -876,7 +876,7 @@ public function nota2ds($id){
 			);
 		
        $q3 =DB::table('articulos as art')
-        -> select('art.nombre',DB::raw('CONCAT(art.'.$empresa->codart.'," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3',DB::raw('(space(1)*0) as usagrupo'))
+         -> select('art.nombre',DB::raw('CONCAT(IFNULL(art.'.$empresa->codart.',art.idarticulo)," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3',DB::raw('(space(1)*0) as usagrupo'))
         -> where('art.estado','=','Activo')   
 		-> where ('art.stock','>',$exi) 
         ->groupby('art.idarticulo');

@@ -116,7 +116,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                     <div class="form-group">
                         <label for="precio_compra">Precio compra</label>
-                        <input type="text" step="any" name="pprecio_compra"  id="pprecio_compra" onkeypress="return soloNumeros(event)"  class ="form-control" placeholder="Precio de Compra">
+                        <input type="text" step="any" name="pprecio_compra"  id="pprecio_compra" class ="form-control" placeholder="Precio de Compra">
                     </div>
                     </div>
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
