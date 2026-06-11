@@ -13,6 +13,7 @@ return $insertar_ceros = $recibo.$numero;
 };
 $acumpeso=0;
 $cntline=0;
+$acumsub=0;
 ?>   	 
 
 <style>
@@ -81,41 +82,48 @@ foreach ($lineas as $linea) {
 }
 return $contenido_formateado;
 }
+
+$acumpeso=0;
 ?>  
 <table border="0" style="line-height:95%" align="center" id="tablecabecera" class="tabla-principal">
- <thead> <th><b><font size="4"><?Php echo nl2br(adjustext($empresa->nombre,30)); ?></font></b></th> </thead> 
-<thead><th><b><font size="3">{{$empresa->rif}}</font></b></th></thead>
-<thead><th><b><font size="2"><?Php echo nl2br(adjustext($empresa->direccion,40)); ?></font><small>{{$empresa->telefono}}</small></b></th></thead>
+	<thead> <th><b><font size="4"><?Php echo nl2br(adjustext($empresa->nombre,30)); ?></font></b></th> </thead> 
+	<thead><th><b><font size="3">{{$empresa->rif}}</font></b></th></thead>
+	<thead><th><b><font size="2"><?Php echo nl2br(adjustext($empresa->direccion,40)); ?></font><small>{{$empresa->telefono}}</small></b></th></thead>
 </table>			
 <div align="left">				 
 	<font size="4">{{$venta->cedula}} -> {{$venta->nombre}}</br></font>
 	{{$venta->direccion}} </br>
-	<font size="4"><b>Documento:  <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); ?> </b></font> </br>
+	<font size="4"><b>PEDIDO:  <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); ?> </b></font> </br>
 	  <font size="2"> <b>  <?php echo date("d-m-Y h:i:s a",strtotime($venta->fecha_hora)); ?></b></font></br>
-	  <font size="2"> <b> Tasa de Cambio: {{$venta->tasa}} Bsf.</b></font>
+	  <font size="2"> <b></b></font>
 	  </br>
 	  </br>
 </div>    
                   <table style="line-height:90%"  id="tablecentro" class="tabla-secundaria">
-                      <thead>                 
-						
+                      <thead>                 						
+                          <th width="15%" align="center"><b class="lista">Cant.-Und</b></th>
                           <th width="80%" align="center"><b class="lista">Cantidad-Descripcion</b></th>
-                          <th width="15%"><b class="lista">Subtotal</b></th>
+     
                       </thead>
-
+                  
                       <tbody>
-                        @foreach($detalles as $det)<?php  $cntline++; $acumpeso=$acumpeso+($det->cantidad*$det->peso);?>
-                        <tr height="10px"> 						
+                        @foreach($detalles as $det)<?php  $cntline++; $acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);
+						if($det->cantidad>0){
+								$acumsub=$acumsub+($det->precio_venta*$det->cantidad);
+							$texto=strtolower($det->articulo)." ".number_format( $det->precio_venta, 2,',','.');
+						?>
+                        <tr height="10px"> 		
+						<td><span class="lista">{{$det->cantidad."->".$det->unidad}}</span></td>						
                          <td align="left"><span class="lista">
-						   {{$det->cantidad}} {{$det->unidad}}  -
-						  <?php echo strtolower($det->articulo);?><?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?> - <?php echo number_format( $det->precio_venta, 2,',','.'); ?> </span></td>                       
-                          <td><span class="lista"><?php echo "$ ".number_format( (($det->cantidad*$det->precio_venta)), 2,',','.'); ?></span></td>
+						<?Php echo $resultado = wordwrap($texto, 25, "\n", true); ?> </span></td>                       
+                         
                         </tr>
+						<?php } ?>
                         @endforeach
                       </tbody>
-					<tfoot>  
-					  <th colspan="2" ><div align="center"><font size="4">Bs: <?php echo number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> <-->
-                       $: <?php echo number_format($venta->total_venta, 2,',','.'); ?> </font></div></th>			   
+					     <tfoot>  
+					  <th  colspan="2"><div align="center"><font size="4">Bs: <?php echo number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> <-->
+                       $: <?php echo number_format($acumsub, 2,',','.'); ?> </font></div></th>                      
 						</tfoot>
 				<?php if($empresa->printpeso ==1){?>  
 					 <tfoot>  
@@ -124,26 +132,8 @@ return $contenido_formateado;
 					   
 						</tfoot>	
 				<?php } ?>
+					 
                   </table>
-				  <?php  if(count($recibos)>0){?>
-                  <table class="tabla-secundaria" width="130%">
-                      <thead>                  
-                          <td>Tipo</td>
-                          <td>Monto</td>
-                          <td>Monto$</td>                        
-                      </thead>                     
-                      <tbody>                       
-                        @foreach($recibos as $re) <?php  $acum=$acum+$re->monto;?>
-                        <tr >
-                          <td>{{$re->idbanco}}</small></font></td>
-                          <td><?php echo number_format( $re->recibido, 2,',','.'); ?></td>
-						  <td><?php echo number_format( $re->monto, 2,',','.'); ?></td>                       
-                        </tr>
-                        @endforeach
-                    
-                      </tbody>
-                  </table>
-				  <?php } ?>
 </div></br><p></br></br>Precios Insuperables...</p>
      <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
                     <div class="form-group" align="center">

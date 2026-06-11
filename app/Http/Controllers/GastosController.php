@@ -52,9 +52,10 @@ class GastosController extends Controller
     }
 	public function store(Request $request){
 	//	dd($request);
-		$user=Auth::user()->name;
-try{
-    DB::beginTransaction();
+		$user=Auth::user()->name; 
+		DB::beginTransaction();
+			try{
+   
 	$tasa=1;
 	if($request->get('tregistro')==2){ $tasa=$request->get('tasa');}
 			$ajuste=new Gastos;

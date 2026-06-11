@@ -58,9 +58,10 @@ class AjustesController extends Controller
     public function store(Request $request){
 		//dd($request);
 		$user=Auth::user()->name;
+		DB::beginTransaction();
 		try{
 			 $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
-			DB::beginTransaction();
+			
 			$ajuste=new Ajustes;
 			$ajuste->concepto=$request->get('concepto');
 			$ajuste->responsable=$request->get('responsable');

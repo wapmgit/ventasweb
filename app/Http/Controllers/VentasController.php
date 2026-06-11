@@ -91,7 +91,7 @@ class VentasController extends Controller
 	  
 		$q2=DB::table('articulos as art')
 		->join('agrupados as pre','pre.idarticulo','=','art.idarticulo')
-        -> select('art.nombre',DB::raw('CONCAT(art.'.$empresa->codart.'," ",art.nombre," ",pre.descripcion) as articulo'),'art.idarticulo',DB::raw('(art.stock/pre.cantidad) as stock'),DB::raw('(art.costo*pre.cantidad) as costo'),'pre.precio1 as precio_promedio','pre.precio2 as precio2','art.iva','art.serial','pre.fraccion','pre.precio2 as precio3','pre.id as usagrupo')
+        -> select('art.nombre',DB::raw('CONCAT(IFNULL(art.'.$empresa->codart.',art.idarticulo)," ",art.nombre," ",pre.descripcion) as articulo'),'art.idarticulo',DB::raw('(art.stock/pre.cantidad) as stock'),DB::raw('(art.costo*pre.cantidad) as costo'),'pre.precio1 as precio_promedio','pre.precio2 as precio2','art.iva','art.serial','pre.fraccion','pre.precio2 as precio3','pre.id as usagrupo')
         -> where('art.estado','=','Activo')
         -> where ('art.stock','>',$exi) 
         -> where ('art.usagrupo','=','1')
@@ -109,15 +109,15 @@ class VentasController extends Controller
 				'art.fraccion', 
 				'pre.id'
 			);
-	
+	//
        $q3 =DB::table('articulos as art')
-        -> select('art.nombre',DB::raw('CONCAT(art.'.$empresa->codart.'," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3',DB::raw('(space(1)*0) as usagrupo'))
+        -> select('art.nombre',DB::raw('CONCAT(IFNULL(art.'.$empresa->codart.',art.idarticulo)," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3',DB::raw('(space(1)*0) as usagrupo'))
         -> where('art.estado','=','Activo')   
 		-> where ('art.stock','>',$exi) 
         ->groupby('art.idarticulo');
 
 		$articulos= $q2->union($q3)->orderBy($order, 'asc')->get();
-		//dd($articulos);
+
 		   $seriales =DB::table('seriales')->where('estatus','=',0)->get();
      if ($contador==""){$contador=0;}
 	 	$cxc=0;
@@ -1054,3 +1054,4 @@ private function registrarMovimientoBancario($venta, $recibo, $moneda, $idClient
     $mov->save();
 }
 }
+

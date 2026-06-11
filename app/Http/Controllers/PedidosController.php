@@ -649,8 +649,7 @@ public function show(Request $request,$id){
 
 			  return Redirect::to('pedidos');
 	}
-	public function recibo($id){
-		
+public function recibo($id){
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			if ($empresa->orderart==1){$order="a.nombre";}else{$order="a.idarticulo";}
 			$venta=DB::table('venta as v')
@@ -660,7 +659,7 @@ public function show(Request $request,$id){
             -> first();
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.nombre as articulo','a.iva','dv.cantidad','dv.descuento','dv.precio_venta','a.unidad','a.peso')
+            -> select('a.nombre as articulo','a.iva','dv.cantidad','dv.descuento','dv.cntgrp','dv.precio_venta','a.unidad','a.peso')
             -> where ('dv.idventa','=',$id)
               ->OrderBy($order,'asc')
 			->get();

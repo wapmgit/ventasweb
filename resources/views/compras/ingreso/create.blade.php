@@ -61,13 +61,13 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                 <div class="form-group">
                     <label for="serie_comprobante">Numero Documento</label>
-                    <input type="text" name="serie_comprobante" maxlength="15" value="{{old('serie_comprobante')}}" class="form-control"placeholder="Numero del Documento" > 
+                    <input type="text" name="serie_comprobante" maxlength="19" value="{{old('serie_comprobante')}}" class="form-control"placeholder="Numero del Documento" > 
                 </div>
 				</div>
 					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                 <div class="form-group">
                     <label for="num_comprobante">Numero Control</label>
-                    <input type="text" required name="num_comprobante" maxlength="15" id="num_comprobante" value="{{old('num_comprobante')}}" class="form-control" placeholder="Numero de Control">
+                    <input type="text" required name="num_comprobante" maxlength="19" id="num_comprobante" value="{{old('num_comprobante')}}" class="form-control" placeholder="Numero de Control">
                 </div>
 				
 				</div>
@@ -83,7 +83,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                 <div class="form-group">
                     <label for="num_comprobante">Dias Credito</label>
-                    <input type="number" required name="diascre"   value="0" class="form-control" >
+                    <input type="number" required name="diascre"   value="0" max="99" class="form-control" >
                 </div>
 				
 				</div>
@@ -116,7 +116,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                     <div class="form-group">
                         <label for="precio_compra">Precio compra</label>
-                        <input type="text" step="any" name="pprecio_compra"  id="pprecio_compra" class ="form-control" placeholder="Precio de Compra">
+                        <input type="text" step="any" name="pprecio_compra"  id="pprecio_compra" onkeypress="return soloNumeros(event)"  class ="form-control" placeholder="Precio de Compra">
                     </div>
                     </div>
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
@@ -762,7 +762,14 @@ tneto=nbase;
 		$("#totala").val(nc.toFixed(2));
 		limpiarpago();
     }
-	
+	function soloNumeros(evento) {
+  var tecla = evento.key;
+  // Expresión regular que solo acepta números (0 al 9)
+  if (!/^[0-9]$/.test(tecla)) {
+    evento.preventDefault();
+    return false;
+  }
+}
 </script>
 @endpush
 @endsection

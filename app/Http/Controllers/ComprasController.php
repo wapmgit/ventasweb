@@ -69,9 +69,11 @@ class ComprasController extends Controller
     public function store(Request $request){
 
 	$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
-	$user=Auth::user()->name;
+	$user=Auth::user()->name; 
+
+	DB::beginTransaction();
 	try{
-   DB::beginTransaction();
+ 
     $ingreso=new Compras;
     $ingreso->idproveedor=$request->get('idproveedor');
     $ingreso->tipo_comprobante=$request->get('tipo_comprobante');
@@ -591,8 +593,9 @@ return Redirect::to('compras');
 }
 public function ajustec(Request $request){
 	//dd($request);
-	try{
 	DB::beginTransaction();
+	try{
+	
 	$user=Auth::user()->name;
     $detalleventa=DetalleCompras::findOrFail($request->iddetalle);
 	$aux= $detalleventa->cantidad*$detalleventa->precio_compra;
