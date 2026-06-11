@@ -122,7 +122,7 @@ $acumpeso=0;
                         @endforeach
                       </tbody>
 					     <tfoot>  
-					  <th  colspan="2"><div align="center"><font size="4">Bs: <?php echo number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> <-->
+					  <th  colspan="2"><div align="center"><font size="4">
                        $: <?php echo number_format($acumsub, 2,',','.'); ?> </font></div></th>                      
 						</tfoot>
 				<?php if($empresa->printpeso ==1){?>  

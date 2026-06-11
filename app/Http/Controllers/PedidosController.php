@@ -652,15 +652,15 @@ public function show(Request $request,$id){
 public function recibo($id){
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			if ($empresa->orderart==1){$order="a.nombre";}else{$order="a.idarticulo";}
-			$venta=DB::table('venta as v')
+			$venta=DB::table('pedidos as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select ('v.tasa','v.idventa','v.fecha_hora','p.nombre','p.cedula','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
-            ->where ('v.idventa','=',$id)
+            -> select ('v.idpedido as idventa','v.fecha_hora','p.nombre','p.cedula','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            ->where ('v.idpedido','=',$id)
             -> first();
-            $detalles=DB::table('detalle_venta as dv')
+            $detalles=DB::table('detalle_pedido as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
             -> select('a.nombre as articulo','a.iva','dv.cantidad','dv.descuento','dv.cntgrp','dv.precio_venta','a.unidad','a.peso')
-            -> where ('dv.idventa','=',$id)
+            -> where ('dv.idpedido','=',$id)
               ->OrderBy($order,'asc')
 			->get();
 			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
