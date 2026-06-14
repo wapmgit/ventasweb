@@ -70,7 +70,7 @@ class ArticulosController extends Controller
     }
 	public function store (Request $request)
     {
-		//dd($request);
+	//	dd($request);
 		$this->validate($request,[
             'nombre' => 'required',
             'codigo' => 'required',
@@ -79,6 +79,8 @@ class ArticulosController extends Controller
             'impuesto' => 'required|numeric',
             'precio1' => 'required|numeric'
         ]);
+		DB::beginTransaction();
+		try{
 		$cat=explode("_",$request->get('idcategoria'));
 		$articulo=new Articulos;
         $articulo->idcategoria=$cat[0];
@@ -99,6 +101,7 @@ class ArticulosController extends Controller
 		$articulo->minimo=$request->get('min');
 			if($request->get('showlista')=="on"){$articulo->showlista=1;}else{$articulo->showlista=0;}
 			if($request->get('showgroup')==1){$articulo->usagrupo=1;}else{$articulo->usagrupo=0;}
+			if($request->get('oferta')=="on"){$articulo->oferta=1;}else{$articulo->oferta=0;}
         $articulo->grados=$request->get('grados');
         $articulo->utilidad=$request->get('utilidad');
         $articulo->precio1=$request->get('precio1');
@@ -111,9 +114,15 @@ class ArticulosController extends Controller
 				if($request->get('precio3')==NULL){
 				$articulo->precio3=$request->get('precio1');}else{
 				$articulo->precio3=$request->get('precio3');}
-				if($request->get('util2')==NULL){
+				if($request->get('pvip')==NULL){
+				$articulo->pvip=$request->get('precio1');}else{
+				$articulo->pvip=$request->get('pvip');}
+				if($request->get('util3')==NULL){
 				$articulo->util3=$request->get('utilidad');}else{
 				$articulo->util3=$request->get('util3');}
+				if($request->get('utilvip')==NULL){
+			$articulo->utilvip=$request->get('utilidad');}else{
+			$articulo->utilvip=$request->get('utilvip');}
 		$articulo->costo=$request->get('costo');
 		$articulo->iva=$request->get('impuesto');
 				if($request->get('serial')=="on"){$articulo->serial=1;}		
@@ -139,7 +148,15 @@ class ArticulosController extends Controller
 					$grupo->precio2=$request -> get('pprecio2grupo');
 					$grupo->save();								
 			}	
-		
+		DB::commit();			
+		}
+		catch(\Exception $e)
+		{
+			$logsc=new Errores();
+			$mensaje=$logsc->logs($e->getMessage(),$user);
+			DB::rollback();
+			return view("reportes.mensajes.msgerror",["mensaje"=>$mensaje]);
+		}	
 
        return Redirect::to('articulos');
 
@@ -196,14 +213,21 @@ class ArticulosController extends Controller
 			if($request->get('util3')==NULL){
 			$articulo->util3=$request->get('utilidad');}else{
 			$articulo->util3=$request->get('util3');}
+			if($request->get('pvip')==NULL){
+				$articulo->pvip=$request->get('precio1');}else{
+				$articulo->pvip=$request->get('pvip');}
 			if($request->get('precio3')==NULL){
 			$articulo->precio3=$request->get('precio1');}else{
 			$articulo->precio3=$request->get('precio3');}
+			if($request->get('utilvip')==NULL){
+			$articulo->utilvip=$request->get('utilidad');}else{
+			$articulo->utilvip=$request->get('utilvip');}
         $articulo->costo=$request->get('costo');
         $articulo->iva=$request->get('impuesto');
 		if($request->get('serial')=="on"){$articulo->serial=1;}	
 		if(!$request->get('showlista')){$articulo->showlista=0;}else{$articulo->showlista=1;}
 		if($request->get('showgroup')=="on"){$articulo->usagrupo=1;}else{$articulo->usagrupo=0;}
+		if($request->get('oferta')=="on"){$articulo->oferta=1;}else{$articulo->oferta=0;}
 		if(!empty($request->file('imagen'))){
 			$file = $request->file('imagen');
 			$img = $file->getClientOriginalName();		
