@@ -456,6 +456,7 @@ function trunc (x, posiciones = 0) {
       var costo= $("#costo").val();
       var impuesto= $("#impuesto").val();
       var utilidad= $("#utilvip").val();
+	  if(utilidad>0){
         p1=parseFloat((utilidad/100));
 		if(mutil==1){
         p2=parseFloat(costo) + parseFloat(p1*costo);
@@ -466,6 +467,10 @@ function trunc (x, posiciones = 0) {
         pt=(parseFloat(p2)+parseFloat(iva));
 		pt=trunc(pt,2);
       $("#pvip").val(pt);
+	  }else{
+		   $("#utilvip").val(0); 
+		   $("#pvip").val(0); 
+	   }
       } 
           function reverso(){
         var  p30 =0;  
@@ -544,6 +549,7 @@ function trunc (x, posiciones = 0) {
 	  	function reversovip(){
         var  p302 =0;  
        p302= $("#pvip").val();
+	   if(p302>0){
 	    var mutil= $("#mutil").val();
       var costo= $("#costo").val();
       var utilidad= $("#impuesto").val();       
@@ -559,7 +565,11 @@ function trunc (x, posiciones = 0) {
 		 pt2=(parseFloat(util));
 		}
         var nv2=(new Intl.NumberFormat("de-DE", {style:  "decimal", decimal: "2"}).format(pt2));      
-      $("#utilvip").val(parseFloat(nv2));
+      $("#utilvip").val(parseFloat(nv2));	
+	   }else{
+		   $("#utilvip").val(0); 
+		   $("#pvip").val(0); 
+	   }	  
       }
 	function conMayusculas(field) {
             field.value = field.value.toUpperCase()

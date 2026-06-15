@@ -115,13 +115,13 @@ class ArticulosController extends Controller
 				$articulo->precio3=$request->get('precio1');}else{
 				$articulo->precio3=$request->get('precio3');}
 				if($request->get('pvip')==NULL){
-				$articulo->pvip=$request->get('precio1');}else{
+				$articulo->pvip=0;}else{
 				$articulo->pvip=$request->get('pvip');}
 				if($request->get('util3')==NULL){
 				$articulo->util3=$request->get('utilidad');}else{
 				$articulo->util3=$request->get('util3');}
 				if($request->get('utilvip')==NULL){
-			$articulo->utilvip=$request->get('utilidad');}else{
+			$articulo->utilvip=0;}else{
 			$articulo->utilvip=$request->get('utilvip');}
 		$articulo->costo=$request->get('costo');
 		$articulo->iva=$request->get('impuesto');
@@ -214,13 +214,13 @@ class ArticulosController extends Controller
 			$articulo->util3=$request->get('utilidad');}else{
 			$articulo->util3=$request->get('util3');}
 			if($request->get('pvip')==NULL){
-				$articulo->pvip=$request->get('precio1');}else{
+				$articulo->pvip=0;}else{
 				$articulo->pvip=$request->get('pvip');}
 			if($request->get('precio3')==NULL){
 			$articulo->precio3=$request->get('precio1');}else{
 			$articulo->precio3=$request->get('precio3');}
 			if($request->get('utilvip')==NULL){
-			$articulo->utilvip=$request->get('utilidad');}else{
+			$articulo->utilvip=0;}else{
 			$articulo->utilvip=$request->get('utilvip');}
         $articulo->costo=$request->get('costo');
         $articulo->iva=$request->get('impuesto');
