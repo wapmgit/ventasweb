@@ -1,7 +1,7 @@
 
 <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Indique la fecha para la consulta</h3>
+          <h3 class="card-title">Seleccione Grupo</h3>
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
               <i class="fas fa-minus"></i>

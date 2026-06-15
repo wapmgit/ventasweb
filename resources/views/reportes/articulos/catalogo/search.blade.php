@@ -11,7 +11,7 @@
         <div class="card-body p-0"></br>
 		<div class="row">
 		
-			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 				<select name="grupo" class="form-control selectpicker" data-live-search="true">
                             <option value="0">Todos...</option> 
 						   @foreach ($grupo as $per)
@@ -19,7 +19,14 @@
                            @endforeach
                         </select>
 			</div>
-						 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
+				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">	
+				<select name="ver" class="form-control" >
+                            <option value="0">Mostrar Todos...</option> 				
+                            <option value="1"> Solo Ofertas</option>                          
+                            <option value="2">Solo Vip</option>                          
+                        </select>
+			</div>
+	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
            <div class="form-group">
 				<label for="tipo_precio">Ordenar </label><br>
 				<label for="precio1">Nombre</label> <input name="orden" type="radio"  <?php  if( $orden=="nombre"){ echo "checked='checked'"; } ?>  value="nombre">
