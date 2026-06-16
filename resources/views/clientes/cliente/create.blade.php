@@ -158,6 +158,29 @@
 				<input type="text" name="telcontacto" class="form-control" value="{{old('telcontacto')}}" placeholder="Telefono...">
            </div>
 		</div>
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center" id="divmapa">
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+			<div class="card">
+			<div class="card-header d-flex justify-content-between align-items-center">
+					<h5 class="mb-0">Ubicación para el despacho</h5>
+					<button type="button" id="btn-toggle-mapa" class="btn btn-sm btn-outline-secondary">
+						Ocultar Mapa
+					</button> <button type="button" id="btn-toggle-mapaon" class="btn btn-sm btn-outline-secondary">
+						Ver Mapa
+					</button>
+				</div>
+				<div class="card-body">
+				<div id="contenedor-mapa">
+				<p class="text-muted small mt-1">Puedes arrastrar el marcador azul hasta tu dirección exacta.</p>
+					<div id="map" style="height: 350px; width: 100%; border-radius: 8px;"></div>
+						<input type="text" name="latitud" class="form-control" readonly  id="latitud">
+						<input type="text" name="longitud" class="form-control" readonly   id="longitud">
+				</div>
+				</div>
+			</div>
+</div>
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">	
             <div class="form-group">
 				<button class="btn btn-danger btn-sm" type="reset" id="btncancelar">Cancelar</button>
@@ -173,8 +196,51 @@
 @endsection
 @push('scripts')
 	<script>
+		let defaultLat = 8.5980; 
+		let defaultLng = -71.1442;
+
+    // Inicializar el mapa de Leaflet apuntando al mapa libre de OpenStreetMap
+    const map = L.map('map').setView([defaultLat, defaultLng], 14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Crear un marcador arrastrable
+    let marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
+
+    // Función para actualizar los inputs ocultos del formulario
+    function actualizarInputs(lat, lng) {
+        document.getElementById('latitud').value = lat;
+        document.getElementById('longitud').value = lng;
+    }
+
+    // Intentar obtener la ubicación real del cliente mediante el navegador
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            let userLat = position.coords.latitude;
+            let userLng = position.coords.longitude;
+
+            map.setView([userLat, userLng], 16);
+            marker.setLatLng([userLat, userLng]);
+            actualizarInputs(userLat, userLng);
+        }, function(error) {
+            // Si el usuario niega el permiso, se queda con la ubicación por defecto
+            actualizarInputs(defaultLat, defaultLng);
+        });
+    } else {
+        actualizarInputs(defaultLat, defaultLng);
+    }
+
+    // Evento por si el cliente arrastra el marcador manualmente para ser más preciso
+    marker.on('dragend', function (e) {
+        let coords = e.target.getLatLng();
+        actualizarInputs(coords.lat, coords.lng);
+    });
+	
 	    $('[data-mask]').inputmask()
-		$(document).ready(function(){
+	$(document).ready(function(){
+		document.getElementById('btn-toggle-mapa').style.display="none"; 
+		document.getElementById('contenedor-mapa').style.display="none"; 
 			$("#diascre").attr("readonly",true); 
 			$("#limitcre").attr("readonly",true); 
 		$("#vidcedula").on("change",function(){
@@ -223,7 +289,17 @@
 
 		  $('#prif').click(function(){ 
 		  $("#rif").val($("#vidcedula").val());
-		});		  
+		});		
+$("#btn-toggle-mapa").click(function(){ 
+document.getElementById('contenedor-mapa').style.display="none"; 
+document.getElementById('btn-toggle-mapa').style.display="none"; 
+document.getElementById('btn-toggle-mapaon').style.display=""; 
+	 })
+	 $("#btn-toggle-mapaon").click(function(){ 
+document.getElementById('contenedor-mapa').style.display=""; 
+document.getElementById('btn-toggle-mapa').style.display=""; 
+document.getElementById('btn-toggle-mapaon').style.display="none"; 
+	 })		
 	
 			 });
 			 function conMayusculas(field) {

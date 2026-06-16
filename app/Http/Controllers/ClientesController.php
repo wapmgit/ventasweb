@@ -73,6 +73,8 @@ class ClientesController extends Controller
         $paciente->municipio=$request->get('municipio');
         $paciente->entidad=$request->get('entidad');
         $paciente->codpostal=$request->get('codpostal');
+		$paciente->latitud=$request->get('latitud');
+        $paciente->longitud=$request->get('longitud');
         $paciente->tipo_cliente=$request->get('tipo_cliente');
         $paciente->tipo_precio=$request->get('precio');
         $paciente->diascredito=$request->get('diascre');
@@ -145,7 +147,7 @@ class ClientesController extends Controller
 	}
 	public function update(Request $request)
 	{
-		//
+		//dd($request);
 			$this->validate($request,[
             'nombre' => 'required',
 			'rif'=>'required',
@@ -170,6 +172,8 @@ class ClientesController extends Controller
         $paciente->municipio=$request->get('municipio');
         $paciente->entidad=$request->get('entidad');
         $paciente->codpostal=$request->get('codpostal');
+        $paciente->latitud=$request->get('latitud');
+        $paciente->longitud=$request->get('longitud');
     	$paciente->tipo_cliente=$request->get('tipo_cliente');
     	$paciente->diascredito=$request->get('diascre');
 		$paciente->limitecre=$request->get('limitcre');
