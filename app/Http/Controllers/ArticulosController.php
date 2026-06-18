@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Input;
 use App\Models\Articulos;
 use App\Models\Categoria;
 use App\Models\Agrupados;
+use App\clase\Errores;
 use Carbon\Carbon;
 use DB;
 use Auth;
