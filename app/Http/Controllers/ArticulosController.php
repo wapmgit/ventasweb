@@ -80,6 +80,7 @@ class ArticulosController extends Controller
             'impuesto' => 'required|numeric',
             'precio1' => 'required|numeric'
         ]);
+		$user=Auth::user()->name;
 		DB::beginTransaction();
 		try{
 		$cat=explode("_",$request->get('idcategoria'));

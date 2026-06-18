@@ -130,8 +130,7 @@ class VentasController extends Controller
 	//dd($request);
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$cal_comi=$empresa->calc_comi;
-		$user=Auth
-		::user()->name;
+		$user=Auth::user()->name;
 		$mcomi=0;
   
   DB::beginTransaction(); 
