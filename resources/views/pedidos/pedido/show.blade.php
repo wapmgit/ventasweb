@@ -16,7 +16,7 @@ function truncar($numero, $digitos)
     $truncar = 10**$digitos;
     return intval($numero * $truncar) / $truncar;
 }
-$tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;$cxccli=0;
+$tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;$cxccli=0;$acumpeso=0;
 if (is_null($cxc)) {
     $cxccli=0;
 }else{ $cxccli= $cxc->monto; }
@@ -70,7 +70,9 @@ if (is_null($cxc)) {
                       </thead>
                       <tbody>
                         @foreach($detalles as $det)										
-						<?php $nstock=$det->stock/$det->cntgrp;
+						<?php 
+						$acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);
+						$nstock=$det->stock/$det->cntgrp;
 						if ($det->cantidad>$nstock){ $auxf=1;}?>
                         <tr ><td  class="filaoc" >@if($rol->editpedido==1)
 						<?php if ($det->cantidad>$nstock){?> <a href="" data-target="#modaldevolucion-{{$det->idarticulo}}" data-toggle="modal"><i class="fa fa-fw fa-exclamation-circle fa-lg" style="color:red"></i></a> <?php 
@@ -112,7 +114,7 @@ if (is_null($cxc)) {
                         @endforeach
                       </tbody>
 						    <tfoot style="background-color: #A9D0F5"> 
-						  <th colspan="3">Total</th>
+						  <th colspan="3">Total:  Peso -> <?php echo number_format($acumpeso, 2,',','.'); ?></th>
 						  <th class="filaoc"></th>
 							  <th class="filaoc"></th>
 							  <th>Exe:<input type="number" style="width: 70px" readonly  name="totalexe" value="<?php echo $acumexe; ?>"  id="texe">Bs</th>

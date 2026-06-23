@@ -182,7 +182,7 @@ public function show(Request $request,$id){
 
     $detalles=DB::table('detalle_pedido as dv')
     -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-    -> select('a.nombre as articulo','dv.cantidad','dv.unidad','dv.cntgrp','dv.descuento','dv.iddetalle_pedido','a.idarticulo','a.iva','dv.precio_venta','dv.precio','a.costo',DB::raw('(a.stock-a.apartado) as stock'))
+    -> select('a.nombre as articulo','dv.cantidad','dv.unidad','dv.cntgrp','dv.descuento','dv.iddetalle_pedido','a.idarticulo','a.iva','dv.precio_venta','dv.precio','a.costo',DB::raw('(a.stock-a.apartado) as stock'),'a.peso')
     -> where ('dv.idpedido','=',$id)
     ->get();
 	$q2=DB::table('articulos as art')
