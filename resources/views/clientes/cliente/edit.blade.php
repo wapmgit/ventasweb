@@ -179,8 +179,17 @@
 	<div id="contenedor-mapa">
 	<p class="text-muted small mt-1">Puedes arrastrar el marcador azul hasta tu dirección exacta.</p>
         <div id="map" style="height: 350px; width: 100%; border-radius: 8px;"></div>
-            <input type="text" name="latitud" class="form-control" readonly value="{{$cliente->latitud}}" id="latitud">
-            <input type="text" name="longitud" class="form-control" readonly value="{{$cliente->longitud}}"  id="longitud">
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">	
+				   <label for="tipo_cliente" >	LATITUD</label></div>
+				<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">	 
+					<input type="text" name="latitud" class="form-control"  value="{{$cliente->latitud}}" id="latitud">	   
+				</div>	<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">	
+					 <label for="tipo_cliente" >lONGITUD</label></div>
+		 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">	 <input type="text" name="longitud" class="form-control"  value="{{$cliente->longitud}}"  id="longitud">
+		</div>
+    
+	
     </div>
     </div>
 </div>
