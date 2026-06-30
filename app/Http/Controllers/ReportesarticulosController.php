@@ -284,5 +284,92 @@ class ReportesarticulosController extends Controller
 		return view('reportes.articulos.tomainventario.index',["filtro"=>$filtro,"lista"=>$lista,"empresa"=>$empresa,"categorias"=>$categorias]);
 		}         
 
-	
+	public function inventariofecha(Request $request)
+    {
+		//dd($request);
+		$rol=DB::table('roles')-> select('rlvalorizado')->where('iduser','=',$request->user()->id)->first();	
+			if ($rol->rlvalorizado==1){
+		$year= $request->get('ano');	
+        $corteHoy = date("Y-m");      
+		$pd=$corteHoy."-01";
+        $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$tc=$empresa->tc; 
+		if($request->get('tasa')){$tc=$request->get('tasa');}
+        $query=trim($request->get('mes'));
+        $mes=trim($request->get('mes'));
+
+		
+             if (($query)==""){$query=$corteHoy;  $mes=date("m");}else{			
+			 $query=$year."-".$mes;
+			 $aux=$year."-".$mes."-01";
+		$pd=date("Y-m-d",strtotime($aux."- 1 days"));}
+		//	dd($pd);
+			$articulo=DB::table('articulos')->where('estado','=',"Activo")->get();
+			$anteriorin = DB::table('kardex as dv')       
+				->join('articulos as a', 'a.idarticulo', '=', 'dv.idarticulo')   
+				->select(
+					'a.idarticulo',
+					'dv.tipo',
+					DB::raw('SUM(dv.cantidad) as cantidad'),
+					// TRUCO DE RENDIMIENTO: Extrae el costo que pertenece al ID más alto de este grupo
+					DB::raw('SUBSTRING_INDEX(GROUP_CONCAT(dv.costo ORDER BY dv.id DESC), ",", 1) as costop')
+				)
+				->where('dv.fecha', '<=', $pd)
+				->where('dv.tipo', '=', 1)
+				->groupBy('a.idarticulo', 'dv.tipo')
+		
+				->get();
+	//dd($anteriorin);
+			$anteriorout=DB::table('kardex as dv')            
+             	->join('articulos as a', 'a.idarticulo', '=', 'dv.idarticulo')   
+				->select(
+					'a.idarticulo',
+					'dv.tipo',
+					DB::raw('SUM(dv.cantidad) as cantidad'),
+					// TRUCO DE RENDIMIENTO: Extrae el costo que pertenece al ID más alto de este grupo
+					DB::raw('SUBSTRING_INDEX(GROUP_CONCAT(dv.costo ORDER BY dv.id DESC), ",", 2) as costop')
+				)
+				->where('dv.fecha', '<=', $pd)
+				->where('dv.tipo', '=', 2)
+				->groupBy('a.idarticulo', 'dv.tipo')
+				->get();
+			//Sdd($query);		
+     
+			$entrada = DB::table('kardex as dv')       
+				->join('articulos as a', 'a.idarticulo', '=', 'dv.idarticulo')   
+				->select(
+					'a.idarticulo',
+					'dv.tipo',
+					DB::raw('SUM(dv.cantidad) as cantidad'),
+					// TRUCO DE RENDIMIENTO: Extrae el costo que pertenece al ID más alto de este grupo
+					DB::raw('SUBSTRING_INDEX(GROUP_CONCAT(dv.costo ORDER BY dv.id DESC), ",", 1) as costop')
+				)
+				->where('dv.fecha','LIKE','%'.$query.'%')
+				->where('dv.tipo', '=', 1)
+				->groupBy('a.idarticulo', 'dv.tipo')
+		
+				->get();
+			//dd($entrada);
+  //     
+			$salida=DB::table('kardex as dv')            
+         	->join('articulos as a', 'a.idarticulo', '=', 'dv.idarticulo')   
+				->select(
+					'a.idarticulo',
+					'dv.tipo',
+					DB::raw('SUM(dv.cantidad) as cantidad'),
+					// TRUCO DE RENDIMIENTO: Extrae el costo que pertenece al ID más alto de este grupo
+					DB::raw('SUBSTRING_INDEX(GROUP_CONCAT(dv.costo ORDER BY dv.id DESC), ",", 1) as costop')
+				)
+				->where('dv.fecha','LIKE','%'.$query.'%')
+				->where('dv.tipo', '=', 2)
+				->groupBy('a.idarticulo', 'dv.tipo')
+		
+				->get();
+		//dd($salida);	
+        return view('reportes.articulos.inventariofecha.index',["year"=>$year,"tasa"=>$tc,"anteriorout"=>$anteriorout,"anteriorin"=>$anteriorin,"articulo"=>$articulo,"entrada"=>$entrada,"salida"=>$salida,"empresa"=>$empresa,"searchText"=>$mes]);
+            
+		} else { 
+			return view("reportes.mensajes.noautorizado");
+		}
+    }
 }

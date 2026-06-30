@@ -263,6 +263,7 @@ Route::get('tomainventario', [ReportesarticulosController::class, 'tomainventari
 Route::get('stockcero', [ReportesarticulosController::class, 'cero'])->name('stockcero');
 Route::get('catalogo', [ReportesarticulosController::class, 'catalogo'])->name('catalogo');
 Route::get('resumen', [ReportesarticulosController::class, 'resumen'])->name('resumen');
+Route::get('inventariofecha', [ReportesarticulosController::class, 'inventariofecha'])->name('inventariofecha');
 //banco
 Route::get('bancos', [BancoController::class, 'index'])->name('bancos');
 Route::get('editbanco/{id}', [BancoController::class, 'edit'])->name('editbanco');
