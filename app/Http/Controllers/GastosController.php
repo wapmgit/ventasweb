@@ -29,7 +29,8 @@ class GastosController extends Controller
             $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
             $query=trim($request->get('searchText'));
             $gasto=DB::table('gastos as g')->join('proveedores as p','p.idproveedor','=','g.idpersona')
-			->select('g.*','p.nombre','p.rif')
+			-> join ('tipo_gasto as tg','tg.idgasto','=','g.tipogasto')
+			->select('g.*','p.nombre','p.rif','tg.nombregasto')
             -> where ('p.nombre','LIKE','%'.$query.'%')
             -> orderBy('g.idgasto','desc')
             ->paginate(20);

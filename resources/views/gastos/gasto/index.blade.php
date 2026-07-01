@@ -18,6 +18,7 @@
 					<th>Emision</th>
 					<th>Documento</th>
 					<th>Razon</th>
+					<th>Tipo</th>
 					<th>Monto</th>
 					<th>Por Pagar</th>
 					<th>Opciones</th>
@@ -25,11 +26,12 @@
                @foreach ($gasto as $ing)
 				<tr>
 					
-					<td><?php echo date("d-m-Y",strtotime($ing->fecha)); ?></td>
-					<td><?php echo date("d-m-Y",strtotime($ing->emision)); ?></td>
-					<td>{{ $ing->documento}}</td>
+					<td><small><?php echo date("d-m-Y",strtotime($ing->fecha)); ?></small></td>
+					<td><small><?php echo date("d-m-Y",strtotime($ing->emision)); ?></small></td>
+					<td><small>{{ $ing->documento}}</small></td>
 
 					<td>{{ $ing->nombre}}</td>
+					<td><small>{{ $ing->nombregasto}}</small></td>
 					<td><?php echo number_format( $ing->monto, 2,',','.'); ?></td>
 					<td><?php echo number_format( $ing->saldo, 2,',','.'); ?></td>
 				
