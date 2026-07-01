@@ -68,8 +68,11 @@ class ReportescomprasController extends Controller
 	public function gastos(Request $request)
     {	
 	$rol=DB::table('roles')-> select('rgastos')->where('iduser','=',$request->user()->id)->first();	
+	//dd($request);
 		if ($rol->rgastos==1){
 		$corteHoy = date("Y-m-d");
+			$tfecha=$request->get('tfecha');
+		if (($tfecha)==""){ $fil="c.fecha";}else{ $fil="c.".$tfecha;}
         $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$tipo=$request->get('tipodoc');
         $query=trim($request->get('searchText'));
@@ -82,14 +85,14 @@ class ReportescomprasController extends Controller
             ->join ('proveedores as p', 'c.idpersona','=','p.idproveedor')
 			-> join ('tipo_gasto as tg','tg.idgasto','=','c.tipogasto')
 			->select ('c.*','tg.nombregasto','p.nombre','p.rif')
-            ->whereBetween('c.fecha', [$query, $query2])
+            ->whereBetween($fil, [$query, $query2])
             ->where('c.estatus','0')
             ->groupby('c.idgasto')
             ->get();
 			 $tiposg=DB::table('gastos as c')
 			-> join ('tipo_gasto as tg','tg.idgasto','=','c.tipogasto')
 			->select (DB::raw('sum(c.monto) as mgasto'),DB::raw('sum(c.saldo) as saldogasto'),'tg.nombregasto')
-            ->whereBetween('c.fecha', [$query, $query2])
+            ->whereBetween($fil, [$query, $query2])
             ->groupby('tg.idgasto')
             ->get();
 	

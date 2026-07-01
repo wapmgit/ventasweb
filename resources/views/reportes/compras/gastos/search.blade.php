@@ -29,6 +29,14 @@
 				</div>
 				</div>	
 			</div>
+	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+		           <div class="form-group">
+             <label for="tipo_precio">Fecha</label><br>
+        <label for="precio1"> Emsion </label> <input name="tfecha" type="radio" value="emision" >
+				<label for="precio2"> Registro </label> <input name="tfecha" type="radio" checked value="fecha">
+				
+		   </div>
+			</div>
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 				<div class="form-group">
 				<div class="input-group">
