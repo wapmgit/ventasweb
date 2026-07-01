@@ -32,6 +32,7 @@ $cefe=0;?>
 						  <th>Proveedor</th>
 						  <th>Tipo</th>
 						  <th>Documento</th>
+						  <th>Emision</th>
 						  <th>Monto</th> 
 						  <th>Pagado</th>		
 						</thead><?php $count=0; $deuda=0; $acump=0; $tmonto=0; $tdeuda=0;$tbase=$texento=$tmiva=0; ?>
@@ -41,6 +42,7 @@ $cefe=0;?>
 							<td>{{ $q->nombre}}</td>
 								   <td>{{$q->nombregasto}}</td>
 								   <td>GTO-{{$q->documento}}</td>
+								   <td><?php echo date("d-m-Y",strtotime($q->emision)); ?></td>
 							<td><?php $tmonto=($tmonto+$q->monto);
 							$tdeuda=($tdeuda+$q->saldo);
 							echo number_format( $q->monto,2,',','.')." $"; ?></td>
@@ -48,7 +50,7 @@ $cefe=0;?>
 							<td><?php $deuda=($q->monto-$q->saldo); echo number_format($deuda, 2,',','.')." $"; ?></td>	
 							</tr>
 						@endforeach
-						<tr><td colspan="4"><strong>Total</strong></td><td><strong><?php echo number_format( $tmonto, 2,',','.'); ?></strong></td>
+						<tr><td colspan="5"><strong>Total</strong></td><td><strong><?php echo number_format( $tmonto, 2,',','.'); ?></strong></td>
 
 						<td><strong><?php echo "Por pagar: ".number_format( $tdeuda, 2,',','.')." $"; ?></strong></td></tr>
 					</table>
