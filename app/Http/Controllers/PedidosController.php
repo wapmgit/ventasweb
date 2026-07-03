@@ -369,7 +369,6 @@ public function show(Request $request,$id){
 	 $serie = $request->get('serie_comprobante');
 	 $usag = $request->get('cntgrp');
 	 $unidad = $request->get('unidad');
-	 
     $mytime=Carbon::now('America/Caracas');
     $cont = 0;
         while($cont < count($idarticulo)){
@@ -411,9 +410,9 @@ public function show(Request $request,$id){
      $kar->save();  
                   //actualizo stock   
     $articulo->stock=$articulo->stock-($cantidad[$cont]*$usag[$cont]);
-    $articulo->update();
-        $cont=$cont+1;
-        }
+    $articulo->update();    
+        } 
+		$cont=$cont+1;
 		}
 		$cli=Clientes::findOrFail($idcliente[0]);
         $cli->lastfact=$mytime->toDateTimeString();
