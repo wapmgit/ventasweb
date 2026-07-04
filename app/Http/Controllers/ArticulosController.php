@@ -125,8 +125,8 @@ class ArticulosController extends Controller
 				if($request->get('utilvip')==NULL){
 			$articulo->utilvip=0;}else{
 			$articulo->utilvip=$request->get('utilvip');}
-		$articulo->costo=$request->get('costo');
-		$articulo->iva=$request->get('impuesto');
+			$articulo->costo=$request->get('costo');
+			$articulo->iva=$request->get('impuesto');
 				if($request->get('serial')=="on"){$articulo->serial=1;}		
 					if(!empty($request->file('imagen'))){
 					$file = $request->file('imagen');
@@ -135,9 +135,8 @@ class ArticulosController extends Controller
 					$articulo->imagen=$img;
 					}
 			$mytime=Carbon::now('America/Caracas');
-			$articulo->created_at=$mytime->toDateTimeString();
-		
-		$articulo->save();
+			$articulo->created_at=$mytime->toDateTimeString();		
+			$articulo->save(); 
 				if($request->get('showgroup')==1){		
 					$grupo=new Agrupados;
 					$grupo->idarticulo=$articulo->idarticulo;
@@ -204,6 +203,7 @@ class ArticulosController extends Controller
 		$articulo->minimo=$request->get('min');
         $articulo->grados=$request->get('grados');
         $articulo->utilidad=$request->get('utilidad');
+        $articulo->vence=$request->get('vence');
 
         $articulo->precio1=$request->get('precio1');
 			if($request->get('precio2')==NULL){

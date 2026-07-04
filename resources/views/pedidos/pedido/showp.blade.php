@@ -1,7 +1,7 @@
 @extends ('layouts.master')
 @section ('contenido')
 <?php $acum=0; 
-$ceros=5;  $acumnc=0;
+$ceros=5;  $acumnc=0; $acumitem=0;
 function add_ceros($numero,$ceros) {
   $numero=$numero;
 	$digitos=strlen($numero);
@@ -54,7 +54,7 @@ $cntline=$cntser=0;
                       <tbody>
                         @foreach($detalles as $det)
 						<?php $cntline++; 
-						if ($det->cantidad>0){?>
+						if ($det->cantidad>0){ $acumitem++; ?>
                         <tr >
 						  <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
                           <td>{{$det->articulo}} <?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?></td>
@@ -82,7 +82,7 @@ $cntline=$cntser=0;
 						<?php for($i=($cntline+$cntser);$i<30;$i++){ echo "<tr><td>&nbsp;</td></tr>"; }?>
                       </tbody>
 					       <tfoot>  
-						<th>Codigo <?php echo " :".number_format(($venta->total_venta), 2,',','.'); ?></th>						   
+						<th>Items: {{$acumitem}} Codigo <?php echo " :".number_format(($venta->total_venta), 2,',','.'); ?></th>						   
                           <th colspan="6"><div align="right">TOTAL: </div></th>
                           <th align="center"><b><font size="4"><?php echo " Bs ".number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> </b></font></th>
                           </tfoot>

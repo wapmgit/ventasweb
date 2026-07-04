@@ -92,6 +92,7 @@ class ReportescomprasController extends Controller
 			 $tiposg=DB::table('gastos as c')
 			-> join ('tipo_gasto as tg','tg.idgasto','=','c.tipogasto')
 			->select (DB::raw('sum(c.monto) as mgasto'),DB::raw('sum(c.saldo) as saldogasto'),'tg.nombregasto')
+			->where('c.estatus','0')
             ->whereBetween($fil, [$query, $query2])
             ->groupby('tg.idgasto')
             ->get();
@@ -494,4 +495,27 @@ class ReportescomprasController extends Controller
 	return view("reportes.mensajes.noautorizado");
 	}     
     }
+	public function reportevence(Request $request)
+    {   
+	$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$rol=DB::table('roles')-> select('rcompraarti')->where('iduser','=',$request->user()->id)->first();	
+			if ($rol->rcompraarti==1){
+        $corteHoy = date("Y-m-d");    
+       $datos = DB::table('articulos as art')                
+    ->select(
+        DB::raw("DATEDIFF(art.vence, '$corteHoy') as dias_para_vencer"), 
+        'art.nombre',
+        'art.stock',
+        'art.vence'
+    )
+    ->whereNotNull('art.vence')
+    ->orderBy('art.vence', 'asc')
+    ->get();
+
+			return view('reportes.compras.porvencer.index',["datos"=>$datos,"empresa"=>$empresa,"fechacorte"=>$corteHoy]);           
+    } else { 
+	return view("reportes.mensajes.noautorizado");
+	}
+		
+	}
 }

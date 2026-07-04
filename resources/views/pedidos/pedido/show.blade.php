@@ -1,7 +1,7 @@
 @extends ('layouts.master')
 @section ('contenido')
 
-<?php $aux=0; $ceros=5; $acumexe=0; $exe=0;$acumiva=0; $fserver=date('Y-m-d'); $nstock=0;
+<?php $aux=0; $ceros=5; $acumexe=0; $exe=0;$acumiva=0; $fserver=date('Y-m-d'); $nstock=0; $acumitem=0;
 function add_ceros($numero,$ceros) {
   $numero=$numero+1;
 $digitos=strlen($numero);
@@ -98,7 +98,7 @@ if (is_null($cxc)) {
 						  } ?>
 						  </td>
                           <td> <?php
-						  if(($det->cantidad>0)and ($venta->devolu==0)){
+						  if(($det->cantidad>0)and ($venta->devolu==0)){ $acumitem++;
 						  ?>
 						 {{$det->cantidad}}
 						  <?php } else { echo $det->cantidad;} ?> 
@@ -114,7 +114,7 @@ if (is_null($cxc)) {
                         @endforeach
                       </tbody>
 						    <tfoot style="background-color: #A9D0F5"> 
-						  <th colspan="3">Total:  Peso -> <?php echo number_format($acumpeso, 2,',','.'); ?></th>
+						  <th colspan="3">Total: {{$acumitem}} Items. Peso -> <?php echo number_format($acumpeso, 2,',','.'); ?></th>
 						  <th class="filaoc"></th>
 							  <th class="filaoc"></th>
 							  <th>Exe:<input type="number" style="width: 70px" readonly  name="totalexe" value="<?php echo $acumexe; ?>"  id="texe">Bs</th>

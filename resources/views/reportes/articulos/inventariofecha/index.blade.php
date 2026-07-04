@@ -35,7 +35,7 @@ $cefe=0;?>
 				  <th><small>Costo</small></th>
 				  <th><small>Valor $</small></th>
 				</thead>
-				<?php $ctra=$vcr=0; $num=0; $costo=0; $aux=0; $promcmes=0; $reg=0; $invalor=0;$contado=0;$outvalor=0; $acumctra=$counta=0; $acum_eant=0; $acum_vante=0;$acum_in=0; $acum_out=0;?>
+				<?php $ctra=$vcr=0; $num=0; $costo=0; $aux=0;  $reg=0; $invalor=0;$contado=0;$outvalor=0; $acumctra=$counta=0; $acum_eant=0; $acum_vante=0;$acum_in=0; $acum_out=0;?>
 				@foreach ($articulo as $a)
 				<?php $num++;  $aux=0; $egresocosto=$ingresoscosto=$contingreso=$contegreso=$in_ant=$out=0;$promcemes=$promcmes=0; $ctant=$cost=0; $aux2=$aux=0; $ctin=$ctout=0;$counta++; ?>     
 				@foreach ($anteriorin as $in) 
@@ -59,13 +59,16 @@ $cefe=0;?>
 				 <td>@foreach ($salida as $s)  
 				 <?php if(($a->idarticulo==$s->idarticulo)) {$contegreso++;  $egresocosto=$egresocosto+$s->costop;
 				 $aux2=$aux2+$s->cantidad;}
-				if($contegreso>0){ $promcemes=$egresocosto;}else{$promcemes=$ctant;}   ?>
+				if($contegreso>0){ $promcmes=$egresocosto;}else{$promcmes=$ctant;}   ?>
 				 @endforeach <?php   echo "<font size='2'>".number_format(($aux2), 2,',','.')."</font>"; $acum_out=$acum_out+$aux2; ?></td>
 				 <td><?php $ctra=($aux-$aux2)+($in_ant-$out); echo "<font size='2'>".number_format(($ctra), 2,',','.')."</font>"; 
 				 $acumctra=$acumctra+$ctra; ?></td>
-				  <td><?php echo "<font size='2'>".number_format((($promcmes)), 2,',','.')."</font>";
+				  <td><?php
+$promcmes = (float) preg_replace('/[^\d.]/', '', $promcmes);
+
+				  echo "<font size='2'>".number_format(((float)$promcmes), 2,',','.')."</font>";
 								?></td>
-				 <td><?php echo "<font size='2'>".number_format((($promcmes*$ctra)), 2,',','.')."</font>";
+				 <td><?php echo "<font size='2'>".number_format((((float)$promcmes*$ctra)), 2,',','.')."</font>";
 				 $acum_vante=($acum_vante+($promcmes*$ctra)); ?></td>
 
 				</tr>    
@@ -79,7 +82,7 @@ $cefe=0;?>
 			<td><?php echo "<font size='1'><b>".number_format(($acum_vante), 2,',','.')."</b></font>"; ?></td>
 
 			</tr>
-			<tr><td colspan="10"></br><small>Nota: Este resumen debe presentarse mensualmente. Los costos finales deben presentarse a valores promediados por el método de los costos promedios.</small></td></tr>
+			<tr><td colspan="10"></br></td></tr>
 		</table>
 	  </div>
   </div>
