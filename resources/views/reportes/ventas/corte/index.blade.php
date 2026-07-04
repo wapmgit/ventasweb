@@ -60,7 +60,7 @@ $cefe=0;?>
 		<th>Documentos</th>
 		<th><?php echo $cntc; ?></th>
 		<th><?php echo $cntcre; ?></th>
-		<th><?php echo $cntde; ?></th>
+		<th><?php if($acumdevolu > 0){echo $cntde;}else{echo 0; } ?></th>
 		<Tfoot>
 			
       </table></br>
