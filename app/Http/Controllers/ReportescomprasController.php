@@ -99,6 +99,7 @@ class ReportescomprasController extends Controller
 	
 			$pagos=DB::table('comprobante as re')->join('gastos','gastos.idgasto','=','re.idgasto')
 			-> select(DB::raw('sum(re.monto) as monto'),DB::raw('sum(re.recibido) as recibido'),'re.idbanco','re.idpago')
+            -> where('gastos.estatus','0')
             -> whereBetween('re.fecha_comp', [$query, $query2])
 			-> groupby('re.idpago','re.idbanco')
             ->get();

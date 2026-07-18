@@ -75,7 +75,7 @@ $cefe=0;?>
 							<tr><td align="center" colspan="3"> <strong> Total Pagos: <?php echo number_format($acump, 2,',','.')." $"; ?></strong></td></tr>
 					</table>
 				</div>
-			</div>
+			</div><?php $acummtgasto=$acumsgasto=0;?>
 			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 						<div class="col-12 table-responsive">
 					<table width="100%">
@@ -86,12 +86,17 @@ $cefe=0;?>
 						  <th>Saldo</th>
 						</thead>
 							 @foreach ($tiposg as $g)
+							 <?php $acummtgasto=$acummtgasto+$g->mgasto; $acumsgasto=$acumsgasto+$g->saldogasto;?>
 							<tr >
 							<td>{{$g->nombregasto}}</td>
 							<td><?php echo number_format($g->mgasto, 2,',','.'); ?></td>
 							<td><?php echo number_format($g->saldogasto, 2,',','.')." $"; ?></td>
 							</tr>   
 							@endforeach
+							<tr><td><strong>Total</strong></td>
+							<td><strong><?php echo number_format($acummtgasto, 2,',','.')." $"; ?></strong></td>
+							<td><strong><?php echo number_format($acumsgasto, 2,',','.')." $"; ?></strong></td>
+							</tr>
 					</table>
 				</div>
 			</div>
