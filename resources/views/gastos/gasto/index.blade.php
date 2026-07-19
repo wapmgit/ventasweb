@@ -11,7 +11,7 @@
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<div class="table-responsive">
-			<table class="table table-striped table-bordered table-condensed table-hover">
+			<table id ="gastostable"class="table table-striped table-bordered table-condensed table-hover">
 				<thead>
 				
 					<th>Fecha</th>
@@ -51,5 +51,35 @@
 		{{$gasto->render()}}
 	</div>
 </div>
+@push ('scripts')
+<script>
+$(document).ready(function(){
+	const cuerpoDelDocumento = document.body;
+	cuerpoDelDocumento.onload = miFuncion;
+	function miFuncion() {
+		// alert('La página terminó de cargar');
+  	document.getElementById('imgcarga').style.display="none"; 
+	document.getElementById('principal').style.display=""; 
+	} 
 
+	$("#btn").click(function(){
+		document.getElementById('imgcarga').style.display=""; 
+		document.getElementById('principal').style.display="none"; 
+	})
+	
+	$(function () {
+    $("#gastostable").DataTable({
+		"searching": true,
+		"bPaginate": false,
+		"bInfo":false,
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#articulostable_wrapper .col-md-6:eq(0)');
+
+  });
+});
+
+
+</script>
+@endpush
 @endsection

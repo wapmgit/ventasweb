@@ -91,7 +91,7 @@ class ReportescomprasController extends Controller
             ->get();
 			 $tiposg=DB::table('gastos as c')
 			-> join ('tipo_gasto as tg','tg.idgasto','=','c.tipogasto')
-			->select (DB::raw('sum(c.monto) as mgasto'),DB::raw('sum(c.saldo) as saldogasto'),'tg.nombregasto')
+			->select (DB::raw('sum(c.monto) as mgasto'),DB::raw('sum(c.saldo) as saldogasto'),'tg.nombregasto','tg.idgasto')
 			->where('c.estatus','0')
             ->whereBetween($fil, [$query, $query2])
             ->groupby('tg.idgasto')

@@ -5,6 +5,51 @@
 </div>
 <?php $acum=0;$efe=0;$deb=0;$che=0;$tra=0;$ctra=0;$cche=0; $cdeb=0;
 $cefe=0;?>
+    <style>
+        /* Contenedor principal que actúa como la estructura de la tabla */
+        .tabla-falsa {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columnas de igual tamaño */
+            gap: 1px; /* Espacio que simula los bordes */
+            background-color: #cccccc; /* Color del borde */
+            border: 1px solid #cccccc;
+            font-family: sans-serif;
+        }
+
+        /* Estilo general para celdas y encabezados */
+        .celda {
+            padding: 12px;
+            background-color: #ffffff;
+        }
+
+        /* Estilo exclusivo para la fila de encabezados */
+        .encabezado {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        /* Diseño responsivo para pantallas móviles */
+        @media (max-width: 600px) {
+            .tabla-falsa {
+                grid-template-columns: 1fr; /* Cambia a una sola columna */
+                background-color: transparent;
+                border: none;
+                gap: 15px; /* Espacio entre tarjetas */
+            }
+            .encabezado {
+                display: none; /* Oculta los encabezados en móviles */
+            }
+            .celda {
+                border: 1px solid #ddd;
+                border-bottom: none;
+            }
+            .celda:last-child {
+                border-bottom: 1px solid #ddd; /* Cierra el borde inferior de la "tarjeta" */
+            }
+        }
+    </style>
  <!-- Main content -->
 	<div class="invoice p-3 mb-3">
               <!-- title row -->
@@ -88,11 +133,12 @@ $cefe=0;?>
 						</thead>
 							 @foreach ($tiposg as $g)
 							 <?php $acummtgasto=$acummtgasto+$g->mgasto; $acumsgasto=$acumsgasto+$g->saldogasto;?>
-							<tr >
-							<td>{{$g->nombregasto}}</td>
+							<tr>
+							<td><a  class="filap1" href=""  data-target="#modal-detalle{{$g->idgasto}}" data-toggle="modal"><i class="fa fa-fw fa-eye"></i></a>{{$g->nombregasto}}</td>
 							<td><?php echo number_format($g->mgasto, 2,',','.'); ?></td>
 							<td><?php echo number_format($g->saldogasto, 2,',','.')." $"; ?></td>
-							</tr>   
+							</tr>  
+						@include('reportes.compras.gastos.modal')						
 							@endforeach
 							<tr><td><strong>Total</strong></td>
 							<td><strong><?php echo number_format($acummtgasto, 2,',','.')." $"; ?></strong></td>
@@ -113,6 +159,7 @@ $cefe=0;?>
 	<script>
 	$(document).ready(function(){
 		$('#imprimir').click(function(){
+			$(".filap1").remove();
 			  document.getElementById('imprimir').style.display="none";
 			  window.print(); 
 			  window.location="{{route('resumengastos')}}";
