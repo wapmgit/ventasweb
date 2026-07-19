@@ -73,6 +73,7 @@ $cefe=0;?>
 							</tr>   
 							@endforeach
 							<tr><td align="center" colspan="3"> <strong> Total Pagos: <?php echo number_format($acump, 2,',','.')." $"; ?></strong></td></tr>
+							<tr><td align="center" colspan="3"> <strong> Total Periodo: <?php echo number_format($tpago->monto, 2,',','.')." $"; ?></strong></td></tr>
 					</table>
 				</div>
 			</div><?php $acummtgasto=$acumsgasto=0;?>
