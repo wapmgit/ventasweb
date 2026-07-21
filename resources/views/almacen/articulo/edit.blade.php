@@ -150,7 +150,7 @@
         <div class="row align-items-center">
             <div class="col-lg-2 col-md-4 col-sm-12">
                 <div class="form-group mb-lg-0">
-                    <label for="min" class="text-danger font-weight-bold"><i class="fas fa-exclamation-triangle"></i> Stock Mínimo Alerta</label>
+                    <label for="min" class="text-danger font-weight-bold"><i class="fas fa-exclamation-triangle"></i> Stock Mínimo</label>
                     <input type="number" name="min" min="0.1" step="0.1" required value="{{ $articulo->minimo }}" class="form-control border-danger">
                 </div>
             </div>
