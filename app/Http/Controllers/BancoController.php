@@ -577,4 +577,32 @@ class BancoController extends Controller
 		return view("reportes.mensajes.noautorizado");
 			} 
 		}
+	public function saldo(Request $request)
+			{   
+			//dd($request);
+			$rol=DB::table('roles')-> select('resumenbanco')->where('iduser','=',$request->user()->id)->first();	
+			if ($rol->resumenbanco==1){
+			$corteHoy = date("Y-m-d");
+            $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$bancos = DB::table('bancos')
+    ->select(
+        'bancos.idbanco',
+        'bancos.nombre',
+        'bancos.codigo',
+        DB::raw('(SELECT COALESCE(SUM(monto), 0) FROM mov_ban WHERE idbanco = bancos.idbanco AND estatus = 0 AND tipo_mov = "N/C") as total_credito'),
+        DB::raw('(SELECT COALESCE(SUM(monto), 0) FROM mov_ban WHERE idbanco = bancos.idbanco AND estatus = 0 AND tipo_mov = "N/D") as total_debito')
+    )
+    ->get();
+
+// 2. Traer las monedas agrupadas por idbanco para usarlas en la vista sin afectar los saldos
+$monedas = DB::table('monedas')
+    ->select('idbanco', 'simbolo', 'tipom as es_nacional')
+    ->get()
+    ->groupBy('idbanco');
+	
+        return view('bancos.resumen.saldo',["bancos"=>$bancos,"monedas"=>$monedas,"empresa"=>$empresa]);
+           	     } else { 
+		return view("reportes.mensajes.noautorizado");
+			} 
+		}
 }

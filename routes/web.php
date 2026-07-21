@@ -281,6 +281,7 @@ Route::get('consultaban/{id}', [BancoController::class, 'consulta'])->name('cons
 Route::get('showrecibo/{id}', [BancoController::class, 'recibo'])->name('showrecibo');
 Route::post('delmov', [BancoController::class, 'delete'])->name('delmov');
 Route::get('resumenbancos', [BancoController::class, 'resumen'])->name('resumenbancos');
+Route::get('saldobancos', [BancoController::class, 'saldo'])->name('saldobancos');
 
 //cuentasclasificaion
 Route::get('ctascon', [CtasconController::class, 'index'])->name('ctascon');
