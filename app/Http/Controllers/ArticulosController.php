@@ -286,8 +286,11 @@ class ArticulosController extends Controller
     }
 		public function etiquetarticulo($id)
    {	
-				
-	 	 $articulo=Articulos::findOrFail($id);		 
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();		
+		$articulo=DB::table('articulos')
+		->select ('codigo','nombre',$empresa->precioeti.' as precio')
+		->where('idarticulo','=',$id)
+		->first();		 
 	       return view("almacen.articulo.etiqueta_art",["articulo"=>$articulo]);
     }
 	public function aggnuevogrupo(Request $request) 

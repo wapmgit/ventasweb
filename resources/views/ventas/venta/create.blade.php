@@ -712,20 +712,27 @@ function trunc (x, posiciones = 0) {
 	  
 	});
 
-	function mostrarcomision(){  
+	function mostrarcomision(){ 
+		var ms=0;	
 			var formc= $('#formventa');
 			var urlc = '{{route("ventacxc")}}';
 			var datac = formc.serialize();
     $.post(urlc,datac,function(result){  
       var resultadoc=result;
           console.log(resultadoc);
-		  		rows=resultadoc.length; 			
+		  		rows=resultadoc[0].length; 		
+		  		rowsnd=resultadoc[1].length; 		
 			if(rows>0){
-				var ms=resultadoc[0].monto.toFixed(2);
+				 ms=resultadoc[0][0].monto.toFixed(2);
 					$("#cxc").html("$: " + ms);
 					$("#cxccli").val(ms);
 			}else{ $("#cxc").html("$: 0");
-}
+			}
+			if(rowsnd>0){
+				 ms=(parseFloat(resultadoc[1][0].montond)+parseFloat(ms));
+					$("#cxc").html("$: " + ms.toFixed(2));
+					$("#cxccli").val(ms.toFixed(2));
+			}
             });
 	   var cli=$("#id_cliente").val();
 	  

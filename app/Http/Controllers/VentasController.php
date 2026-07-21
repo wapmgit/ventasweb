@@ -1014,13 +1014,19 @@ public function nota2ds($id){
 	public function vcxc(Request $request)
     {   
      if($request->ajax()){
-		 	$idcliente=explode("_",$request->get('id_cliente'));
+		 $idcliente=explode("_",$request->get('id_cliente'));
          $datov=DB::table('venta as v')
         ->select(DB::raw('SUM(v.saldo) as monto' ),'v.idcliente')
         ->where('v.idcliente','=',$idcliente[0])
          ->groupby('v.idcliente')
         -> get();
-          return response()->json($datov);
+		 $datnd=DB::table('notasadm as v')
+        ->select(DB::raw('SUM(v.pendiente) as montond' ),'v.idcliente')
+        ->where('v.idcliente','=',$idcliente[0])
+        ->where('v.tipo','=',1)
+         ->groupby('v.idcliente')
+        -> get();
+          return response()->json([$datov,$datnd]);
  }
     }
 	public function anulforma(Request $request){

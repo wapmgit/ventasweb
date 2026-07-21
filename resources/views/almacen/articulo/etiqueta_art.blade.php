@@ -93,7 +93,7 @@
             <span class="currency-sym">$</span>
             @php
                 // Separamos el precio en enteros y decimales
-                $precio = number_format($articulo->precio1, 2, ',', '.');
+                $precio = number_format($articulo->precio, 2, ',', '.');
                 $partes = explode(',', $precio);
             @endphp
             <span class="integer-price">{{ $partes[0] }}.</span>
