@@ -148,14 +148,21 @@
         <hr class="my-3">
 
         <div class="row align-items-center">
-            <div class="col-lg-3 col-md-4 col-sm-12">
+            <div class="col-lg-2 col-md-4 col-sm-12">
                 <div class="form-group mb-lg-0">
                     <label for="min" class="text-danger font-weight-bold"><i class="fas fa-exclamation-triangle"></i> Stock Mínimo Alerta</label>
                     <input type="number" name="min" min="0.1" step="0.1" required value="{{ $articulo->minimo }}" class="form-control border-danger">
                 </div>
             </div>
-            
-            <div class="col-lg-9 col-md-8 col-sm-12">
+              <div class="col-lg-2 col-md-4 col-sm-12">
+                  <div class="form-group mb-lg-0">
+                        <label for="vencimineto">
+                            Vence <input type="checkbox" name="vencec" id="cbxv" {{ $articulo->vence != NULL ? 'checked value=1' : 'value=0' }}>
+                        </label>
+                        <input type="date" min="0.01" step="0.01" {{ $articulo->vence != NULL ? 'value='.$articulo->vence : 'value=0 disabled' }} id="vence" name="vence" class="form-control" placeholder="%">
+                    </div>
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-12">
                 <label class="d-block text-muted small uppercase font-weight-bold mb-2">Opciones de Control</label>
                 <div class="card bg-light p-3 mb-0">
                     <div class="row">
@@ -361,6 +368,18 @@ $("#pprecio2grupo").change(reverso2grp);
 		$("#porcentaje").val(0);
 		 $("#porcentaje").attr("disabled",true);
 		 $("#cntgrupo").focus();
+       }
+
+   });	
+   		$("#cbxv").click(function() {
+       if ($(this).is(":checked")){
+        $("#cbxv").val(1);
+		$("#vence").attr("disabled",false);
+		$("#vence").focus();
+       } else {
+         $("#cbxv").val(0);
+		$("#vence").val(0);
+		 $("#vence").attr("disabled",true);
        }
 
    });	
