@@ -29,9 +29,10 @@
 				<table width="100%">
 					<thead style="background-color: #E6E6E6" >    
 					  <th>Articulo</th>
+					   <th>Stock</th>
 					  <th>Cant. Compras</th>
 					  <th>Cant. Ventas</th>
-					  <th>Stock</th>
+					 
 					</thead>
 						<?php $tcompra= 0; $cche=0; $cdeb=0; $credito=0; $contado=0;$real=0; $count=0;$tventa=0; $auxp=$auxpv=0;?>
 					@foreach ($datos as $q)
@@ -39,6 +40,7 @@
 						?>
 					<tr>        
 					  <td>{{ $q->nombre}} </td>
+					    <td><?php echo number_format($q->stock, 2,',','.');?></td>
 					  <td><?php echo number_format($q->comprado, 2,',','.');?></td>
 					  <td>	@foreach ($ventas as $v)
 					  <?php  if($q->idarticulo == $v->idarticulo){ 
@@ -46,7 +48,7 @@
 					  } ?>
 							@endforeach
 					  </td>
-					   <td><?php echo number_format($q->stock, 2,',','.');?></td>
+					 
       
 					</tr>
 					@endforeach
