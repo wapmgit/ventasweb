@@ -44,7 +44,7 @@ $cefe=0;?>
 			   <?php $cnt++;   $acumund=$acumund+ $q->tcantidad; $smonto=$smonto+($q->tcantidad*$q->prom_compra); 
 			   $astoc=$astoc+$q->stock;
 			   ?> 
-				<tr>         
+				<tr <?php if (($cnt%2)==0){ echo "style='background-color: #D4E6F1 !important'";}?>>         
 					<td>{{ $q->nombre}}</td>
 					<td>{{ $q->tcantidad}} </td>
 					<td><?php 	echo number_format(($q->prom_compra), 2,',','.');  ?></td>

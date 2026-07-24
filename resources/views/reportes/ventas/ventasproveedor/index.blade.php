@@ -38,7 +38,7 @@
 					@foreach ($datos as $q)
 					<?php $count++; $tcompra=$tcompra +($q->comprado); 
 						?>
-					<tr>        
+					<tr  <?php if (($count%2)==0){ echo "style='background-color: #D4E6F1 !important'";}?>>        
 					  <td>{{ $q->nombre}} </td>
 					    <td><?php echo number_format($q->stock, 2,',','.');?></td>
 					  <td><?php echo number_format($q->comprado, 2,',','.');?></td>

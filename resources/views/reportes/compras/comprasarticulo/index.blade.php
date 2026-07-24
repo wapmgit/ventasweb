@@ -38,10 +38,10 @@ $cefe=0;?>
 				  <th>Cantidad</th>
 				  <th>Monto</th>     
 				</thead>
-				<?php $ctra= 0; $acumventas=0; $smonto=0;$cche=0; $cdeb=0; $credito=0; $contado=0;$real=0; $count=0;$tventa=0;?>
+				<?php $ctra=$cnt= 0; $acumventas=0; $smonto=0;$cche=0; $cdeb=0; $credito=0; $contado=0;$real=0; $count=0;$tventa=0;?>
                @foreach ($datos as $q)
-				<?php $tventa=$tventa +($q->vendido*$q->vpromedio); ?>
-				<tr>         
+				<?php $cnt++; $tventa=$tventa +($q->vendido*$q->vpromedio); ?>
+				<tr <?php if (($cnt%2)==0){ echo "style='background-color: #D4E6F1 !important'";}?>>         
 					<td>{{ $q->nombre}}</td>
 					<td>{{ $q->grupo}} </td>
 					<td><?php 
