@@ -72,13 +72,18 @@ $idv=0;
                     </div>
                 </div>
 
-                <div class="col-lg-8 col-md-12">
+                <div class="col-lg-4 col-md-12">
                     <div class="form-group">
                         <label for="descripcion">Descripción</label>
                         <input type="text" name="descripcion" required value="{{ old('descripcion') }}" class="form-control" placeholder="Descripción corta o detallada del producto..">
                     </div>
                 </div>
-
+			<div class="col-lg-4 col-md-4 col-sm-6"> 
+                    <div class="form-group">
+                        <label for="codweb">Etiquetas</label>          
+                        <input type="text" name="etiqueta"value="{{ old('etiqueta') }}" placeholder="Etiqueta para Catalogo" class="form-control">                  
+                    </div>
+                </div>
                 <div class="col-lg-4 col-md-12">
                     <div class="form-group">
                         <label for="imagen">Imagen del Artículo</label>

@@ -40,7 +40,7 @@ class ArticulosController extends Controller
 					'a.codigo', 
 					'a.stock', 
 					'c.nombre as categoria', 
-					'a.descripcion', 
+					'a.etiquetas', 
 					'a.imagen', 
 					'a.estado'
 				)
@@ -91,6 +91,7 @@ class ArticulosController extends Controller
         $articulo->nombre=$request->get('nombre');
         $articulo->stock=0;
         $articulo->descripcion=$request->get('descripcion');
+		$articulo->etiquetas=$request->get('etiqueta');
         $articulo->estado='Activo';
         $articulo->unidad=$request->get('unidad');
         $articulo->cntxund=$request->get('cntxund');
@@ -191,6 +192,7 @@ class ArticulosController extends Controller
         $articulo->nombre=$request->get('nombre');
         $articulo->stock=$request->get('stock');
         $articulo->descripcion=$request->get('descripcion');
+        $articulo->etiquetas=$request->get('etiqueta');
         $articulo->estado='Activo';
 		$articulo->unidad=$request->get('unidad');
 		$articulo->cntxund=$request->get('cntxund');

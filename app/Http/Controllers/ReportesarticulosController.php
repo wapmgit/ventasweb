@@ -157,27 +157,30 @@ class ReportesarticulosController extends Controller
     }
 	public function catalogo(Request $request)
     {
-		
+		//dd($request);
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
              $ver=trim($request->get('ver'));
              $precio=trim($request->get('precio'));
              $orden=trim($request->get('orden'));
+			 $etiquetas=$request->get('etiqueta');
+			// $listaEtiquetas = array_map('trim', explode(',', $etiquetas));
+			 $listaEtiquetas = !empty($etiquetas) ? array_map('trim', explode(',', $etiquetas)) : [];
 			   if (($precio)==""){	$p="precio1"; }else{ $p="precio".$request->get('precio')." as precio1";}
                if (($orden)==""){ $ord="nombre";}else{$ord=$request->get('orden'); }
                if (($ver)==""){ $opver=0;}else{$opver=$ver; }
 			    $co=">"; $covip=">"; $vvip=-1; $vo=-1;
 			   switch ($ver) {
-    case 1:
-	$p="precio1";
-     $co="=";
-	 $vo=1;
-        break;
-    case 2:
-    $p="pvip as precio1";
-     $covip=">";
-	 $vvip=0;
-        break;
-}
+					case 1:
+					$p="precio1";
+					 $co="=";
+					 $vo=1;
+						break;
+					case 2:
+					$p="pvip as precio1";
+					 $covip=">";
+					 $vvip=0;
+						break;
+				}
 			   //dd($request);
 			$query=trim($request->get('grupo'));
              if (($query)==""){			
@@ -187,7 +190,7 @@ class ReportesarticulosController extends Controller
 			-> where('stock','>',0)
 			->where('showlista','=',1)
 			->OrderBy('nombre','asc')
-			//->limit(10)
+			->limit(10)
             ->get(); 
 			 }
 			  if (($query)==0){							
@@ -198,6 +201,13 @@ class ReportesarticulosController extends Controller
 			->where('oferta',$co,$vo)
 			->where('pvip',$covip,$vvip)
             ->where('imagen','<>',"ninguna.jpg")
+				->when(!empty($listaEtiquetas), function($query) use ($listaEtiquetas) {
+				$query->where(function($q) use ($listaEtiquetas) {
+					foreach ($listaEtiquetas as $etiqueta) {
+						$q->orWhereRaw('FIND_IN_SET(?, REPLACE(etiquetas, " ", "")) > 0', [$etiqueta]);
+					}
+				});
+			})
 			->OrderBy($ord,'asc')
 			//->limit(10)
             ->get(); 	 
@@ -211,6 +221,13 @@ class ReportesarticulosController extends Controller
 			->where('oferta',$co,$vo)
 			->where('pvip',$covip,$vvip)
             ->where('imagen','<>',"ninguna.jpg")
+		->when(!empty($listaEtiquetas), function($query) use ($listaEtiquetas) {
+        $query->where(function($q) use ($listaEtiquetas) {
+            foreach ($listaEtiquetas as $etiqueta) {
+                $q->orWhereRaw('FIND_IN_SET(?, etiquetas) > 0', [$etiqueta]);
+            }
+        });
+    })
 			->OrderBy($ord,'asc')
 			//->limit(10)
             ->get(); 	 

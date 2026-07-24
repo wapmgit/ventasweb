@@ -37,7 +37,7 @@
 				<tr>
 					
 					<td><small><small>{{ $cat->codigo}}</small></small></td>
-					<td><a href="{{route('showarticulo',['id'=>$cat->idarticulo])}}"><i class="fa fa-fw fa-line-chart"></i> 
+					<td><a href="{{route('showarticulo',['id'=>$cat->idarticulo])}}" title="{{$cat->etiquetas}}"><i class="fa fa-fw fa-line-chart"></i> 
 					</a><small><?php //echo substr( $cat->nombre, 0, 40 ); ?>{{$cat->nombre}}</small></td>					
 					<td><small><small>{{ $cat->categoria}}</small></small></td>
 					<td><small>{{ $cat->stock}}</small></td>

@@ -65,10 +65,16 @@
                         <input type="text" name="codweb" id="cod2" value="{{ $articulo->codweb }}" placeholder="Barcode" class="form-control">                  
                     </div>
                 </div>
-                <div class="col-lg-8 col-md-12">
+                <div class="col-lg-4 col-md-12">
                     <div class="form-group">
                         <label for="descripcion">Descripción</label>
                         <input type="text" name="descripcion" required value="{{ $articulo->descripcion }}" class="form-control" placeholder="Descripción corta..">
+                    </div>
+                </div> 
+				<div class="col-lg-4 col-md-4 col-sm-6"> 
+                    <div class="form-group">
+                        <label for="codweb">Etiquetas</label>          
+                        <input type="text" name="etiqueta" value="{{ $articulo->etiqueta }}" placeholder="Etiqueta para Catalogo" class="form-control">                  
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-12">

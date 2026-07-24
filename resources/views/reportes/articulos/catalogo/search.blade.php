@@ -11,7 +11,7 @@
         <div class="card-body p-0"></br>
 		<div class="row">
 		
-			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">		
 				<select name="grupo" class="form-control selectpicker" data-live-search="true">
                             <option value="0">Todos...</option> 
 						   @foreach ($grupo as $per)
@@ -19,14 +19,14 @@
                            @endforeach
                         </select>
 			</div>
-				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">	
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">		
 				<select name="ver" class="form-control" >
                             <option value="0">Mostrar Todos...</option> 				
                             <option value="1"> Solo Ofertas</option>                          
                             <option value="2">Solo Vip</option>                          
                         </select>
 			</div>
-	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
+	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">		
            <div class="form-group">
 				<label for="tipo_precio">Ordenar </label><br>
 				<label for="precio1">Nombre</label> <input name="orden" type="radio"  <?php  if( $orden=="nombre"){ echo "checked='checked'"; } ?>  value="nombre">
@@ -34,23 +34,33 @@
 				
            </div>
 		</div>
-			 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
+			 	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">			
            <div class="form-group">
 				<label for="tipo_precio">Tipo de Precio </label><br>
 				<label for="precio1"> P 1 </label> <input name="precio" type="radio" <?php  if( $precio==1){ echo "checked='checked'"; } ?> value="1">
 				<label for="precio2"> P 2 </label> <input name="precio" type="radio" <?php  if( $precio==2){ echo "checked='checked'"; } ?>  value="2">
 				<label for="precio2"> P 3 </label> <input name="precio" type="radio" <?php  if( $precio==3){ echo "checked='checked'"; } ?>  value="3">
-           </div>
+           
+		   
+		   </div>
 		</div>
 
-			<div class="col-lg-2 col-md-2 aocol-sm-2 col-xs-12">	
-				<div class="form-group">
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">		
+           <div class="form-group">
+	
+		   <input type="text" name="etiqueta"value="" placeholder="Etiquetas: cocina,salsas,bebidas" class="form-control">                  
+		   </div>
+		</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">	
+	
+				<div class="form-group" >
 				<div class="input-group">
 					<span class="input-group-btn">
 						<button type="submit" class="btn btn-primary btn-sm">consultar</button>
 					</span>
 				</div>
 				</div>
+		
 			</div>
 	</div>
 	</div>
