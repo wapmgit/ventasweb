@@ -272,7 +272,10 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 			
 		$ser=DB::table('seriales')-> where('idcompra','=',$id)->get();
 		$ret=DB::table('retenciones')-> where('idcompra','=',$id)->get();
-		return view("compras.ingreso.show",["rol"=>$rol,"ret"=>$ret,"ruta"=>$ruta,"ser"=>$ser,"ingreso"=>$ingreso,"empresa"=>$empresa,"detalles"=>$detalles,"pago"=>$pago]);
+		$recibonc=DB::table('mov_notasp as mov')-> where ('mov.iddoc','=',$id)
+		-> where ('mov.tipodoc','=', $ingreso->tipo_comprobante)
+            ->get();
+		return view("compras.ingreso.show",["recibonc"=>$recibonc,"rol"=>$rol,"ret"=>$ret,"ruta"=>$ruta,"ser"=>$ser,"ingreso"=>$ingreso,"empresa"=>$empresa,"detalles"=>$detalles,"pago"=>$pago]);
 	}  
 	public function etiquetas($id){
     $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();

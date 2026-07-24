@@ -10,7 +10,7 @@ $digitos=strlen($numero);
   }
 return $insertar_ceros = $recibo.$numero;
 }
-$cntser=0;
+$cntser=0;$acumnc=0;
 ?>
   	<div class="invoice p-3 mb-3">
               <!-- title row -->
@@ -87,8 +87,8 @@ $cntser=0;
                         @endforeach
                       </tbody> 
                       <tfoot>                    
-                          <th colspan="6"><div align="right">TOTAL: </div></th>
-                          <th ><b><font size="4"><?php  echo " $ ".number_format( $mo, 2,',','.'); ?></b></font></th>
+                          <th colspan="5"><div align="right">TOTAL: </div></th>
+                          <th colspan="2" ><b><font size="3"><?php  echo " $ ".number_format( $mo, 2,',','.'); ?></b></font></th>
                           </tfoot>
                   </table>
 				  	<table width="100%"  border="1">  
@@ -113,10 +113,9 @@ $cntser=0;
      
         </div>
 		 <div class ="row">
-                <div class="panel panel-primary">
-                <div class="panel-body">
+
                
-				  		 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+				  		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<h6 align="center">Retencion</h6>
 					<div class="table-responsive">
                   <table width="100%">
@@ -133,14 +132,15 @@ $cntser=0;
 						   <td>{{$r->documento}}</td>  
                           <td><?php echo number_format( $r->mretd, 2,',','.'); ?></dt>
 						  </tr>
-                        @endforeach
- 
-                       
-                      </tbody>
+                        @endforeach					                      
+                      </tbody>	<tfoot>                    
+                          <th colspan="2">Total</th>
+						  <th><?php echo number_format( $acumr, 2,',','.');?> $</th>
+                          </tfoot>
                   </table>
 					 </div>
 					 </div>
-					  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 				<h6 align="center">Desglose de pago</h6>
 					<div class="table-responsive">
                   <table id="desglose" width="100%">
@@ -166,21 +166,47 @@ $cntser=0;
 						   <td><?php echo number_format( $re->monto, 2,',','.'); ?></td>
                           <td>{{$re->referencia}}</td>                        
                         </tr>
-                        @endforeach
-                        <tfoot>                    
-                          <th colspan="4">Total</th>
+                        @endforeach                                           
+                      </tbody>
+					  <tfoot>                    
+                          <th colspan="5">Total</th>
 						  <th><?php echo number_format( $acum, 2,',','.');?> $</th>
-                          <th ><b> Pendiente: <?php echo number_format( ($mo-$acum), 2,',','.');?></b></h4></th>
+                          </tfoot>
+                  </table>
+				  </div>
+                    </div>
+			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><h6 align="center">N/C Aplicadas</h6>
+                  <table width="100%">
+                      <thead style="background-color: #A9D0F5">
+                          <th>Monto$</th>
+                          <th>Referencia</th>
+                          <th>Fecha</th>
+                          
+                      </thead>
+              
+                      <tbody>
+                     @foreach($recibonc as $rec) <?php  $acumnc=$acumnc+$rec->monto;?>
+                        <tr >
+						   <td><?php echo number_format( $rec->monto, 2,',','.'); ?></td>
+                          <td>{{$rec->referencia}} </td>
+						  <td><?php echo date("d-m-Y",strtotime($rec->fecha)); ?></td>                        
+                        </tr>
+                        @endforeach
+                         <tfoot>                    
+                          <th colspan="2">Total</th>
+						  <th><?php echo number_format( $acumnc, 2,',','.');?> $</th>
                           </tfoot>
                        
                       </tbody>
                   </table>
-				  </div>
+             
                     </div>
-                </div></div></div>
+					
+               </div>
 				            	
              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="form-group">
+				<label><b> Pendiente: <?php echo number_format( ($mo-($acum+$acumnc+$acumr)), 2,',','.');?></b></label></br>
                     <label for="num_comprobante">Fecha: </label><?php echo " ".date("d-m-Y",strtotime($ingreso->fecha_hora)); ?>
                    
                 </div>
