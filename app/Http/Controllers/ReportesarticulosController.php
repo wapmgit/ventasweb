@@ -213,7 +213,7 @@ class ReportesarticulosController extends Controller
 					$query->where('nombre', 'LIKE', '%' . $nombreart . '%');
 				})
 			->OrderBy($ord,'asc')
-			->limit(10)
+			//->limit(10)
             ->get(); 	 
 			 }
 			if (($query)>0){							
@@ -236,7 +236,7 @@ class ReportesarticulosController extends Controller
 					$query->where('nombre', 'LIKE', '%' . $nombreart . '%');
 				})
 			->OrderBy($ord,'asc')
-			->limit(10)
+			//->limit(10)
             ->get(); 	 
 			 }
 			// dd($datos);
