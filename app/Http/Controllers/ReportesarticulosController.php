@@ -163,6 +163,7 @@ class ReportesarticulosController extends Controller
              $precio=trim($request->get('precio'));
              $orden=trim($request->get('orden'));
 			 $etiquetas=$request->get('etiqueta');
+			 $nombreart=$request->get('nombreart');
 			// $listaEtiquetas = array_map('trim', explode(',', $etiquetas));
 			 $listaEtiquetas = !empty($etiquetas) ? array_map('trim', explode(',', $etiquetas)) : [];
 			   if (($precio)==""){	$p="precio1"; }else{ $p="precio".$request->get('precio')." as precio1";}
@@ -202,14 +203,17 @@ class ReportesarticulosController extends Controller
 			->where('pvip',$covip,$vvip)
             ->where('imagen','<>',"ninguna.jpg")
 				->when(!empty($listaEtiquetas), function($query) use ($listaEtiquetas) {
-				$query->where(function($q) use ($listaEtiquetas) {
-					foreach ($listaEtiquetas as $etiqueta) {
-						$q->orWhereRaw('FIND_IN_SET(?, REPLACE(etiquetas, " ", "")) > 0', [$etiqueta]);
-					}
-				});
-			})
+					$query->where(function($q) use ($listaEtiquetas) {
+						foreach ($listaEtiquetas as $etiqueta) {
+							$q->orWhereRaw('FIND_IN_SET(?, REPLACE(etiquetas, " ", "")) > 0', [$etiqueta]);
+						}
+					});
+				})
+				->when(!empty($nombreart), function ($query) use ($nombreart) {
+					$query->where('nombre', 'LIKE', '%' . $nombreart . '%');
+				})
 			->OrderBy($ord,'asc')
-			//->limit(10)
+			->limit(10)
             ->get(); 	 
 			 }
 			if (($query)>0){							
@@ -221,15 +225,18 @@ class ReportesarticulosController extends Controller
 			->where('oferta',$co,$vo)
 			->where('pvip',$covip,$vvip)
             ->where('imagen','<>',"ninguna.jpg")
-		->when(!empty($listaEtiquetas), function($query) use ($listaEtiquetas) {
-        $query->where(function($q) use ($listaEtiquetas) {
-            foreach ($listaEtiquetas as $etiqueta) {
-                $q->orWhereRaw('FIND_IN_SET(?, etiquetas) > 0', [$etiqueta]);
-            }
-        });
-    })
+				->when(!empty($listaEtiquetas), function($query) use ($listaEtiquetas) {
+				$query->where(function($q) use ($listaEtiquetas) {
+					foreach ($listaEtiquetas as $etiqueta) {
+					$q->orWhereRaw('FIND_IN_SET(?, etiquetas) > 0', [$etiqueta]);
+					}
+					});
+				})
+				->when(!empty($nombreart), function ($query) use ($nombreart) {
+					$query->where('nombre', 'LIKE', '%' . $nombreart . '%');
+				})
 			->OrderBy($ord,'asc')
-			//->limit(10)
+			->limit(10)
             ->get(); 	 
 			 }
 			// dd($datos);

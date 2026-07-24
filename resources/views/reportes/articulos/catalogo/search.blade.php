@@ -44,11 +44,17 @@
 		   
 		   </div>
 		</div>
-
-	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">		
+<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">		
+				<select name="sfiltro" id="sfiltro" class="form-control" >
+                            <option value="0">Sin Sub. Filtro</option> 				
+                            <option value="1"> Nombre Articulo</option>                          
+                            <option value="2"> Etiqueta</option>                          
+                        </select>
+			</div>
+<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">		
            <div class="form-group">
-	
-		   <input type="text" name="etiqueta"value="" placeholder="Etiquetas: cocina,salsas,bebidas" class="form-control">                  
+		   <input type="text" name="etiqueta" id="etiqueta" value="" placeholder="Etiquetas: cocina,salsas,bebidas" class="form-control">                  
+		   <input type="text" name="nombreart" id="nombreart" value="" placeholder="Indique nombre articulo" class="form-control">                  
 		   </div>
 		</div>
 				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">	
@@ -66,4 +72,32 @@
 	</div>
 		</form>
 	</div>
+@push ('scripts')
+<script>
+$(document).ready(function(){ 
+document.getElementById('etiqueta').style.display="none"; 
+	   document.getElementById('nombreart').style.display="none"; 
+    $("#sfiltro").on("change",function(){
+ var opcf= $("#sfiltro").val();
+  if (opcf==1){
+	  $("#etiqueta").val("");
+	   document.getElementById('etiqueta').style.display="none"; 
+	   document.getElementById('nombreart').style.display=""; 
+  }
+  if (opcf==2){
+	   $("#nombreart").val("");
+	  	   document.getElementById('etiqueta').style.display=""; 
+	   document.getElementById('nombreart').style.display="none"; 
+  }
+    if (opcf==0){
+		 $("#nombreart").val(""); $("#etiqueta").val("");
+	     document.getElementById('etiqueta').style.display="none"; 
+	   document.getElementById('nombreart').style.display="none"; 
+  }
 
+    });
+});
+
+</script>
+
+@endpush
