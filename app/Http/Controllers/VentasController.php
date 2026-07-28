@@ -311,6 +311,7 @@ catch(\Exception $e)
 	}
  public function showdevolucion(Request $request, $id)
     {  
+
 		$rol=DB::table('roles')-> select('editfecha','anularventa')->where('iduser','=',$request->user()->id)->first();	
 	     $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		if ($rol->anularventa==1){
@@ -327,8 +328,12 @@ catch(\Exception $e)
             ->get();
 			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
             ->get();
-		
-            return view("ventas.venta.devolucion",["rol"=>$rol,"venta"=>$venta,"detalles"=>$detalles,"recibo"=>$recibo,"empresa"=>$empresa]);
+		 $ncredito=DB::table('notasadm as na')
+            -> select('descripcion','referencia','monto')
+            -> where ('na.iddocnc','=',$id)
+            ->get();
+			//dd($ncredito);
+            return view("ventas.venta.devolucion",["ncredito"=>$ncredito,"rol"=>$rol,"venta"=>$venta,"detalles"=>$detalles,"recibo"=>$recibo,"empresa"=>$empresa]);
 		} else { 
 			return view("reportes.mensajes.noautorizado");
 		}
@@ -460,7 +465,7 @@ public function devolucion(Request $request){
 	return Redirect::to('showdevolucion/'.$request->get('vidventa'));      
     }
 	public function devoluparcial(Request $request){
-
+//dd($request);
 	   	DB::beginTransaction(); 
 		try{
 
@@ -500,13 +505,16 @@ public function devolucion(Request $request){
 			}				
 					$aventa=Ventas::findOrFail($request -> get('idventa'));
 					$abono=$aventa->total_venta-$aventa->saldo;
+					$saldov=$aventa->saldo;
 					$aventa->base=(($aventa->base-$baseant)+$basenew);
 					$aventa->total_iva=(($aventa->total_iva-$subivant)+$subivanew);
 					$aventa->texe=(($aventa->texe-$subexeant)+$subexenew);
 					$descuento=$aventa->descuento;
 					$aventa->total_venta=(($aventa->total_venta-($aux+$descuento))+$aux2);
-					$aventa->total_pagar=0;	 
-					$aventa->saldo=($aventa->total_venta-$abono);
+					$aventa->total_pagar=0;	
+					if($saldov==$aventa->total_venta){
+					$aventa->saldo=(($aventa->saldo-($aux+$descuento))+$aux2);
+					}										
 					$aventa->montocomision=($aventa->montocomision-$oldcomi)+($newcomi);						
 					$aventa->update();	
 		

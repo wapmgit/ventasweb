@@ -94,7 +94,7 @@ return $insertar_ceros = $recibo.$numero;
 		</div>
 	</div>                            
 	<div class ="row">
-		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><h4 align="center">Desglose de pago</h4>
+		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><h4 align="center">Desglose de pago</h4>
 			<table width="100%">
 			  <thead style="background-color: #A9D0F5">
 				  <th>Tipo</th>
@@ -122,6 +122,25 @@ return $insertar_ceros = $recibo.$numero;
 				  </tfoot>
 		  </table>
 		  <p align="center"><span> <?php if ($acum > 0){?> <b>¿Generar Nota de Credito? </b><input type="checkbox" name="nc"></input><?php } ?></span></p>
+		</div>
+			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><h4 align="center">N/C Generada</h4>
+			<table width="100%">
+			  <thead style="background-color: #A9D0F5">
+				  <th>Descripcion</th> 
+				  <th>Referencia</th>
+				  <th>Monto$</th>
+				                          
+			  </thead>                    
+			  <tbody>
+				@foreach($ncredito as $ne) 
+				<tr >
+				  <td>{{$ne->descripcion}}</td>
+				  <td>{{$ne->referencia}}</td>			  
+				  <td><?php echo number_format( $ne->monto, 2,',','.'); ?></td>                        
+				</tr>
+				@endforeach                                      
+			  </tbody>
+		  </table>
 		</div>
 	</div>
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -166,7 +185,7 @@ Swal.fire({
 $('#pdevolu').click(function(){
 	var ncnt=$("#idcantidad").val();
 	var cntold=$("#cntold").val();
-	if(parseFloat(ncnt) < parseFloat(cntold)){
+	if(parseFloat(ncnt) <= parseFloat(cntold)){
 Swal.fire({
   title: "¿ Confirma Devolucion Parcial?",
   text: "",

@@ -63,6 +63,15 @@
 					<td><?php echo number_format( $q->monto, 2,',','.')." $"; ?></td>
 					<td><?php echo number_format( $q->saldo, 2,',','.')." $"; ?></td>	
 				</tr>
+						@foreach ($notasp as $q)
+				<tr> <?php  
+					$montoacum=$montoacum+$q->tnotas; $acumcompra=$acumcompra+$q->mnotas;?> 
+					<td><small><small>{{ $q->nombre}} (N/D)</small></small></td>
+					<td><small><small>{{ $q->telefono}}</small></small></td>
+					<td><?php echo number_format( $q->mnotas, 2,',','.')." $"; ?></td>
+					<td><?php echo number_format( $q->tnotas, 2,',','.')." $"; ?></td>	
+				</tr>
+				@endforeach
 				@endforeach
 				<tr style="background-color: #E6E6E6"><td colspan="2"><strong>Total</strong></td><td><strong><?php   echo "$ ".number_format($acumcompra, 2,',','.'); ?></strong></td><td><strong><?php   echo "$ ".number_format($montoacum, 2,',','.'); ?></strong></td></tr>
 			</table>

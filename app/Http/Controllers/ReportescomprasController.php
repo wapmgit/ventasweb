@@ -375,7 +375,7 @@ class ReportescomprasController extends Controller
 	}
 		public function comprasproveedor(Request $request)
     {
-	//	dd($request);
+		//dd($request);
         $corteHoy = date("Y-m-d");
         $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
         $listap=DB::table('proveedores')->get();
@@ -395,7 +395,7 @@ class ReportescomprasController extends Controller
 				->where('c.idproveedor','=',$request->get('proveedor'))
 				->where('c.estatus','=',"0")
 			->groupby('dc.idarticulo')
-			->orderby('art.nombre','asc')
+			->orderby('art.stock','ASC')
             ->get();
 			 $pro=DB::table('proveedores')-> where('idproveedor','=',$request->get('proveedor'))->first();
 			$filtro=$pro->rif." - ".$pro->nombre;

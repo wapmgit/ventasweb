@@ -191,7 +191,7 @@ class ReportesarticulosController extends Controller
 			-> where('stock','>',0)
 			->where('showlista','=',1)
 			->OrderBy('nombre','asc')
-			->limit(10)
+			//->limit(10)
             ->get(); 
 			 }
 			  if (($query)==0){							
@@ -262,6 +262,13 @@ class ReportesarticulosController extends Controller
           ->where('g.estatus','=',0)
             ->groupby('g.idpersona')
             ->get();
+				$notasp=DB::table('notasadmp as not')
+			->join('proveedores as c','c.idproveedor','=','not.idproveedor')
+			->select(DB::raw('SUM(not.pendiente) as tnotas'),DB::raw('SUM(not.monto) as mnotas'),'not.tipo','c.idproveedor','c.nombre','c.telefono')
+			->groupby('c.idproveedor','not.tipo')
+			->where('not.pendiente','>',0)
+			->where('not.tipo','=',1)
+			->get();
 			$ventas=DB::table('venta as v')
             ->join ('clientes as c', 'c.id_cliente','=','v.idcliente')
 			->select (DB::raw('sum(v.total_venta) as total_venta'),DB::raw('sum(v.saldo) as saldo'),'c.id_cliente','c.nombre','c.telefono')
@@ -278,7 +285,7 @@ class ReportesarticulosController extends Controller
 			  $vende=DB::table('vendedores')->select(DB::raw('count(id_vendedor) as vendedor'))->first();
 			  $proveedores=DB::table('proveedores')->select(DB::raw('count(idproveedor) as proveedores'))->first();
 			  $articulos=DB::table('articulos')->select(DB::raw('sum(costo*stock) as vcosto'),DB::raw('sum(precio1*stock) as vprecio'),DB::raw('count(idarticulo) as articulos'))->first();
-        return view('reportes.resumen.index',["vende"=>$vende,"articulos"=>$articulos,"clientes"=>$clientes,"proveedores"=>$proveedores,"notas"=>$q2,"ventas"=>$ventas,"compras"=>$compras,"gastos"=>$gastos,"empresa"=>$empresa]);    
+        return view('reportes.resumen.index',["notasp"=>$notasp,"vende"=>$vende,"articulos"=>$articulos,"clientes"=>$clientes,"proveedores"=>$proveedores,"notas"=>$q2,"ventas"=>$ventas,"compras"=>$compras,"gastos"=>$gastos,"empresa"=>$empresa]);    
 	} else { 
 			return view("reportes.mensajes.noautorizado");
 		}    
