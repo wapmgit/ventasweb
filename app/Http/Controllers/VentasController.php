@@ -512,8 +512,10 @@ public function devolucion(Request $request){
 					$descuento=$aventa->descuento;
 					$aventa->total_venta=(($aventa->total_venta-($aux+$descuento))+$aux2);
 					$aventa->total_pagar=0;	
-					if($saldov==$aventa->saldo){
+					if($abono==0){
 					$aventa->saldo=(($aventa->saldo-($aux+$descuento))+$aux2);
+					}else{
+						$aventa->saldo=$aventa->total_venta-$abono;
 					}										
 					$aventa->montocomision=($aventa->montocomision-$oldcomi)+($newcomi);						
 					$aventa->update();	
