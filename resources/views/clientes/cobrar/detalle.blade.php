@@ -29,16 +29,16 @@ return $insertar_ceros = $recibo.$numero;
 			@include('ventas.venta.empresa')
 	</div>
 
-<div class="row">
-	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-		<table width="100%"><tr><td width="30%"><strong>Cliente</strong></td><td width="20%"><strong>Telefono</strong></td><td width="30%"><strong>Direccion</strong></td><td width="20%"><strong>Documento</strong></td>
-			</tr>
-			<tr><td>{{$venta->cedula}} -> {{$venta->nombre}}</td><td>{{$venta->telefono}}</td><td>{{$venta->direccion}}</td><td>{{$venta->tipo_comprobante}} {{$venta->serie_comprobante}} <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); ?></td>
-			</tr>
-		</table></br>
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	<table width="100%" border="1">
+	<tr><td><small><b>DOCUMENTO:</small></b><?php  $idv=$venta->idventa; echo "NOT".add_ceros($idv,$ceros); ?></td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo date("d-m-Y",strtotime($venta->fecha_emi)); ?></td><td><small><b>CONDICION: </small></b>{{$venta->estado}}</td></tr>
+	<tr><td colspan="4"><small><b>NOMBRE Y APELLIDO O RAZON SOCIAL: </b> </small>{{$venta->nombre}} <b>RIF: </b> {{$venta->cedula}}</td></tr>
+	<tr><td colspan="4"  width="50%"><small><b>DOMICILIO FISCAL: </b> {{$venta->direccion}} </small><b>TELF: </b> {{$venta->telefono}}</td></tr>
+	</table>
+	</br>
+		</div>
 	</div>
-
-</div>
 	<div class ="row">
                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                   <table width="100%">
@@ -78,7 +78,7 @@ return $insertar_ceros = $recibo.$numero;
 	</div>
 
 	<div class ="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><h6 align="center">Desglose de pago</h6>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"><h6 align="center">Desglose de pago</h6>
                   <table width="100%">
                       <thead style="background-color: #A9D0F5">
 						<th>Tipo</th>
@@ -103,7 +103,35 @@ return $insertar_ceros = $recibo.$numero;
                         <tfoot>                    
                           <th colspan="3">Total</th>
 						  <th><?php echo number_format( $acum, 2,',','.');?> $</th>
-                          <th ><b> Pendiente: <?php echo number_format( ($venta->total_venta-$acum), 2,',','.');?></b></h4></th>
+                          <th ></th>
+                          </tfoot>
+                       
+                      </tbody>
+                  </table>
+                    </div>
+					        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"><h6 align="center">N/C Aplicadas</h6>
+                  <table width="100%">
+                      <thead style="background-color: #A9D0F5">
+						<th>Usuario</th>
+                          <th>Referencia</th>
+                          <th>Monto</th>
+						  <th>Fecha</th>                         
+                      </thead>
+              
+                      <tbody>
+                     @foreach($notasc as $no) <?php  $acumnc=$acumnc+$no->monto;?>
+                        <tr >
+                          <td>{{$no->user}}</td>
+						  <td>{{$no->referencia}}</td> 
+                          <td><?php echo number_format( $no->monto, 2,',','.'); ?></td>
+						   <td><?php echo date("d-m-Y ",strtotime($no->fecha)); ?></td>
+                                                 
+                        </tr>
+                        @endforeach
+                        <tfoot>                    
+                          <th colspan="2">Total</th>
+						  <th><?php echo number_format( $acumnc, 2,',','.');?> $</th>
+                          <th ><b> Pendiente: <?php echo number_format( ($venta->total_venta-($acum+$acumnc)), 2,',','.');?></b></h4></th>
                           </tfoot>
                        
                       </tbody>

@@ -547,8 +547,9 @@ catch(\Exception $e)
             ->get();
             $articulos=DB::table('articulos')-> where('estado','=','Activo')->get();
 			$abonos=DB::table('recibos')-> where('idventa','=',$id)->get();
+			$notasc=DB::table('mov_notas')-> where('iddoc','=',$id)-> where('tipodoc','=',"FAC")->get();
           //  dd($articulos);
-  return view("clientes.cobrar.detalle",["venta"=>$venta,"empresa"=>$empresa,"detalles"=>$detalles,"articulos"=>$articulos,"abonos"=>$abonos]);
+  return view("clientes.cobrar.detalle",["notasc"=>$notasc,"venta"=>$venta,"empresa"=>$empresa,"detalles"=>$detalles,"articulos"=>$articulos,"abonos"=>$abonos]);
 	}
 	public function pagond(Request $request)
     {	
