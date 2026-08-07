@@ -53,10 +53,16 @@ $acumsub=0;
         margin-top: 2px;
     }
 }
-.lista{
-	 font-family: 'Courier New',Courier, monospace;
-	 font-size: 16pt;
-	
+.lista {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14pt;
+    font-weight: bold; /* Hace la letra mucho más gruesa y pronunciada */
+    color: #000000; /* Asegura el negro absoluto */
+    
+    /* Optimiza el renderizado de texto para impresoras */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 .tabla-principal th, td {
      border: 0px solid #000; /* Bordes finos */
