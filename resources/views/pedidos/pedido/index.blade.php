@@ -39,13 +39,38 @@
 					</td>
 					<td>{{ $ven->total_venta}}</td>
 					<td>{{ $ven->user}}</td>				
-					<td>			
-					<a href="{{route('showpedido',['id'=>$ven->idpedido])}}">
-					<button class="btn btn-success btn-xs">Detalles</button></a>
-					<a  href="{{route('recibopedido',['id'=>$ven->idpedido])}}"><button class="btn btn-info btn-xs"> Tikect</button></a>
-                  @if($rol->anularpedido==1) <a href="" data-target="#modal-delete-{{$ven->idpedido}}" data-toggle="modal" ><button class="btn btn-danger btn-xs">anular</button></a>
-					@endif
-					</td>
+<td>
+  <div class="dropdown">
+    <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Acciones <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-right">
+      <li>
+        <a href="{{route('showpedido',['id'=>$ven->idpedido])}}">
+          <i class="fa fa-eye text-success"></i> Ver detalles
+        </a>
+      </li>
+      <li>
+        <a href="{{route('recibopedido',['id'=>$ven->idpedido])}}">
+          <i class="fa fa-print text-info"></i> Ticket 80mm
+        </a>
+      </li>
+      <li>
+        <a href="{{route('recibo58p',['id'=>$ven->idpedido])}}">
+          <i class="fa fa-print text-info"></i> Ticket 58mm
+        </a>
+      </li>
+      @if($rol->anularpedido == 1)
+        <li role="separator" class="divider"></li>
+        <li>
+          <a href="#" data-toggle="modal" data-target="#modal-delete-{{$ven->idpedido}}" class="text-danger">
+            <i class="fa fa-ban text-danger"></i> Anular pedido
+          </a>
+        </li>
+      @endif
+    </ul>
+  </div>
+</td>
 				</tr>
 			@include('pedidos.pedido.modalanular')
 				@endforeach
