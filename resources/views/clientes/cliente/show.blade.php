@@ -52,12 +52,11 @@ return $insertar_ceros = $recibo.$numero;
               </div>
 <div class="row"><?php $acummonto=0; ?>
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			<table width="100%" border="1"><tr><td width="30%"><strong>Rif -> Cliente</strong></td><td width="20%"><strong>Telefono</strong></td><td width="30%"><strong>Direccion</strong></td><td width="20%"><strong>Vendedor</strong></td>
-			</tr>
-			<tr><td>{{$cliente->cedula}} -> {{$cliente->nombre}}</td><td>{{$cliente->telefono}}</td><td><small>{{$cliente->direccion}}</small></td><td>{{$cliente->vendedor}} </td>
-			</tr>
-			</table></br>
-		</div>
+	<table width="100%" BORDER="0">
+	<tr><td colspan="4"><small><b>NOMBRE Y APELLIDO O RAZON SOCIAL: </b> </small>{{$cliente->nombre}} <b>RIF: </b> {{$cliente->cedula}}</td></tr>
+	<tr><td colspan="4"  width="50%"><small><b>DOMICILIO FISCAL: </b> {{$cliente->direccion}} </small><b>TELF: </b> {{$cliente->telefono}} <b>VENDEDOR: </b>{{$cliente->vendedor}}</td></tr>
+	</table>
+	</div>
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="divbotones" align="right">
                  <div class="form-group">
 				<a href="" data-target="#modaldebito-{{$cliente->id_cliente}}" data-toggle="modal"><button class="btn btn-warning btn-xs">N. Debito</button></a>		
