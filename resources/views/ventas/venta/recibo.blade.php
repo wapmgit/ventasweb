@@ -31,7 +31,7 @@ $acumsub=0;
         margin: 0;
 		 font-family: 'Courier New',Courier, monospace;
         font-size: 12pt; /* Tamaño de fuente adecuado para ticket */
-        line-height: 1.2; 
+        line-height: 1.4; 
     }
 
     /* Ocultar elementos no deseados */
