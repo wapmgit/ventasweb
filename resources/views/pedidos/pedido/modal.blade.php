@@ -124,12 +124,12 @@ role="dialog" tabindex="-1" id="modalpedido">
 						<input type="hidden" value="{{$empresa->facfiscalcredito}}" id="faccredito" ></input>
 								<input type="hidden" value="{{$empresa->fl}}" id="usafl" ></input>
 						<select name="formato"  class="form-control">
-												<option value="tcartap" <?php if($empresa->formatofac=="tcarta"){ echo "Selected";} ?>>Carta</option>
-							<option value="tnotabsp" <?php if($empresa->formatofac=="tnotabs"){ echo "Selected";} ?>>Nota Bs</option>
-							<option value="tnotadsp" <?php if($empresa->formatofac=="tnotads"){ echo "Selected";} ?>>Nota $</option>
-							<option value="recibop" <?php if($empresa->formatofac=="recibo"){ echo "Selected";} ?>>Tikect 80</option>
-							<option value="recibo58pventa" <?php if($empresa->formatofac=="recibo58"){ echo "Selected";} ?>>Tikect 58</option>
-							<option value="recibobsp" <?php if($empresa->formatofac=="recibobs"){ echo "Selected";} ?>>Tikect Bs</option>
+												<option value="tcartap" <?php if($empresa->formatofac=="tcarta"){ echo "Selected";} ?>>📄 Carta</option>
+							<option value="tnotabsp" <?php if($empresa->formatofac=="tnotabs"){ echo "Selected";} ?>>📝 Nota Bs</option>
+							<option value="tnotadsp" <?php if($empresa->formatofac=="tnotads"){ echo "Selected";} ?>>💵 Nota $</option>
+							<option value="recibop" <?php if($empresa->formatofac=="recibo"){ echo "Selected";} ?>> 🧾 Tikect 80</option>
+							<option value="recibo58pventa" <?php if($empresa->formatofac=="recibo58"){ echo "Selected";} ?>> 🧾Tikect 58</option>
+							<option value="recibobsp" <?php if($empresa->formatofac=="recibobs"){ echo "Selected";} ?>>🎟️ Tikect Bs</option>
 							</select>					
 								</div>
 					<div  class="col-lg-4 ol-md-4 col-sm-6 col-xs-6" align="right" style="display: none" id="cfl">
