@@ -281,7 +281,8 @@ $idv=0;
 							<option value="tnotabs" <?php if($empresa->formatofac=="tnotabs"){ echo "Selected";} ?>>Nota Bs</option>
 							<option value="tnotads" <?php if($empresa->formatofac=="tnotads"){ echo "Selected";} ?>>Nota $</option>
 							<option value="tnota2ds" <?php if($empresa->formatofac=="tnota2ds"){ echo "Selected";} ?>>Nota2 $</option>
-							<option value="recibo" <?php if($empresa->formatofac=="recibo"){ echo "Selected";} ?>>Tikect $</option>
+							<option value="recibo" <?php if($empresa->formatofac=="recibo"){ echo "Selected";} ?>>Tikect 80</option>
+							<option value="recibo58" <?php if($empresa->formatofac=="recibo58"){ echo "Selected";} ?>>Tikect58</option>
 							<option value="recibobs" <?php if($empresa->formatofac=="recibobs"){ echo "Selected";} ?>>Tikect Bs</option>
 							</select>					
 								</div>

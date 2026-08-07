@@ -304,7 +304,7 @@ catch(\Exception $e)
 	  return Redirect::to('fbs/'.$venta->idventa);
 	}
 	if($empresa->tikect==1){
-		  return Redirect::to('recibo/'.$venta->idventa);
+		  return Redirect::to($request->get('formato').'/'.$venta->idventa);
 	}else{
 	return Redirect::to($request->get('formato').'/'.$venta->idventa);
 	}
