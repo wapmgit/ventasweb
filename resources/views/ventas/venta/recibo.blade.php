@@ -30,7 +30,7 @@ $acumsub=0;
         padding: 0;
         margin: 0;
 		 font-family: 'Courier New',Courier, monospace;
-        font-size: 9pt; /* Tamaño de fuente adecuado para ticket */
+        font-size: 12pt; /* Tamaño de fuente adecuado para ticket */
         line-height: 1.2; 
     }
 
@@ -45,7 +45,7 @@ $acumsub=0;
         border-collapse: collapse; /* Une bordes de celdas */
         margin-top: 2px;
 		 font-family: 'Courier New',Courier, monospace;
-        font-size: 10pt; /* Tamaño de fuente adecuado para ticket */
+        font-size: 12pt; /* Tamaño de fuente adecuado para ticket */
     }
     #tablecentro {
         width: 130%;
@@ -55,7 +55,7 @@ $acumsub=0;
 }
 .lista{
 	 font-family: 'Courier New',Courier, monospace;
-	 font-size: 10pt;
+	 font-size: 16pt;
 	
 }
 .tabla-principal th, td {
