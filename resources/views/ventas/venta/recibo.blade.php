@@ -29,9 +29,8 @@ $acumsub=0;
         width: 80mm;
         padding: 0;
         margin: 0;
-		 font-family: 'Courier New',Courier, monospace;
-        font-size: 12pt; /* Tamaño de fuente adecuado para ticket */
-        line-height: 1.4; 
+		 font: oblique bold 120% cursive;
+        font-size: 10pt; /* Tamaño de fuente adecuado para ticket */
     }
 
     /* Ocultar elementos no deseados */
@@ -44,7 +43,7 @@ $acumsub=0;
         width: 130%;
         border-collapse: collapse; /* Une bordes de celdas */
         margin-top: 2px;
-		 font-family: 'Courier New',Courier, monospace;
+		font: oblique bold 120% cursive;
         font-size: 12pt; /* Tamaño de fuente adecuado para ticket */
     }
     #tablecentro {
@@ -53,16 +52,10 @@ $acumsub=0;
         margin-top: 2px;
     }
 }
-.lista {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 14pt;
-    font-weight: bold; /* Hace la letra mucho más gruesa y pronunciada */
-    color: #000000; /* Asegura el negro absoluto */
-    
-    /* Optimiza el renderizado de texto para impresoras */
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+.lista{
+	font: bold 90% monospace;
+	 font-size: 16pt;
+	
 }
 .tabla-principal th, td {
      border: 0px solid #000; /* Bordes finos */
