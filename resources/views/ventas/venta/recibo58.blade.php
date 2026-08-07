@@ -102,31 +102,31 @@ $acumpeso=0;
                   <table style="line-height:90%"  id="tablecentro" class="tabla-secundaria">
                       <thead>                 
 						
-                          <th width="80%" align="center"><b class="lista">Cantidad-Descripcion</b></th>
-                          <th width="15%"><b class="lista">Subtotal</b></th>
+                          <th  align="center"><b class="lista">Cantidad-Descripcion</b></th>
+
                       </thead>
                   
                       <tbody>
                         @foreach($detalles as $det)<?php  $cntline++; $acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);
 						if($det->cantidad>0){
 								$acumsub=$acumsub+($det->precio_venta*$det->cantidad);
-							$texto=$det->cantidad." ".$det->unidad."-".strtolower($det->articulo)." ".number_format( $det->precio_venta, 2,',','.');
+							$texto=$det->cantidad."".$det->unidad."*".number_format($det->precio_venta, 2,',','.')."-".strtolower(trim(explode('*', $det->articulo)[0]));
 						?>
                         <tr height="10px"> 						
                          <td align="left"><span class="lista">
-						<?Php echo $resultado = wordwrap($texto, 25, "\n", true); ?> </span></td>                       
-                          <td><span class="lista"><?php echo "$ ".number_format( (($det->cantidad*$det->precio_venta)), 2,',','.'); ?></span></td>
+						<?Php echo $resultado = wordwrap($texto, 25, "\n", true); ?><?php echo "-$ ".number_format( (($det->cantidad*$det->precio_venta)), 2,',','.'); ?> </span></td>                       
+                         
                         </tr>
 						<?php } ?>
                         @endforeach
                       </tbody>
 					     <tfoot>  
-					  <th colspan="2" ><div align="center"><font size="4">Bs: <?php echo number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> <-->
+					  <th  ><div align="center"><font size="4">Bs: <?php echo number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> <-->
                        $: <?php echo number_format($acumsub, 2,',','.'); ?> </font></div></th>                      
 						</tfoot>
 				<?php if($empresa->printpeso ==1){?>  
 					 <tfoot>  
-					  <th colspan="2" ><div align="center"><font size="4">Items: <?php echo $cntline;  ?> --->
+					  <th  ><div align="center"><font size="4">Items: <?php echo $cntline;  ?> --->
                        Peso Total: <?php echo number_format($acumpeso, 2,',','.'); ?> </font></div></th>
 					   
 						</tfoot>	

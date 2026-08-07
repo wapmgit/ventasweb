@@ -109,11 +109,11 @@ $acumpeso=0;
                         @foreach($detalles as $det)<?php  $cntline++; $acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);
 						if($det->cantidad>0){
 								$acumsub=$acumsub+($det->precio_venta*$det->cantidad);
-							$texto=$det->cantidad." ".$det->unidad."-".strtolower($det->articulo)." ".number_format( $det->precio_venta, 2,',','.');
+							$texto=$det->cantidad."".$det->unidad."*".number_format($det->precio_venta, 2,',','.')."-".strtolower(trim(explode('*', $det->articulo)[0]));
 						?>
                         <tr height="10px"> 						
                          <td align="left"><span class="lista">
-						<?Php echo $resultado = wordwrap($texto, 25, "\n", true); ?> <?php echo "$ ".number_format( (($det->cantidad*$det->precio_venta)), 2,',','.'); ?></span></td>                       
+						<?Php echo $resultado = wordwrap($texto, 25, "\n", true); ?> <?php echo "-$ ".number_format( (($det->cantidad*$det->precio_venta)), 2,',','.'); ?></span></td>                       
                          
                         </tr>
 						<?php } ?>
