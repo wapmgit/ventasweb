@@ -95,7 +95,7 @@ $acumpeso=0;
 	{{$venta->direccion}} </br>
 	<font size="4"><b>Documento:  <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); ?> </b></font> </br>
 	  <font size="2"> <b>  <?php echo date("d-m-Y h:i:s a",strtotime($venta->fecha_hora)); ?></b></font></br>
-	  <font size="2"> <b> Tasa de Cambio: {{$venta->tasa}} Bsf.</b></font>
+	  <font size="2"> <b> </b></font>
 	  </br>
 	  </br>
 </div>    
@@ -120,7 +120,7 @@ $acumpeso=0;
                         @endforeach
                       </tbody>
 					     <tfoot>  
-					  <th  ><div align="center"><font size="4">Bs: <?php echo number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> <-->
+					  <th  ><div align="center"><font size="4">Total 
                        $: <?php echo number_format($acumsub, 2,',','.'); ?> </font></div></th>                      
 						</tfoot>
 				<?php if($empresa->printpeso ==1){?>  
