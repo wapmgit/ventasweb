@@ -125,6 +125,7 @@ Route::get('facventa/{id}', [VentasController::class, 'facturar'])->name('facven
 Route::post('devolucion', [VentasController::class, 'devolucion'])->name('devolucion');
 Route::post('refrescar', [VentasController::class, 'refrescar'])->name('refrescar');
 Route::get('recibo/{id}', [ventasController::class, 'recibo'])->name('recibo');
+Route::get('recibo58/{id}', [ventasController::class, 'recibo58'])->name('recibo58');
 Route::get('recibobs/{id}', [ventasController::class, 'recibobs'])->name('recibobs');
 Route::get('tnotabs/{id}', [ventasController::class, 'notabs'])->name('tnotabs');
 Route::get('tnotads/{id}', [ventasController::class, 'notads'])->name('tnotads');

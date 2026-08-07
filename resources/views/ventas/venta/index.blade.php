@@ -64,6 +64,7 @@ return $dias;
                       <a class="dropdown-item" href="{{route('tnota2ds',['id'=>$ven->idventa])}}">Diseño Nota2 $</a>
                       <a class="dropdown-item" href="{{route('recibobs',['id'=>$ven->idventa])}}">Tikect Bs</a>
                       <a class="dropdown-item" href="{{route('recibo',['id'=>$ven->idventa])}}">Tikect $</a>
+                      <a class="dropdown-item" href="{{route('recibo58',['id'=>$ven->idventa])}}">Tikect58 $</a>
                        <?php if ($ven->flibre==1){?>   <a class="dropdown-item" href="{{route('fbs',['id'=>$ven->idventa])}}">Forma Libre</a><?php } ?>
                     </div>
                   </div>				
