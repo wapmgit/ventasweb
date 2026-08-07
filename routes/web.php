@@ -166,6 +166,7 @@ Route::post('addarticulo', [PedidosController::class, 'addart'])->name('addartic
 Route::get('pdescargados', [PedidosController::class, 'descargados'])->name('pdescargados');
 Route::get('bajarpedido/{id}', [PedidosController::class, 'bajarpedido'])->name('bajarpedido');
 Route::get('recibop/{id}', [PedidosController::class, 'recibo'])->name('recibop');
+Route::get('recibo58pventa/{id}', [PedidosController::class, 'recibo58pventa'])->name('recibo58pventa');
 Route::get('recibo58p/{id}', [PedidosController::class, 'recibo58p'])->name('recibo58p');
 Route::get('recibopedido/{id}', [PedidosController::class, 'recibopedido'])->name('recibopedido');
 Route::get('recibobsp/{id}', [PedidosController::class, 'recibobs'])->name('recibobsp');
