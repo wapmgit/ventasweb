@@ -29,8 +29,9 @@ $acumsub=0;
         width: 80mm;
         padding: 0;
         margin: 0;
-		 font: oblique bold 120% cursive;
-        font-size: 10pt; /* Tamaño de fuente adecuado para ticket */
+		 font-family: 'Courier New',Courier, monospace;
+        font-size: 9pt; /* Tamaño de fuente adecuado para ticket */
+        line-height: 1.2; 
     }
 
     /* Ocultar elementos no deseados */
@@ -43,8 +44,8 @@ $acumsub=0;
         width: 130%;
         border-collapse: collapse; /* Une bordes de celdas */
         margin-top: 2px;
-		font: oblique bold 120% cursive;
-        font-size: 12pt; /* Tamaño de fuente adecuado para ticket */
+		 font-family: 'Courier New',Courier, monospace;
+        font-size: 10pt; /* Tamaño de fuente adecuado para ticket */
     }
     #tablecentro {
         width: 130%;
@@ -53,8 +54,8 @@ $acumsub=0;
     }
 }
 .lista{
-	font: bold 90% monospace;
-	 font-size: 16pt;
+	 font-family: 'Courier New',Courier, monospace;
+	 font-size: 10pt;
 	
 }
 .tabla-principal th, td {
