@@ -276,15 +276,15 @@ $idv=0;
 		
 
 					<div class="col-lg-4 ol-md-4 col-sm-6 col-xs-6"  align="left" id="formato">
-						<select name="formato"  class="form-control">
-							<option value="tcarta" <?php if($empresa->formatofac=="tcarta"){ echo "Selected";} ?>>Carta</option>
-							<option value="tnotabs" <?php if($empresa->formatofac=="tnotabs"){ echo "Selected";} ?>>Nota Bs</option>
-							<option value="tnotads" <?php if($empresa->formatofac=="tnotads"){ echo "Selected";} ?>>Nota $</option>
-							<option value="tnota2ds" <?php if($empresa->formatofac=="tnota2ds"){ echo "Selected";} ?>>Nota2 $</option>
-							<option value="recibo" <?php if($empresa->formatofac=="recibo"){ echo "Selected";} ?>>Tikect 80</option>
-							<option value="recibo58" <?php if($empresa->formatofac=="recibo58"){ echo "Selected";} ?>>Tikect58</option>
-							<option value="recibobs" <?php if($empresa->formatofac=="recibobs"){ echo "Selected";} ?>>Tikect Bs</option>
-							</select>					
+					<select name="formato" class="form-control">
+    <option value="tcarta" <?php if($empresa->formatofac=="tcarta"){ echo "selected"; } ?>>📄 Carta</option>
+    <option value="tnotabs" <?php if($empresa->formatofac=="tnotabs"){ echo "selected"; } ?>>📝 Nota Bs</option>
+    <option value="tnotads" <?php if($empresa->formatofac=="tnotads"){ echo "selected"; } ?>>💵 Nota $</option>
+    <option value="tnota2ds" <?php if($empresa->formatofac=="tnota2ds"){ echo "selected"; } ?>>💲 Nota2 $</option>
+    <option value="recibo" <?php if($empresa->formatofac=="recibo"){ echo "selected"; } ?>>🧾 Ticket 80</option>
+    <option value="recibo58" <?php if($empresa->formatofac=="recibo58"){ echo "selected"; } ?>>🧾 Ticket 58</option>
+    <option value="recibobs" <?php if($empresa->formatofac=="recibobs"){ echo "selected"; } ?>>🎟️ Ticket Bs</option>
+</select>					
 								</div>
 					<div  class="col-lg-4 ol-md-4 col-sm-6 col-xs-6" align="right" style="display: none" id="cfl">
 								¿ Forma Libre ? <input type="checkbox" id="convertir" name="convertir" />							
