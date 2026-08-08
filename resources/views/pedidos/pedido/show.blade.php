@@ -65,8 +65,8 @@ if (is_null($cxc)) {
                           <th class="filaoc">Stock</th>
 						  <th>Precio</th>
                           <th>Descuento</th>
-                          <th>precio venta</th>
-                          <th>subtotal</th>
+                          <th>Precio Venta</th>
+                          <th>Subtotal</th>
                       </thead>
                       <tbody>
                         @foreach($detalles as $det)										
@@ -117,9 +117,9 @@ if (is_null($cxc)) {
 						  <th colspan="3">Total: {{$acumitem}} Items. Peso -> <?php echo number_format($acumpeso, 2,',','.'); ?></th>
 						  <th class="filaoc"></th>
 							  <th class="filaoc"></th>
-							  <th>Exe:<input type="number" style="width: 70px" readonly  name="totalexe" value="<?php echo $acumexe; ?>"  id="texe">Bs</th>
-							  <th>Iva:<input type="number" style="width: 70px" readonly  name="total_iva" value="<?php echo $acumiva; ?>" id="total_iva">Bs</th> 
-							  <th>BI:<input type="number" style="width: 80px" readonly name="totalbase" value="<?php echo $acumbase; ?>"  id="totalbase">Bs</th>
+							  <th class="filaoc">Exe:<input type="number" style="width: 70px" readonly  name="totalexe" value="<?php echo $acumexe; ?>"  id="texe">Bs</th>
+							  <th class="filaoc">Iva:<input type="number" style="width: 70px" readonly  name="total_iva" value="<?php echo $acumiva; ?>" id="total_iva">Bs</th> 
+							  <th class="filaoc">BI:<input type="number" style="width: 80px" readonly name="totalbase" value="<?php echo $acumbase; ?>"  id="totalbase">Bs</th>
 							  <th><h4 id="total"><?php echo number_format($venta->total_venta, 2,',','.'); ?> $</h4><input type="hidden" name="total_venta" id="total_venta"></th>
 							 
 							  </tfoot>

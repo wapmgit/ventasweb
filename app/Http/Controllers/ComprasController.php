@@ -44,7 +44,7 @@ class ComprasController extends Controller
             -> orwhere('i.num_comprobante','LIKE','%'.$query.'%')
            -> orderBy('i.idcompra','desc')
             -> groupBy('i.idcompra','i.fecha_hora','p.nombre','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion')
-			->paginate(20);
+			->paginate(50);
      return view ('compras.ingreso.index',["empresa"=>$empresa,"rol"=>$rol,"ingresos"=>$ingresos,"searchText"=>$query]);
         }
 	}
