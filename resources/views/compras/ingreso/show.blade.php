@@ -45,7 +45,7 @@ $cntser=0;$acumnc=0;
                   <table id="detalles" width="100%">
                       <thead style="background-color: #A9D0F5">
                      
-                          <th>Articulo <!--<a href="" data-target="#modalact-{{$ingreso->idingreso}}" data-toggle="modal" ><i class="fa-solid fa-percent"></i></a>--></th>
+                          <th>Articulo <a href="" class="filap2" data-target="#modalact-{{$ingreso->idingreso}}" data-toggle="modal" >💱</a></th>
                           <th>Cantidad</th>
                           <th>Precio</th>
                           <th>Descuento</th>
@@ -240,6 +240,10 @@ $('#regresar').on("click",function(){
   window.location="{{route('historico',['id'=>$ingreso->idproveedor])}}";
 	}
   
+});
+  $('#btnactart').click(function(){
+  document.getElementById('btnactart').style.display="none";
+
 });
 });
 </script>

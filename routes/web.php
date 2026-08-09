@@ -113,6 +113,7 @@ Route::post('anulareciboc', [ComprasController::class, 'anular'])->name('anulare
 Route::post('almacenanota', [ComprasController::class, 'almacenanota'])->name('almacenanota');
 Route::post('actuartic', [ComprasController::class, 'actuartic'])->name('actuartic');
 Route::get('ajustecompra', [ComprasController::class, 'ajustec'])->name('ajustecompra');
+Route::post('actpreciocompra', [ComprasController::class, 'actpreciocompra'])->name('actpreciocompra');
 //ventas
 Route::get('ventas', [VentasController::class, 'index'])->name('ventas');
 Route::get('newventa', [VentasController::class, 'create'])->name('newventa');

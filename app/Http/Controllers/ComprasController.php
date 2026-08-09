@@ -259,7 +259,7 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 			-> where('idcompra','=',$id)->get();
 		$ingreso=DB::table('compras as i')
 			-> join ('proveedores as p','i.idproveedor','=','p.idproveedor')
-			-> select ('i.idcompra as idingreso','i.fecha_hora','i.condicion','i.total','p.nombre','p.telefono','rif','direccion','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion as estado','i.base','i.miva','i.exento','i.estatus','i.idproveedor','i.saldo','i.nota')
+			-> select ('i.tasa','i.idcompra as idingreso','i.fecha_hora','i.condicion','i.total','p.nombre','p.telefono','rif','direccion','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.condicion as estado','i.base','i.miva','i.exento','i.estatus','i.idproveedor','i.saldo','i.nota')
 			->where ('i.idcompra','=',$id)
 			-> first();
 
@@ -645,5 +645,54 @@ public function ajustec(Request $request){
 		DB::rollback();
 	}
 	return Redirect::to('showcompra/'.$request -> get('idcompra').'-1');
+	}
+	public function actpreciocompra(Request $request){
+	//dd($request);
+	DB::beginTransaction();
+	try{
+			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			$idarticulo = $request -> get('idarticulo');
+		      
+        $impuesto=0; $utilidad=0; $costo=0; $util2=0;
+        $cont = 0; 
+		$pact=($request -> get('tasac')/$request -> get('tasap'));
+            while($cont < count($idarticulo)){
+        //actualizo costo   
+        $articulo=Articulos::findOrFail($idarticulo[$cont]);
+        $costo= $articulo->costo*$pact;
+        $impuesto= $articulo->iva;
+        $utilidad= $articulo->utilidad;
+        $util2= $articulo->util2;
+        $util3= $articulo->util3;
+
+			if($empresa->calc_util==1){
+				$pt=($costo + (($utilidad/100)*$costo))+($costo + (($utilidad/100)*$costo))*($impuesto/100);
+				$pt2=($costo + (($util2/100)*$costo))+($costo + (($util2/100)*$costo))*($impuesto/100);
+				$pt3=($costo + (($util3/100)*$costo))+($costo + (($util3/100)*$costo))*($impuesto/100);
+				$articulo->precio1=$pt;
+				$articulo->precio2=$pt2;
+				$articulo->precio3=$pt3;
+				
+			}else{
+				$pt=($costo*(($impuesto/100)+1))/((100-$utilidad)/100);
+				$pt2=($costo*(($impuesto/100)+1))/((100-$util2)/100);
+				$pt3=($costo*(($impuesto/100)+1))/((100-$util3)/100);
+				$articulo->precio1=$pt;
+				$articulo->precio2=$pt2;
+				$articulo->precio3=$pt3;
+				
+			}
+		$articulo->costo=$costo;
+		$articulo->update();
+		$cont=$cont+1;
+	}
+
+	 DB::commit();
+	}
+	catch(\Exception $e)
+	{
+		DB::rollback();
+	}
+	return Redirect::to('showcompra/'.$request -> get('id').'-1');
 	}
 }
