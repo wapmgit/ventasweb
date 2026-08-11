@@ -134,7 +134,8 @@ $acumpeso=0;
 					 
                   </table>
 				  <?php  if(count($recibos)>0){?>
-                  <table class="tabla-secundaria" width="130%">
+                  <table class="tabla-secundaria" align="center" width="99%">
+ 
                       <thead>                  
                           <td>Tipo</td>
                           <td>Monto</td>
