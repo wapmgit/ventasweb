@@ -54,7 +54,8 @@ $acumsub=0;
     }
 }
 .lista{
-	font: bold 90% monospace;
+	font-family: 'Courier New', Courier, monospace;
+     font-weight: bold;
 	 font-size: 16pt;
 	
 }
