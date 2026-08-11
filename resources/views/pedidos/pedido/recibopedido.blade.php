@@ -29,8 +29,7 @@ $acumsub=0;
         width: 80mm;
         padding: 0;
         margin: 0;
-		font-family: 'Courier New', Courier, monospace;
-        font-weight: bold;
+		 font: oblique bold 120% cursive;
         font-size: 10pt; /* Tamaño de fuente adecuado para ticket */
     }
 
@@ -54,8 +53,7 @@ $acumsub=0;
     }
 }
 .lista{
-	font-family: 'Courier New', Courier, monospace;
-     font-weight: bold;
+	font: bold 95% monospace;
 	 font-size: 16pt;
 	
 }
