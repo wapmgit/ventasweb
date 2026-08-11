@@ -30,76 +30,62 @@ function adjustext($textoin, $nc) {
 ?>     
 
 <style>
-/* Reglas generales de impresión */
+/* Reglas estrictas de impresión para 80mm */
 @media print {
+    html, body {
+        width: 80mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+
     @page {
         size: 80mm auto;
-        margin: 0mm;
+        margin: 0mm !important; /* Elimina márgenes del navegador */
     }
+
     header, nav, footer, aside, .no-print {
         display: none !important;
     }
 }
 
-/* Contenedor principal de 80mm */
+/* Contenedor ajustado a la zona imprimible real de la impresora */
 .ticket-container {
-    width: 72mm;
-    margin: 0 auto;
-    padding: 2mm 0;
+    width: 70mm !important; /* Ancho seguro para evitar cortes a la derecha */
+    max-width: 70mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
     font-family: 'Courier New', Courier, monospace;
     color: #000000;
     font-weight: bold;
+    box-sizing: border-box;
 }
 
-/* Encabezado */
-.ticket-header {
-    text-align: center;
-    font-size: 10pt;
-    line-height: 1.1;
-    margin-bottom: 6px;
-}
-
-.ticket-header .titulo {
-    font-size: 12pt;
-    font-weight: 900;
-}
-
-/* Información del cliente / Pedido */
-.ticket-info {
-    font-size: 9.5pt;
-    line-height: 1.2;
-    text-align: left;
-    margin-bottom: 8px;
-}
-
-/* Tablas */
+/* Tablas forzadas al 100% del contenedor útil */
 .tabla-ticket {
-    width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed; /* Fuerza a respetar las anchuras indicadas */
     border-collapse: collapse;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 9.5pt;
+    font-size: 9pt;
 }
 
 .tabla-ticket th, .tabla-ticket td {
-    padding: 3px 1px;
+    padding: 2px 0;
     vertical-align: top;
+    word-wrap: break-word; /* Evita que textos largos empujen la tabla afuera */
+    overflow-wrap: break-word;
 }
 
-/* Encabezado de la tabla */
 .tabla-ticket th {
     border-top: 1px dashed #000;
     border-bottom: 1px dashed #000;
     font-weight: bold;
 }
 
-/* LÍNEA DE SEPARACIÓN PUNTEADA ENTRE ARTÍCULOS */
 .tabla-ticket tbody td {
     border-bottom: 1px dotted #000;
-}
-
-/* Bordes para totales */
-.tabla-ticket td.border-top {
-    border-top: 1px dashed #000;
 }
 
 .text-center { text-align: center !important; }
