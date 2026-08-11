@@ -30,42 +30,70 @@ function adjustext($textoin, $nc) {
 ?>     
 
 <style>
-/* Reglas estrictas de impresión para 80mm */
+/* Reglas globales de impresión */
 @media print {
+    /* Ocultar elementos que no son el ticket */
+    header, nav, footer, aside, .no-print, .col-lg-12, .form-group, #regresar, #imprimir {
+        display: none !important;
+    }
+
+    /* Definición estricta del tamaño de página del ticket */
+    @page {
+        size: 80mm auto; /* Fuerza el ancho del papel */
+        margin: 0mm !important;    /* Elimina márgenes físicos definidos por el driver/navegador */
+    }
+
+    /* Ajustes para el cuerpo de la página durante la impresión */
     html, body {
         width: 80mm !important;
         margin: 0 !important;
         padding: 0 !important;
-        overflow: hidden !important;
-    }
-
-    @page {
-        size: 80mm auto;
-        margin: 0mm !important; /* Elimina márgenes del navegador */
-    }
-
-    header, nav, footer, aside, .no-print {
-        display: none !important;
+        overflow: hidden; /* Evita barras de desplazamiento */
+        -webkit-print-color-adjust: exact; /* Ayuda a que las líneas punteadas se impriman bien */
     }
 }
 
-/* Contenedor ajustado a la zona imprimible real de la impresora */
+/* Contenedor principal del ticket - Todo el contenido va aquí */
+/* He reducido a 68mm para un margen de seguridad extra y evitar cortes a la derecha */
 .ticket-container {
-    width: 70mm !important; /* Ancho seguro para evitar cortes a la derecha */
-    max-width: 70mm !important;
-    margin: 0 auto !important;
-    padding: 0 !important;
-    font-family: 'Courier New', Courier, monospace;
+    width: 68mm !important;
+    max-width: 68mm !important;
+    margin: 0 auto !important; /* Centra el ticket en el rollo de 80mm */
+    padding: 0;
+    font-family: 'Courier New', Courier, monospace; /* Fuente de alta nitidez para térmicas */
     color: #000000;
     font-weight: bold;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Asegura que el padding no altere el ancho */
 }
 
-/* Tablas forzadas al 100% del contenedor útil */
+/* Encabezado de la empresa */
+.ticket-header {
+    text-align: center;
+    font-size: 9.5pt;
+    line-height: 1.1;
+    margin-bottom: 6px;
+    width: 100%;
+}
+
+.ticket-header .titulo {
+    font-size: 11.5pt;
+    font-weight: 900;
+}
+
+/* Información del cliente / Pedido */
+.ticket-info {
+    font-size: 9pt;
+    line-height: 1.2;
+    text-align: left;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+/* Tabla de artículos - Se asegura de no desbordarse */
 .tabla-ticket {
     width: 100% !important;
     max-width: 100% !important;
-    table-layout: fixed; /* Fuerza a respetar las anchuras indicadas */
+    table-layout: fixed; /* Fuerza a las columnas a respetar las anchuras indicadas */
     border-collapse: collapse;
     font-family: 'Courier New', Courier, monospace;
     font-size: 9pt;
@@ -78,6 +106,7 @@ function adjustext($textoin, $nc) {
     overflow-wrap: break-word;
 }
 
+/* Estilos de bordes y alineación */
 .tabla-ticket th {
     border-top: 1px dashed #000;
     border-bottom: 1px dashed #000;
@@ -88,11 +117,15 @@ function adjustext($textoin, $nc) {
     border-bottom: 1px dotted #000;
 }
 
+.tabla-ticket td.border-top {
+    border-top: 1px dashed #000;
+}
+
+/* Clases de utilidad */
 .text-center { text-align: center !important; }
-.text-right { text-align: right !important; }
+.text-right { text-align: left !important; }
 .bold { font-weight: bold; }
 </style>
-
 <div class="ticket-container">
 
     <!-- CABECERA DE LA EMPRESA -->
