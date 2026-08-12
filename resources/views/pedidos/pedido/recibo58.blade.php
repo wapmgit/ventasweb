@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>Ticket 58mm - {{str_pad($venta->num_comprobante, 8, '0', STR_PAD_LEFT)}}</title>
+    <title>Pedido - {{str_pad($venta->num_comprobante, 8, '0', STR_PAD_LEFT)}}</title>
     
     <!-- 
       IMPORTANTE: NO INCLUIR AQUÍ LA HOJA DE ESTILOS DE BOOTSTRAP.
@@ -17,81 +17,114 @@
                 margin: 0 !important; /* Elimina márgenes físicos del navegador */
             }
 
-            /* Ocultar elementos de la interfaz web que no son el ticket */
-            .no-print, #regresar, #imprimir {
+            /* Ocultar elementos de la interfaz web (botones) */
+            .no-print, #contenedor-botones {
                 display: none !important;
             }
 
             /* Estilo para el cuerpo de la página durante la impresión */
             html, body {
-                width: 58mm !important; /* Ocupamos todo el ancho del papel */
+                width: 54mm !important; /* Ocupamos todo el ancho del papel */
                 margin: 0 !important;
                 padding: 0 !important;
                 /* Fuente MONOSPACE para máxima nitidez en térmicas */
                 font-family: 'Courier New', Courier, monospace;
                 font-weight: bold;
-                /* REDUCIMOS FUENTE PARA 58mm: 8pt es lo ideal. */
+                /* Fuente reducida para 58mm */
                 font-size: 8pt; 
                 color: #000;
-                overflow: hidden; /* Evita barras de desplazamiento */
-                -webkit-print-color-adjust: exact; /* Fuerza la impresión de líneas */
+                overflow: hidden;
+                -webkit-print-color-adjust: exact;
+                line-height: 1.1;
             }
 
-            /* Contenedor principal que envuelve el ticket */
-            /* De los 58mm, dejamos un ancho útil de 48mm-50mm para evitar cortes */
+            /* Contenedor principal centrado con margen de seguridad */
             .ticket-container {
-                width: 48mm !important;
-                max-width: 48mm !important;
-                margin: 0 auto !important; /* Centra el ticket en el rollo */
+                width: 54mm !important; /* Ancho útil real */
+                margin: 0 auto !important; /* Centra el contenido en el rollo */
                 padding: 0;
-                box-sizing: border-box;
             }
 
-            /* Tablas forzadas al 100% de los 48mm útiles */
+            /* Tablas ajustadas al ancho útil */
             table.tabla-ticket {
                 width: 100% !important;
-                max-width: 100% !important;
-                table-layout: fixed; /* Fuerza a respetar las anchuras indicadas */
                 border-collapse: collapse;
                 margin: 0;
                 padding: 0;
                 font-family: 'Courier New', Courier, monospace;
                 font-weight: bold;
-                font-size: 8pt; /* Mismo tamaño reducido */
+                font-size: 8pt;
             }
 
             table.tabla-ticket th, table.tabla-ticket td {
-                padding: 1px 0; /* Padding vertical mínimo */
+                padding: 1px 0;
                 vertical-align: top;
-                word-wrap: break-word;
-                overflow-wrap: break-word;
             }
 
-            /* Bordes y alineación */
             table.tabla-ticket th {
                 border-top: 1px dashed #000;
                 border-bottom: 1px dashed #000;
-                font-weight: bold;
                 text-align: center;
             }
 
             table.tabla-ticket tbody td {
-                border-bottom: 1px dotted #000; /* Línea punteada entre items */
+                border-bottom: 1px dotted #000;
             }
 
             table.tabla-ticket td.border-top {
-                border-top: 1px dashed #000; /* Borde superior para los totales */
+                border-top: 1px dashed #000;
             }
         }
 
-        /* Clases de utilidad */
+        /* Estilos para visualización web (fuera de impresión) */
+        body {
+            font-family: sans-serif;
+            background-color: #f0f0f0;
+            margin: 20px;
+        }
+        .ticket-container {
+            background-color: white;
+            width: 58mm; /* Ancho simulado */
+            margin: 0 auto;
+            padding: 5mm;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 9pt;
+        }
+        .ticket-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #contenedor-botones {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
         .text-center { text-align: center !important; }
         .text-right { text-align: right !important; }
         .bold { font-weight: bold; }
     </style>
+	
 </head>
 <body>
+<?php
+// --- FUNCIONES PHP (Limpias y al principio) ---
+$acum = 0; $cntline = 0; $acumsub = 0; $acumpeso = 0;
 
+function add_ceros($numero) {
+    return str_pad($numero, 8, '0', STR_PAD_LEFT);
+}
+
+function adjustext($textoin, $nc) {
+    return wordwrap($textoin, $nc, "\n", true);
+}
+?>
 <!-- BOTONES DE ACCIÓN (NO SE IMPRIMEN) -->
 <div class="no-print" style="text-align: center; margin: 5px;">
     <button type="button" id="regresar" style="padding: 3px 8px; background-color: #f44336; color: white; border: none; cursor: pointer; font-size: 8pt;">Regresar</button>
@@ -117,12 +150,12 @@
     </div>
 
     <!-- TABLA DE DETALLE DE PRODUCTOS (Ajustada para 58mm) -->
-    <table class="tabla-ticket">
+    <table class="tabla-ticket" style="margin-bottom: 5px;">
         <thead>
             <tr>
                 <th width="25%">Cant</th>
                 <!-- Combinamos Desc y Precio para ahorrar espacio horizontal -->
-                <th width="75%">Descripción / Precio($) th>
+                <th width="75%">Descripción / Precio($) <th>
             </tr>
         </thead>
         <tbody>
@@ -133,7 +166,10 @@
                     <tr>
                         <td class="text-center">{{$det->cantidad}} {{$det->unidad}}</td>
                         <td align="left">
-                            {{strtolower($det->articulo)}}<br>
+                           
+							<?php 
+							
+							echo adjustext($det->articulo, 28); ?><br>
                             <span style="font-size: 7pt;">(${{number_format($det->precio_venta, 2, ',', '.')}} x {{$det->cantidad}})</span>
                         </td>
                     </tr>
@@ -143,12 +179,12 @@
     </table>
 
     <!-- TOTALES (Más destacados) -->
-    <table class="tabla-ticket" style="margin-top: 3px;">
+    <table class="tabla-ticket" style="margin-top: 5px;">
         <tr>
-            <td width="40%" class="text-right bold">
+            <td width="25%" class="text-right bold">
                 TOTAL($):
             </td>
-            <td width="60%" class="text-right bold border-top" style="font-size: 11pt;">
+            <td width="75%" class="text-right bold border-top" style="font-size: 11pt;">
                 ${{number_format($acumsub, 2, ',', '.')}}
             </td>
         </tr>

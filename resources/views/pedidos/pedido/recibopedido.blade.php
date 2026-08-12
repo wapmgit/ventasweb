@@ -41,8 +41,8 @@
             /* Contenedor principal que envuelve el ticket */
             /* He reducido ligeramente a 72mm para margen de seguridad y evitar cortes */
             .ticket-container {
-                width: 72mm !important;
-                max-width: 72mm !important;
+                width: 74mm !important;
+                max-width: 74mm !important;
                 margin: 0 auto !important; /* Centra el ticket en el rollo de 80mm */
                 padding: 0;
                 box-sizing: border-box; /* Asegura que el padding no altere el ancho */
