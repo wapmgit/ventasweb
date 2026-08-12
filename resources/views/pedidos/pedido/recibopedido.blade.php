@@ -151,7 +151,7 @@
             <td width="80%" class="text-right bold border-top" style="font-size: 12pt;">
                 ${{number_format($acumsub, 2, ',', '.')}}
             </td>
-        }
+        
     </table>
 
     <!-- PIE DE TICKET -->
