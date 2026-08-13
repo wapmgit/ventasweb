@@ -9,8 +9,22 @@
       SÓLO INCLUIREMOS ESTE BLOQUE CSS ESPECÍFICO PARA EL TICKET DE 58mm.
     -->
     <style>
+		#contenedor-botones {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .text-center { text-align: center !important; }
+        .text-right { text-align: right !important; }
+        .bold { font-weight: bold; }
         /* Reglas globales de impresión */
-        @media print {
+         @media print {
             /* Configuración estricta de la página para 58mm */
             @page {
                 size: 58mm auto; /* Fuerza el ancho del papel térmico de 58mm */
@@ -26,12 +40,12 @@
             html, body {
                 width: 54mm !important; /* Ocupamos todo el ancho del papel */
                 margin: 0 !important;
-                padding: 0 !important;
+                padding: 0 5mm 0 0!important;
                 /* Fuente MONOSPACE para máxima nitidez en térmicas */
                 font-family: 'Courier New', Courier, monospace;
                 font-weight: bold;
                 /* Fuente reducida para 58mm */
-                font-size: 8pt; 
+                font-size: 10pt; 
                 color: #000;
                 overflow: hidden;
                 -webkit-print-color-adjust: exact;
@@ -53,7 +67,7 @@
                 padding: 0;
                 font-family: 'Courier New', Courier, monospace;
                 font-weight: bold;
-                font-size: 8pt;
+                font-size: 10pt;
             }
 
             table.tabla-ticket th, table.tabla-ticket td {
@@ -75,42 +89,8 @@
                 border-top: 1px dashed #000;
             }
         }
-
-        /* Estilos para visualización web (fuera de impresión) */
-        body {
-            font-family: sans-serif;
-            background-color: #f0f0f0;
-            margin: 20px;
-        }
-        .ticket-container {
-            background-color: white;
-            width: 58mm; /* Ancho simulado */
-            margin: 0 auto;
-            padding: 5mm;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 9pt;
-        }
-        .ticket-container table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        #contenedor-botones {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        button {
-            padding: 5px 10px;
-            cursor: pointer;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
-        .text-center { text-align: center !important; }
-        .text-right { text-align: right !important; }
-        .bold { font-weight: bold; }
-    </style>
-	
+ 
+    </style>	
 </head>
 <body>
 <?php
@@ -132,19 +112,19 @@ function adjustext($textoin, $nc) {
 </div>
 
 <!-- CONTENEDOR PRINCIPAL DEL TICKET -->
-<div class="ticket-container">
+<div class="ticket-container" align="center">
     
     <!-- ENCABEZADO DE LA EMPRESA (Simplificado para 58mm) -->
     <div class="text-center" style="line-height: 1.1; margin-bottom: 5px;">
-        <span class="bold" style="font-size: 9pt;">{{$empresa->nombre}}</span><br>
+        <span class="bold" style="font-size: 10pt;">{{$empresa->nombre}}</span><br>
         RIF: {{$empresa->rif}}<br>
         {{$empresa->direccion}}<br>
         Telf: {{$empresa->telefono}}
     </div>
 
     <!-- DATOS DEL CLIENTE Y PEDIDO (Más compacto) -->
-    <div style="font-size: 8pt; line-height: 1.2; margin-bottom: 5px;">
-        Cli: {{$venta->cedula}} - {{$venta->nombre}}<br>
+    <div style="font-size: 10pt; line-height: 1.2; margin-bottom: 5px;">
+       {{$venta->cedula}} - {{$venta->nombre}}<br>
         PED: <span class="bold">{{str_pad($venta->num_comprobante, 8, '0', STR_PAD_LEFT)}}</span><br>
         Fec: {{date("d-m-Y h:i a", strtotime($venta->fecha_hora))}}
     </div>
@@ -167,10 +147,8 @@ function adjustext($textoin, $nc) {
                         <td class="text-center">{{$det->cantidad}} {{$det->unidad}}</td>
                         <td align="left">
                            
-							<?php 
-							
-							echo adjustext($det->articulo, 28); ?><br>
-                            <span style="font-size: 7pt;">(${{number_format($det->precio_venta, 2, ',', '.')}} x {{$det->cantidad}})</span>
+							<?php 	echo adjustext($det->articulo, 20); ?><br>
+                            <span style="font-size: 10pt;">(${{number_format($det->precio_venta, 2, ',', '.')}} x {{$det->cantidad}})</span>
                         </td>
                     </tr>
                 @endif
@@ -191,7 +169,7 @@ function adjustext($textoin, $nc) {
     </table>
 
     <!-- PIE DE TICKET -->
-    <div class="text-center" style="margin-top: 8px; font-size: 8pt;">
+    <div class="text-center" style="margin-top: 8px; font-size: 10pt;">
         Precios Insuperables...<br>
         ¡Gracias por su compra!
     </div>

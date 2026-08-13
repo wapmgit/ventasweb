@@ -8,7 +8,21 @@
       IMPORTANTE: NO INCLUIR AQUÍ LA HOJA DE ESTILOS DE BOOTSTRAP.
       SÓLO INCLUIREMOS ESTE BLOQUE CSS ESPECÍFICO PARA EL TICKET DE 58mm.
     -->
-    <style>
+    <style>	
+		#contenedor-botones {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .text-center { text-align: center !important; }
+        .text-right { text-align: right !important; }
+        .bold { font-weight: bold; }
         /* Reglas globales de impresión */
         @media print {
             /* Configuración estricta de la página para 58mm */
@@ -26,12 +40,12 @@
             html, body {
                 width: 54mm !important; /* Ocupamos todo el ancho del papel */
                 margin: 0 !important;
-                padding: 0 !important;
+                padding: 0 5mm 0 0!important;
                 /* Fuente MONOSPACE para máxima nitidez en térmicas */
                 font-family: 'Courier New', Courier, monospace;
                 font-weight: bold;
                 /* Fuente reducida para 58mm */
-                font-size: 8pt; 
+                font-size: 10pt; 
                 color: #000;
                 overflow: hidden;
                 -webkit-print-color-adjust: exact;
@@ -53,7 +67,7 @@
                 padding: 0;
                 font-family: 'Courier New', Courier, monospace;
                 font-weight: bold;
-                font-size: 8pt;
+                font-size: 10pt;
             }
 
             table.tabla-ticket th, table.tabla-ticket td {
@@ -75,44 +89,10 @@
                 border-top: 1px dashed #000;
             }
         }
-
-        /* Estilos para visualización web (fuera de impresión) */
-        body {
-            font-family: sans-serif;
-            background-color: #f0f0f0;
-            margin: 20px;
-        }
-        .ticket-container {
-            background-color: white;
-            width: 58mm; /* Ancho simulado */
-            margin: 0 auto;
-            padding: 5mm;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 9pt;
-        }
-        .ticket-container table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        #contenedor-botones {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        button {
-            padding: 5px 10px;
-            cursor: pointer;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
-        .text-center { text-align: center !important; }
-        .text-right { text-align: right !important; }
-        .bold { font-weight: bold; }
+ 
     </style>
 </head>
 <body>
-
 <?php
 // --- FUNCIONES PHP (Limpias y al principio) ---
 $acum = 0; $cntline = 0; $acumsub = 0; $acumpeso = 0;
@@ -125,15 +105,14 @@ function adjustext($textoin, $nc) {
     return wordwrap($textoin, $nc, "\n", true);
 }
 ?>
-
 <!-- BOTONES (SOLO VISIBLES EN WEB, NO SE IMPRIMEN) -->
 <div id="contenedor-botones" class="no-print">
-    <button type="button" id="regresar" style="background-color: #f44336; color: white;">Cerrar</button>
+    <button type="button" id="regresar" style="background-color: #f44336; color: white;">Regresar</button>
     <button type="button" id="imprimir" style="background-color: #008CBA; color: white;">Imprimir</button>
 </div>
 
 <!-- CONTENEDOR PRINCIPAL DEL TICKET -->
-<div class="ticket-container">
+<div class="ticket-container" align="center">
     
     <!-- CABECERA DE LA EMPRESA -->
     <div class="text-center" style="line-height: 1.1; margin-bottom: 5px;">
@@ -145,9 +124,9 @@ function adjustext($textoin, $nc) {
 
     <!-- DATOS DE LA VENTA -->
     <div style="font-size: 8pt; margin-bottom: 5px; line-height: 1.2;">
-        Cli: {{$venta->cedula}} - {{$venta->nombre}}<br>
+        {{$venta->cedula}} - {{$venta->nombre}}<br>
        Dir: {{\Illuminate\Support\Str::limit($venta->direccion, 30)}}<br> 
-        <span class="bold" style="font-size: 9pt;">VENTA Nro: <?php echo add_ceros($venta->num_comprobante); ?></span><br>
+        <span class="bold" style="font-size: 10pt;">VENTA Nro: <?php echo add_ceros($venta->num_comprobante); ?></span><br>
         Fec: {{date("d-m-Y h:i a", strtotime($venta->fecha_hora))}}<br>
         Tasa: {{$venta->tasa}} Bs/$.
     </div>
@@ -174,7 +153,7 @@ function adjustext($textoin, $nc) {
                         <td class="text-center">{{$det->cantidad}} {{$det->unidad}}</td>
                         <td align="left">
                             <?php echo adjustext($nombre_articulo, 20); ?><br>
-                            <span style="font-size: 7pt;">(${{number_format($det->precio_venta, 2, ',', '.')}} x {{$det->cantidad}})</span>
+                            <span style="font-size: 10pt;">(${{number_format($det->precio_venta, 2, ',', '.')}} x {{$det->cantidad}})</span>
                         </td>
                     </tr>
                 @endif
@@ -200,14 +179,14 @@ function adjustext($textoin, $nc) {
 
     <!-- INFORMACIÓN DE PESO (OPCIONAL) -->
     <?php if($empresa->printpeso == 1){ ?>
-        <div class="text-center" style="font-size: 7pt; border-top: 1px dotted #ccc; padding-top: 2px;">
+        <div class="text-center" style="font-size: 10pt; border-top: 1px dotted #ccc; padding-top: 2px;">
             Items: <?php echo $cntline; ?> --- Peso Tot: <?php echo number_format($acumpeso, 2, ',', '.'); ?> Kg.
         </div>
     <?php } ?>
 
     <!-- RESUMEN DE PAGOS -->
     <?php if(count($recibos) > 0){ ?>
-        <table class="tabla-ticket" style="margin-top: 5px; font-size: 7pt;">
+        <table class="tabla-ticket" style="margin-top: 5px; font-size: 9pt;">
             <thead>
                 <tr>
                     <th width="40%">Pago</th>
