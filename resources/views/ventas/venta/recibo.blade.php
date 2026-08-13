@@ -1,5 +1,9 @@
-@extends ('layouts.master')
-@section ('contenido')    
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Venta {{str_pad($venta->num_comprobante, 8, '0', STR_PAD_LEFT)}}</title>
+     
 <?php $acum=0; 
 $ceros=5;  $acumnc=0;
 function add_ceros($numero,$ceros) {
@@ -14,171 +18,218 @@ return $insertar_ceros = $recibo.$numero;
 $acumpeso=0;
 $cntline=0;
 $acumsub=0;
+function adjustext($textoin, $nc) {
+    return wordwrap($textoin, $nc, "\n", true);
+}
+
 ?>   	 
 
-<style>
-@media print {
-    /* Configuración general de la página */
-    @page {
-        size: 80mm auto; /* Ancho fijo de 80mm, altura automática */
-        margin: 0mm;    /* Márgenes mínimos para aprovechar el espacio */
-    }
+  <style>
+			#contenedor-botones {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
 
-    /* Estilos para el cuerpo del contenido */
-    div {
-        width: 80mm;
-        padding: 0;
-        margin: 0;
-		 font: oblique bold 120% cursive;
-        font-size: 10pt; /* Tamaño de fuente adecuado para ticket */
-    }
+        .text-center { text-align: center !important; }
+        .text-right { text-align: right !important; }
+        .bold { font-weight: bold; }
+		/* Reglas globales de impresión */
+        @media print {
+            /* Configuración estricta de la página para 58mm */
+            @page {
+                size: 80mm auto; /* Fuerza el ancho del papel térmico de 58mm */
+                margin: 0 !important; /* Elimina márgenes físicos del navegador */
+            }
 
-    /* Ocultar elementos no deseados */
-    header, nav, footer, aside, .no-print {
-        display: none;
-    }
+            /* Ocultar elementos de la interfaz web (botones) */
+            .no-print, #contenedor-botones {
+                display: none !important;
+            }
 
-    /* Estilos para tablas (tickets/facturas) */
-    #tablecabecera {
-        width: 130%;
-        border-collapse: collapse; /* Une bordes de celdas */
-        margin-top: 2px;
-		font: oblique bold 120% cursive;
-        font-size: 12pt; /* Tamaño de fuente adecuado para ticket */
-    }
-    #tablecentro {
-        width: 130%;
-        border-collapse: collapse; /* Une bordes de celdas */
-        margin-top: 2px;
-    }
-}
-.lista{
-	font: bold 90% monospace;
-	 font-size: 16pt;
-	
-}
-.tabla-principal th, td {
-     border: 0px solid #000; /* Bordes finos */
-         padding: 1px 1px;
-        text-align: center;
-}
-.tabla-secundaria th, td {
-		border: 1px solid #000; /* Bordes finos */
-		border-style: dotted;
-        padding: 1px 1px;
-        text-align: left;
-}
-</style>
-<div>
+            /* Estilo para el cuerpo de la página durante la impresión */
+            html, body {
+                width: 74mm !important; /* Ocupamos todo el ancho del papel */
+                margin: 0 !important;
+                padding: 0 !important;
+                /* Fuente MONOSPACE para máxima nitidez en térmicas */
+                font-family: 'Courier New', Courier, monospace;
+                font-weight: bold;
+                /* Fuente reducida para 58mm */
+                font-size: 10pt; 
+                color: #000;
+                overflow: hidden;
+                -webkit-print-color-adjust: exact;
+                line-height: 1.1;
+            }
 
-<?php
-function adjustext($textoin,$nc){
-$texto = $textoin;
-$ancho_maximo = $nc; // Caracteres por línea
-$lineas = explode("\n", $texto);
-$contenido_formateado = "";
-foreach ($lineas as $linea) {
-    $contenido_formateado .= wordwrap($linea, $ancho_maximo, "\n", true) . "\n";
-}
-return $contenido_formateado;
-}
+            /* Contenedor principal centrado con margen de seguridad */
+            .ticket-container {
+                width: 74mm !important; /* Ancho útil real */
+                margin: 0 auto !important; /* Centra el contenido en el rollo */
+                padding: 0;
+            }
 
-$acumpeso=0;
-?>  
-<table border="0" style="line-height:95%" align="center" id="tablecabecera" class="tabla-principal">
-	<thead> <th><b><font size="4"><?Php echo nl2br(adjustext($empresa->nombre,30)); ?></font></b></th> </thead> 
-	<thead><th><b><font size="3">{{$empresa->rif}}</font></b></th></thead>
-	<thead><th><b><font size="2"><?Php echo nl2br(adjustext($empresa->direccion,40)); ?></font><small>{{$empresa->telefono}}</small></b></th></thead>
-</table>			
-<div align="left">				 
-	<font size="4">{{$venta->cedula}} -> {{$venta->nombre}}</br></font>
-	{{$venta->direccion}} </br>
-	<font size="4"><b>Documento:  <?php $idv=$venta->num_comprobante; echo add_ceros($idv,$ceros); ?> </b></font> </br>
-	  <font size="2"> <b>  <?php echo date("d-m-Y h:i:s a",strtotime($venta->fecha_hora)); ?></b></font></br>
-	  <font size="2"> <b> Tasa de Cambio: {{$venta->tasa}} Bsf.</b></font>
-	  </br>
-	  </br>
-</div>    
-                  <table style="line-height:90%"  id="tablecentro" class="tabla-secundaria">
-                      <thead>                 
-						
-                          <th width="80%" align="center"><b class="lista">Cantidad-Descripcion</b></th>
-                          <th width="15%"><b class="lista">Subtotal</b></th>
-                      </thead>
-                  
-                      <tbody>
-                        @foreach($detalles as $det)<?php  $cntline++; $acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);
-						if($det->cantidad>0){
-								$acumsub=$acumsub+($det->precio_venta*$det->cantidad);
-							$texto=$det->cantidad." ".$det->unidad."-".strtolower($det->articulo)." ".number_format( $det->precio_venta, 2,',','.');
-						?>
-                        <tr height="10px"> 						
-                         <td align="left"><span class="lista">
-						<?Php echo $resultado = wordwrap($texto, 25, "\n", true); ?> </span></td>                       
-                          <td><span class="lista"><?php echo "$ ".number_format( (($det->cantidad*$det->precio_venta)), 2,',','.'); ?></span></td>
-                        </tr>
-						<?php } ?>
-                        @endforeach
-                      </tbody>
-					     <tfoot>  
-					  <th colspan="2" ><div align="center"><font size="4">Bs: <?php echo number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> <-->
-                       $: <?php echo number_format($acumsub, 2,',','.'); ?> </font></div></th>                      
-						</tfoot>
+            /* Tablas ajustadas al ancho útil */
+            table.tabla-ticket {
+                width: 100% !important;
+				 max-width: 100% !important;
+                border-collapse: collapse;
+                margin: 0;
+                padding: 0;
+                font-family: 'Courier New', Courier, monospace;
+                font-weight: bold;
+                font-size: 10pt;
+            }
+
+            table.tabla-ticket th, table.tabla-ticket td {
+                padding: 1px 0;
+                vertical-align: top;
+            }
+
+            table.tabla-ticket th {
+                border-top: 1px dashed #000;
+                border-bottom: 1px dashed #000;
+                text-align: center;
+            }
+
+            table.tabla-ticket tbody td {
+                border-bottom: 1px dotted #000;
+            }
+
+            table.tabla-ticket td.border-top {
+                border-top: 1px dashed #000;
+            }
+        }
+
+  
+    </style>
+	</head>
+<body>
+
+<!-- BOTONES DE ACCIÓN (NO SE IMPRIMEN) -->
+<div class="no-print" style="text-align: center; margin: 10px;">
+    <button type="button" id="regresar" style="padding: 5px 10px; background-color: #f44336; color: white; border: none; cursor: pointer;">Regresar</button>
+    <button type="button" id="imprimir" style="padding: 5px 10px; background-color: #008CBA; color: white; border: none; cursor: pointer;">Imprimir</button>
+</div>
+
+<!-- CONTENEDOR PRINCIPAL DEL TICKET -->
+<div class="ticket-container" align="center">
+    
+    <!-- ENCABEZADO DE LA EMPRESA -->
+    <div class="text-centerheader" style="line-height: 1.1; margin-bottom: 8px;">
+        <span class="bold" style="font-size: 11pt;">{{$empresa->nombre}}</span><br>
+        RIF: {{$empresa->rif}}<br>
+        {{$empresa->direccion}}<br>
+        Telf: {{$empresa->telefono}}
+    </div>
+
+    <!-- DATOS DEL CLIENTE Y PEDIDO -->
+    <div style="font-size: 9pt; line-height: 1.2; margin-bottom: 8px;">
+        Cliente: {{$venta->cedula}} - {{$venta->nombre}}<br>
+			Direccion:{{strtoupper($venta->direccion)}}<br>
+        VENTA : <span class="bold" style="font-size: 11pt;">{{str_pad($venta->num_comprobante, 8, '0', STR_PAD_LEFT)}}</span><br>
+        Fecha  : {{date("d-m-Y h:i:s a", strtotime($venta->fecha_hora))}}
+    </div>
+
+    <!-- TABLA DE DETALLE DE PRODUCTOS -->
+    <table class="tabla-ticket" style="margin-bottom: 5px;">
+        <thead>
+            <tr>
+                <th width="25%">Cant</th>
+                <th width="75%">Descripción - Precio($)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php $acumsub = 0; @endphp
+            @foreach($detalles as $det) 
+                @if($det->cantidad > 0) 
+                    @php $acumsub += ($det->precio_venta * $det->cantidad); 
+				 $cntline++; $acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);
+				@endphp
+                    <tr>
+                        <td class="text-center">{{$det->cantidad}} {{$det->unidad}}</td>
+                        <td align="left">
+						<?php echo adjustext($det->articulo, 30); ?>
+                             ${{number_format($det->precio_venta, 2, ',', '.')}}
+                        </td>
+                    </tr>
+                @endif
+            @endforeach
+        </tbody>
+		     <tfoot>  
+
 				<?php if($empresa->printpeso ==1){?>  
 					 <tfoot>  
-					  <th colspan="2" ><div align="center"><font size="4">Items: <?php echo $cntline;  ?> --->
-                       Peso Total: <?php echo number_format($acumpeso, 2,',','.'); ?> </font></div></th>
+					  <th colspan="2"  class="text-right bold" ><div align="center">Items: <?php echo $cntline;  ?> --->
+                       Peso Total: <?php echo number_format($acumpeso, 2,',','.'); ?> </div></th>
 					   
-						</tfoot>	
-				<?php } ?>
-					 
-                  </table>
-				  <?php  if(count($recibos)>0){?>
-                  <table class="tabla-secundaria" align="center" width="99%">
- 
-                      <thead>                  
-                          <td>Tipo</td>
-                          <td>Monto</td>
-                          <td>Monto$</td>                        
-                      </thead>                     
-                      <tbody>                       
-                        @foreach($recibos as $re) <?php  $acum=$acum+$re->monto;?>
-                        <tr >
-                          <td>{{$re->idbanco}}</small></font></td>
-                          <td><?php echo number_format( $re->recibido, 2,',','.'); ?></td>
-						  <td><?php echo number_format( $re->monto, 2,',','.'); ?></td>                       
-                        </tr>
-                        @endforeach
-                    
-                      </tbody>
-                  </table>
-				  <?php } ?>
-</div></br><p></br></br>Precios Insuperables...</p>
-     <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
-                    <div class="form-group" align="center">
-					 <button type="button" id="regresar" class="btn btn-danger btn-xs" data-dismiss="modal">Regresar</button>
-                     <button type="button" id="imprimir" class="btn btn-primary btn-xs"  >Imprimir</button>
-                    </div>
-                </div>  
-			
-@push ('scripts')
+				</tfoot>	<?php } ?>
+    </table>
+
+    <!-- TOTALES -->
+    <table class="tabla-ticket" style="margin-top: 5px;">
+        <tr>
+            <td width="20%" class="text-right bold">
+                TOTAL($):
+            </td>
+            <td width="80%" class="text-right bold border-top" style="font-size: 12pt;">
+                ${{number_format($acumsub, 2, ',', '.')}}
+            </td>
+        
+    </table>
+    <?php if(count($recibos) > 0){ ?>
+        <table class="tabla-ticket" style="margin-top: 5px; font-size: 9pt;">
+            <thead>
+                <tr>
+                    <th width="40%">Pago</th>
+                    <th width="30%" class="text-right">Monto Bs</th>
+                    <th width="30%" class="text-right">Monto $</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($recibos as $re)
+                    <tr>
+                        <td>{{\Illuminate\Support\Str::limit($re->idbanco, 10)}}</td>
+                        <td class="text-right"><?php echo number_format($re->recibido, 2, ',', '.'); ?></td>
+                        <td class="text-right"><?php echo number_format($re->monto, 2, ',', '.'); ?></td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    <?php } ?>
+    <!-- PIE DE TICKET -->
+    <div class="text-center" style="margin-top: 10px; font-size: 9pt;">
+        Precios Insuperables...<br>
+        ¡Gracias por su compra!
+    </div>
+</div>
+<!-- JAVASCRIPT SIMPLE -->
 <script>
-$(document).ready(function(){
-    $('#imprimir').click(function(){
-  //  alert ('si');
-  document.getElementById('imprimir').style.display="none";
-  document.getElementById('regresar').style.display="none";
-  window.print(); 
- 
-  window.location="{{route('ventas')}}";
+    // Acción del botón Regresar
+    document.getElementById('regresar').addEventListener('click', function() {
+        window.location = "{{route('ventas')}}";
+		
     });
-});
 
-  $('#regresar').on("click",function(){
-  window.location="{{route('newventa')}}";
-  
-});
+    // Acción del botón Imprimir
+    document.getElementById('imprimir').addEventListener('click', function() {
+        // Lanzamos el diálogo de impresión directamente
+        window.print(); 
+		window.location="{{route('ventas')}}";
+    });
 
+    // Opcional: Lanzar la impresión automáticamente al cargar la página
+    // window.onload = function() {
+    //     window.print();
+    // };
 </script>
-@endpush
-@endsection
+
+</body>
+</html>
+<div>

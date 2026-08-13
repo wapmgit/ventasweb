@@ -45,7 +45,7 @@ $cntser=0;$acumnc=0;
                   <table id="detalles" width="100%">
                       <thead style="background-color: #A9D0F5">
                      
-                          <th>Articulo <a href="" class="filap2" data-target="#modalact-{{$ingreso->idingreso}}" data-toggle="modal" >💱</a></th>
+                          <th>Articulo @if($rol->editcompra==1) <a href="" class="filap2" data-target="#modalact-{{$ingreso->idingreso}}" data-toggle="modal" >💱</a> @endif</th>
                           <th>Cantidad</th>
                           <th>Precio</th>
                           <th>Descuento</th>
