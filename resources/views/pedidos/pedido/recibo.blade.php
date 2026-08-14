@@ -162,7 +162,26 @@
             </td>
         
     </table>
-
+   <?php if(count($recibos) > 0){ ?>
+        <table class="tabla-ticket" style="margin-top: 5px; font-size: 9pt;">
+            <thead>
+                <tr>
+                    <th width="40%">Pago</th>
+                    <th width="30%" class="text-right">Monto Bs</th>
+                    <th width="30%" class="text-right">Monto $</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($recibos as $re)
+                    <tr>
+                        <td>{{\Illuminate\Support\Str::limit($re->idbanco, 10)}}</td>
+                        <td class="text-right"><?php echo number_format($re->recibido, 2, ',', '.'); ?></td>
+                        <td class="text-right"><?php echo number_format($re->monto, 2, ',', '.'); ?></td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    <?php } ?>
     <!-- PIE DE TICKET -->
     <div class="text-center" style="margin-top: 10px; font-size: 9pt;">
         Precios Insuperables...<br>
