@@ -116,7 +116,7 @@
     <div style="font-size: 9pt; line-height: 1.2; margin-bottom: 8px;">
         Cliente: {{$venta->cedula}} - {{$venta->nombre}}<br>
 		Direccion:{{strtoupper($venta->direccion)}}<br>
-        PEDIDO : <span class="bold" style="font-size: 11pt;">{{str_pad($venta->num_comprobante, 8, '0', STR_PAD_LEFT)}}</span><br>
+        VENTA : <span class="bold" style="font-size: 11pt;">{{str_pad($venta->num_comprobante, 8, '0', STR_PAD_LEFT)}}</span><br>
         Fecha  : {{date("d-m-Y h:i:s a", strtotime($venta->fecha_hora))}}
     </div>
 
