@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>Pedido {{str_pad($venta->num_comprobante, 8, '0', STR_PAD_LEFT)}}</title>
+    <title>Venta {{str_pad($venta->num_comprobante, 8, '0', STR_PAD_LEFT)}}</title>
     
     <!-- 
       IMPORTANTE: NO INCLUIR AQUÍ LA HOJA DE ESTILOS DE BOOTSTRAP.
