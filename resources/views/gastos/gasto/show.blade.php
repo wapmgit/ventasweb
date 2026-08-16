@@ -12,6 +12,7 @@ $digitos=strlen($numero);
   }
 return $insertar_ceros = $recibo.$numero;
 };
+$acumnc=0;
 ?>
   	<div class="invoice p-3 mb-3">
               <!-- title row -->
@@ -88,6 +89,24 @@ return $insertar_ceros = $recibo.$numero;
                   </table>
 				  </div>
 	</div>
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><h6 align="center">N/C Aplicada</h6>
+				<table id="desglose" width="100%">
+                      <thead style="background-color: #A9D0F5">
+						<th>Fecha</th>
+                          <th>Monto</th>
+						  <th>Referencia</th>                     
+                      </thead>
+					<tbody>
+                     @foreach($notac as $nc) <?php  $acumnc=$acumnc+$nc->monto;?>
+                        <tr >
+                          <td><?php echo date("d-m-Y",strtotime($nc->fecha)); ?></td>
+                          <td><?php echo number_format( $nc->monto, 2,',','.'); ?></td>
+                          <td>{{$nc->referencia}}</td>                        
+                        </tr>
+                        @endforeach                   
+                      </tbody>
+					  </table>
+            </div> 
  </div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="form-group">
