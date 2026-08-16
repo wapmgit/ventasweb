@@ -118,8 +118,12 @@ $acum=0; $acum2=0; $acumn=0; $count=0; $contdoc=0; $link=1; $p=1;  $count2=0;?>
 					<td><?php echo number_format($cat->monto, 2,',','.')." $"; ?></td>
 					<td><?php echo number_format($cat->retenido, 2,',','.')." $"; ?></td>
 					<td><?php echo number_format($cat->saldo, 2,',','.')." $"; ?></td>			
-					<td><a href="javascript:abrirespecialg({{$cat->idgasto}},{{$cat->saldo}});"><button  id="abono" class="btn btn-info btn-xs">Abono</button></a>
-				<a href="#" data-target="#modalretgas{{$cat->idgasto}}" data-toggle="modal"><button  class="btn btn-secondary btn-xs">RET</button></a></td>					
+					<td>
+					<?php if ($notasc->montonc<> NULL){ $montonc=number_format($notasc->montonc, 2,',','.'); ?> <a href="javascript:abrirdivnc('GTO',{{$cat->idgasto}},{{$cat->saldo}},<?php echo $notasc->montonc; ?>);"><button  id="abono" class="btn btn-primary btn-xs">N/C: <?php echo number_format($notasc->montonc, 2,',','.')." $"; ?></button></a><?php } ?> 
+					<a href="javascript:abrirespecialg({{$cat->idgasto}},{{$cat->saldo}});"><button  id="abono" class="btn btn-info btn-xs">Abono</button></a>
+				<a href="#" data-target="#modalretgas{{$cat->idgasto}}" data-toggle="modal"><button  class="btn btn-secondary btn-xs">RET</button></a>
+				<a href="{{route('showdetallegasto',['id'=>$cat->idgasto])}}"><button class="btn btn-success btn-xs">Detalle</button></a>
+				</td>					
 		
 				</tr>
 				@include('proveedores.pagar.modalretgas')	

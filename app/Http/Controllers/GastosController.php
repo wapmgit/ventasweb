@@ -151,7 +151,8 @@ catch(\Exception $e)
             $comprobante=DB::table('comprobante as co')
             -> where ('co.idgasto','=',$id)
             ->get();
-            return view("gastos.gasto.show",["ruta"=>$ruta,"gasto"=>$gasto,"comprobante"=>$comprobante,"empresa"=>$empresa]);
+			$notac=DB::table('mov_notasp')-> where('iddoc','=',$id)->get();
+            return view("gastos.gasto.show",["notac"=>$notac,"ruta"=>$ruta,"gasto"=>$gasto,"comprobante"=>$comprobante,"empresa"=>$empresa]);
 	}
 	public function destroy($id){
 		//dd($id);

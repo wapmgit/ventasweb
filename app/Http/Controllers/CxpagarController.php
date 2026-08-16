@@ -270,6 +270,24 @@ $this->middleware('auth');
             return view("proveedores.pagar.detalle",["notac"=>$notac,"ret"=>$ret,"ingreso"=>$ingreso,"empresa"=>$empresa,"detalles"=>$detalles,"pago"=>$pago]);
 
 	}
+		public function detallegasto($id){
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+	
+		$gasto=DB::table('gastos as g')
+            -> join ('proveedores as p','p.idproveedor','=','g.idpersona')
+            -> join ('tipo_gasto as tg','tg.idgasto','=','g.tipogasto')
+            -> select ('g.*','tg.nombregasto','p.nombre','p.rif','p.telefono','p.direccion')
+            ->where ('g.idgasto','=',$id)
+            -> first();
+            $comprobante=DB::table('comprobante as co')
+            -> where ('co.idgasto','=',$id)
+            ->get();
+			$ret=DB::table('retenciones')-> where('idcompra','=',$id)->get();
+			$notac=DB::table('mov_notasp')-> where('iddoc','=',$id)->get();
+	
+            return view("proveedores.pagar.detallegasto",["notac"=>$notac,"ret"=>$ret,"gasto"=>$gasto,"empresa"=>$empresa,"comprobante"=>$comprobante]);
+
+	}
 	public function pago(Request $request)
     {	
 		$moneda=explode("_",$request->get('pidpagomodal'));
@@ -407,6 +425,54 @@ $this->middleware('auth');
  
 			 	$mov=new Movnotasp;
 				$mov->tipodoc="FAC";
+				$mov->iddoc=$request->get('iddoc');
+				$mov->monto=$request->get('total_abn');
+				$mov->referencia=$request->get('ref');
+				$mytime=Carbon::now('America/Caracas');
+				$mov->fecha=$mytime->toDateTimeString();
+				$mov->user=Auth::user()->name;
+				$mov->save();	
+				$nc=DB::table('notasadmp as da')
+				-> select('da.idnota as not','da.pendiente')
+				-> where ('da.tipo','=',2)
+				-> where ('da.idproveedor','=',$request->get('idcliente'))
+				-> where ('da.pendiente','>',0)
+				->orderby ('idnota','asc')
+				->get();	
+			$longitud = count($nc);
+			$array = array();
+			foreach($nc as $t){
+			$arrayidnota[] = $t->not;
+			}
+			$abono=$request->get('total_abn');
+				for ($i=0;$i<$longitud;$i++){
+					if($abono>0){
+					$bajanota=Notasadmp::findOrFail($arrayidnota[$i]);
+					$montonc=$bajanota->pendiente;
+						if($montonc>$abono){
+						$bajanota->pendiente=round(($bajanota->pendiente-$abono),2);
+						$abono=0;
+						}
+						else{
+						$bajanota->pendiente=0; $abono=($abono-$montonc);
+						}
+					$bajanota->update();
+				$rnc=new Relacionncp;
+				$rnc->idmov=$mov->id_mov;
+				$rnc->idnota=$arrayidnota[$i];
+				$rnc->save();	
+				}	
+				}
+			}
+			
+		if($request->get('tipo')=="GTO"){
+				
+			 $notas=Gastos::findOrFail($request->get('iddoc'));
+			 $notas->saldo=($notas->saldo-$request->get('total_abn'));
+			 $notas->update();
+ 
+			 	$mov=new Movnotasp;
+				$mov->tipodoc="GTO";
 				$mov->iddoc=$request->get('iddoc');
 				$mov->monto=$request->get('total_abn');
 				$mov->referencia=$request->get('ref');
