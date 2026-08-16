@@ -40,7 +40,7 @@ return $insertar_ceros = $recibo.$numero;
 				<h4 align="center"># <?php $idv=$nota->ndocumento; echo add_ceros($idv,$ceros); ?></h5> 
 				</div>	
 				<div class="col-sm-3 invoice-col" align="center">
-					<img src="{{asset('dist/img/logoempresa.png')}}" width="50%" height="80%" title="NKS">
+					<img src="{{ asset('dist/img/'.$empresa->logo)}}" width="50%" height="80%" title="NKS">
 				</div>
               </div>
 
