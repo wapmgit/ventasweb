@@ -60,7 +60,7 @@ class SendClients extends Command
 		$detalleventas=DB::table('venta as v')
 			->join('detalle_venta as dv','dv.idventa','=','v.idventa')
 			->join('articulos as art','art.idarticulo','=','dv.idarticulo')
-			->select('dv.idventa','art.nombre','dv.cantidad','dv.precio_venta')
+			->select('dv.idventa','art.nombre','dv.cantidad','dv.precio_venta','art.imagen')
 			->where('v.tipo_comprobante','=','FAC')
 			->where('v.devolu','=',0)
 			->where('v.saldo','>',0)
