@@ -58,6 +58,8 @@ Route::post('validart', [ArticulosController::class, 'validar'])->name('validart
 Route::get('reporteetiquetas', [ArticulosController::class, 'reporteetiquetas'])->name('reporteetiquetas');
 Route::get('aggnuevogrupo', [ArticulosController::class, 'aggnuevogrupo'])->name('aggnuevogrupo');
 Route::get('deletegrupo', [ArticulosController::class, 'deletegrupo'])->name('deletegrupo');
+Route::get('migrar-imagenes-articulos', [ArticulosController::class, 'migrarNombresImagenes'])->name('migrarNombresImagenes');
+
 
 Route::get('clientes', [ClientesController::class, 'index'])->name('clientes');
 Route::get('newcliente', [ClientesController::class, 'create'])->name('newcliente');

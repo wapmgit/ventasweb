@@ -9,8 +9,9 @@ use App\Models\Articulos;
 use App\Models\Categoria;
 use App\Models\Agrupados;
 use App\clase\Errores;
+use Illuminate\Support\Facades\Storage; 
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use DB;
 use Auth;
 use Dompdf\Dompdf;
 
@@ -129,15 +130,27 @@ class ArticulosController extends Controller
 			$articulo->costo=$request->get('costo');
 			$articulo->iva=$request->get('impuesto');
 				if($request->get('serial')=="on"){$articulo->serial=1;}		
-					if(!empty($request->file('imagen'))){
+				/*	if(!empty($request->file('imagen'))){
 					$file = $request->file('imagen');
 					$img = $file->getClientOriginalName();		
 					\Storage::disk('local')->put($img, \File::get($file));
 					$articulo->imagen=$img;
-					}
+					}*/
 			$mytime=Carbon::now('America/Caracas');
 			$articulo->created_at=$mytime->toDateTimeString();		
 			$articulo->save(); 
+			if ($request->hasFile('imagen')) {
+            $file = $request->file('imagen');
+            $extension = $file->getClientOriginalExtension();
+            $nombreImagen = $articulo->idarticulo . '.' . $extension;
+
+            // Almacena en el disco local usando storeAs
+            $file->storeAs('', $nombreImagen, 'local');
+
+            // Actualizamos la columna imagen con el nuevo nombre
+            $articulo->imagen = $nombreImagen;
+            $articulo->save();
+        }
 				if($request->get('showgroup')==1){		
 					$grupo=new Agrupados;
 					$grupo->idarticulo=$articulo->idarticulo;
@@ -232,12 +245,19 @@ class ArticulosController extends Controller
 		if(!$request->get('showlista')){$articulo->showlista=0;}else{$articulo->showlista=1;}
 		if($request->get('showgroup')=="on"){$articulo->usagrupo=1;}else{$articulo->usagrupo=0;}
 		if($request->get('oferta')=="on"){$articulo->oferta=1;}else{$articulo->oferta=0;}
-		if(!empty($request->file('imagen'))){
-			$file = $request->file('imagen');
-			$img = $file->getClientOriginalName();		
-        	\Storage::disk('local')->put($img, \File::get($file));
-			$articulo->imagen=$img;
-			}
+		if ($request->hasFile('imagen')) {
+    $file = $request->file('imagen');
+    $extension = $file->getClientOriginalExtension();
+    
+    // Armas el nombre usando el ID que ya existe en la instancia
+    $nombreImagen = $articulo->idarticulo . '.' . $extension; 
+    
+    // Guardas/Remplazas el archivo en Storage
+    $file->storeAs('', $nombreImagen, 'local');
+    
+    // Asignas la nueva propiedad
+    $articulo->imagen = $nombreImagen;
+}
 			$mytime=Carbon::now('America/Caracas');
 			$articulo->updated_at=$mytime->toDateTimeString();
         $articulo->update();
@@ -450,4 +470,68 @@ class ArticulosController extends Controller
 	 
 	       return view("reportes.articulos.etiquetas.".$empresa->formatoeti,["datos"=>$datos,"categorias"=>$categorias]);
     }
+public function migrarNombresImagenes()
+{
+    $articulos = DB::table('articulos') // Cambia 'articulo' por tu tabla exacta
+        ->whereNotNull('imagen')
+        ->where('imagen', '!=', '')
+        ->get();
+
+    $renombrados = 0;
+    $omitidos = 0;
+    $errores = 0;
+
+    foreach ($articulos as $articulo) {
+        $nombreViejo = trim($articulo->imagen);
+        
+        // 1. Extraer la extensión. Si el archivo viejo no tiene extensión, se fuerza a .jpg por defecto
+        $extension = pathinfo($nombreViejo, PATHINFO_EXTENSION);
+        if (empty($extension)) {
+            $extension = 'jpg';
+        }
+
+        $nuevoNombre = $articulo->idarticulo . '.' . $extension; // Ejemplo: "407.jpg"
+
+        // Si ya está renombrado correctamente en la BD, se salta
+        if ($nombreViejo === $nuevoNombre) {
+            $omitidos++;
+            continue;
+        }
+
+        try {
+            // Verificar si el archivo viejo existe en el disco
+            if (Storage::disk('local')->exists($nombreViejo)) {
+
+                // Si ya existe un archivo con el nuevo nombre, se borra primero para evitar colisión
+                if (Storage::disk('local')->exists($nuevoNombre)) {
+                    Storage::disk('local')->delete($nuevoNombre);
+                }
+
+                // Renombrar el archivo físicamente
+                Storage::disk('local')->move($nombreViejo, $nuevoNombre);
+
+                // Actualizar la Base de Datos
+                DB::table('articulos')
+                    ->where('idarticulo', $articulo->idarticulo)
+                    ->update(['imagen' => $nuevoNombre]);
+
+                $renombrados++;
+
+            } else if (Storage::disk('local')->exists($nuevoNombre)) {
+                // Si la imagen en disco ya tiene el ID pero la BD no se había actualizado
+                DB::table('articulos')
+                    ->where('idarticulo', $articulo->idarticulo)
+                    ->update(['imagen' => $nuevoNombre]);
+                $renombrados++;
+            } else {
+                $errores++;
+            }
+        } catch (\Exception $e) {
+            // Si ocurre un error de permisos con algún archivo en particular, incrementa errores y continúa con el siguiente
+            $errores++;
+        }
+    }
+
+    return "Proceso completado. Renombrados: {$renombrados}. Omitidos/Ya listos: {$omitidos}. No procesados / Errores: {$errores}.";
+}
 }

@@ -169,7 +169,9 @@ $("#articulostable").DataTable({
                 // Esto asegura que solo se exporte el contenido de la tabla
                 // y no los elementos de la interfaz de DataTables
                 modifier: {
-                    page: 'all'
+					order: 'current',
+                    page: 'all',
+					search: 'applied'
                 }
             },
             customize: function (win) {
