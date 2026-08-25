@@ -1,4 +1,4 @@
-<form action="{{route('ventas')}}" method="GET" enctype="multipart/form-data" >         
+<form action="{{route('pedidos')}}" method="GET" enctype="multipart/form-data" >         
 {{csrf_field()}}
 <div class="form-group">
 	<div class="input-group">
