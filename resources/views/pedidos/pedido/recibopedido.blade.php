@@ -35,6 +35,12 @@
             .no-print, #contenedor-botones {
                 display: none !important;
             }
+			.descripcion {
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        word-break: break-word !important;
+        overflow: visible !important;
+    }
 
             /* Estilo para el cuerpo de la página durante la impresión */
             html, body {
@@ -61,6 +67,8 @@
 
             /* Tablas ajustadas al ancho útil */
             table.tabla-ticket {
+				table-layout: auto !important;
+				height: auto !important;
                 width: 100% !important;
 				 max-width: 100% !important;
                 border-collapse: collapse;
@@ -70,6 +78,7 @@
                 font-weight: bold;
                 font-size: 10pt;
             }
+			
 
             table.tabla-ticket th, table.tabla-ticket td {
                 padding: 1px 0;
@@ -137,7 +146,7 @@
 					@endphp
                     <tr>
                         <td class="text-center">{{$det->cantidad}} {{$det->unidad}}</td>
-                        <td align="left">
+                        <td align="left" class="descripcion">
                             {{strtolower($det->articulo)}}
 							<span style="font-size: 10pt;">({{number_format($det->precio_venta, 2, ',', '.')}} x {{$det->cantidad}}) ${{number_format(($det->precio_venta * $det->cantidad), 2, ',', '.')}}</span>
                         </td>
