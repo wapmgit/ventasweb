@@ -11,6 +11,29 @@ $dias = abs($dias); $dias = floor($dias);
 return $dias;
 }
 ?>
+<style>
+@media print {
+    /* Oculta los controles de DataTables (buscador, paginador, botones de exportación, etc.) */
+    .dataTables_length,
+    .dataTables_filter,
+    .dataTables_info,
+    .dataTables_paginate,
+    .dt-buttons,
+    #imprimir {
+        display: none !important;
+    }
+
+    /* Oculta los iconos/flechas de ordenamiento en los encabezados <th> */
+    table.dataTable<thead>th.sorting:before,
+    table.dataTable<thead>th.sorting:after,
+    table.dataTable<thead>th.sorting_asc:before,
+    table.dataTable<thead>th.sorting_asc:after,
+    table.dataTable<thead>th.sorting_desc:before,
+    table.dataTable<thead>th.sorting_desc:after {
+        display: none !important;
+    }
+}
+</style>
 <div class="row">
 		@include('reportes.ventas.venci_cobro.search')
 </div>
@@ -119,19 +142,17 @@ return $dias;
 @push ('scripts')
 <script>
 $(document).ready(function(){
-    $('#imprimir').click(function(){
-	$('#articulostable').DataTable().destroy();
+$('#imprimir').click(function(){
+    // Ocultamos solo el botón para que no salga en la impresión
+    $(this).hide();
 
-// 2. Volvemos a inicializar con los cambios
-$("#articulostable").DataTable({
-		"searching": false,
-		"bPaginate": false,
-		"bInfo":false,
+    // Lanzamos la ventana de impresión (mantiene el orden que el usuario organizó en pantalla)
+    window.print();
+
+    // Mostramos nuevamente el botón y redirigimos
+    $(this).show();
+    window.location = "{{ route('reportecxcvencida') }}";
 });
-  document.getElementById('imprimir').style.display="none";
-  window.print(); 
-  window.location="{{route('reportecxcvencida')}}";
-    });
 	$("#filtro").on("change",function(){
 		var variable=$("#filtro").val();							
 		if( variable==1){
