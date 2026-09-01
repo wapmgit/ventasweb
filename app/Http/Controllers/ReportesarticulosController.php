@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Barryvdh\DomPDF\Facade\Pdf;
 use DB;
 use Auth;
 
@@ -239,7 +240,7 @@ class ReportesarticulosController extends Controller
 			//->limit(10)
             ->get(); 	 
 			 }
-			// dd($datos);
+			//dd($datos);
 			 $grupo=DB::table('categoria')->get();
         return view('reportes.articulos.catalogo.index',["orden"=>$orden,"precio"=>$precio,"datos"=>$datos,"empresa"=>$empresa,"grupo"=>$grupo,"searchText"=>$query]);
             
@@ -403,4 +404,27 @@ class ReportesarticulosController extends Controller
 			return view("reportes.mensajes.noautorizado");
 		}
     }
+public function descargarPdf(Request $request)
+{
+    // Aumentar la memoria y quitar el límite de tiempo de ejecución
+    ini_set('memory_limit', '2048M'); // 2 GB de RAM
+    set_time_limit(0); // Sin límite de tiempo (0 = infinito)
+	$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+    $datos = DB::table('articulos')
+        ->where('stock', '>', 0)
+        ->where('imagen', '!=', 'ninguna.jpg')
+        ->select('nombre', 'imagen', 'unidad', 'precio1')
+        ->get();
+
+    $pdf = Pdf::loadView('reportes.articulos.catalogo.catapdf', compact('datos','empresa'))
+        ->setPaper('letter', 'portrait')
+        ->setOptions([
+            'isRemoteEnabled' => true,
+            'isHtml5ParserEnabled' => false, // Apagado para ganar velocidad de procesamiento
+            'isPhpEnabled' => false,
+            'chroot' => public_path(),
+        ]);
+
+    return $pdf->stream('catalogo.pdf');
+}
 }

@@ -47,12 +47,14 @@
         .card-producto {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
-            display: block !important;
+			position: relative !important;
+            display: inline-block !important;
             float: left !important;
             width: 48% !important; /* Muestra 2 productos por fila de forma estable */
             margin: 1% !important;
             box-shadow: none !important;
             border: 1px solid #ccc !important;
+			overflow: hidden !important;
         }
 
         /* Control estricto de imágenes para evitar desborde */
@@ -134,6 +136,9 @@
             <label>Usuario: </label> {{ Auth::user()->name }}
             <div class="form-group no-print" align="center">
                 <button type="button" id="imprimir" class="btn btn-primary btn-sm">Imprimir</button>
+				<a href="{{ route('catalogo.pdf') }}" class="btn btn-danger btn-sm" target="_blank">
+    <i class="fa fa-file-pdf"></i> Descargar PDF Directo
+</a>
             </div>
         </div>
     </div>
