@@ -117,7 +117,7 @@ padding:5px;
 		<label>Usuario: </label>  {{ Auth::user()->name }}  
 			<div class="form-group" align="center">
 				<button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button> 
-						<a href="{{ route('catalogo.pdf') }}" class="btn btn-danger btn-sm" target="_blank">
+						<a href="{{ route('catalogo.pdf',request()->all()) }}" class="btn btn-danger btn-sm" target="_blank">
     <i class="fa fa-file-pdf"></i> Descargar PDF Directo
 </a>
 			</div>

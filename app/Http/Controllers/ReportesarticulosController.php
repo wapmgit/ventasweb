@@ -406,21 +406,101 @@ class ReportesarticulosController extends Controller
     }
 public function descargarPdf(Request $request)
 {
-    // Aumentar la memoria y quitar el límite de tiempo de ejecución
-    ini_set('memory_limit', '2048M'); // 2 GB de RAM
-    set_time_limit(0); // Sin límite de tiempo (0 = infinito)
+	//dd($request);
+    ini_set('memory_limit', '2048M'); 
+    set_time_limit(0); 
 	$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
-    $datos = DB::table('articulos')
+			$ver=trim($request->get('ver'));
+             $precio=trim($request->get('precio'));
+             $orden=trim($request->get('orden'));
+			 $etiquetas=$request->get('etiqueta');
+			 $nombreart=$request->get('nombreart');
+			// $listaEtiquetas = array_map('trim', explode(',', $etiquetas));
+			 $listaEtiquetas = !empty($etiquetas) ? array_map('trim', explode(',', $etiquetas)) : [];
+			   if (($precio)==""){	$p="precio1"; }else{ $p="precio".$request->get('precio')." as precio1";}
+               if (($orden)==""){ $ord="nombre";}else{$ord=$request->get('orden'); }
+               if (($ver)==""){ $opver=0;}else{$opver=$ver; }
+			    $co=">"; $covip=">"; $vvip=-1; $vo=-1;
+			   switch ($ver) {
+					case 1:
+					$p="precio1";
+					 $co="=";
+					 $vo=1;
+						break;
+					case 2:
+					$p="pvip as precio1";
+					 $covip=">";
+					 $vvip=0;
+						break;
+				}
+			   //dd($request);
+			$query=trim($request->get('grupo'));
+             if (($query)==""){			
+            $datos=DB::table('articulos')                
+            -> select('codigo','nombre',$p,'imagen','unidad','oferta')
+            ->where('imagen','<>',"ninguna.jpg")
+			-> where('stock','>',0)
+			->where('showlista','=',1)
+			->OrderBy('nombre','asc')
+			//->limit(10)
+            ->get(); 
+			 }
+			  if (($query)==0){							
+            $datos=DB::table('articulos')                
+            -> select('codigo','nombre',$p,'imagen','unidad','oferta')
+			-> where('stock','>',0)
+			->where('showlista','=',1)
+			->where('oferta',$co,$vo)
+			->where('pvip',$covip,$vvip)
+            ->where('imagen','<>',"ninguna.jpg")
+				->when(!empty($listaEtiquetas), function($query) use ($listaEtiquetas) {
+					$query->where(function($q) use ($listaEtiquetas) {
+						foreach ($listaEtiquetas as $etiqueta) {
+							$q->orWhereRaw('FIND_IN_SET(?, REPLACE(etiquetas, " ", "")) > 0', [$etiqueta]);
+						}
+					});
+				})
+				->when(!empty($nombreart), function ($query) use ($nombreart) {
+					$query->where('nombre', 'LIKE', '%' . $nombreart . '%');
+				})
+			->OrderBy($ord,'asc')
+			//->limit(10)
+            ->get(); 	 
+			 }
+			if (($query)>0){							
+            $datos=DB::table('articulos')                
+            -> select('codigo','nombre',$p,'imagen','unidad','oferta')
+			-> where('idcategoria','=',$query)
+			-> where('stock','>',0)
+			->where('showlista','=',1)
+			->where('oferta',$co,$vo)
+			->where('pvip',$covip,$vvip)
+            ->where('imagen','<>',"ninguna.jpg")
+				->when(!empty($listaEtiquetas), function($query) use ($listaEtiquetas) {
+				$query->where(function($q) use ($listaEtiquetas) {
+					foreach ($listaEtiquetas as $etiqueta) {
+					$q->orWhereRaw('FIND_IN_SET(?, etiquetas) > 0', [$etiqueta]);
+					}
+					});
+				})
+				->when(!empty($nombreart), function ($query) use ($nombreart) {
+					$query->where('nombre', 'LIKE', '%' . $nombreart . '%');
+				})
+			->OrderBy($ord,'asc')
+			//->limit(10)
+            ->get(); 	 
+			 }
+    /*$datos = DB::table('articulos')
         ->where('stock', '>', 0)
         ->where('imagen', '!=', 'ninguna.jpg')
         ->select('nombre', 'imagen', 'unidad', 'precio1')
-        ->get();
+        ->get();*/
 
     $pdf = Pdf::loadView('reportes.articulos.catalogo.catapdf', compact('datos','empresa'))
         ->setPaper('letter', 'portrait')
         ->setOptions([
             'isRemoteEnabled' => true,
-            'isHtml5ParserEnabled' => false, // Apagado para ganar velocidad de procesamiento
+            'isHtml5ParserEnabled' => false, 
             'isPhpEnabled' => false,
             'chroot' => public_path(),
         ]);
