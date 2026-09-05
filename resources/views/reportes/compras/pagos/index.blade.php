@@ -1,7 +1,7 @@
 @extends ('layouts.master')
 <?php $mostrar=0; ?>
 @section ('contenido')
-<?php $mostrar=1; $tingnd=0; $acumegre=0; ?>
+<?php $mostrar=1; $tingnd=0; $acumegre=0; $acumnc=0;?>
 <div class="row">
 		@include('reportes.compras.pagos.search')
 	</div>
@@ -114,9 +114,7 @@ $cefe=0;?>
 						<td colspan="6"><strong>Total Egresos N/D</strong></td><td colspan="3"><strong><?php  echo number_format($tingnd, 2,',','.'); ?> $</strong></td></tr>
 				</table>
 	  </div>
-	  </div>
-
-	     <div class="col-12 table-responsive">
+	     <div class="col-6 table-responsive"><h5 align="center">Desglose de Egresos</h5>
 	    <table width="100%">
       <thead style="background-color: #E6E6E6" >
 	  <th>Moneda</th>
@@ -135,6 +133,35 @@ $cefe=0;?>
 		  <td><strong><?php  echo number_format($acumegre, 2,',','.')." $"; ?></strong></td></tr>
       </table>
 	  </div>
+	  		 <div class="col-6 table-responsive"><h5 align="center">Nota de Credito Aplicada</h5>
+			<table id="desglose" width="100%">
+				<thead style="background-color: #E6E6E6" >
+				 <th>#</th> 
+					<th>fecha</th> 
+					<th>Referencia</th>
+					<th>Monto</th>						 
+				</thead>                     
+				<tbody>                        
+					@foreach($recibonc as $renc) <?php  $acumnc=$acumnc+$renc->monto;?>
+					<tr >
+					<td>@if($rol->anularrc==1)<?php if($renc->monto>0){?><a href="" data-target="#modal-deletenc-{{$renc->id_mov}}" data-toggle="modal" ><button class="btn btn-danger btn-xs" >X</button></a><?php } ?>@endif{{$renc->id_mov}}	</td>
+						<td><?php echo date("d-m-Y",strtotime($renc->fecha)); ?></td>
+						<td>{{$renc->tipodoc}}{{$renc->iddoc}}-{{$renc->referencia}}</td> 
+						<td><?php echo number_format( $renc->monto, 2,',','.'); ?></td>						  
+					</tr>
+							@include('reportes.compras.pagos.anularnc')
+					@endforeach
+				<tfoot >                    
+					<th colspan="3">Total</th>
+					<th><?php echo "$ ".number_format( $acumnc, 2,',','.');?></th>
+					<th ><h4 id="total"><b></b></h4></th>
+				</tfoot>
+				</tbody>
+			</table>
+		</div>
+	  </div>
+
+	  
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
   		       
                      <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">

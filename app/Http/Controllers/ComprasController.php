@@ -14,6 +14,7 @@ use App\Models\Comprobantes;
 use App\Models\MovBancos;
 use App\Models\Proveedores;
 use App\Models\Notasadmp;
+use App\Models\Movnotasp;
 use App\Models\Monedas;
 use App\Models\Articulos;
 use App\Models\Seriales;
@@ -488,6 +489,11 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 					$delmov->estatus=1;
 					$delmov->update();	
 				}
+				 $monton=$recibo->monto;
+				 $recibo->referencia='Anulado '.$monton.'$';
+				 $recibo->monto=0;
+				 $recibo->recibido=0;
+				 $recibo->update();
 		}	if($request->get('tiporecibo')==1){
 			$compra=$recibo->idgasto;	
 				$mbanco=DB::table('mov_ban')->where('tipodoc','=',"GAST")->where('iddocumento','=',$request->get('id'))->first();
@@ -500,6 +506,11 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 					$delmov->estatus=1;
 					$delmov->update();	
 				}
+				 $monton=$recibo->monto;
+				 $recibo->referencia='Anulado '.$monton.'$';
+				 $recibo->monto=0;
+				 $recibo->recibido=0;
+				 $recibo->update();
 		}
 		if($request->get('tiporecibo')==2){
 			$compra=$recibo->idnota;	
@@ -513,26 +524,52 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 					$delmov->estatus=1;
 					$delmov->update();	
 				}
+				 $monton=$recibo->monto;
+				 $recibo->referencia='Anulado '.$monton.'$';
+				 $recibo->monto=0;
+				 $recibo->recibido=0;
+				 $recibo->update();
 		}
-		 $monton=$recibo->monto;
-		 $recibo->referencia='Anulado '.$monton.'$';
-		 $recibo->monto=0;
-		 $recibo->recibido=0;
-		 $recibo->update();
-			 if($request->get('tiporecibo')==0){
-					 $ingreso=Compras::findOrFail($compra);
-					  $ingreso->saldo=($ingreso->saldo+$monton);
-					 $ingreso->update();
-			 }if($request->get('tiporecibo')==1){
-					 $ingreso=Gastos::findOrFail($compra);
-					  $ingreso->saldo=($ingreso->saldo+$monton);
-					 $ingreso->update(); 
-			 }
-			 if($request->get('tiporecibo')==2){
-					 $ingreso=Notasadmp::findOrFail($compra);
-					  $ingreso->pendiente=($ingreso->pendiente+$monton);
-					 $ingreso->update(); 
-			 }
+				
+					 if($request->get('tiporecibo')==0){
+							 $ingreso=Compras::findOrFail($compra);
+							  $ingreso->saldo=($ingreso->saldo+$monton);
+							 $ingreso->update();
+					 }if($request->get('tiporecibo')==1){
+							 $ingreso=Gastos::findOrFail($compra);
+							  $ingreso->saldo=($ingreso->saldo+$monton);
+							 $ingreso->update(); 
+					 }
+					 if($request->get('tiporecibo')==2){
+							 $ingreso=Notasadmp::findOrFail($compra);
+							  $ingreso->pendiente=($ingreso->pendiente+$monton);
+							 $ingreso->update(); 
+					 }
+		if($request->get('tiporecibo')==3){		
+		$nota=Movnotasp::findOrFail($request->get('id'));
+				$nc=DB::table('relacionncp')-> where('idmov','=',$request->get('id'))->first();
+		$doc=$nota->tipodoc;
+		
+			if($doc=="N/D"){
+				$mov=Notasadmp::findOrFail($nota->iddoc); 	
+				$mov->pendiente=$mov->pendiente+$nota->monto;
+				$mov->update();
+			}if($doc=="FAC"){
+				$mov=Compras::findOrFail($nota->iddoc); 	
+				$mov->saldo=$mov->saldo+$nota->monto;
+				$mov->update();
+			}if($doc=="GTO"){
+				$mov=Gastos::findOrFail($nota->iddoc); 	
+				$mov->saldo=$mov->saldo+$nota->monto;
+				$mov->update();
+			}
+				$movnc=Notasadmp::findOrFail($nc->idnota); 	
+				$movnc->pendiente=$movnc->pendiente+$nota->monto;
+				$movnc->update();
+		$nota->monto=0;
+		$nota->referencia="Anulado";
+		$nota->update();		
+	}
 return Redirect::to('detallegresos');
 		
 }

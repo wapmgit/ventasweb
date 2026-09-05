@@ -253,14 +253,15 @@ class ReportescomprasController extends Controller
             -> select('p.nombre','re.referencia','n.idnota as tipo_comprobante','n.idnota as num_comprobante','re.idbanco','re.idrecibo','re.idpago','re.monto','re.recibido','re.fecha_comp as fecha','n.usuario as vendedor')
             -> whereBetween('re.fecha_comp', [$query, $query2])
 			-> groupby('re.idrecibo')
-            ->get();			
+            ->get();	
+			$recibonc=DB::table('mov_notasp as mov')-> whereBetween('mov.fecha', [$query, $query2])->get();		
             $desglose=DB::table('comprobante')->select(DB::raw('sum(recibido) as recibido'),DB::raw('sum(monto) as monto'),'idbanco')
             -> whereBetween('fecha_comp', [$query, $query2])
             ->groupby('idpago','idbanco')
             ->get();
 			//dd($desglose);
 		   $query2=date("Y-m-d",strtotime($query2."- 1 days"));
-			return view('reportes.compras.pagos.index',["rol"=>$rol,"egresosnd"=>$egresosnd,"comprobante"=>$desglose,"empresa"=>$empresa,"gastos"=>$gastos,"pagos"=>$pagos,"searchText"=>$query,"searchText2"=>$query2]);
+			return view('reportes.compras.pagos.index',["recibonc"=>$recibonc,"rol"=>$rol,"egresosnd"=>$egresosnd,"comprobante"=>$desglose,"empresa"=>$empresa,"gastos"=>$gastos,"pagos"=>$pagos,"searchText"=>$query,"searchText2"=>$query2]);
 			} else { 
 	return view("reportes.mensajes.noautorizado");
 	}
