@@ -73,7 +73,7 @@ class VentasController extends Controller
         }
     }
     public function create(Request $request){
-		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
+		$rol=DB::table('roles')-> select('crearventa','aplidescuento','cambiarprecioventa','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
 		 $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
 		 if ($empresa->orderart==1){$order="nombre";}else{$order="idarticulo";}
 		if ($rol->crearventa==1){
@@ -149,6 +149,7 @@ class VentasController extends Controller
     $venta->control=$request->get('control');
     $venta->tasa=$request->get('tc');
     $venta->total_venta=$request->get('total_venta');
+    $venta->descuento=$request->get('mdsctoventa');
     $venta->base=$request->get('totalbase');
     $venta->total_iva=$request->get('total_iva');
     $venta->texe=$request->get('totalexe');
@@ -571,7 +572,7 @@ public function recibo($id){
 			if ($empresa->orderart==1){$order="a.nombre";}else{$order="a.idarticulo";}
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select ('v.tasa','v.idventa','v.fecha_hora','p.nombre','p.cedula','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            -> select ('v.descuento','v.tasa','v.idventa','v.fecha_hora','p.nombre','p.cedula','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
             ->where ('v.idventa','=',$id)
             -> first();
             $detalles=DB::table('detalle_venta as dv')
@@ -592,7 +593,7 @@ public function recibo58($id){
 			if ($empresa->orderart==1){$order="a.nombre";}else{$order="a.idarticulo";}
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select ('v.tasa','v.idventa','v.fecha_hora','p.nombre','p.cedula','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            -> select ('v.descuento','v.tasa','v.idventa','v.fecha_hora','p.nombre','p.cedula','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
             ->where ('v.idventa','=',$id)
             -> first();
             $detalles=DB::table('detalle_venta as dv')
@@ -611,7 +612,7 @@ public function recibo58($id){
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select ('v.tasa','v.idventa','v.fecha_hora','p.nombre','p.cedula','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            -> select ('v.descuento','v.tasa','v.idventa','v.fecha_hora','p.nombre','p.cedula','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
             ->where ('v.idventa','=',$id)
             -> first();
             $detalles=DB::table('detalle_venta as dv')
@@ -637,7 +638,7 @@ public function show(Request $request, $id){
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
             -> leftjoin ('devolucion as dev','dev.idventa','=','v.idventa')
-            -> select ('v.fecha_emi','v.idventa','v.tasa','v.fecha_hora','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu','dev.fecha_hora as fechadev','dev.user as userdev')
+            -> select ('v.descuento','v.fecha_emi','v.idventa','v.tasa','v.fecha_hora','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu','dev.fecha_hora as fechadev','dev.user as userdev')
             ->where ('v.idventa','=',$id)
             -> first();
 			if($rol->cargarapida==0){
@@ -694,7 +695,7 @@ public function fbs($id){
 			$venta=DB::table('venta as v')
 			->join('formalibre as fl','fl.idventa','v.idventa')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select ('v.idventa','fl.idforma','v.fecha_hora','v.fecha_emi','v.tasa','v.tasa','v.texe','v.base','v.total_iva','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            -> select ('v.descuento','v.idventa','fl.idforma','v.fecha_hora','v.fecha_emi','v.tasa','v.tasa','v.texe','v.base','v.total_iva','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
             ->where ('v.idventa','=',$id)
             -> first();
 			//dd($venta);
@@ -721,7 +722,7 @@ public function notabs($id){
 			if ($empresa->orderart==1){$order="a.nombre";}else{$order="a.idarticulo";}
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select ('v.idventa','v.fecha_hora','v.fecha_emi','v.tasa','v.tasa','v.texe','v.base','v.total_iva','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            -> select ('v.descuento','v.idventa','v.fecha_hora','v.fecha_emi','v.tasa','v.tasa','v.texe','v.base','v.total_iva','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
             ->where ('v.idventa','=',$id)
             -> first();
 			//dd($venta);
@@ -748,7 +749,7 @@ public function notads($id){
 			 if ($empresa->orderart==1){$order="a.nombre";}else{$order="a.idarticulo";}
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select ('v.idventa','v.fecha_hora','v.fecha_emi','v.tasa','v.tasa','v.texe','v.base','v.total_iva','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            -> select ('v.descuento','v.idventa','v.fecha_hora','v.fecha_emi','v.tasa','v.tasa','v.texe','v.base','v.total_iva','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
             ->where ('v.idventa','=',$id)
             -> first();
 			//dd($venta);
@@ -775,7 +776,7 @@ public function nota2ds($id){
 			 if ($empresa->orderart==1){$order="a.nombre";}else{$order="a.idarticulo";}
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select ('v.idventa','v.fecha_hora','v.fecha_emi','v.tasa','v.tasa','v.texe','v.base','v.total_iva','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            -> select ('v.descuento','v.idventa','v.fecha_hora','v.fecha_emi','v.tasa','v.tasa','v.texe','v.base','v.total_iva','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
             ->where ('v.idventa','=',$id)
             -> first();
 		//dd($venta);
@@ -868,7 +869,7 @@ public function nota2ds($id){
     }
 	public function facturar(Request $request, $idcliente){
 		//dd($request);
-		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
+		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa','aplidescuento','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->crearventa==1){
 	     $monedas=DB::table('monedas')->get();
 		 $rutas=DB::table('rutas')->get();

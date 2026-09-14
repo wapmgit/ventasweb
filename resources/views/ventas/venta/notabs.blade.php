@@ -90,7 +90,7 @@ function truncar($numero, $digitos)
 						<?php for($i=($cntline+$cntser);$i<16;$i++){ echo "<tr><td>&nbsp;</td></tr>"; }?>
                       </tbody>
 					       <tfoot>                      
-                          <th colspan="7">TOTAL:</th>
+                          <th colspan="7">TOTAL: <?php if($venta->descuento >0){ echo " Descuento ".number_format(($venta->descuento*$venta->tasa), 2,',','.')." Bs"; }?></th>
                           <th ><b><font size="4"><?php echo "Bs ".number_format(($acumsub), 2,',','.'); ?> </b></font></th>
                           </tfoot>
 						  <?php if($empresa->printpeso ==1){?> 

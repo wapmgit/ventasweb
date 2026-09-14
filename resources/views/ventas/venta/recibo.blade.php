@@ -172,14 +172,21 @@ function adjustext($textoin, $nc) {
 
     <!-- TOTALES -->
     <table class="tabla-ticket" style="margin-top: 5px;">
+	<?php if($venta->descuento >0){ ?><tr>
+	       <tr>
+            <td colspan="2" class="text-left bold">
+                SubTotal($):  ${{number_format($acumsub, 2, ',', '.')}}   Dscto ${{number_format(($venta->descuento), 2,',','.')}}  
+            </td>
+        </tr>
+	</tr><?php } ?>
         <tr>
-            <td width="20%" class="text-right bold">
-                TOTAL($):
+            <td width="40%" class="text-left bold">
+                TOTAL($): 
             </td>
-            <td width="80%" class="text-right bold border-top" style="font-size: 12pt;">
-                ${{number_format($acumsub, 2, ',', '.')}}
+            <td width="60%" class="text-right bold border-top" style="font-size: 12pt;">
+                ${{number_format(($acumsub-$venta->descuento), 2, ',', '.')}}
             </td>
-        
+        </tr>
     </table>
     <?php if(count($recibos) > 0){ ?>
         <table class="tabla-ticket" style="margin-top: 5px; font-size: 9pt;">

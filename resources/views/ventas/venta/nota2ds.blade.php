@@ -95,7 +95,7 @@ function truncar($numero, $digitos)
             </table>
 			  <table id="detalles" width="100%" border="1">
 				<tr>      
-					<td ><b>TOTAL:</b></td>
+					<td ><b>TOTAL: <?php if($venta->descuento >0){ echo " Descuento ".number_format(($venta->descuento), 2,',','.')." $"; }?></b></td>
 					<td colspan="3" align="right"><b><font size="4"><?php echo "$ ".number_format(($acumsub), 2,',','.')." "; ?>&nbsp;</b></font></td>
 				</tr>
 				<?php if($empresa->printpeso ==1){?> 

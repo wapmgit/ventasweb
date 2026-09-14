@@ -173,6 +173,12 @@
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
+					 <label>Aplicar Descto. Global: </label><label>
+					  <input type="checkbox" name="op78" class="minimal" @if($q->aplidescuento==1) checked @endif ></label>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+					 <div class="form-group">
 					 <label>Crear Gasto: </label><label>
 					  <input type="checkbox" name="op13" class="minimal" @if($q->creargasto==1) checked @endif ></label>
 

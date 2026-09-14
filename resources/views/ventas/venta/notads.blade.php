@@ -100,12 +100,17 @@ function truncar($numero, $digitos)
 						
                         @endforeach
 						<?php for($i=($cntline+$cntser);$i<16;$i++){ echo "<tr><td>&nbsp;</td></tr>"; }?>
+						 <?php if($venta->descuento >0){ ?>
+						 <tr><td colspan="8" align="right" ><b><font size="4"><?php echo "$ ".number_format(($acumsub), 2,',','.')." "; ?></b></font></td></tr>
+						 <tr><td colspan="8" align="right" ><b>Descto.<font size="3"><?php echo "$ ".number_format(($venta->descuento), 2,',','.')." "; ?></b></font></td></tr>
+						 
+						 <?php } ?>
                       </tbody>
             </table>
 			  <table id="detalles" width="100%" border="1">
 				<tr>      
-					<td ><b>TOTAL:</b></td>
-					<td colspan="7" align="right"><b><font size="4"><?php echo "$ ".number_format(($acumsub), 2,',','.')." "; ?>&nbsp;</b></font></td>
+					<td ><b>TOTAL: </b></td>
+					<td colspan="7" align="right"><b><font size="4"><?php echo "$ ".number_format(($acumsub-$venta->descuento), 2,',','.')." "; ?>&nbsp;</b></font></td>
 				</tr>
 				<?php if($empresa->printpeso ==1){?> 
 				<tr><td colspan="7"><b>Items:</b> <?php echo $cntline;  ?>, <b>Peso Total: </b> <?php echo $acumpeso; ?> Kg.</td></tr>

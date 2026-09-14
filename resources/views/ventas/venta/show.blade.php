@@ -91,8 +91,8 @@ $cntline=$cntser=0; $acumpeso=0;
 						<?php for($i=($cntline+$cntser);$i<30;$i++){ echo "<tr><td>&nbsp;</td></tr>"; }?>
                       </tbody>
 					       <tfoot>  
-						<th>REF<?php echo " :".number_format(($venta->total_venta), 2,',','.'); ?></th>						   
-                          <th colspan="7"><div align="right">TOTAL: </div></th>
+						<th colspan="2">REF<?php echo " :".number_format(($venta->total_venta), 2,',','.'); if($venta->descuento >0){ echo " Descuento ".number_format(($venta->descuento*$venta->tasa), 2,',','.')." Bs"; }?></th>						   
+                          <th colspan="6"><div align="right">TOTAL: </div></th>
                           <th align="center"><b><font size="4"><?php echo " Bs ".number_format(($venta->total_venta*$venta->tasa), 2,',','.'); ?> </b></font></th>
                         <?php if($empresa->printpeso ==1){?>  
 						<tr><td colspan="7"><b>Items:</b> <?php echo $cntline;  ?>, <b>Peso Total: </b> <?php echo $acumpeso; ?> Kg.</td></tr>
