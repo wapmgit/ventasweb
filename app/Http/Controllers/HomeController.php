@@ -44,7 +44,7 @@ class HomeController extends Controller
 		$vjun =DB::table('venta')-> select(DB::raw('sum(total_venta) as total '))-> whereBetween('fecha_hora', [$y.'0601',$y.'0630']) -> first();
 		$vjul =DB::table('venta')-> select(DB::raw('sum(total_venta) as total '))-> whereBetween('fecha_hora', [$y.'0701',$y.'0731']) -> first();
 		$vago =DB::table('venta')-> select(DB::raw('sum(total_venta) as total '))-> whereBetween('fecha_hora', [$y.'0801',$y.'0831']) -> first();
-		$vsep =DB::table('venta')-> select(DB::raw('sum(total_venta) as total '))-> whereBetween('fecha_hora', [$y.'0901',$y.'0931']) -> first();
+		$vsep =DB::table('venta')-> select(DB::raw('sum(total_venta) as total '))-> whereBetween('fecha_hora', [$y.'0901',$y.'0930']) -> first();
 		$voct =DB::table('venta')-> select(DB::raw('sum(total_venta) as total '))-> whereBetween('fecha_hora', [$y.'1001',$y.'1101']) -> first();
 		$vnov =DB::table('venta')-> select(DB::raw('sum(total_venta) as total '))-> whereBetween('fecha_hora', [$y.'1101',$y.'1131']) -> first();
 		$vdic =DB::table('venta')-> select(DB::raw('sum(total_venta) as total '))-> whereBetween('fecha_hora', [$y.'1201',$y.'1231']) -> first();
@@ -58,7 +58,7 @@ class HomeController extends Controller
 		$cjun =DB::table('compras')-> select(DB::raw('sum(total) as total '))-> whereBetween('fecha_hora', [$y.'0601',$y.'0630']) -> first();
 		$cjul =DB::table('compras')-> select(DB::raw('sum(total) as total '))-> whereBetween('fecha_hora', [$y.'0701',$y.'0731']) -> first();
 		$cago =DB::table('compras')-> select(DB::raw('sum(total) as total '))-> whereBetween('fecha_hora', [$y.'0801',$y.'0831']) -> first();
-		$csep =DB::table('compras')-> select(DB::raw('sum(total) as total '))-> whereBetween('fecha_hora', [$y.'0901',$y.'0931']) -> first();
+		$csep =DB::table('compras')-> select(DB::raw('sum(total) as total '))-> whereBetween('fecha_hora', [$y.'0901',$y.'0930']) -> first();
 		$coct =DB::table('compras')-> select(DB::raw('sum(total) as total '))-> whereBetween('fecha_hora', [$y.'1001',$y.'1031']) -> first();
 		$cnov =DB::table('compras')-> select(DB::raw('sum(total) as total '))-> whereBetween('fecha_hora', [$y.'1101',$y.'1131']) -> first();
 		$cdic =DB::table('compras')-> select(DB::raw('sum(total) as total '))-> whereBetween('fecha_hora', [$y.'1201',$y.'1231']) -> first();
