@@ -45,11 +45,11 @@
 					<tr>        
 					  <td>{{ $q->nombre}} - <?php echo number_format($q->pventa1, 2,',','.');?></td>
 					  <td>{{ $q->grupo}}</td>
-					  <td><?php if ($auxp==$auxpv) {$real=$q->pventa/$q->vendido; echo number_format($real, 2,',','.'); }
-					  else { $real=($q->pventa/$q->vendido); echo number_format(($real), 2,',','.');}
+					  <td><?php if ($auxp==$auxpv) {$real=$q->pventa/$vendido; echo number_format($real, 2,',','.'); }
+					  else { $real=($q->pventa/$vendido); echo number_format(($real), 2,',','.');}
 					  ?></td>
-					   <td><?php echo number_format(($q->vendido), 2,',','.'); ?></td>
-					   <td><?php echo number_format(($q->vendido*$real), 2,',','.'); ?></td>       
+					   <td><?php echo number_format(($vendido), 2,',','.'); ?></td>
+					   <td><?php echo number_format(($qvendido*$real), 2,',','.'); ?></td>       
 					</tr>
 					@endforeach
 					<tr>
