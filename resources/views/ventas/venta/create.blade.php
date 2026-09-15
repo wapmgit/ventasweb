@@ -176,7 +176,7 @@ $idv=0;
 								<th>Articulo</th>
 								<th>Cantidad</th>
 								<th align="center">Precio</th>
-								<th>Descto. <?php if ($rol->aplidescuento==1){?><i style="display: none" id="vdescuento" alt="Aplicar descuento" class="fa-solid fa-percent"></i><?php } ?></th>
+								<th>Descto.  <i <?php if ($rol->aplidescuento==1){ echo "style='display: none'"; } ?> id="vdescuento" alt="Aplicar descuento" class="fa-solid fa-percent"></i></th>
 								<th>Precio Venta</th> 
 								<th>SubTotal</th>
 							
