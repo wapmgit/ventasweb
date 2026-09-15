@@ -40,7 +40,7 @@
 					$vendido = (!empty($q->vendido)) ? $q->vendido : 1;
 					$tventa=$tventa +(($q->pventa/$vendido)*$vendido); 
 					$auxp=number_format($q->vpromedio, 2,',','.'); $auxpv=number_format($q->pventa, 2,',','.');
-					$acumpeso=$acumpeso +($q->vendido*$q->peso); 
+					$acumpeso=$acumpeso +($vendido*$q->peso); 
 						?>
 					<tr>        
 					  <td>{{ $q->nombre}} - <?php echo number_format($q->pventa1, 2,',','.');?></td>
@@ -49,7 +49,7 @@
 					  else { $real=($q->pventa/$vendido); echo number_format(($real), 2,',','.');}
 					  ?></td>
 					   <td><?php echo number_format(($vendido), 2,',','.'); ?></td>
-					   <td><?php echo number_format(($qvendido*$real), 2,',','.'); ?></td>       
+					   <td><?php echo number_format(($vendido*$real), 2,',','.'); ?></td>       
 					</tr>
 					@endforeach
 					<tr>
