@@ -69,6 +69,7 @@ class VendedoresController extends Controller
         $paciente->telefono=$request->get('telefono');
     	$paciente->direccion=$request->get('direccion');
     	$paciente->comision=$request->get('comision');
+		if($request->get('activo')=="on"){$paciente->activo=1;}else{$paciente->activo=0;}	
         $paciente->update();
         return Redirect::to('vendedores');
 	}

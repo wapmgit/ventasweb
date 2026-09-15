@@ -30,12 +30,20 @@
             	<input type="text" name="direccion" class="form-control" value="{{$vendedores->direccion}}" placeholder="Descripción...">
             </div>
 		</div>
-		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">		
+		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">		
 			<div class="form-group">
             	<label for="nombre">Comision</label>
             	<input type="number" min="0" name="comision" value="{{$vendedores->comision}}" class="form-control" placeholder="%">
             @if($errors->first('comision'))<P class='text-danger'>{{$errors->first('comision')}}</p>@endif
 			</div>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">	
+		 <div class="form-group"></br>
+                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                      <input type="checkbox" name="activo"  <?Php if($vendedores->activo==1) echo "checked"; ?> class="custom-control-input" id="customSwitch3">
+                      <label class="custom-control-label" for="customSwitch3">¿Activo?</label>
+                    </div>
+                  </div>
 		</div>
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">	
             <div class="form-group">
