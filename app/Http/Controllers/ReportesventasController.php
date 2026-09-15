@@ -1222,6 +1222,7 @@ class ReportesventasController extends Controller
 			->where('co.estatus','0')		
 		->whereBetween('co.fecha_hora', [$query, $query2])	 
 		  ->groupby('art.idarticulo')
+		  ->Orderby('art.nombre','asc')
 		  ->get(); 
 
 		$vende=DB::table('proveedores')->where('idproveedor','=',$request->get('proveedor'))->first();  
@@ -1234,6 +1235,7 @@ class ReportesventasController extends Controller
 		 ->where('co.devolu','0')
 		 ->whereBetween('co.fecha_emi', [$query, $query2])	 
 		  ->groupby('art.idarticulo')
+		  ->orderby('vendido','desc')
 		  ->get(); 
 	}
 			$query2=date("Y-m-d",strtotime($query2."- 1 days"));

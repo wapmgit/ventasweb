@@ -28,8 +28,9 @@
 			   <div class="col-12 table-responsive">
 				<table width="100%">
 					<thead style="background-color: #E6E6E6" >    
-					  <th>Articulo</th>
-					   <th>Stock</th>
+					    <th>Stock</th> 
+						<th>Articulo</th>
+					
 					  <th>Cant. Compras</th>
 					  <th>Cant. Ventas</th>
 					 
@@ -39,8 +40,9 @@
 					<?php $count++; $tcompra=$tcompra +($q->comprado); 
 						?>
 					<tr  <?php if (($count%2)==0){ echo "style='background-color: #D4E6F1 !important'";}?>>        
-					  <td>{{ $q->nombre}} </td>
-					    <td><?php echo number_format($q->stock, 2,',','.');?></td>
+					     <td><?php echo number_format($q->stock, 2,',','.');?></td> 
+						 <td>{{ $q->nombre}} </td>
+					
 					  <td><?php echo number_format($q->comprado, 2,',','.');?></td>
 					  <td>	@foreach ($ventas as $v)
 					  <?php  if($q->idarticulo == $v->idarticulo){ 
