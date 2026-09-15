@@ -34,9 +34,11 @@
 					  <th>Cantidad</th>
 					  <th>Monto</th>     
 					</thead>
-						<?php $ctra= 0; $cche=0; $cdeb=0; $acumpeso=0; $credito=0; $contado=0;$real=0; $count=0;$tventa=0; $auxp=$auxpv=0;?>
+						<?php $ctra= 0;$vendido=0; $cche=0; $cdeb=0; $acumpeso=0; $credito=0; $contado=0;$real=0; $count=0;$tventa=0; $auxp=$auxpv=0;?>
 					@foreach ($datos as $q)
-					<?php $tventa=$tventa +(($q->pventa/$q->vendido)*$q->vendido); 
+					<?php 
+					$vendido = (!empty($q->vendido)) ? $q->vendido : 1;
+					$tventa=$tventa +(($q->pventa/$vendido)*$vendido); 
 					$auxp=number_format($q->vpromedio, 2,',','.'); $auxpv=number_format($q->pventa, 2,',','.');
 					$acumpeso=$acumpeso +($q->vendido*$q->peso); 
 						?>
