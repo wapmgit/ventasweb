@@ -42,7 +42,7 @@ class ReportesventasController extends Controller
             $datos=DB::table('venta as v')
 			-> join('clientes as c','v.idcliente','=','c.id_cliente')
 			-> join ('vendedores as ven','ven.id_vendedor','=','v.idvendedor')
-			->select('v.idventa','c.nombre','v.tipo_comprobante','v.num_comprobante','v.estado','v.total_venta','v.fecha_hora','v.fecha_emi','v.saldo','v.devolu','ven.nombre as vendedor','v.user')
+			->select('v.descuento','v.idventa','c.nombre','v.tipo_comprobante','v.num_comprobante','v.estado','v.total_venta','v.fecha_hora','v.fecha_emi','v.saldo','v.devolu','ven.nombre as vendedor','v.user')
 			-> where ('v.idvendedor',$c,$v)
 			-> where ('c.ruta',$cr,$r)
 			-> whereBetween('v.fecha_hora', [$query, $query2])
@@ -89,7 +89,7 @@ class ReportesventasController extends Controller
 			$datos=DB::table('venta as v')
 			-> join('clientes as c','v.idcliente','=','c.id_cliente')
 			-> join ('vendedores as ven','ven.id_vendedor','=','c.vendedor')
-			->select('v.idventa','c.nombre','v.tipo_comprobante','v.num_comprobante','v.estado','v.total_venta','v.fecha_hora','v.fecha_emi','v.saldo','v.devolu','ven.nombre as vendedor','v.user')
+			->select('v.descuento','v.idventa','c.nombre','v.tipo_comprobante','v.num_comprobante','v.estado','v.total_venta','v.fecha_hora','v.fecha_emi','v.saldo','v.devolu','ven.nombre as vendedor','v.user')
 			-> where ('v.idvendedor',$c,$v)
 			-> where ('c.ruta',$cr,$r)
 			-> whereBetween('v.fecha_hora', [$query, $query2])
@@ -704,9 +704,14 @@ class ReportesventasController extends Controller
             -> select(DB::raw('sum(r.aux) as totaldev'))
             ->whereBetween('d.fecha_hora', [$query, $query2])
             ->get();
-			//dd($devolucion);   
+			 $descuento=DB::table('venta')
+            -> select(DB::raw('sum(descuento) as totaldes'))
+				->where('devolu','=',0)
+            ->whereBetween('fecha_emi', [$query, $query2])
+            ->first();
+			//dd($descuento);   
 			$query2=date("Y-m-d",strtotime($query2."- 1 days"));
-			return view('reportes.ventas.utilidad.index',["datos"=>$datos,"devolucion"=>$devolucion,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);  
+			return view('reportes.ventas.utilidad.index',["descuento"=>$descuento,"datos"=>$datos,"devolucion"=>$devolucion,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);  
 		}   
 		}
 		else { 

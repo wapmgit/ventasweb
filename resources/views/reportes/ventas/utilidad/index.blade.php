@@ -35,13 +35,13 @@
 					  <th>v. Dif.</th>
 					  <th>Utilidad</th>
 					</thead>
-						<?php $codempresa=$empresa->codigo; $tcosto= 0; $pventa=0; $pventaneta=0; $tutil=0; $tvn=0; $tcn=0; $tcant=0; $tpv=0;?>
+						<?php $descto=0;$codempresa=$empresa->codigo; $tcosto= 0; $pventa=0; $pventaneta=0; $tutil=0; $tvn=0; $tcn=0; $tcant=0; $tpv=0;?>
 						@foreach ($datos as $q)  
 						<?php if ($codempresa==300){ $pventa=$q->precio; $pventaneta=$q->ventad; }
 						else{ $pventa=$q->precio_venta;  $pventaneta=$q->ventaneta;}
 						if($empresa->utilpre1==1){
 						$pventa=$q->precioriginal; $pventaneta=$q->ventanetaori; }
-						
+						$desct
 						?>						
 						<tr> 
 						  <td>{{ $q->tipo_comprobante.':'.$q->serie_comprobante.'-'.$q->num_comprobante}}</td>
@@ -54,6 +54,11 @@
 						 <td> <?php  echo number_format(($pventaneta-$q->costoneto), 2,',','.'); ?></td>						
 						</tr>  
 						@endforeach 
+						@if($descuento->totaldes != NULL) @php $descto=$descuento->totaldes; @endphp
+						<tr> 
+						 <td colspan="7" align="right"><strong>Dsctos: </strong></td>
+						 <td> <?php  echo number_format(($descto), 2,',','.'); ?></td>						
+						</tr> @endif
 						<tr style="background-color: #E6E6E6" >
 							<td colspan=""> <strong>TOTAL:</strong></td>
 						  <td><strong><?php echo number_format($tcosto, 2,',','.')." $"; ?></strong></td>
@@ -62,7 +67,7 @@
 						  <td><strong><?php echo number_format($tcn, 2,',','.')." $"; ?></strong></td>
 						  <td><strong><?php echo number_format($tvn, 2,',','.')." $"; ?></strong></td>
 						  <td></td>
-						  <td><strong><?php echo number_format(($tvn-$tcn), 2,',','.')." $"; ?></strong></td>
+						  <td><strong><?php echo number_format(($tvn-($tcn+$descto)), 2,',','.')." $"; ?></strong></td>
         
 						</tr>
 				</table>

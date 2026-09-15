@@ -40,16 +40,16 @@ $cefe=0;?>
 					<th>Fecha Fac.</th>
 					<th>Usuario</th>
 					</thead>
-						<?php $ctra= 0; $cche=0; $cdeb=0; $credito=0; $contado=0; $count=0;?>
+						<?php $acumdescto=0;$ctra= 0; $cche=0; $cdeb=0; $credito=0; $contado=0; $count=0;?>
 					@foreach ($datos as $q)
-						<?php $count++; 
+						<?php $count++; $acumdescto=$acumdescto+$q->descuento;
 						if($q->estado=="Credito"){$credito=$credito + $q->total_venta;}else{$contado=$contado + $q->total_venta;} ?> 
 							<tr <?php if($mostrar==0){?> style="display:none" <?php } ?> <?php if (($count%2)==0){ echo "style='background-color: #DFF2FE !important'";}?>>
 							  <td><?php echo $count; ?></td>
 							   <td>{{ $q->nombre}}</td>
 							   <td>{{ $q->vendedor}}</td>
 							  <td>{{ $q->tipo_comprobante}}-{{ $q->num_comprobante}} <?php if ($q->devolu>0){ echo "- Devuelta";}?></td>       
-							  <td>{{$q->estado}}</td> 
+							  <td>{{$q->estado}}@php if($q->descuento>0) { echo "<small><small>( Dscto: ".$q->descuento.")</small></small>"; } @endphp</td> 
 							  <td> @foreach ($recibos as $r)
 							  <?php if($q->idventa==$r->idventa){?>
 								 <small><small> {{$r->idbanco}}->{{$r->recibido}}</br></small></small>
@@ -61,7 +61,7 @@ $cefe=0;?>
 							</tr>    
 					@endforeach
 							<tr>
-								<td colspan="5"> <strong>TOTAL:</strong></td>
+								<td colspan="5"> <strong>TOTAL:@php if($acumdescto>0){ echo "<small>Descto ".$acumdescto."</small>"; } @endphp</strong></td>
 								<td><strong><?php echo number_format($acum, 2,',','.')." $"; ?></strong></td>
 								<td colspan="2"></td>
 							</tr>
