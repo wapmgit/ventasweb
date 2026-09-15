@@ -79,7 +79,7 @@ class VentasController extends Controller
 		if ($rol->crearventa==1){
 			 if($rol->factsinexis==0){ $exi='0';}else{$exi='-10000';} 
 		$monedas=DB::table('monedas')->get();
-		$vendedor=DB::table('vendedores')->get();
+		$vendedor=DB::table('vendedores')->where('activo','1')->get();
 		$categoria=DB::table('categoriaclientes')->get();	
 		$rutas=DB::table('rutas')->get();
        

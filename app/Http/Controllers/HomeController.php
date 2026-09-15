@@ -71,7 +71,7 @@ class HomeController extends Controller
 		if($rol <> null){	
 			if ($rol->crearventa==1){
 		$monedas=DB::table('monedas')->get();
-		$vendedor=DB::table('vendedores')->get();
+		$vendedor=DB::table('vendedores')->where('activo','1')->get();
 		$categoria=DB::table('categoriaclientes')->get();	
 		$rutas=DB::table('rutas')->get();		
         $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();

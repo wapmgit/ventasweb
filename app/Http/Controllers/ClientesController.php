@@ -37,7 +37,7 @@ class ClientesController extends Controller
 	{
 		$rol=DB::table('roles')-> select('newcliente')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->newcliente==1){
-		$vendedor=DB::table('vendedores')->get();	
+		$vendedor=DB::table('vendedores')->where('activo','1')->get();	
 		$categoria=DB::table('categoriaclientes')->get();	
 		$rutas=DB::table('rutas')->get();	
 		return view("clientes.cliente.create",["rutas"=>$rutas,"categoria"=>$categoria,"vendedores"=>$vendedor]);
@@ -135,7 +135,7 @@ class ClientesController extends Controller
 	public function edit($historia)
 	{
 	
-		$vendedor=DB::table('vendedores')->get();
+		$vendedor=DB::table('vendedores')->where('activo','1')->get();
 		$rutas=DB::table('rutas')->get();
 		$categoria=DB::table('categoriaclientes')->get();	
 		 $datos=DB::table('clientes as c')
