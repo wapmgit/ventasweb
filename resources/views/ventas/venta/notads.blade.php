@@ -1,6 +1,6 @@
 @extends ('layouts.master')
 @section ('contenido')
-<?php $acum=0; 
+<?php $acum=0; $textoTicket="";
 $ceros=5;  $acumnc=0; $cto=0;
 function add_ceros($numero,$ceros) {
   $numero=$numero;
@@ -116,22 +116,100 @@ function truncar($numero, $digitos)
 				<tr><td colspan="7"><b>Items:</b> <?php echo $cntline;  ?>, <b>Peso Total: </b> <?php echo $acumpeso; ?> Kg.</td></tr>
 			<?php } ?>
 			</table>
-        </div>                   
+        </div>      
+<?php
+$numerosLimpios = preg_replace('/[^0-9]/', '', $venta->telefono);
+function centrarTexto($texto, $anchoMaximo = 40) {
+    $textoLimpio = mb_substr($texto, 0, $anchoMaximo);
+    $longitud = mb_strlen($textoLimpio);  
+    if ($longitud >= $anchoMaximo) {
+        return $textoLimpio . "\n";
+    }   
+    $espaciosIzquierda = floor(($anchoMaximo - $longitud) / 2);
+    return str_repeat(" ", $espaciosIzquierda) . $textoLimpio . "\n";
+}
+function generarTextoFactura($datosFactura, $items, $ancho = 40) {
+    $lineaDoble  = str_repeat("=", $ancho) . "\n";
+    $lineaSimple = str_repeat("--", $ancho) . "\n";
+
+    $ticket  = $lineaDoble;
+    $ticket .= centrarTexto($datosFactura['empresa'], $ancho); 
+    $ticket .= centrarTexto("RIF: " . $datosFactura['rif'], $ancho);
+    $ticket .= $lineaDoble;
+    $ticket .= "Factura N° : #" . $datosFactura['numero'] . "\n";
+    $ticket .= "Fecha      : " . $datosFactura['fecha'] . "\n";
+    $ticket .= "Cliente    : " . $datosFactura['cliente'] . "\n";
+    $ticket .= "CI / RIF   : " . $datosFactura['documento'] . "\n";
+    $ticket .= $lineaDoble;
+    $ticket .= "CANT  DESCRIPCIÓN        P.UNIT   TOTAL\n";
+    $ticket .= $lineaSimple;
+    // Recorremos los productos
+    foreach ($items as $item) {
+        $cant   = str_pad($item['cantidad'], 4, " ");
+        $desc   = str_pad(substr($item['nombre'], 0, 15), 15, " ");
+        $precio = str_pad(number_format($item['precio'], 2), 7, " ", STR_PAD_LEFT);
+        $total  = str_pad(number_format($item['cantidad'] * $item['precio'], 2), 7, " ", STR_PAD_LEFT);
+        $ticket .= "{$cant}{$desc}{$precio} {$total}\n";
+    }
+    $ticket .= $lineaSimple;
+    if (isset($datosFactura['descuento']) && $datosFactura['descuento'] > 0) {
+        $ticket .= "Subtotal:                        $ " . number_format($datosFactura['subtotal'], 2) . "\n";
+        $ticket .= "Descuento:                      -$ " . number_format($datosFactura['descuento'], 2) . "\n";
+    }
+    $ticket .= "TOTAL A PAGAR:                   $ " . number_format($datosFactura['total'], 2) . "\n";
+    $ticket .= $lineaDoble;
+    $ticket .= centrarTexto("¡Gracias por su compra!", $ancho);
+    return $ticket;
+}
+// 1. Preparación de datos
+$datosFactura = [
+    'empresa'   => $empresa->nombre,
+    'rif'       => $empresa->rif,
+    'numero'    => add_ceros($idv, $ceros),
+    'fecha'     => date("d-m-Y", strtotime($venta->fecha_emi)),
+    'cliente'   => $venta->nombre,
+    'documento' => $venta->cedula,
+    'subtotal'  => $acumsub,
+    'descuento' => $venta->descuento,
+    'total'     => ($acumsub - $venta->descuento)
+];
+$items = $detalles->map(function ($it) {
+    return [
+        'nombre'   => $it->articulo,
+        'cantidad' => $it->cantidad,
+        'precio'   => $it->precio,
+    ];
+})->toArray();
+// 2. Generar el ticket
+$textoTicket = generarTextoFactura($datosFactura, $items);
+?>
 		@if(Auth::user()->nivel=="A")
-			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12"></br>
+			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12 no-print" ></br>
                     <div class="form-group" align="center">
 					 <button type="button" id="regresar" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
                     <button type="button" id="nventa" class="btn btn-info btn-sm" data-dismiss="modal">Facturar</button>  
-					<button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>             		
+					<button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>         		
+					<a href="https://wa.me/<?php echo $numerosLimpios; ?>?text=<?php echo urlencode($textoTicket);?>" 
+					   target="_blank" 
+					   class="btn btn-success btn-sm" 
+					   style="background-color: #25D366; border-color: #25D366; color: white;">
+					  <i class="fa-brands fa-whatsapp"></i>
+					</a> 
 					</div>
 			</div>  
 		@else
-			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12"></br>
+			<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12 no-print"></br>
                     <div class="form-group" align="center">
 					 <button type="button" id="regresarvc" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
                      	<button type="button" id="nventavc" class="btn btn-info btn-sm" data-dismiss="modal">Facturar</button>  
 					 <button type="button" id="imprimirvc" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
-                    </div>
+                   	<a href="https://wa.me/<?php echo $numerosLimpios; ?>?text=<?php echo urlencode($textoTicket);?>" 
+					   target="_blank" 
+					   class="btn btn-success btn-sm" 
+					   style="background-color: #25D366; border-color: #25D366; color: white;">
+					  <i class="fa-brands fa-whatsapp"></i>
+					</a> 
+				   </div>
 			</div> 
 			@endif
         </div>
