@@ -25,7 +25,7 @@ role="dialog" tabindex="-1" id="modal-delete-{{$ing->idingreso}}">
 			    <div class="modal-footer">
                     <div class="form-group">
                     <button type="button" class="btn btn-default btn-outline pull-left" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary btn-outline pull-right">Confirmar</button>
+                    <button type="submit"  id="btn-anul"  class="btn btn-primary btn-outline pull-right">Confirmar</button>
                     </div>
 		    	</div>
 			</div>

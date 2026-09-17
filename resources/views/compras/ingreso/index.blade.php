@@ -76,6 +76,9 @@ $(document).ready(function(){
     }).buttons().container().appendTo('#comprastable_wrapper .col-md-6:eq(0)');
 
   });
+   $('#btn-anul').click(function(){
+		document.getElementById('btn-anul').style.display="none"; 
+			});
 });
 </script>
 @endpush
