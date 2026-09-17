@@ -176,7 +176,7 @@ public function show(Request $request,$id){
     $venta=DB::table('pedidos as pe')
     -> join ('clientes as p','pe.idcliente','=','p.id_cliente')
 	->join('vendedores as v','v.id_vendedor','=','pe.idvendedor')
-    -> select ('v.nombre as nombrev','pe.idcliente','pe.idpedido','pe.fecha_hora','p.nombre','p.telefono','p.cedula','p.direccion','p.tipo_precio','pe.tipo_comprobante','p.limitecre','pe.serie_comprobante','pe.num_comprobante','pe.impuesto','pe.estado','pe.total_venta','pe.devolu')
+    -> select ('pe.descuento','v.nombre as nombrev','pe.idcliente','pe.idpedido','pe.fecha_hora','p.nombre',DB::raw('CONCAT(p.codpais,p.telefono) as telefono'),'p.cedula','p.direccion','p.tipo_precio','pe.tipo_comprobante','p.limitecre','pe.serie_comprobante','pe.num_comprobante','pe.impuesto','pe.estado','pe.total_venta','pe.devolu')
     ->where ('pe.idpedido','=',$id)
     -> first();
 
