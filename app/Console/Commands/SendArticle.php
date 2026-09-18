@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use App\Models\Articulo;
+use Carbon\Carbon;
 use DB;
 
 class SendArticle extends Command
@@ -46,10 +47,27 @@ class SendArticle extends Command
 			->where('articulos.estado','=',"Activo")
 			->get(); 
 			$articlejs=json_encode($article);
-
+			$fechaLimite = Carbon::now()->subWeeks(6)->startOfWeek();
+			$datoscli = DB::table('detalle_venta as dv') 
+				->join('venta as ve','ve.idventa','=','dv.idventa')    
+				->join('clientes as cli','cli.id_cliente','=','ve.idcliente')             
+				->join('articulos as a', 'a.idarticulo','=','dv.idarticulo')              
+				->select(
+					'cli.id_cliente',
+					DB::raw('sum(dv.cantidad) as vendido'),
+					DB::raw('sum(dv.cantidad*dv.precio_venta) as monto'),
+					'dv.idarticulo'
+				)
+				->where('ve.devolu', '=', 0)
+				->where('ve.fecha_emi', '>=', $fechaLimite) // <--- Filtro de las últimas 6 semanas
+				->groupBy('cli.id_cliente', 'dv.idarticulo')
+				->orderBy('cli.id_cliente')
+				->get();
+			$datosclijs=json_encode($datoscli);
             $response = Http::post('http://creciven.com/api/recibir-articulos', [
                 'empresa' => $empresa->codigo,
                 'articulos' => $articlejs,
+				'datosventa' => $datosclijs 
             ]);
     }
 }
