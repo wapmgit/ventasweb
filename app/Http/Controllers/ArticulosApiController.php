@@ -22,7 +22,7 @@ class ArticulosApiController extends Controller
 			->where('articulos.estado','=',"Activo")
 			->OrderBy('articulos.idcategoria','asc')
 			->get(); 
-			$articlejs=json_encode($article);
+			
 		$empresa=DB::table('empresa')->first();
 		$fechaLimite = Carbon::now()->subWeeks(6)->startOfWeek();
 			$datoscli = DB::table('detalle_venta as dv') 
@@ -41,7 +41,7 @@ class ArticulosApiController extends Controller
 				->orderBy('cli.id_cliente')
 				->get();
 			$datosclijs=json_encode($datoscli);
-			$datosclijs=json_encode($datoscli);
+			$articlejs=json_encode($article);
 			
             $response = Http::post('http://creciven.com/api/recibir-articulos', [
                 'empresa' => $empresa->codigo,
