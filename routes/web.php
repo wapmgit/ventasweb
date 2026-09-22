@@ -177,6 +177,8 @@ Route::get('tnotabsp/{id}', [PedidosController::class, 'notabs'])->name('tnotabs
 Route::get('tnotadsp/{id}', [PedidosController::class, 'notads'])->name('tnotadsp');
 Route::get('tcartap/{id}', [PedidosController::class, 'tcartap'])->name('tcartap');
 Route::get('fbsp/{id}', [PedidosController::class, 'fbs'])->name('fbsp');
+Route::get('revisionpedidos', [PedidosController::class, 'revisionpedidos'])->name('revisionpedidos');
+Route::get('pedidoanul/{id}', [PedidosController::class, 'pedidoanul'])->name('pedidoanul');
 
 // apartados
 Route::get('apartado', [ApartadoController::class, 'index'])->name('apartado');

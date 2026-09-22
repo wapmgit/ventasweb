@@ -427,9 +427,13 @@ public function show(Request $request,$id){
 	}
 	}
 	public function destroy(Request $request){
-		//dd($request);
+		
+			$user=Auth::user()->name;
 			 $venta=Pedidos::findOrFail($request->get('id'));
 			 $venta->devolu=1;
+			 $venta->userdevolu=$user;
+			 $mytime=Carbon::now('America/Caracas');
+			$venta->fechadevolu=$mytime->toDateTimeString();
              $venta->update();
 			 return Redirect::to('pedidos');
 	}
@@ -494,7 +498,7 @@ public function show(Request $request,$id){
 	return view ('reportes.pedido.ajuste',["detalles"=>$detalles,"empresa"=>$empresa]);
 	}
 	public function devolucionpedido(Request $request){
-	//d($request);
+	//dd($request);
 	try{
 	DB::beginTransaction();
 	$user=Auth::user()->name;
@@ -894,7 +898,7 @@ public function repedidos(Request $request){
 			->join('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
             -> select ('v.idpedido','v.fecha_hora','v.pweb','p.nombre','p.cedula','p.direccion','v.fecha_emi','v.serie_comprobante','v.num_comprobante','v.impuesto','v.devolu','v.estado','v.total_venta','ve.nombre as user')
             -> where ('v.impor','=',0)
-            -> where ('v.devolu','=',0)
+           -> where ('v.devolu','=',0)
             -> orderBy('v.idpedido','desc')
 			->get();		
 			$filtro="Todos Vendedores";
@@ -904,5 +908,78 @@ public function repedidos(Request $request){
 		//
 	     return view ('reportes.pedido.pedidoruta.index',["filtroruta"=>$filtroruta,"filtro"=>$filtro,"rutas"=>$rutas,"valida"=>$valida,"vendedor"=>$vendedor,"ventas"=>$pedidos,"searchText"=>$query,"empresa"=>$empresa]);
 }
+public function revisionpedidos(Request $request){
 
+		$rol=DB::table('roles')-> select('revisionpedido')->where('iduser','=',$request->user()->id)->first();	
+		if ($rol->revisionpedido==1){
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$vendedores=DB::table('vendedores')->get(); 
+		$corteHoy = date("Y-m-d");
+		  $query=trim($request->get('searchText'));
+		  if (($query)==""){$query=$corteHoy; }
+             $query2=trim($request->get('searchText2'));
+            $query2 = date_create($query2);  
+	
+            date_add($query2, date_interval_create_from_date_string('1 day'));
+            $query2=date_format($query2, 'Y-m-d');
+			
+		if ($request->get('vendedor')){	
+		if($request->get('vendedor')==0){ $c=">";$v=0;	$filtro="Todos los Vendedores"; }
+			else{ $c="=";$v=$request->get('vendedor'); $ven=DB::table('vendedores')-> where('id_vendedor','=',$query)->first();
+			$filtro=$ven->nombre;	}
+			$pedidos=DB::table('pedidos as v')
+            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
+			->join('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
+            -> select ('v.fechadevolu','v.userdevolu','v.idpedido','v.fecha_hora','v.pweb','p.nombre','p.cedula','p.direccion','v.fecha_emi','v.num_comprobante','v.impuesto','v.devolu','v.estado','v.total_venta','ve.nombre as user')
+            -> where ('v.idvendedor',$c,$v)
+			 -> whereBetween('v.fecha_emi', [$query, $query2])           
+            -> where ('v.devolu','=',1)
+            -> orderBy('v.idpedido','desc')
+			->get();
+									
+		}
+		else{		
+			$pedidos=DB::table('pedidos as v')
+            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
+			->join('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
+            -> select ('v.fechadevolu','v.userdevolu','v.idpedido','v.fecha_hora','v.pweb','p.nombre','p.cedula','p.direccion','v.fecha_emi','v.serie_comprobante','v.num_comprobante','v.impuesto','v.devolu','v.estado','v.total_venta','ve.nombre as user')
+          -> whereBetween('v.fecha_emi', [$query, $query2])
+           -> where ('v.devolu','=',1)
+            -> orderBy('v.idpedido','desc')
+			->get();		
+			$filtro="Todos Vendedores";		
+		}
+		//
+	     return view ('reportes.pedido.revision.index',["filtro"=>$filtro,"vendedor"=>$vendedores,"ventas"=>$pedidos,"searchText"=>$query,"searchText2"=>$query2,"empresa"=>$empresa]);
+		}
+		else { 
+	return view("reportes.mensajes.noautorizado");
+	}
+		 }
+public function pedidoanul($id){
+
+			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+			    $venta=DB::table('pedidos as pe')
+    -> join ('clientes as p','pe.idcliente','=','p.id_cliente')
+	->join('vendedores as v','v.id_vendedor','=','pe.idvendedor')
+    -> select ('pe.descuento','v.nombre as nombrev','pe.idcliente','pe.idpedido','pe.fecha_hora','p.nombre',DB::raw('CONCAT(p.codpais,p.telefono) as telefono'),'p.cedula','p.direccion','p.tipo_precio','pe.tipo_comprobante','p.limitecre','pe.serie_comprobante','pe.num_comprobante','pe.impuesto','pe.estado','pe.total_venta','pe.devolu')
+    ->where ('pe.idpedido','=',$id)
+    -> first();
+			//dd($venta);
+         $detalles=DB::table('detalle_pedido as dv')
+    -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
+    -> select('a.nombre as articulo','dv.cantidad','dv.unidad','dv.cntgrp','dv.descuento','dv.iddetalle_pedido','a.idarticulo','a.iva','dv.precio_venta','dv.precio','a.costo',DB::raw('(a.stock-a.apartado) as stock'),'a.peso')
+    -> where ('dv.idpedido','=',$id)
+    ->get();
+			
+			$recibo=DB::table('recibos as r')-> where ('r.idventa','=',$id)
+            ->get();
+			$seriales=DB::table('seriales as se')-> where ('se.idventa','=',$id)
+            ->get();
+			//dd($seriales);
+			$recibonc=DB::table('mov_notas as mov')-> where ('mov.iddoc','=',$id)-> where ('mov.tipodoc','=',"FAC")
+            ->get();
+
+            return view("reportes.pedido.revision.show",["seriales"=>$seriales,"venta"=>$venta,"recibos"=>$recibo,"recibonc"=>$recibonc,"empresa"=>$empresa,"detalles"=>$detalles]);
+}
 }

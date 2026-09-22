@@ -341,6 +341,12 @@
                   <p>Pedidos Web</p>
                 </a>
               </li>
+			  <li class="nav-item">
+                <a href="{{route('revisionpedidos')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Revision Pedidos</p>
+                </a>
+              </li>
             </ul>
           </li>
 		  		   <li class="nav-item">
