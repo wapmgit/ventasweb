@@ -608,10 +608,11 @@ catch(\Exception $e)
             } 
    return Redirect::to('showcxc/'.$request->get('idcliente'));
  }
-	public function shownd($id){
-		$dato=explode("_",$id);		
-		
+	public function shownd(Request $request, $id){
+	
+		$dato=explode("_",$id);				
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$rol=DB::table('roles')-> select('anularnotadm')->where('iduser','=',$request->user()->id)->first();
         $nota=DB::table('notasadm as no')
 		->join('clientes as cl','cl.id_cliente','=','no.idcliente')
 		->select('cl.*','no.tipo as tnota','no.idnota','no.ndocumento','no.referencia','no.descripcion','no.fecha','no.monto','no.usuario','no.pendiente')
@@ -638,7 +639,7 @@ catch(\Exception $e)
 			->get();
 		}
 
-  return view("clientes.cobrar.detallend",["tipo"=>$tipo,"link"=>$dato[1],"nota"=>$nota,"empresa"=>$empresa,"pagos"=>$pagos,"datond"=>$pndconnc,]);
+  return view("clientes.cobrar.detallend",["rol"=>$rol,"tipo"=>$tipo,"link"=>$dato[1],"nota"=>$nota,"empresa"=>$empresa,"pagos"=>$pagos,"datond"=>$pndconnc,]);
 	}
 		public function showret($id){
 			
@@ -704,5 +705,16 @@ catch(\Exception $e)
 			$notas->mret=($notas->mret+$request->get('mretd'));		
 			$notas->update();
         return Redirect::to('showcxc/'.$notas->idcliente);
+	}
+	public function anularnotadm(Request $request){
+		
+			$notas=Notasadm::findOrFail($request->get('id'));
+			$mnota=$notas->monto;
+			$notas->monto=0;
+			$notas->pendiente=0;
+			$notas->referencia=$notas->referencia." Anulado. $".$mnota;
+			 $notas->update();
+
+    return Redirect::to('edocuenta/'.$notas->idcliente);
 	}
 }

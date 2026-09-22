@@ -179,6 +179,20 @@
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
+					 <label>Crear (N/D|N/C): </label><label>
+					  <input type="checkbox" name="op81" class="minimal" @if($q->crearnotadm==1) checked @endif ></label>
+
+					</div>
+				</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+					 <div class="form-group">
+					 <label>Anular (N/D|N/C): </label><label>
+					  <input type="checkbox" name="op82" class="minimal" @if($q->anularnotadm==1) checked @endif ></label>
+
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+					 <div class="form-group">
 					 <label>Crear Gasto: </label><label>
 					  <input type="checkbox" name="op13" class="minimal" @if($q->creargasto==1) checked @endif ></label>
 

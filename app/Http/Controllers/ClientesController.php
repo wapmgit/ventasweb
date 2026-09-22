@@ -100,9 +100,9 @@ class ClientesController extends Controller
     }
 	public function show(Request $request,$id)
     {
-		//dd($id);
+		
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
-			$rol=DB::table('roles')-> select('abonarcxc')->where('iduser','=',$request->user()->id)->first();	
+			$rol=DB::table('roles')-> select('abonarcxc','crearnotadm')->where('iduser','=',$request->user()->id)->first();	
 			$pacientes=DB::table('clientes')
 			->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')
 			->select('clientes.nombre','clientes.telefono','clientes.cedula','clientes.id_cliente','clientes.direccion','vendedores.nombre as vendedor')

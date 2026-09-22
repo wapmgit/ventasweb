@@ -160,16 +160,17 @@ return $insertar_ceros = $recibo.$numero;
                     <?php echo date("d-m-Y h:i:s a",strtotime($nota->fecha)); ?>
                 </div>
             </div> 
-
+@include('clientes.cobrar.modalanular')
 			<div class="col-12">
                     <div class="form-group" align="center">  
                       <a <?php if ($link=="A"){?>href="{{route('showcxc',['id'=>$nota->id_cliente])}}"<?Php } else {?>
 					  href="{{route('edocuenta',['id'=>$nota->id_cliente])}}" <?php } ?>
-					  >
-					  
+					  >					  
 					  <button id="regresar" class="btn btn-danger btn-sm">Regresar</button></a>
                      <button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
-
+				@if($rol->anularnotadm==1)
+				@if($nota->monto==$nota->pendiente)<a href="#" data-toggle="modal" data-target="#modal-delete-{{$nota->idnota}}" class="text-danger">					
+					<button id="anular" class="btn btn-warning btn-sm">Anular</button></a>@endif @endif
                     </div>
 			</div>
 </div>
@@ -180,6 +181,7 @@ $(document).ready(function(){
   //  alert ('si');
   document.getElementById('imprimir').style.display="none";
   document.getElementById('regresar').style.display="none";
+  document.getElementById('anular').style.display="none";
   window.print(); 
   <?php  if ($link=="A") {?>
   window.location="{{route('showcxc',['id'=>$nota->id_cliente])}}";

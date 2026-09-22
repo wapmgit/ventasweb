@@ -59,8 +59,8 @@ return $insertar_ceros = $recibo.$numero;
 	</div>
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="divbotones" align="right">
                  <div class="form-group">
-				<a href="" data-target="#modaldebito-{{$cliente->id_cliente}}" data-toggle="modal"><button class="btn btn-warning btn-xs">N. Debito</button></a>		
-					<a href="" data-target="#modalcredito-{{$cliente->id_cliente}}" data-toggle="modal"><button class="btn btn-primary btn-xs">N. Credito</button></a>
+					@if($rol->crearnotadm==1)	<a href="" data-target="#modaldebito-{{$cliente->id_cliente}}" data-toggle="modal"><button class="btn btn-warning btn-xs">N. Debito</button></a>		
+					<a href="" data-target="#modalcredito-{{$cliente->id_cliente}}" data-toggle="modal"><button class="btn btn-primary btn-xs">N. Credito</button></a>@endif
 					@if($rol->abonarcxc==1)<a href="{{route('showcxc',['id'=>$cliente->id_cliente])}}"><button class="btn btn-info btn-xs">Abono</button></a>@endif
                     <a href="" data-target="#modalrecibos-{{$cliente->id_cliente}}" data-toggle="modal"><button class="btn btn-success btn-xs">Recibos</button></a>
 					</div>
@@ -123,7 +123,8 @@ return $insertar_ceros = $recibo.$numero;
 					 <?php
 									}else{?>
 					N/C -  <?php $idv=$not->ndocumento; echo add_ceros($idv,$ceros); ?><?php } ?> </td>
-					<td>{{ $not->referencia}}</td><td>{{ $not->descripcion}}</td>
+					<td><small>{{ $not->referencia}}</small></td>
+					<td><small>{{ $not->descripcion}}</small></td>
 					<td><?php echo date("d-m-Y",strtotime($not->fecha)); ?></td>
 					<td></td>
 					<td><b>{{ $not->monto}}</b></td>
