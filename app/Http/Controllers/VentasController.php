@@ -408,7 +408,7 @@ public function devolucion(Request $request){
             $cont=$cont+1;
             }
 		
-				if($request -> get('idrecibo')){
+				if(($request -> get('idrecibo')) and ($anularecibo==0)){
 			 while($contr < count($recibos)){
 			$recibo=Recibos::findOrFail($recibos[$contr]);
 			$mrecibo=$recibo->monto;	
