@@ -4,7 +4,7 @@
 <div>
 	<div class="col-lg-12 col-md-2 col-sm-12 col-xs-12">
 		<h3>Ajustes 
-		@if($rol->crearajuste==1) <a href="{{route('newajuste')}}"><button class="btn btn-primary btn-sm">Nuevo</button></a>@endif</h3>
+		@if(($rol->crearajuste+$rol->crearajustesal)>0) <a href="{{route('newajuste')}}"><button class="btn btn-primary btn-sm">Nuevo</button></a>@endif</h3>
 		@include('compras.ajuste.search')
 	</div>
 </div>

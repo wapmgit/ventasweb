@@ -65,8 +65,8 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 			<div class="form-group">
 			<label for="tipo">Tipo</label>
 			<select name="ptipo" id="ptipo" class="form-control">
-				<option value="1" selected>Cargo</option>
-				<option value="0">Descargo</option>                         
+				@if($rol->crearajuste==1 )<option value="1" selected>Cargo</option> @endif
+				@if($rol->crearajustesal==1 )<option value="0">Descargo</option>   @endif                      
 			</select>
 			</div>
 		</div>

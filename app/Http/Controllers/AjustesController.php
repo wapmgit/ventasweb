@@ -24,7 +24,7 @@ class AjustesController extends Controller
     {
         if ($request)
         {
-			$rol=DB::table('roles')-> select('crearajuste')->where('iduser','=',$request->user()->id)->first();
+			$rol=DB::table('roles')-> select('crearajuste','crearajustesal')->where('iduser','=',$request->user()->id)->first();
             $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
             $query=trim($request->get('searchText'));
             $ajustes=DB::table('ajustes as a')
@@ -38,8 +38,8 @@ class AjustesController extends Controller
         }
     }
     public function create(Request $request){
-		$rol=DB::table('roles')-> select('crearajuste')->where('iduser','=',$request->user()->id)->first();	
-		if ($rol->crearajuste==1){
+		$rol=DB::table('roles')-> select('crearajuste','crearajustesal')->where('iduser','=',$request->user()->id)->first();	
+		if (($rol->crearajuste+$rol->crearajustesal)>0){
 			$contador=DB::table('articulos')->select('idarticulo')->limit('1')->orderby('idarticulo','desc')->first();		
 			$categorias=DB::table('categoria')->where('condicion','=','1')->get();
 			$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
