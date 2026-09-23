@@ -219,7 +219,7 @@
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
 					 <label>Crear Ajuste(Salida): </label><label>
-					  <input type="checkbox" name="op17" class="minimal" @if($q->crearajustesal==1) checked @endif ></label>			
+					  <input type="checkbox" name="op80" class="minimal" @if($q->crearajustesal==1) checked @endif ></label>			
 					</div>
 				</div>					
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
