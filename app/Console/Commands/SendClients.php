@@ -100,11 +100,12 @@ class SendClients extends Command
 			}  
 		}  
 		//obtener la cuenta por cobrar
-	        $q1=DB::table('venta')->select('idcliente',DB::raw('CONCAT("FAC-",idventa) as doc'),'fecha_hora as fecha','total_venta as monto','saldo')
+	        $q1=DB::table('venta')->select('idcliente','idvendedor',DB::raw('CONCAT("FAC-",idventa) as doc'),'fecha_hora as fecha','total_venta as monto','saldo')
 						->where('tipo_comprobante','=','FAC')
 						->where('devolu','=',0)
 						->where('saldo','>',0); 
-			$q3=DB::table('notasadm')->select('idcliente',DB::raw('CONCAT("N/D-",idnota) as doc'),'fecha as fecha','monto','pendiente as saldo')
+			$q3=DB::table('notasadm')->join('clientes','notasadm.idcliente','=','clientes.id_cliente')
+			select('notasadm.idcliente','clientes.idvendedor',DB::raw('CONCAT("N/D-",notasadm.idnota) as doc'),'notasadm.fecha as fecha','notasadm.monto','notasadm.pendiente as saldo')
 			->where('pendiente','>',0)
 			->where('tipo','=',1);
 			$ventascxc= $q1->union($q3)->get(); 
