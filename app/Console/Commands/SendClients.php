@@ -45,7 +45,7 @@ class SendClients extends Command
     	$empresa=DB::table('empresa')->first();
 	    $clients = DB::table('clientes as cli')
 		  ->join('vendedores as vend','vend.id_vendedor','=','cli.vendedor')	
-		 ->select(DB::raw('(space(12)*0) as cxc'),'cli.id_cliente','cli.nombre','cli.cedula','cli.cedula as rif','cli.direccion','cli.telefono','cli.diascredito as dias_credito','cli.tipo_precio','cli.vendedor','vend.comision')
+		 ->select(DB::raw('(space(12)*0) as cxc'),'cli.id_cliente','cli.nombre','cli.cedula','cli.cedula as rif','cli.direccion','cli.telefono','cli.diascredito as dias_credito','cli.tipo_precio','cli.vendedor','vend.comision','cli.ruta')
 		 ->orderby('id_cliente','desc')
 		->where('status','=',"A")		 
 		 ->groupby('cli.id_cliente')
@@ -60,7 +60,7 @@ class SendClients extends Command
 		$detalleventas=DB::table('venta as v')
 			->join('detalle_venta as dv','dv.idventa','=','v.idventa')
 			->join('articulos as art','art.idarticulo','=','dv.idarticulo')
-			->select('dv.idventa','art.nombre','dv.cantidad','dv.precio_venta','art.imagen')
+			->select('dv.idventa','art.nombre','dv.cantidad',DB::raw('(art.peso*dv.cantidad) as peso'),'dv.precio_venta','art.imagen')
 			->where('v.tipo_comprobante','=','FAC')
 			->where('v.devolu','=',0)
 			->where('v.saldo','>',0)
