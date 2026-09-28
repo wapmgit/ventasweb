@@ -106,7 +106,7 @@ class ClientsApiController extends Controller
 				'detalleventas' => $detalleventasjs,				
 				'tasadif' => $empresa->tasadif				
             ]);
-		return $response->getBody();
+		//return $response->getBody();
 			
 			
      } catch (Exception $e) {
