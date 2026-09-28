@@ -163,36 +163,37 @@
 		</div>
 		
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center" id="divmapa">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<div class="card">
-<div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Ubicación para el despacho</h5>
-        <button type="button" id="btn-toggle-mapa" class="btn btn-sm btn-outline-secondary">
-            Ocultar Mapa
-        </button> <button type="button" id="btn-toggle-mapaon" class="btn btn-sm btn-outline-secondary">
-            Ver Mapa
-        </button>
-    </div>
-    <div class="card-body">
-	<div id="contenedor-mapa">
-	<p class="text-muted small mt-1">Puedes arrastrar el marcador azul hasta tu dirección exacta.</p>
-        <div id="map" style="height: 350px; width: 100%; border-radius: 8px;"></div>
-			<div class="row">
-				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">	
-				   <label for="tipo_cliente" >	LATITUD</label></div>
-				<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">	 
-					<input type="text" name="latitud" class="form-control"  value="{{$cliente->latitud}}" id="latitud">	   
-				</div>	<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">	
-					 <label for="tipo_cliente" >lONGITUD</label></div>
-		 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">	 <input type="text" name="longitud" class="form-control"  value="{{$cliente->longitud}}"  id="longitud">
+	<div class="card">
+	<div class="card-header d-flex justify-content-between align-items-center">
+			<h5 class="mb-0">Ubicación para el despacho</h5>
+			<button type="button" id="btn-toggle-mapa" class="btn btn-sm btn-outline-secondary">
+				Ocultar Mapa
+			</button> <button type="button" id="btn-toggle-mapaon" class="btn btn-sm btn-outline-secondary">
+				Ver Mapa
+			</button>
 		</div>
-    
-	
-    </div>
-    </div>
-</div>
+		<div class="card-body">
+		<div id="contenedor-mapa">
+		<p class="text-muted small mt-1">Puedes arrastrar el marcador azul hasta tu dirección exacta.</p>
+			<div id="map" style="height: 350px; width: 100%; border-radius: 8px;"></div>
+				<div class="row">
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">	
+					   <label for="tipo_cliente" >	LATITUD</label></div>
+					<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">	 
+						<input type="text" name="latitud" class="form-control"  value="{{$cliente->latitud}}" id="latitud">	   
+					</div>	<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">	
+						 <label for="tipo_cliente" >lONGITUD</label></div>
+			 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">	 <input type="text" name="longitud" class="form-control"  value="{{$cliente->longitud}}"  id="longitud">
+			</div>
+		
+		
+		</div>
+		</div>
+	</div>
+	</div>
 </div>
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">	
             <div class="form-group">
@@ -205,6 +206,7 @@
 @include('clientes.cliente.modaldireccionedit')
 </div>	
             </form>
+
 </div>
 @endsection
  @push('scripts') 

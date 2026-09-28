@@ -105,9 +105,9 @@ class SendClients extends Command
 						->where('devolu','=',0)
 						->where('saldo','>',0); 
 			$q3=DB::table('notasadm')->join('clientes','notasadm.idcliente','=','clientes.id_cliente')
-			select('notasadm.idcliente','clientes.idvendedor',DB::raw('CONCAT("N/D-",notasadm.idnota) as doc'),'notasadm.fecha as fecha','notasadm.monto','notasadm.pendiente as saldo')
-			->where('pendiente','>',0)
-			->where('tipo','=',1);
+			->select('notasadm.idcliente','clientes.idvendedor',DB::raw('CONCAT("N/D-",notasadm.idnota) as doc'),'notasadm.fecha as fecha','notasadm.monto','notasadm.pendiente as saldo')
+			->where('notasadm.pendiente','>',0)
+			->where('notasadm.tipo','=',1);
 			$ventascxc= $q1->union($q3)->get(); 
 				// los recibos
 			$recibos=DB::table('venta as v')
