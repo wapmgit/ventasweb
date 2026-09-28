@@ -26,7 +26,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 	<form action="{{route('guardaajuste')}}" method="POST" id="formajuste" enctype="multipart/form-data" >         
 		{{csrf_field()}} 
 	<div class="row">
-	        
+        
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 			<div class="form-group">
                     <label for="concepto">Concepto</label>
@@ -43,7 +43,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" align="center">   
 
 			<label for="responsable"> &nbsp; </label></br>
-			<?php if($vencida==0){?>		  
+			<?php if($vencida==0){?>        
 
 			<a href="" title="Cargar Articulos desde Csv" data-target="#modalload" data-toggle="modal" ><i class="fa-sharp fa-solid fa-file-csv fa-2xl"></i></a>
 
@@ -66,7 +66,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 			<label for="tipo">Tipo</label>
 			<select name="ptipo" id="ptipo" class="form-control">
 				@if($rol->crearajuste==1 )<option value="1" selected>Cargo</option> @endif
-				@if($rol->crearajustesal==1 )<option value="0">Descargo</option>   @endif                      
+				@if($rol->crearajustesal==1 )<option value="0">Descargo</option>   @endif                     
 			</select>
 			</div>
 		</div>
@@ -105,7 +105,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
                           <th></th>
                           <th></th>
                           <th><h4 id="total">$.  0.00</h4><input type="hidden" name="totalo" id="totalo"></th>
-                          </tfoot>
+                      </tfoot>
                       <tbody></tbody>
             </table>
 			</div>
@@ -114,193 +114,341 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
             	    <div class="form-group">
                     <input name="_token" value="{{ csrf_token() }}" type="hidden" ></input>
                         <button class="btn btn-primary btn-sm" type="button" id="btnguardar">Guardar</button>
-            	       <button class="btn btn-danger btn-sm" type="reset" id="btncancelar">Cancelar</button>
+                        <button class="btn btn-danger btn-sm" type="reset" id="btncancelar">Cancelar</button>
 					   <div style="display: none" id="loading">  <img src="{{asset('img/sistema/loading30.gif')}}"></div>
                     </div>
 		</div>
      </form>	
     </div>
 
-       
 @push ('scripts')
 <script>
+
+const CLAVE_BORRADOR_AJUSTE = 'borrador_ajuste_inventario';
+
+var cont = 0;
+var total = 0;
+subtotal = [];
+
 $("#pcantidad").change(validar);  
+
 $(document).ready(function(){
-	
 	document.getElementById('Nenviarcsv').style.display="none"; 
 	document.getElementById('pcosto').addEventListener('keypress',function(e){ validarenter(e); });
 	document.getElementById('pcantidad').addEventListener('keypress',function(e){ validarno(e); });	
    
-   $('#bt_add').click(function(){   
+	$('#bt_add').click(function(){   
 		agregar();
     });
+
 	$("#pidarticulo").change(function(){
 		document.getElementById('ptipo').focus();
-	})
+	});
+
 	$("#ptipo").change(function(){
 		document.getElementById('pcantidad').focus();
-	})
+	});
+
+	// Escuchar cambios en concepto y responsable para auto-guardar
+	$('#concepto, #responsable').on('input change', function(){
+		guardarBorrador();
+	});
+
 	$('#btnguardar').click(function(){   
-	$('#totalaj').val($('#totalo').val()); 
-		if($("#concepto").val() == "" ){alert('Debe indicar Concepto.'); } else{
-			if($("#responsable").val() == "" ){alert('Debe indicar Responsable.');}else{ 
+		$('#totalaj').val($('#totalo').val()); 
+		if($("#concepto").val() == "" ){
+			alert('Debe indicar Concepto.'); 
+		} else {
+			if($("#responsable").val() == "" ){
+				alert('Debe indicar Responsable.');
+			} else { 
 				document.getElementById('loading').style.display=""; 
 				document.getElementById('btnguardar').style.display="none"; 
 				document.getElementById('btncancelar').style.display="none"; 
-				document.getElementById('formajuste').submit(); }	 }
-    })
+				
+				// Limpiar borrador ya que la información fue procesada con éxito
+				limpiarBorrador();
+				document.getElementById('formajuste').submit(); 
+			}	 
+		}
+    });
+
+	$('#btncancelar').click(function(){
+		limpiarBorrador();
+	});
 
 	$("#Nenviar").on("click",function(){
 		document.getElementById('Nenviar').style.display="none";
-         var form1= $('#formarticulo');
+        var form1= $('#formarticulo');
         var url1 = form1.attr('action');
         var data1 = form1.serialize();
 
-			$.post(url1,data1,function(result){  
-				var resultado=result;
-				console.log(resultado);	
-				var nombre=resultado[0].articulo;  
-				var id=resultado[0].idarticulo;
-				var costo=resultado[0].costo;		
-				var fraccion=resultado[0].fraccion;		
-				$("#pidarticulo")
-				.append( '<option value="'+id+' - '+costo+' - '+fraccion+'">'+nombre+'</option>')
-				.selectpicker('refresh');
-				alert('Articulo Registrado con exito');
-				$("#formarticulo")[0].reset();
-			});
-  
+		$.post(url1,data1,function(result){  
+			var resultado=result;
+			console.log(resultado);	
+			var nombre=resultado[0].articulo;  
+			var id=resultado[0].idarticulo;
+			var costo=resultado[0].costo;		
+			var fraccion=resultado[0].fraccion;		
+			$("#pidarticulo")
+			.append( '<option value="'+id+' - '+costo+' - '+fraccion+'">'+nombre+'</option>')
+			.selectpicker('refresh');
+			alert('Articulo Registrado con exito');
+			$("#formarticulo")[0].reset();
+		});
 	});
+
 	$("#Nenviarcsv").on("click",function(){
 		document.getElementById('cancelarcsv').style.display="none"; 
 		document.getElementById('Nenviarcsv').style.display="none"; 
 		document.getElementById('loadingcsv').style.display=""; 
 	});
+
 	$("#capcsv").change(function(){
 		var archivo=document.getElementById('capcsv').value.split('.');
-			if(archivo[1]=="csv"){ 
-				$("#responsablemodal").val($("#responsable").val());
-				$("#conceptomodal").val($("#concepto").val());
-				document.getElementById('Nenviarcsv').style.display=""; 
-			} else{
-				alert('El Archivo indicado no es un Archivo de tipo csv, verifique¡¡'); 
-				$("#capcsv").val("");			
-			}
+		if(archivo[1]=="csv"){ 
+			$("#responsablemodal").val($("#responsable").val());
+			$("#conceptomodal").val($("#concepto").val());
+			document.getElementById('Nenviarcsv').style.display=""; 
+		} else {
+			alert('El Archivo indicado no es un Archivo de tipo csv, verifique¡¡'); 
+			$("#capcsv").val("");			
+		}
 	});
-})
-	function validarenter(e){
-		let tecla = (document.all) ? e.keyCode : e.which;
-		if(tecla==13) { 
-			agregar();
-			event.preventDefault();
-		} 
-	}
-	function validarno(e){
-		let tecla = (document.all) ? e.keyCode : e.which;
-		if(tecla==13) { 
+
+	// Intentar cargar el borrador al iniciar la página
+	cargarBorrador();
+});
+
+function validarenter(e){
+	let tecla = (document.all) ? e.keyCode : e.which;
+	if(tecla==13) { 
+		agregar();
 		event.preventDefault();
-		} 
-	}	
-var cont=0;
-var total=0;
-subtotal=[];
+	} 
+}
+
+function validarno(e){
+	let tecla = (document.all) ? e.keyCode : e.which;
+	if(tecla==13) { 
+		event.preventDefault();
+	} 
+}	
+
 $("#guardar").hide();
 
-    function agregar(){
-        total=$("#totalo").val();
-        if (total>0){total=total*1;}if (total<0){total=total*1;}
-		datosarticulo=document.getElementById('pidarticulo').value.split('-');
-        idarticulo=datosarticulo[0];
-        articulo= $("#pidarticulo option:selected").text();
-        cantidad= $("#pcantidad").val();
-        precio_compra=$("#pcosto").val();
-       tipo= $("#ptipo option:selected").text();
+function agregar(){
+    total = $("#totalo").val();
+    if (total > 0){ total = total * 1; }
+    if (total < 0){ total = total * 1; }
 
-        if (idarticulo!="" && cantidad != "" && tipo!="" & precio_compra!=""){
-            
-            if (tipo=="Cargo"){
-            subtotal[cont]=(cantidad*precio_compra);
-                }else{
-                  subtotal[cont]=(-cantidad*precio_compra);
-                }
-                 
-            total=(total)+(subtotal[cont]);
-            
-            var fila='<tr class="selected" id="fila'+cont+'"><td><button class="btn btn-warning btn-xs" onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="text" readonly name="tipo[]" value="'+tipo+'"></td><td><input type="number" name="cantidad[]" readonly style="width: 80px" value="'+cantidad+'"></td><td><input type="number" name="precio_compra[]"  style="width: 80px" readonly value="'+precio_compra+'"></td><td>'+subtotal[cont].toFixed(2)+'</td></tr>';
-            cont++;
+    datosarticulo = document.getElementById('pidarticulo').value.split('-');
+    idarticulo = datosarticulo[0];
+    articulo = $("#pidarticulo option:selected").text();
+    cantidad = $("#pcantidad").val();
+    precio_compra = $("#pcosto").val();
+    tipo = $("#ptipo option:selected").text();
+
+    if (idarticulo != "" && cantidad != "" && tipo != "" && precio_compra != ""){
+		// --- VALIDACIÓN DE ARTÍCULO DUPLICADO ---
+        var existe = false;
+        $('input[name="idarticulo[]"]').each(function() {
+            if ($(this).val() == idarticulo) {
+                existe = true;
+                return false; // Rompe el bucle .each()
+            }
+        });
+
+        if (existe) {
+            alert("El artículo '" + articulo + "' ya fue agregado a la lista. Si deseas modificar la cantidad o tipo, elimínalo de la tabla e ingrésalo nuevamente.");
             limpiar();
-			auxtotal=(total*1).toFixed(2);
-            $("#total").html("$ : " + auxtotal);
-            $("#totalo").val(total); 
-         	$("#pidarticulo").selectpicker('toggle');
-            evaluar();
-            $('#detalles').append(fila);
+            $("#pidarticulo").focus();
+            return; // Detiene la ejecución
         }
-        else{
-            alert("Error al ingresar el articulo")
-        }
-    }
-    function eliminar(index){
-      total= $("#totalo").val();
-        total=total-subtotal[index];
-		auxtotal=(total*1).toFixed(2);
-        $("#total").html("$" + auxtotal);
-          $("#totalo").val(total);
-        $("#fila" + index).remove();
-        evaluar();
-
-    }
-    function limpiar(){
-        $("#pcantidad").val("");
-        $("#pprecio_compra").val("");
-         $("#pcosto").val("");
-      
-    }
-
-    function evaluar(){
-        if(total =! 0){
-            $("#guardar").show();
-        }
-        else
-        {
-            $("#guardar").hide();
-        }
-    }
-    function validar(){  
-      pcanti=$("#pcantidad").val();	 
-      datosarticulo= $("#pidarticulo option:selected").text();
-      arti=datosarticulo.split('-');
-	        dato=document.getElementById('pidarticulo').value.split('-');
-	  
-      tipo= $("#ptipo option:selected").text();
-      if (tipo=="Descargo"){
-          st=arti[2];
-        if (pcanti>parseFloat(st)){
-          alert('cantidad supera al stock!! \n existencia:'+arti[2]);
-          $("#pcantidad").val("");
-          $("#pcosto").val("");
-          $("#pcantidad").focus();
+        
+        if (tipo == "Cargo"){
+            subtotal[cont] = (cantidad * precio_compra);
         } else {
-            dato=document.getElementById('pidarticulo').value.split('-');
-			 st1=dato[1];
-             $("#pcosto").val(st1*1);
-          }
-      }if (tipo == "Cargo"){
-         dato=document.getElementById('pidarticulo').value.split('-'); 
-          st1=dato[1]; 
-         $("#pcosto").val(st1*1);
-		var fraccion_art=dato[2];
-		
-		var cntventa=$("#pcantidad").val();
-		if(Number.isInteger(cntventa/fraccion_art) == false ){
-		  alert('La Cantidad indicada no es divisible en la Fraccion del Articulo');
-		  $("#pcantidad").val(parseFloat(fraccion_art));
-		   $("#pcantidad").focus();
+            subtotal[cont] = (-cantidad * precio_compra);
         }
+            
+        total = (total) + (subtotal[cont]);
+        
+        var fila = '<tr class="selected" id="fila'+cont+'">' +
+            '<td><button type="button" class="btn btn-warning btn-xs" onclick="eliminar('+cont+');">X</button></td>' +
+            '<td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td>' +
+            '<td><input type="text" readonly name="tipo[]" value="'+tipo+'"></td>' +
+            '<td><input type="number" name="cantidad[]" readonly style="width: 80px" value="'+cantidad+'"></td>' +
+            '<td><input type="number" name="precio_compra[]" style="width: 80px" readonly value="'+precio_compra+'"></td>' +
+            '<td>'+subtotal[cont].toFixed(2)+'</td>' +
+        '</tr>';
+        
+        cont++;
+        limpiar();
+        auxtotal = (total * 1).toFixed(2);
+        $("#total").html("$ : " + auxtotal);
+        $("#totalo").val(total); 
+        $("#pidarticulo").selectpicker('toggle');
+        evaluar();
+        $('#detalles').append(fila);
 
-	  }
+        // Guardar cambios en el localStorage
+        guardarBorrador();
+    }
+    else {
+        alert("Error al ingresar el articulo");
+    }
+}
 
-      }
+function eliminar(index){
+    total = $("#totalo").val();
+    total = total - subtotal[index];
+    auxtotal = (total * 1).toFixed(2);
+    $("#total").html("$ : " + auxtotal);
+    $("#totalo").val(total);
+    $("#fila" + index).remove();
+    evaluar();
+
+    // Actualizar localStorage tras eliminar un ítem
+    guardarBorrador();
+}
+
+function limpiar(){
+    $("#pcantidad").val("");
+    $("#pprecio_compra").val("");
+    $("#pcosto").val("");
+}
+
+function evaluar(){
+    if(total != 0 || $('#detalles tbody tr').length > 0){
+        $("#guardar").show();
+    }
+    else {
+        $("#guardar").hide();
+    }
+}
+
+function validar(){   
+    pcanti = $("#pcantidad").val();	 
+    datosarticulo = $("#pidarticulo option:selected").text();
+    arti = datosarticulo.split('-');
+    dato = document.getElementById('pidarticulo').value.split('-');
+  
+    tipo = $("#ptipo option:selected").text();
+    if (tipo == "Descargo"){
+        st = arti[2];
+        if (pcanti > parseFloat(st)){
+            alert('cantidad supera al stock!! \n existencia:' + arti[2]);
+            $("#pcantidad").val("");
+            $("#pcosto").val("");
+            $("#pcantidad").focus();
+        } else {
+            dato = document.getElementById('pidarticulo').value.split('-');
+            st1 = dato[1];
+            $("#pcosto").val(st1 * 1);
+        }
+    }
+    if (tipo == "Cargo"){
+        dato = document.getElementById('pidarticulo').value.split('-'); 
+        st1 = dato[1]; 
+        $("#pcosto").val(st1 * 1);
+        var fraccion_art = dato[2];
+        
+        var cntventa = $("#pcantidad").val();
+        if(Number.isInteger(cntventa / fraccion_art) == false ){
+            alert('La Cantidad indicada no es divisible en la Fraccion del Articulo');
+            $("#pcantidad").val(parseFloat(fraccion_art));
+            $("#pcantidad").focus();
+        }
+    }
+}
+
+// ==========================================
+// FUNCIONES DE MANEJO DE LOCALSTORAGE
+// ==========================================
+
+function guardarBorrador() {
+    let items = [];
+
+    // Recorrer las filas de la tabla de detalles
+    $('#detalles tbody tr').each(function() {
+        let fila = $(this);
+        let idarticulo = fila.find('input[name="idarticulo[]"]').val();
+        let articulo = fila.find('td:eq(1)').text();
+        let tipo = fila.find('input[name="tipo[]"]').val();
+        let cantidad = fila.find('input[name="cantidad[]"]').val();
+        let precio_compra = fila.find('input[name="precio_compra[]"]').val();
+        let sub = fila.find('td:eq(5)').text();
+
+        items.push({
+            idarticulo: idarticulo,
+            articulo: articulo,
+            tipo: tipo,
+            cantidad: cantidad,
+            precio_compra: precio_compra,
+            subtotal: sub
+        });
+    });
+
+    let borrador = {
+        concepto: $('#concepto').val(),
+        responsable: $('#responsable').val(),
+        total: $('#totalo').val(),
+        detalles: items
+    };
+
+    localStorage.setItem(CLAVE_BORRADOR_AJUSTE, JSON.stringify(borrador));
+}
+
+function cargarBorrador() {
+    let datos = localStorage.getItem(CLAVE_BORRADOR_AJUSTE);
+    if (!datos) return;
+
+    let borrador = JSON.parse(datos);
+
+    // Si hay datos cargados, consultar si se quiere restaurar
+    if (borrador.detalles && borrador.detalles.length > 0) {
+        if (confirm("Se encontró un ajuste de inventario no guardado. ¿Deseas recuperar los datos?")) {
+            
+            $('#concepto').val(borrador.concepto);
+            $('#responsable').val(borrador.responsable);
+
+            // Reconstruir la tabla de detalles
+            $('#detalles tbody').empty();
+            cont = 0;
+            total = 0;
+
+            borrador.detalles.forEach(function(item) {
+                let sub = parseFloat(item.subtotal);
+                subtotal[cont] = sub;
+                total += sub;
+
+                var fila = '<tr class="selected" id="fila'+cont+'">' +
+                    '<td><button type="button" class="btn btn-warning btn-xs" onclick="eliminar('+cont+');">X</button></td>' +
+                    '<td><input type="hidden" name="idarticulo[]" value="'+item.idarticulo+'">'+item.articulo+'</td>' +
+                    '<td><input type="text" readonly name="tipo[]" value="'+item.tipo+'"></td>' +
+                    '<td><input type="number" name="cantidad[]" readonly style="width: 80px" value="'+item.cantidad+'"></td>' +
+                    '<td><input type="number" name="precio_compra[]" style="width: 80px" readonly value="'+item.precio_compra+'"></td>' +
+                    '<td>'+sub.toFixed(2)+'</td>' +
+                '</tr>';
+
+                $('#detalles').append(fila);
+                cont++;
+            });
+
+            let auxtotal = (total * 1).toFixed(2);
+            $("#total").html("$ : " + auxtotal);
+            $("#totalo").val(total);
+            evaluar();
+        } else {
+            limpiarBorrador();
+        }
+    }
+}
+
+function limpiarBorrador() {
+    localStorage.removeItem(CLAVE_BORRADOR_AJUSTE);
+}
 </script>
 @endpush
 @endsection
