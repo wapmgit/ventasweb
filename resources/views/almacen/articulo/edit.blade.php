@@ -56,7 +56,7 @@
                 <div class="col-lg-2 col-md-4 col-sm-6">          
                     <div class="form-group">
                         <label for="codigo">Código</label>
-                        <input type="text" name="codigo" required value="{{ $articulo->codigo }}" class="form-control">
+                        <input type="text" name="codigo" id="codigo" required value="{{ $articulo->codigo }}" class="form-control">
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-6"> 
@@ -323,6 +323,7 @@
        @push('scripts')
       <script>
 $(document).ready(function(){
+	var cod_anterior=$("#codigo").val();
 	var nuevo=$("#nombre").val();
 	var pin2=nuevo.replace('-','/');
 	$("#nombre").val(pin2);
@@ -396,6 +397,28 @@ $("#pprecio2grupo").change(reverso2grp);
 		 	document.getElementById('tagrupado').style.display="none";
        }
    });
+
+	$("#codigo").on("change",function(){
+		  	var nuevo=$("#codigo").val();
+			var pin2=nuevo.replace('-','/');
+			//alert(pin2);
+			$("#codigo").val(pin2);
+         var form2= $('#formulario');
+        var url2 = '{{route("validart")}}';
+        var data2 = form2.serialize();
+    $.post(url2,data2,function(result2){  
+      var resultado2=result2;
+         console.log(resultado2); 
+         rows=resultado2.length; 
+      if (rows > 0){
+            var nombre=resultado2[0].nombre;
+          var codigo=resultado2[0].codigo; 
+          var descripcion=resultado2[0].descripcion;   
+          alert ('Codigo ya existe!!, Nombre: '+nombre+' Codigo: '+codigo+' descripcion: '+descripcion);   
+           $("#codigo").val(cod_anterior);
+}    
+          });
+     });
 })
 	 $('#btncancelar').click(function(){  
 	   window.location="{{route('articulos')}}";
