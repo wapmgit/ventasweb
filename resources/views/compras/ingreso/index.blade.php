@@ -26,23 +26,44 @@
 					$emi=date("d-m-Y",strtotime($ing->emision));
 				 ?>
 				<tr>
-					<td><?php echo $emi; ?></td>
-					<td><?php echo $newdate; ?></td>
-					<td>{{ $ing->nombre}}</td>
+					<td><small><?php echo $emi; ?></small></td>
+					<td><small><?php echo $newdate; ?></small></td>
+					<td><small>{{ $ing->nombre}}</small></td>
 					<td> <?php if(($ing->tipo_comprobante=="N/E")and ($status=="0")){?>
 					@if($rol->importarne==1)<a  href="{{route('importarne',['id'=>$ing->idingreso])}}"><b> {{ $ing->tipo_comprobante}}</b></a>@else  {{ $ing->tipo_comprobante}} @endif
 					:{{$ing->serie_comprobante}}-{{$ing->num_comprobante}}<?php }else{ ?>
 					{{ $ing->tipo_comprobante.':'.$ing->serie_comprobante.'-'.$ing->num_comprobante}}<?php } ?></td>
 					<td><?php echo number_format( $ing->total, 2,',','.'); ?></td>
-					<td>{{ $ing->estado}}</td>			
-					<td>					
-					<?php $direccion=$ing->idingreso."-1"; ?>
-				  <a href="{{route('showcompra',['id'=>$direccion])}}"><button class="btn btn-primary btn-xs">Detalles</button></a>	
-				  <a href="{{route('etiquetascompra',['id'=>$ing->idingreso])}}"><button class="btn btn-secondary btn-xs"> Etiquetas</button></a>
-					<?php if($status=="0"){?>                 
-					@if($rol->anularcompra==1) <a href="" data-target="#modal-delete-{{$ing->idingreso}}" data-toggle="modal" ><button class="btn btn-danger btn-xs">anular</button></a>@endif	
-					<?php } else {?> <button class="btn btn-warning btn-xs">Anulada</button><?php } ?>
-					</td>
+					<td><small>{{ $ing->estado}}</small></td>			
+				<td class="text-center align-middle">
+					@php $direccion = $ing->idingreso . "-1"; @endphp
+
+					<div class="dropdown">
+						<button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+							Acciones
+						</button>
+						<div class="dropdown-menu dropdown-menu-right">
+							<a class="dropdown-item text-info" href="{{ route('showcompra', ['id' => $direccion]) }}">
+								<i class="fa fa-eye mr-2"></i> Ver Detalles
+							</a>
+							<a class="dropdown-item text-secondary" href="{{ route('etiquetascompra', ['id' => $ing->idingreso]) }}">
+								<i class="fa fa-tag mr-2"></i> Etiquetas
+							</a>
+							<div class="dropdown-divider"></div>
+							@if($status == "0")
+								@if($rol->anularcompra == 1)
+									<a class="dropdown-item text-danger" href="" data-target="#modal-delete-{{ $ing->idingreso }}" data-toggle="modal">
+										<i class="fa fa-ban mr-2"></i> Anular Compra
+									</a>
+								@endif
+							@else
+								<span class="dropdown-item text-muted disabled">
+									<i class="fa fa-exclamation-circle mr-2"></i> Compra Anulada
+								</span>
+							@endif
+						</div>
+					</div>
+				</td>
 				</tr>		
 				@include('compras.ingreso.modal')
 				@endforeach

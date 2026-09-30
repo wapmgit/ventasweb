@@ -42,6 +42,7 @@ return $dias;
 						if(($diascre >= 0)and($diascre > 3)){  $msg= "Vigente"; $color="background-color: #D7DBDD"; }
 						if(($diascre >= 0)and($diascre <= 3)){  $msg= "Por vencer"; $color="background-color: #FDDD5E";}						
 					}				
+					if ( $ven->devolu == 1){$msg= "Devuelta"; $color="background-color: red";}			
 					?>
 				<tr>
 					<td><small><small><?php echo $newdate; ?></small></small></td>

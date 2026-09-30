@@ -157,14 +157,14 @@ $cntser=0;$acumnc=0;
                       <tbody>
                      @foreach($pago as $re) <?php  $acum=$acum+$re->monto;?>
                         <tr >
-                          <td>{{$re->idbanco}}</td>
-                          <td><?php echo number_format( $re->recibido, 2,',','.'); ?></td>
-						  <td><?php echo " ".date("d-m-Y",strtotime($re->fecha_comp)); ?></td>
+                          <td><small>{{$re->idbanco}}</small></td>
+                          <td><small><?php echo number_format( $re->recibido, 2,',','.'); ?></small></td>
+						  <td><small><?php echo " ".date("d-m-Y",strtotime($re->fecha_comp)); ?></small></td>
 						   <td> <?php if ($re->idpago==2){echo number_format( $re->tasap, 2,',','.'); }
 							  if ($re->idpago==3){echo number_format( $re->tasab, 2,',','.'); }?></td>							  
 							
 						   <td><?php echo number_format( $re->monto, 2,',','.'); ?></td>
-                          <td>{{$re->referencia}}</td>                        
+                          <td><small>{{$re->referencia}}</small></td>                        
                         </tr>
                         @endforeach                                           
                       </tbody>
