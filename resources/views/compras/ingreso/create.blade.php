@@ -411,9 +411,10 @@
     function cargarBorrador() {
         let datos = localStorage.getItem('borrador_compra_sysventas');
         if (!datos) return;
-
-        try {
             let borrador = JSON.parse(datos);
+			  if (borrador.detalles && borrador.detalles.length > 0) {
+				if (confirm("Se encontró un ajuste de inventario no guardado. ¿Deseas recuperar los datos?")) {
+        try {
 
             // Restaurar campos del encabezado
             if (borrador.idproveedor) $('#idproveedor').val(borrador.idproveedor).selectpicker('refresh');
@@ -471,11 +472,16 @@
 
                 evaluar();
             }
-
-            toastr.info('Se ha restaurado un borrador de compra pendiente.', 'Borrador Recuperado');
-        } catch (e) {
-            console.error("Error al cargar borrador:", e);
+				toastr.info('Se ha restaurado un borrador de compra pendiente.', 'Borrador Recuperado');
+			} catch (e) {
+				console.error("Error al cargar borrador:", e);
+			}
+			 } else {
+				limpiarBorrador();
+			}
         }
+		
+		//
     }
 
     function limpiarBorrador() {
