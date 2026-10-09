@@ -349,7 +349,7 @@
               </li>
             </ul>
           </li>
-		  		   <li class="nav-item">
+		<li class="nav-item">
             <a href="#" class="nav-link active">
               <i class="nav-icon fas fa-book"></i>
               <p>
@@ -379,6 +379,44 @@
               </li>
             </ul>
           </li>
+		  		  @if(Auth::user()->shein==1) 
+		  		   <li class="nav-item">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-truck"></i>
+              <p>
+              Shein
+                <i class="fas fa-angle-left right"></i>             
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+			  <li class="nav-item">
+                 <a href="{{route('campana')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Campañas</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                 <a href="{{route('pedidoshein')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pedidos</p>
+                </a>
+              </li> 
+			  <li class="nav-item">
+                <a href="{{route('reportecxcshein')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Cuentas por Cobrar</p>
+                </a>
+              </li>
+			<li class="nav-item">
+                 <a href="{{route('detalleingresoshein')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Reporte Ingresos</p>
+                </a>
+              </li>
+             
+
+            </ul>
+          </li> @endif
           <li class="nav-item">
             <a href="#" class="nav-link active">
               <i class="nav-icon fas fa-print"></i>

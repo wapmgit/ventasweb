@@ -24,6 +24,8 @@ use App\Http\Controllers\BancoController;
 use App\Http\Controllers\CtasconController;
 use App\Http\Controllers\MonedasController;
 use App\Http\Controllers\RutasController;
+use App\Http\Controllers\PedidoSheinController;
+use App\Http\Controllers\CampanaController;
 
 
 Route::get('/', function () {
@@ -313,6 +315,25 @@ Route::get('recibocomision/{id}', [ComisionesController::class, 'recibo'])->name
 Route::get('listarecibos/{id}', [ComisionesController::class, 'lista'])->name('listarecibos');
 Route::get('comisionespagadas', [ComisionesController::class, 'pagadas'])->name('comisionespagadas');
 Route::get('detallecomisionfiltro', [ComisionesController::class, 'detallecomisionfiltro'])->name('detallecomisionfiltro');
+//campañas
+Route::get('campana', [CampanaController::class, 'index'])->name('campana');
+Route::get('newcampana', [CampanaController::class, 'create'])->name('newcampana');
+Route::post('guardarcampana', [CampanaController::class, 'store'])->name('guardarcampana');
+Route::get('showcampana/{id}', [CampanaController::class, 'show'])->name('showcampana');
+Route::post('cerrarcampana', [CampanaController::class, 'cerrarcampana'])->name('cerrarcampana');
+//pedido shein
+Route::get('pedidoshein', [PedidoSheinController::class, 'index'])->name('pedidoshein');
+Route::get('newpedidoshein', [PedidoSheinController::class, 'create'])->name('newpedidoshein');
+Route::post('guardarpedidoshein', [PedidoSheinController::class, 'store'])->name('guardarpedidoshein');
+Route::get('showpedidoshein/{id}', [PedidoSheinController::class, 'show'])->name('showpedidoshein');
+Route::post('addarticuloshein', [PedidoSheinController::class, 'addart'])->name('addarticuloshein');
+Route::get('ajustepedidoshein', [PedidoSheinController::class, 'ajuste'])->name('ajustepedidoshein');
+Route::get('abonopedidoshein/{id}', [PedidoSheinController::class, 'abonopedido'])->name('abonopedidoshein');
+Route::post('saveabonoshein', [PedidoSheinController::class, 'saveabono'])->name('saveabonoshein');
+Route::post('anularpedidoshein', [PedidoSheinController::class, 'destroy'])->name('anularpedidoshein');
+Route::get('recibopedidoshein/{id}', [PedidoSheinController::class, 'recibopedido'])->name('recibopedidoshein');
+Route::get('reportecxcshein', [PedidoSheinController::class, 'cobrarshein'])->name('reportecxcshein');
+Route::get('detalleingresoshein', [PedidoSheinController::class, 'cobranza'])->name('detalleingresoshein');
 // sistema
 Route::get('tasas', [SistemaController::class, 'acttasas'])->name('tasas');
 Route::post('updatetasas', [SistemaController::class, 'update'])->name('updatetasas');

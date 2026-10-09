@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Pedidos extends Model
 {
     use HasFactory;
-	    use HasFactory;
+
 	protected $table='pedidos';
 
     protected $primaryKey='idpedido';
