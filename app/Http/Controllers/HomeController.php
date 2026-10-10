@@ -66,28 +66,55 @@ class HomeController extends Controller
 		
         return view('home',["vene"=>$vene,"vfeb"=>$vfeb,"vmar"=>$vmar,"vabr"=>$vabr,"vmay"=>$vmay,"vjun"=>$vjun,"vjul"=>$vjul,"vago"=>$vago,"cene"=>$cene,"cfeb"=>$cfeb,"cmar"=>$cmar,"cmay"=>$cmay,"cabr"=>$cabr,"cjun"=>$cjun,"cjul"=>$cjul,"cago"=>$cago,"csep"=>$csep,"vsep"=>$vsep,"voct"=>$voct,"coct"=>$coct,"vnov"=>$vnov,"cnov"=>$cnov,"vdic"=>$vdic,"cdic"=>$cdic,"empresa"=>$empresa,"clientes"=>$clientes,"proveedor"=>$proveedor,"articulos"=>$articulos,"vendedores"=>$vendedores]);
     } else {
-		$rol=DB::table('roles')-> select('crearventa','anularventa','aplidescuento','cambiarprecioventa','factsinexis')->where('iduser','=',$request->user()->id)->first();
-		
+		$rol=DB::table('roles')-> select('crearventa','anularventa','aplidescuento','cambiarprecioventa','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
 		if($rol <> null){	
 			if ($rol->crearventa==1){
+				 if($rol->factsinexis==0){ $exi='0';}else{$exi='-10000';} 
 		$monedas=DB::table('monedas')->get();
 		$vendedor=DB::table('vendedores')->where('activo','1')->get();
 		$categoria=DB::table('categoriaclientes')->get();	
 		$rutas=DB::table('rutas')->get();		
         $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
-        $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev')-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->get();
+		if ($empresa->orderart==1){$order="nombre";}else{$order="idarticulo";}
+         $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')
+		->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre')
+		-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->OrderBy('clientes.nombre','asc')->get();
          $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
       //dd($contador);
-        $articulos =DB::table('articulos as art')
-         -> select(DB::raw('CONCAT(art.codigo," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3')
+      
+		$q2=DB::table('articulos as art')
+		->join('agrupados as pre','pre.idarticulo','=','art.idarticulo')
+        -> select('art.nombre',DB::raw('CONCAT(IFNULL(art.'.$empresa->codart.',art.idarticulo)," ",art.nombre," ",pre.descripcion) as articulo'),'art.idarticulo',DB::raw('(art.stock/pre.cantidad) as stock'),DB::raw('(art.costo*pre.cantidad) as costo'),'pre.precio1 as precio_promedio','pre.precio2 as precio2','art.iva','art.serial','pre.fraccion','pre.precio2 as precio3','pre.id as usagrupo')
         -> where('art.estado','=','Activo')
-        -> where ('art.stock','>','0')
-        ->groupby('articulo','art.idarticulo')
-        -> get();
+        -> where ('art.stock','>',$exi) 
+        -> where ('art.usagrupo','=','1')
+        ->groupBy(
+				'art.idarticulo', 
+				'art.nombre', 
+				'art.codigo', 
+				'pre.descripcion', 
+				'art.stock', 
+				'pre.cantidad', 
+				'art.costo', 
+				'pre.precio1', 
+				'art.iva', 
+				'art.serial', 
+				'art.fraccion', 
+				'pre.id'
+			);
+	//
+       $q3 =DB::table('articulos as art')
+        -> select('art.nombre',DB::raw('CONCAT(IFNULL(art.'.$empresa->codart.',art.idarticulo)," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3',DB::raw('(space(1)*0) as usagrupo'))
+        -> where('art.estado','=','Activo')   
+		-> where ('art.stock','>',$exi) 
+        ->groupby('art.idarticulo');
+
+		$articulos= $q2->union($q3)->orderBy($order, 'asc')->get();
 		//dd($articulos);
 		 $seriales =DB::table('seriales')->where('estatus','=',0)->get();
      if ($contador==""){$contador=0;}
-      return view("ventas.venta.create",["categoria"=>$categoria,"rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
+	  	$cxc=0;
+      return view("ventas.venta.create",["cxcc"=>$cxc,"categoria"=>$categoria,"rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
 		} }else { 
 	return view("reportes.mensajes.noautorizado");
 	}
