@@ -189,7 +189,7 @@ $cntline=$cntser=0; $acumpeso=0;
 					 <button type="button" id="regresarvc" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
                      <button type="button" id="imprimirvc" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>
 					 <button type="button" id="nventavc" class="btn btn-info btn-sm" data-dismiss="modal">Facturar</button>  
-    <a href="{{route('facpdf',['id'=>$venta->idventa])}}"><button class="btn btn-success btn-xs"> kardex</button></a>                                          
+                                              
                     </div>
 			</div> 
 			@endif
