@@ -320,7 +320,13 @@ Route::get('campana', [CampanaController::class, 'index'])->name('campana');
 Route::get('newcampana', [CampanaController::class, 'create'])->name('newcampana');
 Route::post('guardarcampana', [CampanaController::class, 'store'])->name('guardarcampana');
 Route::get('showcampana/{id}', [CampanaController::class, 'show'])->name('showcampana');
-Route::post('cerrarcampana', [CampanaController::class, 'cerrarcampana'])->name('cerrarcampana');
+Route::post('cerrarcampana', [CampanaController::class, 'cerrarcampana'])->name('cerrarcampana'); 
+Route::get('comicampana/{id}', [CampanaController::class, 'comicampana'])->name('comicampana');
+Route::post('generarcomisionshein', [CampanaController::class, 'generarcomisionshein'])->name('generarcomisionshein');
+Route::get('comisionvendedorshein', [CampanaController::class, 'comisionvendedorshein'])->name('comisionvendedorshein');
+Route::get('showcomishein/{id}', [CampanaController::class, 'showcomishein'])->name('showcomishein');
+Route::post('saveabonocomishein', [CampanaController::class, 'saveabonocomishein'])->name('saveabonocomishein');
+
 //pedido shein
 Route::get('pedidoshein', [PedidoSheinController::class, 'index'])->name('pedidoshein');
 Route::get('newpedidoshein', [PedidoSheinController::class, 'create'])->name('newpedidoshein');

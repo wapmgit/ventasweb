@@ -346,7 +346,7 @@
                   <i class="far fa-circle nav-icon"></i>
                   <p>Revision Pedidos</p>
                 </a>
-              </li>
+              </li>			
             </ul>
           </li>
 		<li class="nav-item">
@@ -413,8 +413,12 @@
                   <p>Reporte Ingresos</p>
                 </a>
               </li>
-             
-
+              	  <li class="nav-item">
+                <a href="{{route('comisionvendedorshein')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pago Comision</p>
+                </a>
+              </li> 
             </ul>
           </li> @endif
           <li class="nav-item">

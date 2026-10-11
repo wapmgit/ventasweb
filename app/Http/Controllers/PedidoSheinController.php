@@ -49,7 +49,7 @@ class PedidoSheinController extends Controller
 		$rutas=DB::table('rutas')->get();
 		$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
         $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev')-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->get();
-         $contador=DB::table('pedidoshein')->select('idpedido')->limit('1')->orderby('idpedido','desc')->get();
+        $contador=DB::table('pedidoshein')->select('idpedido')->limit('1')->orderby('idpedido','desc')->get();
 
 		 
      if ($contador==""){$contador=0;}
@@ -308,7 +308,7 @@ public function show(Request $request,$id){
 				$ventaup=PedidoShein::findOrFail($request->get('venta'));
 				$ventaup->saldo=$request->get('tdeuda');
 				$ventaup->update();
-	  return Redirect::to('abonopedidoshein/'.$request->get('venta'));
+	   return Redirect::to('pedidoshein');
     }
 	public function destroy(Request $request){
 		
@@ -343,7 +343,8 @@ public function show(Request $request,$id){
 			 $lista=DB::table('pedidoshein as v')
 			  -> join ('campana as ca','ca.id','=','v.codlote')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select (DB::raw('sum(v.saldo) as acumulado'),DB::raw('sum(v.monto) as monto'),'p.id_cliente','p.cedula','p.telefono','p.nombre')           
+			->join('vendedores as vende','vende.id_vendedor','=','p.vendedor')
+            -> select (DB::raw('sum(v.saldo) as acumulado'),DB::raw('sum(v.monto) as monto'),'p.id_cliente','p.cedula','p.telefono','p.nombre','vende.nombre as vendedor')           
 			-> where('ca.estatus','=',1)
 			-> where('v.saldo','>',0)
             -> where('v.anulado','=',0)

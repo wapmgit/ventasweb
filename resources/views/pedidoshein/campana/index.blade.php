@@ -34,8 +34,8 @@
 						if($cat->estatus==2){ echo "Anulada"; } @endphp 
 					</td>
 					<td>
-						<a href="{{route('editcategoria',['id'=>$cat->id])}}"><button class="btn btn-warning btn-sm">Editar</button></a>
-                        <a href="{{route('showcampana',['id'=>$cat->id])}}"><button class="btn btn-success btn-sm">Ver articulos</button></a>
+                        <a href="{{route('showcampana',['id'=>$cat->id])}}"><button class="btn btn-success btn-sm">Detalle</button></a>
+						<a href="{{route('comicampana',['id'=>$cat->id])}}"><button class="btn btn-warning btn-sm">Comision</button></a>
 					</td>
 				</tr>
 				

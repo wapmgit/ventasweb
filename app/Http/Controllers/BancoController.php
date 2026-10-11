@@ -12,6 +12,7 @@ use App\Models\Compras;
 use App\Models\Recibos;
 use App\Models\Gastos;
 use App\Models\Comisiones;
+use App\Models\Comisionshein;
 use App\Models\Reciboscomision;
 use App\Models\Comprobantes;
 use App\Models\MovBancos;
@@ -503,7 +504,18 @@ class BancoController extends Controller
 			 $recibo->monto='0';
 			 $recibo->update();
 				
-			$actventa=comisiones::findOrFail($delmov->docrelacion);
+			$actventa=Comisiones::findOrFail($delmov->docrelacion);
+			$actventa->pendiente=$actventa->pendiente+$mrecibo;
+			$actventa->update();
+	}
+		if($delmov->tipodoc == "COMS"){
+			$recibo=Reciboscomision::findOrFail($delmov->iddocumento);
+			$mrecibo=$recibo->monto;	
+			 $recibo->observacion='Anulado ->'.$mrecibo;
+			 $recibo->monto='0';
+			 $recibo->update();
+				
+			$actventa=Comisionshein::findOrFail($delmov->docrelacion);
 			$actventa->pendiente=$actventa->pendiente+$mrecibo;
 			$actventa->update();
 	}
