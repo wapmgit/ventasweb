@@ -127,9 +127,22 @@ $(document).ready(function(){
 		$('#regresar').click(function(){
 	window.location="{{route('campana')}}";
 		});
-
+$("#pagado").change(calculo); 
+$("#gasto").change(calculo); 
 });
+  function calculo(){
+      var cto= $("#costo").val();
+      var util= $("#utilidad").val();
+      var pag= $("#pagado").val();
+      var gto= $("#gasto").val();
+	  
+       var p2=(parseFloat(cto) - parseFloat(pag)) + parseFloat(util);
 
+       var  neta=(parseFloat(p2) - parseFloat(gto));
+      $("#utilneta").val(neta);
+      $("#vutilneta").html(neta);
+
+      }
 </script>
 
 @endpush

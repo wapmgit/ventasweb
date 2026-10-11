@@ -22,13 +22,42 @@ role="dialog" tabindex="-1" id="modal-cerrar-{{$campana->id}}">
 						<small>Genera Cuenta por pagar al Proveedor.</small>
 						</p>
 						<input type="hidden" name="campana"  value="{{$campana->id}}" >
-						<input type="hidden" name="costo"  value="{{$acumcosto}}" >
-						<input type="hidden" name="utilidad"  value="{{$acumenvio}}" >
+						<input type="hidden" name="utilneta" id="utilneta" value="{{$acumenvio}}" >
             		
             	</div>		
             	</div>		
-
-				
+			  <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                    <div class="form-group">
+                        <label for="precio_venta">Costo</label>
+                        <input type="number" name="costo" id="costo" readonly class ="form-control" value="{{$acumcosto}}"  >
+                    </div>
+                    </div>
+				 <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                    <div class="form-group">
+                        <label for="precio_venta">Utilidad</label>
+                        <input type="number" name="utilidad" id="utilidad" readonly class ="form-control" value="{{$acumenvio}}"  >
+                    </div>
+                    </div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                    <div class="form-group">
+                        <label for="precio_venta">Pagado</label>
+                        <input type="number" name="pagopedido" id="pagado" class ="form-control" value="{{$acumcosto}}"  >
+                    </div>
+                    </div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                    <div class="form-group">
+                        <label for="precio_venta">Gastos</label>
+                        <input type="number" name="gastopedido" id="gasto" class ="form-control" value="0"  >
+                    </div>
+                    </div>
+						<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+            		 <div class="form-group">
+            			<p>Utilidad Neta en Campaña, <span id="vutilneta">{{$acumenvio}}</span>$
+						</p>
+						
+            		
+            	</div>		
+            	</div>	
 			    </div>  <!-- del row -->
 		</div>  <!-- del modal body-->
 			<div class="modal-primary">

@@ -285,7 +285,12 @@ $(document).ready(function(){
 			agregar();
 		} 
 	});
-
+	$('#vpedido').change(function(){
+		dato=document.getElementById('vpedido').value.split('_');
+      var comi= dato[1];
+      //$("#comision").val(comi);
+	  $("#nvendedor").val(dato[0]);
+	});
 	$('#closemodal').click(function(){		
 	 $("#formulariocliente")[0].reset();
 	});
