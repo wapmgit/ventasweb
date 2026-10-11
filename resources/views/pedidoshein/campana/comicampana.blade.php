@@ -1,5 +1,6 @@
 @extends ('layouts.master')
 @section ('contenido')
+<?Php $acumenvio =$acumcosto =0; ?>
 		  <!-- Main content -->
 	<div class="invoice p-3 mb-3">
               <!-- title row -->
@@ -25,7 +26,7 @@
                 <!-- /.col -->
 				<div class="col-sm-3 invoice-col">
 
-				  <h4>Comision Campaña</h4>
+				  <h4>Comision Campaña </h4>
               
 				</div>
 					<div class="col-sm-3 invoice-col" align="center">
@@ -73,7 +74,7 @@
         @endif
 		</div>
         <div class ="row">
-		@foreach($vendedores as $ve)
+		@foreach($vendedores as $ve) 
 			<div class="row mb-3">
     <div class="col-12">
         <div class="card card-outline card-secondary">
@@ -225,10 +226,10 @@
         </div>
 		@endforeach
 		</div>   
-					
+				
 				<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
                     <div class="form-group" align="center"></br>
-					@php if($campana->estatus==0) { @endphp<button id="repreciar"  class="btn btn-warning btn-sm" ><a href="" data-target="#modal-cerrar-{{$campana->id}}" data-toggle="modal">Cerrar Campaña</a></button>@php } @endphp
+
 					 <button type="button" id="regresar" class="btn btn-danger btn-sm" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Regresar</button>
                      <button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button> 
                     </div>
