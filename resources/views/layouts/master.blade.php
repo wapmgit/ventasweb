@@ -116,7 +116,15 @@
           <div class="dropdown-divider"></div>
           <a href="{{route('ventacaja')}}" class="dropdown-item">
             <i class="fa  fa-area-chart mr-2"></i> Ventas
-          </a>
+          </a> 
+		  <div class="dropdown-divider"></div>
+		<a class="dropdown-item" href="{{ route('logout') }}"
+				onclick="event.preventDefault();
+				document.getElementById('logout-form').submit();">
+			   Cerrar Sesión</a>
+				<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+				@csrf
+				</form>
         </div>
     
       </li>
