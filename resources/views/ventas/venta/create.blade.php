@@ -687,6 +687,12 @@ $(document).ready(function(){
 		 }
 		}
 	 })
+	 $('#pmonto').on('keypress', function(e) {
+        if (e.which === 13) { // Si presiona Enter
+            e.preventDefault();           
+            $('#bt_pago').click(); 
+        }
+    });
 });
 function trunc (x, posiciones = 0) {
   var s = x.toString()
@@ -889,7 +895,7 @@ function trunc (x, posiciones = 0) {
                 total=parseFloat(total)+parseFloat(subtotal[cont].toFixed(2));
 				artventa[cont]=cantidad;
 				stcventa[cont]=stock;
-              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" id="varticulo'+cont+'" name="articulo[]" value="'+articulo+'"><input type="hidden"  name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" id="vcantidad'+cont+'" name="cantidad[]" onchange="adjcnt('+cont+');" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" id="precio'+cont+'" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number" id="vdescuento'+cont+'" name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" id="pventa'+cont+'" name="precio_venta[]" value="'+precio_venta+'"></td><td><span id="subt'+cont+'">'+subtotal[cont].toFixed(2)+'</span><input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"><input type="hidden" name="usag[]" readonly="true" value="'+usag+'"></td></tr>';
+              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" id="varticulo'+cont+'" name="articulo[]" value="'+articulo+'"><input type="hidden"  name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" id="vcantidad'+cont+'" name="cantidad[]" onchange="adjcnt('+cont+');" onkeydown="if(event.keyCode===13){ event.preventDefault(); event.stopPropagation(); $(\'#pidarticulo\').val(\'5000\'); $(\'#pidarticulo\').selectpicker(\'refresh\'); $(\'#pidarticulo\').selectpicker(\'toggle\'); }" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" id="precio'+cont+'" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number" id="vdescuento'+cont+'" name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" id="pventa'+cont+'" name="precio_venta[]" value="'+precio_venta+'"></td><td><span id="subt'+cont+'">'+subtotal[cont].toFixed(2)+'</span><input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"><input type="hidden" name="usag[]" readonly="true" value="'+usag+'"></td></tr>';
 				cont++;
 				contl++;
               limpiar();
@@ -933,7 +939,7 @@ function trunc (x, posiciones = 0) {
 			  $("#pcantidad").val(1);
               }
         }else{
-			  toastr.error('Error al ingresar el Articulo en venta, ¡ Revisar datos!.');
+			  toastr.error('Error al ingresar el Articulo en venta, ¡ Seleccionar Cliente y Revisar datos del Articulo!.');
 			
         }
     }
@@ -970,6 +976,7 @@ function trunc (x, posiciones = 0) {
     }		
 
 	function adjcnt(index){
+
 		vdolar=$("#valortasa").val();
 		cntant=artventa[index];
 		ncntart=$("#vcantidad"+index).val(); 
@@ -1064,6 +1071,7 @@ function trunc (x, posiciones = 0) {
 				$("#preferencia").val('Tc: '+valort); 
 				}  
 				$("#pmonto").attr('placeholder','Monto '+moneda);
+				$("#pmonto").focus();
 		t_pago=$("#pidpago").val();	   
     }
 	//agrego tipo pago
