@@ -367,10 +367,11 @@ class BancoController extends Controller
             ->orderby('mv.id_mov', 'asc')
            ->get();
        // dd($mov);
+
 	 $saldo=DB::table('mov_ban')
 	 ->select('tipo_mov',DB::raw('SUM(monto) as tmonto' ))
 	 ->where('idbanco','=',$id)
-	  -> whereBetween('fecha_mov', ['2023-12-01', $fbanco])
+	  -> where('fecha_mov','<',$fbanco)
 	  	 ->where('mov_ban.estatus','=',0)
 	 ->groupby('tipo_mov')->get();
 	 // dd($saldo);
