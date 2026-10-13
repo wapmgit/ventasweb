@@ -109,9 +109,9 @@
                       </tbody>   
 					  <tr style="background-color: #E6E6E6"><td colspan="2">
 					  <strong>Total: <?php echo $cont. " Pedidos."; ?></strong> -----> Monto para Comision 
-					  <a href="#" data-toggle="modal" data-target="#modal-comision-{{$ve->id_vendedor}}" class="text-primary font-weight-bold">
+				<?php if($campana->estatus==1){ ?>   <a href="#" data-toggle="modal" data-target="#modal-comision-{{$ve->id_vendedor}}" class="text-primary font-weight-bold">
                                           {{ number_format($comi, 2, ',', '.') }} $ <i class="fas fa-eye ml-1"></i>
-                     </a> </td>
+				</a> <?php } else { echo  number_format($comi, 2, ',', '.')." $"; } ?></td>
 					 <td><strong><?php echo number_format($acumonto, 2,',','.');?></strong></td>									
 					  <td><strong><?php echo number_format($acumsaldo, 2,',','.');?></strong></td></tr>
                   </table>
