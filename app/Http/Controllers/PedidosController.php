@@ -168,8 +168,8 @@ catch(\Exception $e)
   return Redirect::to('pedidos');
 }
 public function show(Request $request,$id){
-	//dd($request);
-	$rol=DB::table('roles')-> select('importarpedido','editpedido')->where('iduser','=',$request->user()->id)->first();	
+
+	$rol=DB::table('roles')-> select('importarpedido','editpedido','cambiarprecioventa')->where('iduser','=',$request->user()->id)->first();	
     $user=Auth::user()->name;
     $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			 if ($empresa->orderart==1){$order="nombre";}else{$order="idarticulo";}

@@ -1,6 +1,14 @@
 @extends ('layouts.master')
 @section ('contenido')
-<?Php $acumenvio =$acumcosto =0; ?>
+<?Php $acumenvio =$acumcosto =0; $mcomicampana=0;
+
+$total = 0; 
+$count = 0; 
+foreach ($mpedidos as $cat) {
+    $total += $cat->tpedido;
+}
+$mcomicampana=$campana->mcomi;
+ ?>
 		  <!-- Main content -->
 	<div class="invoice p-3 mb-3">
               <!-- title row -->
@@ -26,7 +34,7 @@
                 <!-- /.col -->
 				<div class="col-sm-3 invoice-col">
 
-				  <h4>Comision Campaña </h4>
+				  <h4>Comision Campaña</h4>
               
 				</div>
 					<div class="col-sm-3 invoice-col" align="center">
@@ -91,12 +99,12 @@
                           <th>Saldo</th>
               </thead>
 			  
-			  <?php $acumonto=0; $cont=0; $acumsaldo=0; $comi=0; $acum=0; $monto=0; $pedidosPagados = array();?>
+			  <?php $acumonto=0; $cont=0; $acumsaldo=0; $pcomivendedor=0; $comi=0; $acum=0; $mcomivende=0;  $monto=0; $pedidosPagados = array();?>
                       <tbody>
                         @foreach($pedidos as $det) 
 						<?php $cont++; if($ve->id_vendedor==$det->idvendedor){
 						$acumonto=$acumonto+$det->monto;  $acumsaldo=$acumsaldo+$det->saldo;
-						if($det->saldo==0){$comi=$comi+$det->monto; $pedidosPagados[] = $det;}
+						if($det->saldo==0){$pedidosPagados[] = $det;}
 						?>
                         <tr > 
                           <td>{{$det->tipo_comprobante}} {{$det->idpedido}}</td>
@@ -106,11 +114,19 @@
                         </tr>
 						<?php } ?>
                         @endforeach
-                      </tbody>   
+                      </tbody>  
+					<?php   
+					$pcomivendedor=((100*$acumonto)/$total);
+				
+					$mcomivende=$mcomicampana*($pcomivendedor/100);
+					$comi=$mcomivende; 
+					?> 					  
 					  <tr style="background-color: #E6E6E6"><td colspan="2">
-					  <strong>Total: <?php echo $cont. " Pedidos."; ?></strong> -----> Monto para Comision 
-				<?php if($campana->estatus==1){ ?>   <a href="#" data-toggle="modal" data-target="#modal-comision-{{$ve->id_vendedor}}" class="text-primary font-weight-bold">
-                                          {{ number_format($comi, 2, ',', '.') }} $ <i class="fas fa-eye ml-1"></i>
+					  <strong>Total: <?php echo $cont. " Pedidos."; ?></strong> -----> Monto para Comision ({{$mcomicampana}}$) --> ventas({{$pcomivendedor}}%)
+				<?php if(($campana->estatus==1)and($acumsaldo==0)){  
+					?> 
+				<a href="#" data-toggle="modal" data-target="#modal-comision-{{$ve->id_vendedor}}" class="text-primary font-weight-bold">
+                                          {{ number_format($comi, 2, ',', '.') }} $  <i class="fas fa-eye ml-1"></i>
 				</a> <?php } else { echo  number_format($comi, 2, ',', '.')." $"; } ?></td>
 					 <td><strong><?php echo number_format($acumonto, 2,',','.');?></strong></td>									
 					  <td><strong><?php echo number_format($acumsaldo, 2,',','.');?></strong></td></tr>
@@ -135,6 +151,7 @@
                     @csrf
                     <input type="hidden" name="id_vendedor" value="{{ $ve->id_vendedor }}">
                     <input type="hidden" name="id_campana" value="{{ $campana->id }}">
+                    <input type="hidden" name="porcentaje" value="{{ $pcomivendedor}}">
                     
                     <div class="modal-content">
                         <div class="modal-header bg-secondary">
@@ -148,28 +165,11 @@
                                 <!-- CAMPO DE PORCENTAJE Y VISTA PREVIA EN VIVO -->
                                 <div class="row mb-3 align-items-center bg-light p-3 rounded border">
                                     <div class="col-md-6">
-                                        <div class="form-group mb-0">
-                                            <label for="porcentaje_{{$ve->id_vendedor}}" class="font-weight-bold text-dark">
-                                                <i class="fas fa-percentage text-primary"></i> Porcentaje (%):
-                                            </label>
-                                            <!-- Agregamos una clase única con el ID del vendedor -->
-                                            <input type="number" 
-       step="0.01" 
-       min="0.01" 
-       max="100" 
-       name="porcentaje" 
-       id="input-porcentaje-{{$ve->id_vendedor}}" 
-       class="form-control form-control-sm input-porcentaje" 
-       data-id="{{$ve->id_vendedor}}" 
-       data-base="{{$totalModalComision}}" 
-       required 
-       placeholder="Ej: 5 o 10">
-                                        </div>
                                     </div>
                                     <div class="col-md-6 text-md-right mt-2 mt-md-0">
                                         <span class="text-muted d-block">Comisión Calculada:</span>
                                         <!-- Aquí se mostrará el monto en tiempo real -->
-                                        <h4 class="text-success font-weight-bold m-0" id="lbl-comision-{{$ve->id_vendedor}}">0,00 $</h4>
+                                        <h4 class="text-success font-weight-bold m-0" id="lbl-comision-{{$ve->id_vendedor}}">{{$comi}} $</h4>
                                     </div>
                                 </div>
 
@@ -201,7 +201,7 @@
                                             <td>
                                                 {{number_format($totalModalComision, 2, ',', '.')}} $
                                                 <input type="hidden" name="monto_base_ventas" value="{{ $totalModalComision }}">
-                                                <input type="hidden" name="monto_comision" id="monto_comision-{{$ve->id_vendedor}}" value="{{ $totalModalComision }}">
+                                                <input type="hidden" name="monto_comision" id="monto_comision-{{$ve->id_vendedor}}" value="{{$comi}}">
                                             </td>
                                         </tr>
                                     </tfoot>
@@ -251,24 +251,7 @@ $(document).ready(function(){
 		$('#regresar').click(function(){
 	window.location="{{route('campana')}}";
 		});
-$('.input-porcentaje').on('input', function(){
-        let idVendedor = $(this).data('id');
-        let baseVentas = parseFloat($(this).data('base')) || 0;
-        let porcentaje = parseFloat($(this).val()) || 0;
 
-        // Cálculo matemático
-        let comisionCalculada = (baseVentas * porcentaje) / 100;
-
-        // Formatear el número al estilo latino (separador de miles con punto, decimales con coma)
-        let comisionFormateada = comisionCalculada.toLocaleString('es-VE', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-
-        // Actualizar el texto del label en tiempo real dentro del modal correspondiente
-        $('#lbl-comision-' + idVendedor).text(comisionFormateada + ' $');
-        $('#monto_comision-' + idVendedor).val(comisionCalculada);
-    });
 });
 
 </script>

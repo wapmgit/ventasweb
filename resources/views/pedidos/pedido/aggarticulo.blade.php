@@ -24,7 +24,7 @@
                               </select></td></tr>
 			<tr><td><label>Cantidad:</label>
 			<input type="number" name="pcantidad" id="pcantidad" class ="form-control" placeholder="Cantidad" min=""></td>
-			<td><label>Precio:</label> <input type="number" name="pprecio_venta" id="pprecio_venta" step="0.001" class ="form-control" placeholder="Precio de Venta" ></td></tr>
+			<td><label>Precio:</label> <input type="number" name="pprecio_venta" id="pprecio_venta" step="0.001" class ="form-control" <?php if($rol->cambiarprecioventa==0){ echo "readonly"; } ?>  placeholder="Precio de Venta" ></td></tr>
 			</table>
 					</div>
    

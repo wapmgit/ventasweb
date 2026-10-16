@@ -50,7 +50,7 @@ role="dialog" tabindex="-1" id="modal-cerrar-{{$campana->id}}">
                         <input type="number" name="gastopedido" id="gasto" class ="form-control" value="0"  >
                     </div>
                     </div>
-						<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+						<div class="col-lg-8 col-sm-8 col-md-8 col-xs-8">
             		 <div class="form-group">
             			<p>Utilidad Neta en Campaña, <span id="vutilneta">{{$acumenvio}}</span>$
 						</p>
@@ -58,6 +58,12 @@ role="dialog" tabindex="-1" id="modal-cerrar-{{$campana->id}}">
             		
             	</div>		
             	</div>	
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    <div class="form-group">
+                        <label for="precio_venta">Comision Vendedores (%)</label>
+                        <input type="number" name="comivende"  class ="form-control" value="1"  >
+                    </div>
+                    </div>
 			    </div>  <!-- del row -->
 		</div>  <!-- del modal body-->
 			<div class="modal-primary">

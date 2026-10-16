@@ -99,9 +99,55 @@
 					  <td><strong><?php echo number_format($monto, 2,',','.');?></strong></td></tr>
                   </table>
                  
-                    </div>
-                </div>   
+                    </div></br>
 						@include('pedidoshein.campana.modal')
+					<?php if(count($data) != 0){?>
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table  align="center" width="100%">
+					<tr><td>Pagado</td><td>Gastos</td><td>Utilidad neta</td><td>% Comision</td></tr>
+					<tr><td>{{$campana->pagado}}</td><td>{{$campana->gastos}}</td><td>{{$campana->utilneta}}</td><td>{{$campana->comivendedores}}</td></tr>
+					</table>
+			
+					</div>
+					     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <table id="" width="100%">
+				     <thead style="background-color: #E6E6E6">                   
+                          <th colspan="6">Comisiones</th>
+              </thead>
+                      <thead style="background-color: #E6E6E6">                   
+                          <th>Codigo</th>
+                          <th>Vendedor</th>
+                          <th>Monto Ventas</th>
+                          <th>Porcentaje</th>
+                          <th>Monto Comision</th>
+                          <th>Pendiente</th>
+              </thead><?php $acummcomi=0;  $acumpcomi=0; $acumventas=0; ?>
+                      <tbody>
+                        @foreach($data as $dat)
+                        <tr > <?php $acummcomi=($acummcomi+$dat->montocomision); $acumpcomi=($acumpcomi+$dat->pendiente);
+						 $acumventas=($acumventas+($dat->montoventas));  ?>
+                          <td>{{$dat->idcomision}}</td>
+                          <td>{{$dat->nombre}}</td>
+                          <td>{{$dat->montoventas}}</td>
+                          <td>{{$dat->porcentaje}}</td>
+                          <td>{{$dat->montocomision}}</td>
+                          <td>{{$dat->pendiente}}</td>
+                          
+                        </tr>
+                        @endforeach
+                      </tbody>   
+					  <tr style="background-color: #E6E6E6"><td colspan="2"><strong>Total:</strong></td>
+					   <td><strong><?php echo number_format($acumventas, 2,',','.');?></strong></td>
+					 <td></td>					
+					
+					  <td><strong><?php echo number_format($acummcomi, 2,',','.');?></strong></td>
+					  <td><strong><?php echo number_format($acumpcomi, 2,',','.');?></strong></td></tr>
+                  </table>
+                 
+                    </div>
+					<?php } ?>
+                </div>   
+					
 				<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12">
                     <div class="form-group" align="center"></br>
 					@php if($campana->estatus==0) { @endphp<button id="repreciar"  class="btn btn-warning btn-sm" ><a href="" data-target="#modal-cerrar-{{$campana->id}}" data-toggle="modal">Cerrar Campaña</a></button>@php } @endphp

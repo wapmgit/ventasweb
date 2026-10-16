@@ -69,11 +69,20 @@ class CampanaController extends Controller
             ->where ('ps.anulado','=',0)
             ->orderBy('dp.descripcion','asc')
             ->get();
-
-      return view("pedidoshein.campana.show",["empresa"=>$empresa,"articulos"=>$articulos,"campana"=>$campana]);
+	    $data=DB::table('comisioneshein as comi')
+           ->join('campana as cam','cam.id','comi.codlote')
+           ->join('vendedores as vend','vend.id_vendedor','comi.idvendedor')
+		   ->select('comi.*','vend.nombre','cam.codigo')
+		   ->where ('comi.codlote','=',$id)
+            -> orderBy('comi.idcomision','desc')
+            ->get();
+			//dd($data);
+      return view("pedidoshein.campana.show",["data"=>$data,"empresa"=>$empresa,"articulos"=>$articulos,"campana"=>$campana]);
     }
 	  public function cerrarcampana(Request $request)
-    {    
+    {   
+		//dd($request);
+		$mcomicampana=$request->utilneta-($request->utilneta/(($request->comivende/100)+1));
 			$data=campana::findOrFail($request->campana);
 			$data->costo=$request->costo;
 			$data->utilidad=$request->utilidad;
@@ -83,10 +92,13 @@ class CampanaController extends Controller
 			$mytime=Carbon::now('America/Caracas');
 			$data->cierre=$mytime->toDateTimeString();
 			$data->estatus=1;
+			$data->comivendedores=$request->comivende;
+			$data->mcomi=$request->utilneta-($request->utilneta/(($request->comivende/100)+1));
+			$data->saldocomi=$request->utilneta-($request->utilneta/(($request->comivende/100)+1));
 			$data->update();
-				//	
+
 	$contador=DB::table('notasadmp')->select(DB::raw('count(idnota) as doc'))->where('tipo','=',1)->first();
-	//dd($contador);
+	//
    if ($contador==NULL){$numero=0;}else{$numero=$contador->doc;}
         $paciente=new Notasadmp;
         $paciente->tipo=1;
@@ -115,7 +127,7 @@ class CampanaController extends Controller
             ->where ('ps.anulado','=',0)
             ->where ('ps.idcomision','=',0)
             ->orderBy('ps.idpedido','asc')
-            ->get(); // dd($pedidos);
+            ->get(); 
 		$vendedores=DB::table('campana as ca')
             -> join('pedidoshein as ps','ps.codlote','=','ca.id')
             -> join('vendedores as vend','vend.id_vendedor','=','ps.idvendedor')
@@ -125,14 +137,21 @@ class CampanaController extends Controller
             ->where ('ps.idcomision','=',0)
             ->groupby('ps.idvendedor')
             ->get(); 
-      return view("pedidoshein.campana.comicampana",["vendedores"=>$vendedores,"empresa"=>$empresa,"pedidos"=>$pedidos,"campana"=>$campana]);
+		 $mpedidos=DB::table('campana as ca')
+            -> join('pedidoshein as ps','ps.codlote','=','ca.id')
+              -> select(DB::raw('sum(ps.monto) as tpedido'),DB::raw('sum(ps.saldo) as tsaldo'))
+            ->where ('ps.codlote','=',$id)
+            ->where ('ps.anulado','=',0)
+            ->groupby('ps.idvendedor')
+            ->get();
+      return view("pedidoshein.campana.comicampana",["mpedidos"=>$mpedidos,"vendedores"=>$vendedores,"empresa"=>$empresa,"pedidos"=>$pedidos,"campana"=>$campana]);
     }
 	
 		public function generarcomisionshein (Request $request)
     {
 	
+	//dd($request);
 		$user=Auth::user()->name;
-
         $data=new Comisionshein;
         $data->idvendedor=$request->get('id_vendedor');
         $data->codlote=$request->get('id_campana');
