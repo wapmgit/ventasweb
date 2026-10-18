@@ -422,5 +422,23 @@ class SistemaController extends Controller
             ->get();
         return view('reportes.balance.balance.index',["pagond"=>$pagond,"ingresos"=>$ingresos,"desglosep"=>$desglosep,"pagos"=>$pagos,"gastos"=>$gastos,"nd"=>$nd,"cobranza"=>$cobranza,"apartado"=>$apartado,"empresa"=>$empresa,"rol"=>$rol,"searchText"=>$query,"searchText2"=>$query2]);
 	}
+public function actualizarTema(Request $request)
+{
+try {
+        $user = Auth::user();
+        if ($user) {
+            $user->tema = $request->input('tema');                 // Body (Modo oscuro, etc.)
+            $user->tema_navbar = $request->input('tema_navbar');     // Navbar Variants
+            $user->tema_sidebar = $request->input('tema_sidebar');   // Accent / Sidebar Backgrounds
+            $user->tema_brand = $request->input('tema_brand');       // Brand Logo Variants
+            $user->tema_aside = $request->input('tema_aside');       // Dark/Light Sidebar Variants
+            $user->save();
 
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false], 401);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
 }

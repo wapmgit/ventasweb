@@ -21,6 +21,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+		'nivel',
+		'img',
+		'tema',
+		'tema_brand',
+		'tema_aside',
+		'tema_sidebar',
     ];
 
     /**

@@ -307,6 +307,34 @@ $idv=0;
 @push ('scripts')
 <script>
 $(document).ready(function(){
+			function filtrarSubrutas() {
+					var rutaSeleccionada = $('#idruta').val();
+
+					// Ocultar todas las opciones excepto la opción por defecto
+					$('#idsubruta option').each(function(){
+						var rutaPadre = $(this).data('ruta');
+
+						if (rutaPadre == rutaSeleccionada) {
+							$(this).show().prop('disabled', false);
+						} else if ($(this).val() !== "") {
+							$(this).hide().prop('disabled', true);
+						}
+					});
+
+					// Si el cliente no tiene subruta guardada o si cambió de ruta, se deselecciona la inválida
+					var subrutaValida = $('#idsubruta option[value="' + $('#idsubruta').val() + '"]').is(':enabled');
+					if (!subrutaValida) {
+						$('#idsubruta').val("");
+					}
+				}
+
+				// Ejecutar al cargar la página
+				filtrarSubrutas();
+
+				// Ejecutar cuando el usuario cambie la Ruta principal
+				$('#idruta').change(function(){
+					filtrarSubrutas();
+				});
 	$('[data-widget="pushmenu"]').PushMenu('collapse');
 	$('[data-mask]').inputmask();
 	document.getElementById('pcantidad').addEventListener('keypress',function(e){ validar(e); });	

@@ -82,7 +82,7 @@ class VentasController extends Controller
 		$vendedor=DB::table('vendedores')->where('activo','1')->get();
 		$categoria=DB::table('categoriaclientes')->get();	
 		$rutas=DB::table('rutas')->get();
-       
+       $subrutas=DB::table('subrutas')->get();
         $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')
 		->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre')
 		-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->OrderBy('clientes.nombre','asc')->get();
@@ -121,7 +121,7 @@ class VentasController extends Controller
 		   $seriales =DB::table('seriales')->where('estatus','=',0)->get();
      if ($contador==""){$contador=0;}
 	 	$cxc=0;
-      return view("ventas.venta.create",["cxcc"=>$cxc,"categoria"=>$categoria,"rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
+      return view("ventas.venta.create",["subrutas"=>$subrutas,"cxcc"=>$cxc,"categoria"=>$categoria,"rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
     } else { 
 	return view("reportes.mensajes.noautorizado");
 	}
@@ -814,6 +814,7 @@ public function nota2ds($id){
         $paciente->catcomercial=$request->get('categoria');
 		 $paciente->vendedor=$request->get('idvendedor');
 		 $paciente->ruta=$request->get('idruta');
+		 $paciente->subruta = $request->input('idsubruta') ?: 0;
 		  $mytime=Carbon::now('America/Caracas');
 		$paciente->creado=$mytime->toDateTimeString();
         $paciente->save();

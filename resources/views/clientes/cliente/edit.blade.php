@@ -108,7 +108,7 @@
 		   </div>
 	</div>
 
-	<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">		
+	<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">	
 		   <div class="form-group">
             			<label >Vendedor: {{$datos->vendedor}}</label>
             			<select name="idvendedor" class="form-control">
@@ -119,17 +119,38 @@
             			
             		</div>
 	</div>
-	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">			
-		   <div class="form-group">
-            			<label >Ruta</label>
-            			<select name="idruta" class="form-control">
-            				@foreach ($rutas as $dat)
-            				<option <?php if($cliente->ruta==$dat->idruta){ echo "selected"; }?> value="{{$dat->idruta}}">{{$dat->nombre}}</option>
-            				@endforeach
-            			</select>
-            			
-            		</div>
-	</div>
+			   	<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
+           <div class="form-group">
+		     <label for="tipo_cliente" >Licencia</label>
+<input type="text" name="licencia" class="form-control" value="{{$cliente->licencia}}" placeholder="Licencia...">
+           </div>
+		</div>
+<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">            
+    <div class="form-group">
+        <label>Ruta</label>
+        <select name="idruta" id="idruta" class="form-control">
+            @foreach ($rutas as $dat)
+                <option value="{{ $dat->idruta }}" {{ ($cliente->ruta == $dat->idruta) ? 'selected' : '' }}>
+                    {{ $dat->nombre }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
+<div class="col-lg-´2 col-md-2 col-sm-2 col-xs-12">            
+    <div class="form-group">
+        <label>Sub Ruta</label>
+        <select name="idsubruta" id="idsubruta" class="form-control">
+            <option value="">-- Seleccione Subruta --</option>
+            @foreach ($subrutas as $dat)
+                <option value="{{ $dat->idsubruta }}" data-ruta="{{ $dat->idruta }}" {{ ($cliente->subruta == $dat->idsubruta) ? 'selected' : '' }}>
+                    {{ $dat->nombre }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+</div>
 			   		   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
            <div class="form-group">
              <label for="tipo_precio">Agente Retencion</label><br>
@@ -143,12 +164,7 @@
       <input type="number"  step="1" class="form-control"  <?php if ($cliente->retencion>0){ echo  "value='$cliente->retencion'"; }else{ echo "disabled"; } ?> id="retencion" name="retencion" >
            </div>
 		   </div>
-		   	<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
-           <div class="form-group">
-		     <label for="tipo_cliente" >Licencia</label>
-<input type="text" name="licencia" class="form-control" value="{{$cliente->licencia}}" placeholder="Licencia...">
-           </div>
-		</div>
+
 			<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">		
            <div class="form-group">
 		     <label for="tipo_cliente" >Contacto</label>
@@ -256,7 +272,35 @@
 	
 	
 	$(document).ready(function(){	  
+			function filtrarSubrutas() {
+					var rutaSeleccionada = $('#idruta').val();
+					var subrutaActual = "{{ $cliente->subruta }}"; // Subruta que ya tiene asignada el cliente (si la tiene)
 
+					// Ocultar todas las opciones excepto la opción por defecto
+					$('#idsubruta option').each(function(){
+						var rutaPadre = $(this).data('ruta');
+
+						if (rutaPadre == rutaSeleccionada) {
+							$(this).show().prop('disabled', false);
+						} else if ($(this).val() !== "") {
+							$(this).hide().prop('disabled', true);
+						}
+					});
+
+					// Si el cliente no tiene subruta guardada o si cambió de ruta, se deselecciona la inválida
+					var subrutaValida = $('#idsubruta option[value="' + $('#idsubruta').val() + '"]').is(':enabled');
+					if (!subrutaValida) {
+						$('#idsubruta').val("");
+					}
+				}
+
+				// Ejecutar al cargar la página
+				filtrarSubrutas();
+
+				// Ejecutar cuando el usuario cambie la Ruta principal
+				$('#idruta').change(function(){
+					filtrarSubrutas();
+				});
 	document.getElementById('btn-toggle-mapa').style.display="none"; 
 	document.getElementById('contenedor-mapa').style.display="none"; 
 	var tc= $("#tclient").val();

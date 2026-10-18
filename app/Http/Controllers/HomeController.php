@@ -74,6 +74,7 @@ class HomeController extends Controller
 		$vendedor=DB::table('vendedores')->where('activo','1')->get();
 		$categoria=DB::table('categoriaclientes')->get();	
 		$rutas=DB::table('rutas')->get();		
+		$subrutas=DB::table('subrutas')->get();
         $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
 		if ($empresa->orderart==1){$order="nombre";}else{$order="idarticulo";}
          $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')
@@ -114,7 +115,7 @@ class HomeController extends Controller
 		 $seriales =DB::table('seriales')->where('estatus','=',0)->get();
      if ($contador==""){$contador=0;}
 	  	$cxc=0;
-      return view("ventas.venta.create",["cxcc"=>$cxc,"categoria"=>$categoria,"rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
+      return view("ventas.venta.create",["subrutas"=>$subrutas,"cxcc"=>$cxc,"categoria"=>$categoria,"rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"articulos"=>$articulos,"monedas"=>$monedas,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
 		} }else { 
 	return view("reportes.mensajes.noautorizado");
 	}

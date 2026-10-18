@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="{{asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
 </head>
      @if(Auth::user()->nivel=="A")
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="{{ Auth::user()->tema ?? 'hold-transition sidebar-mini layout-fixed' }}">
 @else
 	   <body class="hold-transition skin-blue sidebar-collapse">
  @endif
@@ -52,7 +52,7 @@
   -->
 
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-primary navbar-dark">
+	<nav class="{{ Auth::user()->tema_navbar ?? 'main-header navbar navbar-expand navbar-primary navbar-dark' }}">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
       <li class="nav-item">
@@ -170,7 +170,7 @@
   <!-- /.navbar -->
 <?Php  $foto=Auth::user()->img; ?>
   <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="{{ Auth::user()->tema_aside ?? Auth::user()->tema_sidebar ?? 'main-sidebar sidebar-dark-primary elevation-4' }}">
     <!-- Brand Logo -->
     <a href="{{route('home')}}" class="brand-link">
       <img src="{{asset('dist/img/logosistemas.png')}}" alt="W&W" class="brand-image img-circle elevation-3" style="opacity: .8">
@@ -934,9 +934,49 @@
 <!-- AdminLTE for demo purposes -->
 <script src="{{asset('dist/js/demo.js')}}"></script>
 
-<!-- AdminLTE dashboard demo (This is only for demo purposes) 
-<script src="{{asset('dist/js/pages/dashboard.js')}}"></script>-->
-    @stack ('scripts')
+  @stack ('scripts')
+<script>
+$(document).ready(function() {
+    $(document).on('change click', '.control-sidebar input, .control-sidebar select, .control-sidebar a', function() {
+        setTimeout(function() {
+            // 1. Clases del Body (Modo oscuro, text-sm, etc.)
+            var clasesBody = $('body').attr('class')
+                .replace(/\bcontrol-sidebar-slide-open\b/g, '')
+                .replace(/\bcontrol-sidebar-open\b/g, '')
+                .trim();
+
+            // 2. Navbar Variants
+            var clasesNavbar = $('.main-header').attr('class');
+
+            // 3. Sidebar / Accent Variants (Se aplican al aside o al body según AdminLTE)
+            var clasesSidebar = $('.main-sidebar').attr('class');
+
+            // 4. Brand Logo Variants
+            var clasesBrand = $('.brand-link').attr('class');
+
+            // 5. Aside completo
+            var clasesAside = $('.main-sidebar').attr('class');
+
+            // Enviamos todo empaquetado a Laravel
+            $.ajax({
+                url: "{{ route('actualizartema') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    tema: clasesBody,
+                    tema_navbar: clasesNavbar,
+                    tema_sidebar: clasesSidebar,
+                    tema_brand: clasesBrand,
+                    tema_aside: clasesAside
+                },
+                success: function(response) {
+                    console.log("Configuración completa de AdminLTE guardada en BD.");
+                }
+            });
+        }, 300);
+    });
+});
+</script>
 </body>
 </html>
 

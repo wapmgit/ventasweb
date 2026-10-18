@@ -95,12 +95,25 @@
 			 <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
 					  <div class="form-group">
 				     <label for="tipo_precio">Ruta </label><br>
-            			<select name="idruta" class="form-control selectpicker">
+            			<select name="idruta"  id="idruta" class="form-control selectpicker">
             				@foreach ($rutas as $dat)
             				<option value="{{$dat->idruta}}">{{$dat->nombre}}</option>
             				@endforeach
             			</select>
 			   </div>       </div>
+			 	 <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">         
+    <div class="form-group">
+        <label>Sub Ruta</label>
+        <select name="idsubruta" id="idsubruta" class="form-control">
+            <option value="">-- Seleccione Subruta --</option>
+            @foreach ($subrutas as $dat)
+                <option value="{{ $dat->idsubruta }}" data-ruta="{{ $dat->idruta }}">
+                    {{ $dat->nombre }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+</div>
 			   <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
  <div class="form-group">
 				 <label for="tipo_precio">Tipo de Precio </label><br>

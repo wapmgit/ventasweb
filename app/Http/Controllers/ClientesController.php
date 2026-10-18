@@ -40,7 +40,8 @@ class ClientesController extends Controller
 		$vendedor=DB::table('vendedores')->where('activo','1')->get();	
 		$categoria=DB::table('categoriaclientes')->get();	
 		$rutas=DB::table('rutas')->get();	
-		return view("clientes.cliente.create",["rutas"=>$rutas,"categoria"=>$categoria,"vendedores"=>$vendedor]);
+		$subrutas=DB::table('subrutas')->get();
+		return view("clientes.cliente.create",["subrutas"=>$subrutas,"rutas"=>$rutas,"categoria"=>$categoria,"vendedores"=>$vendedor]);
 		} else { 
 		return view("reportes.mensajes.noautorizado");
 		}
@@ -86,6 +87,7 @@ class ClientesController extends Controller
 		$paciente->contacto=$request->get('contacto');
 		$paciente->telcontacto=$request->get('telcontacto');
 		$paciente->ruta=$request->get('idruta');
+		$paciente->subruta = $request->input('idsubruta') ?: 0;
 		 $mytime=Carbon::now('America/Caracas');
 		$paciente->creado=$mytime->toDateTimeString();
 		if(!empty($request->file('imagen'))){
@@ -137,13 +139,14 @@ class ClientesController extends Controller
 	
 		$vendedor=DB::table('vendedores')->where('activo','1')->get();
 		$rutas=DB::table('rutas')->get();
+		$subrutas=DB::table('subrutas')->get();
 		$categoria=DB::table('categoriaclientes')->get();	
 		 $datos=DB::table('clientes as c')
 			-> join('vendedores as v','c.vendedor','=','v.id_vendedor')
 			->select('v.nombre as vendedor')
 			-> where('c.id_cliente','=',$historia)
             ->first();
-		return view("clientes.cliente.edit",["rutas"=>$rutas,"categoria"=>$categoria,"cliente"=>Clientes::findOrFail($historia),"vendedores"=>$vendedor,"datos"=>$datos]);
+		return view("clientes.cliente.edit",["subrutas"=>$subrutas,"rutas"=>$rutas,"categoria"=>$categoria,"cliente"=>Clientes::findOrFail($historia),"vendedores"=>$vendedor,"datos"=>$datos]);
 	}
 	public function update(Request $request)
 	{
@@ -185,6 +188,7 @@ class ClientesController extends Controller
 		 $paciente->contacto=$request->get('contacto');
 		$paciente->telcontacto=$request->get('telcontacto');
 		 $paciente->ruta=$request->get('idruta');
+		 $paciente->subruta = $request->input('idsubruta') ?: 0;
 		 	if(!empty($request->file('imagen'))){
 			$file = $request->file('imagen');
 			$img = $file->getClientOriginalName();		
