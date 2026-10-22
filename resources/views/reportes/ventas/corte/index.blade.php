@@ -238,7 +238,7 @@ $cefe=0;?>
           <td><strong><?php $devolu=$devolucion->totaldev; echo number_format($devolucion->totaldev, 2,',','.')." $"; ?></strong></td>
 		    <td><strong><?php  echo number_format($comision->monto, 2,',','.')." $"; ?></strong></td>
 		    <td><strong><?php  echo number_format($acumcnt, 2,',','.')." $"; ?></strong></td>
-          <td><strong><?php $caja=($tingreso+$tcobranza+$devolu+$acumcnt)-($comision->monto); echo "$ ".number_format($caja, 2,',','.'); ?></strong></td>
+          <td><strong><?php $caja=($tingreso+$tcobranza+$acumcnt)-($comision->monto); echo "$ ".number_format($caja, 2,',','.'); ?></strong></td>
         
         </tr>
     </table></br>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Comisiones;
 use App\Models\Reciboscomision;
+use App\Models\ReglasComision;
 use App\Models\Ventas;
 use App\Models\Recibos;
 use App\Models\MovBancos;
@@ -23,7 +24,7 @@ $this->middleware('auth');
     {
         if ($request)
         {
-			$rol=DB::table('roles')-> select('comisiones')->where('iduser','=',$request->user()->id)->first();	
+			$rol=DB::table('roles')-> select('comisiones','editreglacomi')->where('iduser','=',$request->user()->id)->first();	
 			if ($rol->comisiones==1){ 
 				$query=trim($request->get('searchText'));
 				$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
@@ -46,17 +47,19 @@ $this->middleware('auth');
 				-> groupBy('v.idvendedor')
 				->paginate(30);
 			//dd($ventas);
-				}			
-     return view ('comisiones.comision.index',["ventas"=>$ventas,"searchText"=>$query,"vendedor"=>$vendedor,"empresa"=>$empresa]);
+				}
+$regla=DB::table('reglacomision')->get();				
+     return view ('comisiones.comision.index',["rol"=>$rol,"regla"=>$regla,"ventas"=>$ventas,"searchText"=>$query,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	     } else { 
 	return view("reportes.mensajes.noautorizado");
 	}
         }
     } 
-	public function detalle($id){
-		//dd($id);
+	public function detalle(Request $request, $id){
+		
 		$vendedor=DB::table('vendedores')-> where('id_vendedor','=',$id)->first();
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$rol=DB::table('roles')-> select('editreglacomi','generarcomi')->where('iduser','=',$request->user()->id)->first();	
 		if($empresa->calc_comi==1){
 				$venta=DB::table('venta as v')
 				-> join ('clientes as p','p.id_cliente','=','v.idcliente')
@@ -66,25 +69,66 @@ $this->middleware('auth');
 				 -> where ('v.devolu','=',0)
 				 -> where ('v.saldo','=',0)
 				 -> where ('v.idcomision','=',0)
-				->where ('v.idvendedor','=',$id)
-			
+				->where ('v.idvendedor','=',$id)			
 				->get();
+	$venta = DB::table('venta as v')
+    ->join('clientes as p', 'v.idcliente', '=', 'p.id_cliente')
+	-> join ('categoriaclientes as cc','cc.idcategoria','=','p.catcomercial')
+    ->join('vendedores as ve', 've.id_vendedor', '=', 'v.idvendedor')
+    // Subconsulta para obtener la fecha del último recibo por cada venta
+    ->leftJoinSub(
+        DB::table('recibos')
+            ->select('idventa', DB::raw('MAX(fecharecibo) as ultima_fecha'))
+            ->where('aux', '=', 0)
+            ->groupBy('idventa'),
+        'r_ultimo',
+        function ($join) {
+            $join->on('v.idventa', '=', 'r_ultimo.idventa');
+        }
+    )
+    ->select(
+        'v.idventa',
+        'v.fecha_hora',
+        'v.fecha_emi',
+        'p.diascredito as diascre',
+        'p.nombre',
+        'p.cedula',
+		'cc.nombrecategoria',
+        'v.comision',
+        'v.montocomision',
+        'p.direccion',
+        'v.tipo_comprobante',
+        'v.serie_comprobante',
+        'v.num_comprobante',
+        'v.impuesto',
+        'v.estado',
+        'v.total_venta',
+        'v.devolu',
+        'r_ultimo.ultima_fecha as fecha_recibo' // <--- Aquí ya viene integrado el último recibo
+    )
+    ->where('v.devolu', '=', 0)
+    ->where('v.saldo', '=', 0)
+    ->where('v.idcomision', '=', 0)
+    ->where('v.idvendedor', '=', $id)
+    ->orderBy('r_ultimo.ultima_fecha', 'asc')
+    ->get();								
 			}else{
 				$venta=DB::table('recibos as re')
 				-> join ('venta as v','v.idventa','=','re.idventa')
 				-> join ('clientes as p','v.idcliente','=','p.id_cliente')
 				-> join ('categoriaclientes as cc','cc.idcategoria','=','p.catcomercial')
 				 -> join ('vendedores as ve','p.vendedor','=','ve.id_vendedor')
-				-> select ('re.idrecibo as idventa','re.fecha as fecha_hora','re.fecharecibo as fecha_emi','p.nombre','p.cedula','v.comision',DB::raw('sum(re.monto*(v.comision/100)) as montocomision'),'p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','re.monto as total_venta','v.devolu','cc.nombrecategoria')
+				-> select ('re.idrecibo as idventa','p.diascredito as diascre','re.fecha as fecha_emi','re.fecharecibo as fecha_recibo','p.nombre','p.cedula','v.comision',DB::raw('sum(re.monto*(v.comision/100)) as montocomision'),'p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','re.monto as total_venta','v.devolu','cc.nombrecategoria')
 				 -> where ('v.devolu','=',0)
 				 -> where ('re.idcomision','=',0)
 				->where ('v.idvendedor','=',$id)	
 				-> groupBy('re.idrecibo')
 				->get();
-		//dd($venta);
-		}
+		
+		}		
 			$detalle=[];
-            return view("comisiones.comision.detalle",["detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
+			$regla=DB::table('reglacomision')->get();
+            return view("comisiones.comision.detalle",["rol"=>$rol,"regla"=>$regla,"detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
 	
 	
@@ -96,23 +140,57 @@ $this->middleware('auth');
 		    $hasta=trim($request->get('hasta'));
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		if($empresa->calc_comi==1){
-				$venta=DB::table('venta as v')
-				-> join ('clientes as p','p.id_cliente','=','v.idcliente')
-				 -> join ('vendedores as ve','ve.id_vendedor','=','v.idvendedor')
-				-> select ('v.idventa','v.fecha_hora','v.fecha_emi','p.nombre','p.cedula','v.comision','v.montocomision','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
-				 -> where ('v.devolu','=',0)
-				 -> where ('v.saldo','=',0)
-				 -> whereBetween('v.fecha_emi', [$desde, $hasta])
-				 -> where ('v.idcomision','=',0)
-				->where ('v.idvendedor','=',$id)
-			
-				->get();
+		$venta = DB::table('venta as v')
+    ->join('clientes as p', 'v.idcliente', '=', 'p.id_cliente')
+	-> join ('categoriaclientes as cc','cc.idcategoria','=','p.catcomercial')
+    ->join('vendedores as ve', 've.id_vendedor', '=', 'v.idvendedor')
+    // Subconsulta para obtener la fecha del último recibo por cada venta
+    ->leftJoinSub(
+        DB::table('recibos')
+            ->select('idventa', DB::raw('MAX(fecharecibo) as ultima_fecha'))
+            ->where('aux', '=', 0)
+            ->groupBy('idventa'),
+        'r_ultimo',
+        function ($join) {
+            $join->on('v.idventa', '=', 'r_ultimo.idventa');
+        }
+    )
+    ->select(
+        'v.idventa',
+        'v.fecha_hora',
+        'v.fecha_emi',
+        'p.diascredito as diascre',
+        'p.nombre',
+        'p.cedula',
+		'cc.nombrecategoria',
+        'v.comision',
+        'v.montocomision',
+        'p.direccion',
+        'v.tipo_comprobante',
+        'v.serie_comprobante',
+        'v.num_comprobante',
+        'v.impuesto',
+        'v.estado',
+        'v.total_venta',
+        'v.devolu',
+        'r_ultimo.ultima_fecha as fecha_recibo' // <--- Aquí ya viene integrado el último recibo
+    )
+    ->where('v.devolu', '=', 0)
+    ->where('v.saldo', '=', 0)
+    ->where('v.idcomision', '=', 0)
+    ->where('v.idvendedor', '=', $id)
+	->whereBetween('v.fecha_emi', [$desde, $hasta])
+    ->orderBy('r_ultimo.ultima_fecha', 'asc')
+    ->get();	
+				 
+
 			}else{
 				$venta=DB::table('recibos as re')
 				-> join ('venta as v','v.idventa','=','re.idventa')
 				-> join ('clientes as p','v.idcliente','=','p.id_cliente')
+				-> join ('categoriaclientes as cc','cc.idcategoria','=','p.catcomercial')
 				 -> join ('vendedores as ve','p.vendedor','=','ve.id_vendedor')
-				-> select ('re.idrecibo as idventa','re.fecha as fecha_hora','re.fecharecibo as fecha_emi','p.nombre','p.cedula','v.comision',DB::raw('sum(re.monto*(v.comision/100)) as montocomision'),'p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','re.monto as total_venta','v.devolu')
+				-> select ('re.idrecibo as idventa','p.diascredito as diascre','re.fecha as fecha_emi','re.fecharecibo as fecha_recibo','p.nombre','p.cedula','v.comision',DB::raw('sum(re.monto*(v.comision/100)) as montocomision'),'p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','re.monto as total_venta','v.devolu','cc.nombrecategoria')
 				 -> where ('v.devolu','=',0)
 				 -> where ('re.idcomision','=',0)
 				 -> whereBetween('re.fecharecibo', [$desde, $hasta])
@@ -124,21 +202,54 @@ $this->middleware('auth');
 		//dd($venta[0]->fecha_emi);
 		}
 			$detalle=[];
-            return view("comisiones.comision.detalle",["detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
+			$regla=DB::table('reglacomision')->get();
+            return view("comisiones.comision.detalle",["regla"=>$regla,"detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
 		public function vercomisiondetallada($id){
 
 		$vendedor=DB::table('vendedores')-> where('id_vendedor','=',$id)->first();
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
-			$venta=DB::table('venta as v')
-            -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-			 -> join ('vendedores as ve','v.idvendedor','=','ve.id_vendedor')
-            -> select ('v.idventa','v.fecha_hora','v.fecha_emi','p.nombre','p.cedula','v.comision','v.montocomision','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
-           	 -> where ('v.devolu','=',0)
-			 -> where ('v.saldo','=',0)
-			 -> where ('v.idcomision','=',0)
-			->where ('v.idvendedor','=',$id)
-            ->get();
+			$venta = DB::table('venta as v')
+    ->join('clientes as p', 'v.idcliente', '=', 'p.id_cliente')
+	-> join ('categoriaclientes as cc','cc.idcategoria','=','p.catcomercial')
+    ->join('vendedores as ve', 've.id_vendedor', '=', 'v.idvendedor')
+    // Subconsulta para obtener la fecha del último recibo por cada venta
+    ->leftJoinSub(
+        DB::table('recibos')
+            ->select('idventa', DB::raw('MAX(fecharecibo) as ultima_fecha'))
+            ->where('aux', '=', 0)
+            ->groupBy('idventa'),
+        'r_ultimo',
+        function ($join) {
+            $join->on('v.idventa', '=', 'r_ultimo.idventa');
+        }
+    )
+    ->select(
+        'v.idventa',
+        'v.fecha_hora',
+        'v.fecha_emi',
+        'p.diascredito as diascre',
+        'p.nombre',
+        'p.cedula',
+		'cc.nombrecategoria',
+        'v.comision',
+        'v.montocomision',
+        'p.direccion',
+        'v.tipo_comprobante',
+        'v.serie_comprobante',
+        'v.num_comprobante',
+        'v.impuesto',
+        'v.estado',
+        'v.total_venta',
+        'v.devolu',
+        'r_ultimo.ultima_fecha as fecha_recibo' // <--- Aquí ya viene integrado el último recibo
+    )
+    ->where('v.devolu', '=', 0)
+    ->where('v.saldo', '=', 0)
+    ->where('v.idcomision', '=', 0)
+    ->where('v.idvendedor', '=', $id)
+    ->orderBy('r_ultimo.ultima_fecha', 'asc')
+    ->get();	
 				$detalle=DB::table('venta as v')
             -> join ('detalle_venta as dv','dv.idventa','=','v.idventa')
             -> join ('articulos as art','art.idarticulo','=','dv.idarticulo')
@@ -148,16 +259,16 @@ $this->middleware('auth');
 			 -> where ('v.idcomision','=',0)
 			->where ('v.idvendedor','=',$id)
             ->get();
-			
-            return view("comisiones.comision.detalle",["detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
+				$regla=DB::table('reglacomision')->get();
+            return view("comisiones.comision.detalle",["regla"=>$regla,"detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
 	public function store(Request $request){
-		//dd($request);
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$user=Auth::user()->name;      
 			$mov=new Comisiones;
 			$mov->id_vendedor=$request->get('vendedor');
 			$mov->montoventas=$request->get('mventas');
+			$mov->montocomiventa=$request->get('mcomiventa');
 			$mov->montocomision=$request->get('mcomision');
 			$mov->pendiente=$request->get('mcomision');
 			$mytime=Carbon::now('America/Caracas');
@@ -196,7 +307,7 @@ $this->middleware('auth');
 			 -> join ('vendedores as ve','p.vendedor','=','ve.id_vendedor')
             -> select ('v.idventa','v.fecha_hora','v.fecha_emi','p.nombre','p.cedula','v.comision','v.montocomision','p.direccion','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
            	 -> where ('v.idcomision','=',$id)
-            ->get();
+			->get();
 			}else{
 			$venta=DB::table('recibos as re')
 				-> join ('venta as v','v.idventa','=','re.idventa')
@@ -209,17 +320,18 @@ $this->middleware('auth');
 				-> groupBy('re.idrecibo')
 				->get();
 			}
+
 		return view("comisiones.comision.show",["venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
 	public function comixpagar(Request $request){
-		//dd($request);
-		$rol=DB::table('roles')-> select('comisiones')->where('iduser','=',$request->user()->id)->first();	
+
+		$rol=DB::table('roles')-> select('comisiones','pagarcomi')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->comisiones==1){
 		$monedas=DB::table('monedas')->get();
 		$vendedor=DB::table('comisiones')-> join('vendedores','vendedores.id_vendedor','=','comisiones.id_vendedor')->where('comisiones.pendiente','>',0)->get();
 		//dd($vendedor);
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
-            return view("comisiones.comision.xpagar",["vendedor"=>$vendedor,"empresa"=>$empresa,"monedas"=>$monedas]);
+            return view("comisiones.comision.xpagar",["rol"=>$rol,"vendedor"=>$vendedor,"empresa"=>$empresa,"monedas"=>$monedas]);
 				     } else { 
 	return view("reportes.mensajes.noautorizado");
 	}
@@ -313,6 +425,7 @@ $this->middleware('auth');
 	}
 			}
 	public function detallepagadas($id){
+	
 		$vendedor=DB::table('comisiones')-> join('vendedores','vendedores.id_vendedor','=','comisiones.id_vendedor')->where('id_comision','=',$id)->first();
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			if($empresa->calc_comi==1){
@@ -337,4 +450,36 @@ $this->middleware('auth');
 			}
             return view("comisiones.comision.detallecomision",["venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
+	public function ajustaregla(Request $request)
+{
+
+    DB::transaction(function () use ($request) {
+        $idsEnviados = array_filter($request->input('idregla', []));
+
+        // Eliminar de la BD los premios de esta rifa que el usuario quitó en la vista
+        ReglasComision::whereNotIn('idregla', $idsEnviados)
+            ->delete();
+
+        // Actualizar existentes y crear nuevos
+        if ($request->has('idregla')) {
+            foreach ($request->idregla as $key => $idpregla) {
+                $idpregla = $request->idregla[$key] ?? null;
+
+                ReglasComision::updateOrCreate(
+                    [
+                        'idregla' => $idpregla
+                    ],
+                    [
+                        'desde'      => $request->desde[$key],
+                        'hasta' => $request->hasta[$key],
+                        'porcentaje'  => $request->porcentaje[$key]
+                    ]
+                );
+            }
+        }
+
+    });
+
+    return redirect()->route('comisiones')->with('mensaje', 'Rifa actualizada con éxito.');
+}
 }

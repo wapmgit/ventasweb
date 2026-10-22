@@ -761,7 +761,7 @@
               <li class="nav-item">
                 <a href="{{route('comisionespagadas')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Comi. por Pagadas</p>
+                  <p>Comi. Pagadas</p>
                 </a>
               </li>
             </ul>

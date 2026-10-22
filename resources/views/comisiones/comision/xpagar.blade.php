@@ -42,7 +42,7 @@
 					<td><?php echo date("d-m-Y",strtotime($cat->hasta)); ?></td>
 					<td>{{ $cat->usuario}}</td>
 					<td>
-	<a href="javascript:abrirespecialpago({{$cat->id_comision}},{{$cat->pendiente}},'{{$cat->nombre}}');"><button  id="abono" class="btn btn-warning btn-xs">Pagar</button></a>
+	@if($rol->pagarcomi==1)<a href="javascript:abrirespecialpago({{$cat->id_comision}},{{$cat->pendiente}},'{{$cat->nombre}}');"><button  id="abono" class="btn btn-warning btn-xs">Pagar</button></a>@endif
 	<?php if($cat->pendiente<$cat->montocomision){ ?>
 	<a href="{{route('listarecibos',['id'=>$cat->id_comision.'_'.$link])}}"><button  id="" class="btn btn-info btn-xs">Ver Recibos</button></a>
 	<?php

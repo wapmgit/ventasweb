@@ -199,6 +199,9 @@ class SistemaController extends Controller
 		if ($request->get('op80')){ $data->crearajustesal=1; }else{ $data->crearajustesal=0; }
 		if ($request->get('op81')){ $data->crearnotadm=1; }else{ $data->crearnotadm=0; }
 		if ($request->get('op82')){ $data->anularnotadm=1; }else{ $data->anularnotadm=0; }
+		if ($request->get('op83')){ $data->editreglacomi=1; }else{ $data->editreglacomi=0; }
+		if ($request->get('op84')){ $data->generarcomi=1; }else{ $data->generarcomi=0; }
+		if ($request->get('op85')){ $data->pagarcomi=1; }else{ $data->pagarcomi=0; }
 		$data ->update();
 
 	$user = User::find($data->iduser);

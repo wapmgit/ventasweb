@@ -315,6 +315,7 @@ Route::get('recibocomision/{id}', [ComisionesController::class, 'recibo'])->name
 Route::get('listarecibos/{id}', [ComisionesController::class, 'lista'])->name('listarecibos');
 Route::get('comisionespagadas', [ComisionesController::class, 'pagadas'])->name('comisionespagadas');
 Route::get('detallecomisionfiltro', [ComisionesController::class, 'detallecomisionfiltro'])->name('detallecomisionfiltro');
+Route::get('ajustaregla', [ComisionesController::class, 'ajustaregla'])->name('ajustaregla');
 //campañas
 Route::get('campana', [CampanaController::class, 'index'])->name('campana');
 Route::get('newcampana', [CampanaController::class, 'create'])->name('newcampana');

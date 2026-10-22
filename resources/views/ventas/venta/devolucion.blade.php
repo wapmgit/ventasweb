@@ -1,7 +1,7 @@
 @extends ('layouts.master')
 @section ('contenido')
 <?php $acum=0; 
-$ceros=5;  $acumnc=0;
+$ceros=5;  $acumnc=0; $acumnc=0;
 function add_ceros($numero,$ceros) {
   $numero=$numero;
 	$digitos=strlen($numero);
@@ -118,10 +118,9 @@ return $insertar_ceros = $recibo.$numero;
 			   <tfoot >                    
 				  <th colspan="3">Total</th>
 				  <th><?php echo "$ ".number_format( $acum, 2,',','.');?></th>
-				  <th ><input type="hidden" class="form-control" name="montonc" value="<?php echo $acum;?>"> </th>
+				  <th> </th>
 				  </tfoot>
 		  </table>
-		  <p align="center"><span> <?php if ($acum > 0){?> <b>¿Generar Nota de Credito? </b><input type="checkbox" name="nc"></input><?php } ?></span></p>
 		</div>
 			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><h4 align="center">N/C Generada</h4>
 			<table width="100%">
@@ -132,7 +131,7 @@ return $insertar_ceros = $recibo.$numero;
 				                          
 			  </thead>                    
 			  <tbody>
-				@foreach($ncredito as $ne) 
+				@foreach($ncredito as $ne) <?php  $acumnc=$acumnc+$ne->monto;?>
 				<tr >
 				  <td>{{$ne->descripcion}}</td>
 				  <td>{{$ne->referencia}}</td>			  
@@ -142,6 +141,7 @@ return $insertar_ceros = $recibo.$numero;
 			  </tbody>
 		  </table>
 		</div>
+		  <p align="center"><span> <?php if ($acum-$acumnc > 0){?> <b>¿Generar Nota de Credito? </b><input type="checkbox" name="nc"></input><?php } ?></span></p>
 	</div>
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<div class="form-group">
@@ -152,7 +152,8 @@ return $insertar_ceros = $recibo.$numero;
 	<div class="modal-footer">		
 		<div class="col-lg-12 ol-md-12 col-sm-12 col-xs-12" align="center">	
        <a href="{{route('ventas')}}"> <button type="button" class="btn btn-danger btn-sm" id="regresar" data-dismiss="modal" title="Presione Alt+flecha izq. para regresar">Cancelar</button></a>
-        <input name="_token" value="{{ csrf_token() }}" type="hidden" ></input>
+	<input type="hidden" class="form-control" name="montonc" value=" <?php echo ($acum-$acumnc); ?> ">      
+	  <input name="_token" value="{{ csrf_token() }}" type="hidden" ></input>
         <button type="button" id="procesa" class="btn btn-primary btn-sm">Procesar</button>     
         </div>
     </div>

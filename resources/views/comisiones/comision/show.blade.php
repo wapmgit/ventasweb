@@ -47,7 +47,7 @@
 
                  <div class="form-group">
                       <label for="proveedor">Monto Comision</label>
-                   <p>{{$vendedor->pendiente}} $</p>
+                   <p>{{$vendedor->montocomision}} $</p>
                     </div>
             </div>
 </div>
@@ -89,6 +89,10 @@
 				@endforeach
 				<tr>
 				<td><?php echo $cont." Documentos"; ?></td><td></td><td></td><td></td><td><strong>TOTAL:</strong></td><td style="background-color: #A9D0F5"><?php echo number_format($acum2, 2,',','.')." $"; ?> </td><td></td><td style="background-color: #A9D0F5"><?php echo number_format($acum, 2,',','.')." $"; ?> </td>
+				</tr><tr>
+				<td></td><td></td><td></td><td></td><td><strong></strong></td>
+				<td colspan="2" style="background-color: #A9D0F5">Regla <?php echo number_format(($acum-$vendedor->montocomision), 2,',','.')." $"; ?> -> </td>
+				<td style="background-color: #A9D0F5"><?php echo number_format($vendedor->montocomision, 2,',','.')." $"; ?> </td>
 				</tr>
 				
 			<tr><td colspan="8" align="center"> <button type="button" id="imprimir" class="btn btn-primary btn-sm" data-dismiss="modal">Imprimir</button>

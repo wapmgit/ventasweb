@@ -32,7 +32,17 @@
                     </div>	
 					
             </div>
+    <?php
 
+$fecha_actual= date("Y/m/d");
+function dias_pasados($fecha_inicial,$fecha_final)
+{
+$dias = (strtotime($fecha_inicial)-strtotime($fecha_final))/86400;
+$dias = abs($dias); $dias = floor($dias);
+return $dias;
+}
+$fecharecibo="";$pcomi=0; $comireal=0;
+?>
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<div class="table-responsive">
@@ -42,28 +52,40 @@
 				<thead style="background-color: #A9D0F5">
 					<th>Cliente</th>
 					<th>Categoria</th>
-					<th>N° Comprobante</th>
-					<th>Fecha Doc.</th>
+					<th>Documento</th>
 					<th>Fecha Emi.</th>
+					<th>Ult. Rec.</th>
+					<th>Dias</th>
+					<th>%Comi</th>
 					<th>Monto Doc.</th>
-					<th>Monto Comi.</th>
-									
+					<th>Comi. Doc</th>
+					<th>M. Comi.</th>
 				</thead>
                @foreach ($venta as $cat)
-               <?php $cont++;
+               <?php $cont++; $pcomi=0;
                $acum2=$cat->total_venta+$acum2; 
 			       $acum=$acum+$cat->montocomision; 
                ?>
 			   
 				<tr>   <div class="form-group">
 				<input type="hidden" name="idventa[]"  value="{{$cat->idventa}}"></div>
-					<td><small>{{$cat->cedula}}</small> {{$cat->nombre}}</td>
+					<td><small>{{$cat->cedula}} {{$cat->nombre}}</small></td>
 					<td><small>{{$cat->nombrecategoria}}</small></td>
 					<td>{{$cat->tipo_comprobante}}:{{$cat->serie_comprobante}}-{{$cat->num_comprobante}}</td>
-					<td><?php echo date("d-m-Y h:i:s a",strtotime($cat->fecha_hora)); ?></td>
 					<td><?php echo date("d-m-Y",strtotime($cat->fecha_emi)); ?></td>
+					<td><?php echo date("d-m-Y",strtotime($cat->fecha_recibo)); ?></td>
+					<td><?php $diascre=(dias_pasados($cat->fecha_recibo,$cat->fecha_emi)-(int)$cat->diascre);
+								if($diascre<= 0){ ?>  <font style="color:#FF0000";><?php $pcomi=100; echo $diascre;?> </font> 
+								<?php }else {
+				?>@foreach($regla as $re)<?php if(($diascre >=$re->desde)and($diascre <= $re->hasta)){$pcomi=$re->porcentaje;}	
+								?>@endforeach<?php
+								echo $diascre; }
+
+								?></td>
+						<td><?php echo $pcomi ."%"; ?></td>
 					<td><?php echo number_format($cat->total_venta, 2,',','.')." $"; ?> </td>
-					<td><?php echo number_format($cat->montocomision, 2,',','.')." $"; ?> </td>		
+					<td><?php echo number_format($cat->montocomision, 2,',','.')." $"; ?> </td>	
+	<td><?php $comireal=$comireal+(($cat->montocomision*$pcomi)/100); echo number_format((($cat->montocomision*$pcomi)/100), 2,',','.')." $"; ?> </td>						
 				</tr>
 				<?php if(count($detalle)>0){ ?>
 				<tr><td colspan="2"><b>Articulo</b></td><td><b>Cantidad</b></td><td><b>Precio</b></td><td><b>%Comi.</b></td><td><b>Moto. Comi</b></td></tr>
@@ -81,8 +103,10 @@
 				<?php } ?>
 				@endforeach
 				<tr>
-				<td><?php echo $cont." Documentos"; ?></td><td></td><td></td><td></td><td><strong>TOTAL:</strong></td>
-				<td style="background-color: #A9D0F5"><?php echo number_format($acum2, 2,',','.')." $"; ?> </td><td style="background-color: #A9D0F5"><?php echo number_format($acum, 2,',','.')." $"; ?> </td><td></td>
+				<td><?php echo $cont." Documentos"; ?></td><td></td><td></td><td><strong>TOTAL:</strong></td><td></td><td></td><td></td>
+				<td style="background-color: #A9D0F5"><?php echo number_format($acum2, 2,',','.')." $"; ?> </td>
+				<td style="background-color: #A9D0F5"><?php echo number_format($acum, 2,',','.')." $"; ?> </td>
+				<td style="background-color: #A9D0F5"><?php echo number_format($comireal, 2,',','.')." $"; ?></td>
 				</tr>
 				<tr><td colspan="7">  Desde: <?php  echo date("d-m-Y",strtotime($venta[0]->fecha_emi)); ?> Hasta: <?php  echo date("d-m-Y",strtotime($venta[$reg-1]->fecha_emi)); ?></td></tr>
 			</table>
@@ -98,9 +122,10 @@
 				<input type="hidden" name="desde"  value="<?php echo $venta[0]->fecha_emi; ?>">
 				<input type="hidden" name="hasta"  value="<?php echo $venta[$reg-1]->fecha_emi; ?>">
 				<input type="hidden" name="mventas"  value="<?php echo $acum2; ?>">
-				<input type="hidden" name="mcomision"  value="<?php echo $acum; ?>">
-            	<button class="btn btn-info btn-sm" id="btnsubmit" type="submit">Generar Comision</button>
-				@if($empresa->calc_comi==1)
+				<input type="hidden" name="mcomiventa"  value="<?php echo $acum; ?>">
+				<input type="hidden" name="mcomision"  value="<?php echo $comireal; ?>">
+            @if($rol->generarcomi==1)	<button class="btn btn-info btn-sm" id="btnsubmit" type="submit">Generar Comision</button>	@endif
+			@if($empresa->calc_comi==1)
 			<?php if(count($detalle)==0){ ?>	<a  href="{{route('vercomisiondetallada',['id'=>$vendedor->id_vendedor])}}"><button  class="btn btn-success btn-sm"   type="button" id="btnvdet">Ver Detalles</button></a> <?php }else{ ?>
 				<a  href="{{route('detallecomision',['id'=>$vendedor->id_vendedor])}}"><button  class="btn btn-success btn-sm"type="button" id="btnodet" >ocultar Detalles</button></a>  <?php } ?>
 				@endif
