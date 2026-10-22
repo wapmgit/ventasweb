@@ -546,7 +546,7 @@
 					</div>
 					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 					 <div class="form-group">
-					 <label>Generar Comisiones: </label><label>
+					 <label>¨Pagar Comisiones: </label><label>
 					  <input type="checkbox" name="op85" class="minimal" @if($q->pagarcomi==1) checked @endif ></label>
 					</div>
 					</div>
