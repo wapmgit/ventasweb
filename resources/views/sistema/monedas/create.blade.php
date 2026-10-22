@@ -9,12 +9,12 @@
             <div class="form-group">
 
             	<label for="nombre">Nombre</label>				
-            	<input type="text" name="nombre" id="nombre"  class="form-control" placeholder="Nombre...">
+            	<input type="text" name="nombre" id="nombre" maxlength="20"  class="form-control" placeholder="Nombre...">
 				@if($errors->first('nombre'))<P class='text-danger'>{{$errors->first('nombre')}}</p>@endif
 			</div>
             <div class="form-group">
             	<label for="descripcion">Simbolo</label>
-            	<input type="text" name="simbolo" class="form-control" required placeholder="simbolo...">
+            	<input type="text" name="simbolo" class="form-control" maxlength="3" required placeholder="simbolo...">
 				@if($errors->first('simbolo'))<P class='text-danger'>{{$errors->first('simbolo')}}</p>@endif
             </div>   
             <div class="form-group">

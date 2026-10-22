@@ -21,7 +21,7 @@ role="dialog" tabindex="-1" id="modalbanco">
 						<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
 						 <div class="form-group">
 							    <label for="nombre">Codigo</label>
-							<input type="text" name="codigo" required value="" class="form-control" placeholder="codigo...">
+							<input type="text" name="codigo" required value="" maxlength="10" class="form-control" placeholder="codigo...">
 						</div>
 					</div>
 						<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
@@ -36,14 +36,14 @@ role="dialog" tabindex="-1" id="modalbanco">
 					<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
 						 <div class="form-group">
 							    <label for="nombre">Nombre</label>
-							<input type="text" name="nombre"  required value="" class="form-control" placeholder="Nombre del banco...">
+							<input type="text" name="nombre"  required value="" maxlength="49" class="form-control" placeholder="Nombre del banco...">
 						</div>
 					</div>
 					
 					<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
 						 <div class="form-group">
 							    <label for="nombre">Titular de la cuenta</label>
-							<input type="text" name="titular"  required value="" class="form-control" placeholder="Representante...">
+							<input type="text" name="titular"  required value="" maxlength="49" class="form-control" placeholder="Representante...">
 						</div>
 					</div>
 						<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
@@ -55,7 +55,7 @@ role="dialog" tabindex="-1" id="modalbanco">
 		<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
 						 <div class="form-group">
 							    <label for="nombre">Email</label>
-							<input type="text" name="mail" value="" class="form-control" placeholder="email...">
+							<input type="text" name="mail" value="" class="form-control" maxlength="25" placeholder="email...">
 						</div>
 					</div>	<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
 	
