@@ -108,7 +108,7 @@
                         <option value="SCO" {{ $articulo->unidad == 'SCO' ? 'selected' : '' }}>Saco</option>
                         <option value="CJA" {{ $articulo->unidad == 'CJA' ? 'selected' : '' }}>Caja</option>
                         <option value="KIT" {{ $articulo->unidad == 'KIT' ? 'selected' : '' }}>Kit</option>
-                        <option value="KG"  {{ $articulo->unidad == 'kG'  ? 'selected' : '' }}>Kg</option>
+                        <option value="KG"  {{ $articulo->unidad == 'KG'  ? 'selected' : '' }}>Kg</option>
                         <option value="DISP"{{ $articulo->unidad == 'DISP'? 'selected' : '' }}>Display</option>
                         <option value="PR"  {{ $articulo->unidad == 'PR'  ? 'selected' : '' }}>Par</option>
                         <option value="LTR" {{ $articulo->unidad == 'LTR' ? 'selected' : '' }}>Litros</option>      
