@@ -358,7 +358,7 @@ Route::get('empresa', [SistemaController::class, 'empresa'])->name('empresa');
 Route::post('updatempresa', [SistemaController::class, 'updatempresa'])->name('updatempresa');
 Route::get('balance', [SistemaController::class, 'balance'])->name('balance');
 Route::post('actualizartema', [SistemaController::class, 'actualizarTema'])->name('actualizartema');
-
+Route::get('vertasas', [SistemaController::class, 'vertasas'])->name('vertasas');
 // monedas
 Route::get('monedas', [MonedasController::class, 'index'])->name('monedas');
 Route::get('newmoneda', [MonedasController::class, 'create'])->name('newmoneda');

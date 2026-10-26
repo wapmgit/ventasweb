@@ -16,6 +16,16 @@
   
         <h3 align="center">TASAS DE CAMBIO </h3>
 </div>
+	<div class="col-12">
+        @if (session('mensaje'))
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                <i class="fa fa-check-circle mr-1"></i> {{ session('mensaje') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+	</div>
 <?php if($tasabcv>0){
 	$date = new DateTime($fechatasa);
 	?>
@@ -74,9 +84,36 @@
   </div>
   </section>
 <?php } ?>
+<!-- SECCIÓN DE LA GRÁFICA Y SU FILTRO (AHORA FUERA DEL FORM PRINCIPAL) -->
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Histórico de Tasas</h3>
+                    <div class="card-tools">
+                        <!-- Formulario de filtro independiente -->
+                        <form method="GET" action="{{ route('vertasas') }}" id="formFiltroTasa">
+                            <select name="periodo" class="form-control form-control-sm text-dark" onchange="document.getElementById('formFiltroTasa').submit()">
+                                <option value="quincena" {{ request('periodo') == 'quincena' ? 'selected' : '' }}>Últimos 15 días</option>
+                                <option value="mes_actual" {{ request('periodo', 'mes_actual') == 'mes_actual' ? 'selected' : '' }}>Este mes</option>
+                                <option value="mes_anterior" {{ request('periodo') == 'mes_anterior' ? 'selected' : '' }}>Mes anterior</option>
+                                <option value="todos" {{ request('periodo') == 'todos' ? 'selected' : '' }}>Histórico completo</option>
+                            </select>
+                        </form>
+				
+                    </div>
+				<button type="button" class="btn btn-tool" data-card-widget="collapse" title="Expandir / Ocultar">
+                    <i class="fas fa-minus"></i>
+                </button>
+                </div>
+                <div class="card-body">
+                    <canvas id="graficaTasas" style="min-height: 200px; height: 200px; max-height: 200px; max-width: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	<form action="{{route('updatetasas')}}" method="POST" enctype="multipart/form-data" >         
 			{{csrf_field()}}
+
 		<table align="center">
 			<tr><td><strong>Moneda</strong></td><td><strong>Valor</strong></td><td><strong>Actualizar</strong></td></tr>
 				@foreach ($monedas as $cat1)	<?php 
@@ -108,7 +145,8 @@
 
  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center"></br>
  <input  type="hidden" value="<?php echo $cont; ?>" id="cntm" class ="form-control"></input>
- <input  type="hidden" value="{{$tasabcv}}" id="tasa" class ="form-control"></input>
+ <input  type="hidden" value="{{$tasabcv}}" id="tasa" name ="tasa" class ="form-control"></input>
+ <input  type="hidden" value="{{$tasap}}" id="tasapro" name ="tasapro" class ="form-control"></input>
        <div class="form-group">
           <input name="_token" value="{{ csrf_token() }}" type="hidden" ></input>
 			@if($rol->acttasa==1) <button type="submit" id="" class="btn btn-primary" >Confirmar</button> @endif
@@ -119,7 +157,52 @@
   </div>
 </div>
 @push ('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+$(function () {
+    // Convertimos los datos de Laravel a arrays de JavaScript de forma segura
+    const fechas = {!! json_encode($tasasHistoricas->pluck('fecha')) !!};
+    const bcvData = {!! json_encode($tasasHistoricas->pluck('tasadolar')) !!};
+    const promData = {!! json_encode($tasasHistoricas->pluck('tasapromedio')) !!};
+
+    const ctx = document.getElementById('graficaTasas').getContext('2d');
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: fechas,
+            datasets: [
+                {
+                    label: 'Tasa BCV',
+                    data: bcvData,
+                    borderColor: 'rgba(60,141,188,1)',
+                    backgroundColor: 'rgba(60,141,188,0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1
+                },
+                {
+                    label: 'Tasa Promedio',
+                    data: promData,
+                    borderColor: 'rgba(210, 214, 222, 1)',
+                    backgroundColor: 'rgba(210, 214, 222, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+});
 $(document).ready(function(){
 	
     $("#Cenviar").on("click",function(){

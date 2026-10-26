@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Http;
 use App\Models\Empresa;
 use App\Models\Monedas;
+use App\Models\TasaSistema;
 use App\Models\Articulos;
 use App\Models\Roles;
 use App\Models\User;
@@ -45,8 +46,70 @@ class SistemaController extends Controller
 	$tasap=0;
 	$fecha="";
 }
+	$periodo = $request->input('periodo', 'mes_actual');
+		$query = DB::table('tasassistema')
+        ->select('id', 'fecha', 'tasadolar', 'tasapromedio')
+        ->whereIn('id', function($sub) {
+            $sub->selectRaw('MAX(id)')
+                  ->from('tasassistema')
+                  ->groupBy(DB::raw('DATE(fecha)'));
+        });
+		if ($periodo == 'quincena') {
+        $query->where('fecha', '>=', Carbon::now()->subDays(15));
+    } elseif ($periodo == 'mes_actual') {
+        $query->whereMonth('fecha', Carbon::now()->month)
+              ->whereYear('fecha', Carbon::now()->year);
+    } elseif ($periodo == 'mes_anterior') {
+        $query->whereMonth('fecha', Carbon::now()->subMonth()->month)
+              ->whereYear('fecha', Carbon::now()->subMonth()->year);
+    }
+	$tasasHistoricas = $query->orderBy('fecha', 'asc')->get();
+//dd($tasasHistoricas);
+			return view('sistema.tasa.index',["periodo"=>$periodo,"tasasHistoricas"=>$tasasHistoricas,"fechatasa"=>$fecha,"tasap"=>$tasap,"tasabcv"=>$tasa,"rol"=>$rol,"monedas"=>$monedas,"empresa"=>$empresa]);
+		
+	}
+		public function vertasas(Request $request)
+	{
+			$rol=DB::table('roles')-> select('acttasa')->where('iduser','=',$request->user()->id)->first();	
+			$empresa=DB::table('empresa')
+			->first();
+			$monedas=DB::table('monedas')
+			->get();
+			try {
+			 $response = Http::get('https://ve.dolarapi.com/v1/dolares');
+			 $datos = $response->json();
+			 // Extraer solo 'current'
+			// dd($datos[1]['promedio']);
+			$tasa=($datos[0]['promedio']);
+			$tasap=($datos[1]['promedio']);
+			$fecha=($datos[1]['fechaActualizacion']);
+			// Si quieres ver qué hay dentro ahora:
+		
+		} catch (\Exception $e) {
+	$tasa=0;
+	$tasap=0;
+	$fecha="";
+}
+	$periodo = $request->input('periodo', 'mes_actual');
+		$query = DB::table('tasassistema')
+        ->select('id', 'fecha', 'tasadolar', 'tasapromedio')
+        ->whereIn('id', function($sub) {
+            $sub->selectRaw('MAX(id)')
+                  ->from('tasassistema')
+                  ->groupBy(DB::raw('DATE(fecha)'));
+        });
+		if ($periodo == 'quincena') {
+        $query->where('fecha', '>=', Carbon::now()->subDays(15));
+    } elseif ($periodo == 'mes_actual') {
+        $query->whereMonth('fecha', Carbon::now()->month)
+              ->whereYear('fecha', Carbon::now()->year);
+    } elseif ($periodo == 'mes_anterior') {
+        $query->whereMonth('fecha', Carbon::now()->subMonth()->month)
+              ->whereYear('fecha', Carbon::now()->subMonth()->year);
+    }
+	$tasasHistoricas = $query->orderBy('fecha', 'asc')->get();
 
-			return view('sistema.tasa.index',["fechatasa"=>$fecha,"tasap"=>$tasap,"tasabcv"=>$tasa,"rol"=>$rol,"monedas"=>$monedas,"empresa"=>$empresa]);
+			return view('sistema.tasa.index',["periodo"=>$periodo,"tasasHistoricas"=>$tasasHistoricas,"fechatasa"=>$fecha,"tasap"=>$tasap,"tasabcv"=>$tasa,"rol"=>$rol,"monedas"=>$monedas,"empresa"=>$empresa]);
 		
 	}
 	 public function update(Request $request)
@@ -96,7 +159,16 @@ class SistemaController extends Controller
 			$articulo->update();
 			}
 		}
-         return Redirect::to('tasas');
+			$tasasis=new TasaSistema;
+			$mytime=Carbon::now('America/Caracas');
+			$tasasis->fecha=$mytime->toDateTimeString();
+			$tasasis->tasadolar=$request->get('tasa');
+			$tasasis->tasapromedio=$request->get('tasapro');
+			$tasasis->variacion=$difc;
+			$tasasis->save();
+			
+		 return redirect()->route('tasas')->with('mensaje', 'Tasas Actualizadas Correctamente.');
+
 	}
 	public function usuarios(Request $request)
 	{
