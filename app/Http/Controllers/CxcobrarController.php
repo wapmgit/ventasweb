@@ -40,7 +40,7 @@ $this->middleware('auth');
 			->where('c.nombre','LIKE','%'.$query.'%')
 			->where('v.saldo','>',0)
 			->groupby('c.id_cliente')
-			->paginate(50);
+			->paginate(100);
 			//
 			$notas=DB::table('notasadm as not')
 			->join('clientes as c','c.id_cliente','=','not.idcliente')
@@ -48,7 +48,7 @@ $this->middleware('auth');
 			->where('c.nombre','LIKE','%'.$query.'%')
 			->groupby('c.id_cliente','not.tipo')
 			->where('not.pendiente','>',0)
-			->paginate(50);
+			->paginate(100);
 
 			$notasnd=DB::table('notasadm as not')
 			->join('clientes as c','c.id_cliente','=','not.idcliente')
@@ -58,7 +58,7 @@ $this->middleware('auth');
 			->where('not.tipo','=',1)
 			->where('not.pendiente','>',0)
 			->groupby('not.idcliente')
-			->paginate(50);
+			->paginate(100);
 		
 			return view('clientes.cobrar.index',["empresa"=>$empresa,"rol"=>$rol,"pacientes"=>$pacientes,"notas"=>$notas,"notasnd"=>$notasnd,"searchText"=>$query]);
 		}
