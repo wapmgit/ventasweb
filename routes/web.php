@@ -341,6 +341,8 @@ Route::post('anularpedidoshein', [PedidoSheinController::class, 'destroy'])->nam
 Route::get('recibopedidoshein/{id}', [PedidoSheinController::class, 'recibopedido'])->name('recibopedidoshein');
 Route::get('reportecxcshein', [PedidoSheinController::class, 'cobrarshein'])->name('reportecxcshein');
 Route::get('detalleingresoshein', [PedidoSheinController::class, 'cobranza'])->name('detalleingresoshein');
+Route::post('ventacxcshein', [PedidoSheinController::class, 'vcxcshein'])->name('ventacxcshein');
+Route::post('anulareciboshein', [PedidoSheinController::class, 'anularecibo'])->name('anulareciboshein');
 // sistema
 Route::get('tasas', [SistemaController::class, 'acttasas'])->name('tasas');
 Route::post('updatetasas', [SistemaController::class, 'update'])->name('updatetasas');

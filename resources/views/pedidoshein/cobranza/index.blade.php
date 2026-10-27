@@ -57,7 +57,7 @@ $cefe=0;?>
 						<td><small><?php echo date("d-m-Y h:i:s a",strtotime($cob->fecha)); ?></small></td>
 						<td><?php echo date("d-m-Y",strtotime($cob->fecharecibo)); ?></td>
 					</tr>
-					@include('reportes.ventas.cobranza.modal')
+					@include('pedidoshein.cobranza.modal')
 					<tr> 
 					@endforeach
 					<tr>    

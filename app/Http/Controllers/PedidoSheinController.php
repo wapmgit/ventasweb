@@ -390,4 +390,56 @@ public function show(Request $request,$id){
 			return view('pedidoshein.cobranza.index',["empresa"=>$empresa,"cobranza"=>$cobranza,"comprobante"=>$comprobante,"searchText"=>$query,"searchText2"=>$query2]);			
 		}			
 	}
+	public function vcxcshein(Request $request)
+    {   
+     if($request->ajax()){
+		 $idcliente=explode("_",$request->get('id_cliente'));
+         $datov=DB::table('venta as v')
+        ->select(DB::raw('SUM(v.saldo) as monto' ),'v.idcliente')
+        ->where('v.idcliente','=',$idcliente[0])
+         ->groupby('v.idcliente')
+        -> get();
+		 $datnd=DB::table('pedidoshein as v')
+        ->select(DB::raw('SUM(v.saldo) as montond' ),'v.idcliente')
+        ->where('v.idcliente','=',$idcliente[0])
+        ->where('v.anulado','=',0)
+         ->groupby('v.idcliente')
+        -> get();
+          return response()->json([$datov,$datnd]);
+ }
+    }
+		public function anularecibo(Request $request){
+
+    $id=$request->get('id');
+    $tipo=$request->get('tipo');
+	if($tipo==1){
+		$user=Auth::user()->name;
+					$recibo=Recibos::findOrFail($id);
+					$mrecibo=$recibo->monto;	
+					 $recibo->referencia='Anulado ->'.$mrecibo;
+					 $recibo->monto='0';
+					 $recibo->recibido='0';
+					 $recibo->update();
+
+					$mbanco=DB::table('mov_ban')
+					->where('tipodoc','=',$request->get('doc'))
+					->where('docrelacion','=',$recibo->idpedidoshein)
+					->where('iddocumento','=',$request->get('id'))->first();
+				
+					if($mbanco!= NULL){	
+					$delmov=MovBancos::findOrFail($mbanco->id_mov);
+					$delmov->monto=0;
+					$delmov->concepto="Anul.".$request->get('doc')."Rec".$request->get('id')."M:".$mrecibo;
+					$delmov->estatus=1;
+					$delmov->update();
+					}
+					
+					if($request->get('doc')=="PED"){
+						$ingreso=PedidoShein::findOrFail($recibo->idpedidoshein);
+						$ingreso->saldo=($ingreso->saldo+$mrecibo);
+						$ingreso->update(); }
+					}
+		
+				 return Redirect::to('detalleingresoshein');
+	}
 }
