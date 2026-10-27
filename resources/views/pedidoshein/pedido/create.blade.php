@@ -193,7 +193,7 @@ $idv=0;
 						  <div class="form-group"></br>
 								<button class="btn btn-primary" id="guardar" type="button" accesskey="l">Totalizar</button>
 								<button class="btn btn-danger" type="button"  id="btncancelar">Cancelar</button>
-								<div style="display: none" id="loading">  <img src="{{asset('img/sistema/loading30.gif')}}"></div>
+								
 							</div>
 						</div>
                 </div>
@@ -259,17 +259,14 @@ $idv=0;
 					<option value="recibo" >🧾 Ticket 80</option>
 
 					</select>					
-								</div>
-					<div  class="col-lg-4 ol-md-4 col-sm-6 col-xs-6" align="right" style="display: none" >
-												
-								</div>
-						<div class="col-lg-4 ol-md-4 col-sm-12 col-xs-12" align="right">
+					</div>
+						<div class="col-lg-8 ol-md-8 col-sm-6 col-xs-6" align="right">
 						<button type="button" class="btn btn-danger" id="regresar" data-dismiss="modal">Cancelar</button>
 						<input name="_token" value="{{ csrf_token() }}" type="hidden" ></input>
 						<button type="button" id="procesa" class="btn btn-primary" ><u>P</u>rocesar</button>
-						<div style="display: none" id="loading">  <img src="{{asset('img/sistema/loading30.gif')}}"></div>
+						<div  style="display: none" id="loading">  <img src="{{asset('img/sistema/loading30.gif')}}"></div>
 				
-				</div>
+					</div>
 				</div>	
 					</form>	  
 @push ('scripts')
@@ -296,10 +293,10 @@ $(document).ready(function(){
 	});
 
     $('#procesa').click(function(){
-		document.getElementById('btncancelar').style.display="none"; 
-		document.getElementById('guardar').style.display="none"; 
+		document.getElementById('regresar').style.display="none"; 
+		document.getElementById('procesa').style.display="none"; 
 		document.getElementById('loading').style.display=""; 
-			document.getElementById('formventa').submit();
+		document.getElementById('formventa').submit();
     })
 	$('#calculo').click(function(){
 		var tventa=$("#total_venta").val(); 	//alert(tventa);
@@ -413,7 +410,27 @@ $(document).ready(function(){
 	  var vendedor= dato[3];
 		$("#vpedido").val(vendedor+'_'+comi);
       $("#nvendedor").val(vendedor);
-  
+  	var ms=0;	
+			var formc= $('#formventa');
+			var urlc = '{{route("ventacxcshein")}}';
+			var datac = formc.serialize();
+    $.post(urlc,datac,function(result){  
+      var resultadoc=result;
+          console.log(resultadoc);
+		  		rows=resultadoc[0].length; 		
+		  		rowsnd=resultadoc[1].length; 		
+			if(rows>0){
+				 ms=resultadoc[0][0].monto.toFixed(2);
+					$("#cxc").html("$: " + ms);
+					$("#cxccli").val(ms);
+			}else{ $("#cxc").html("$: 0");
+			}
+			if(rowsnd>0){
+				 ms=(parseFloat(resultadoc[1][0].montond)+parseFloat(ms));
+					$("#cxc").html("$: " + ms.toFixed(2));
+					$("#cxccli").val(ms.toFixed(2));
+			}
+            });
   }
 function trunc (x, posiciones = 0) {
   var s = x.toString()

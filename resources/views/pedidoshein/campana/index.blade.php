@@ -29,9 +29,10 @@
 					<td>{{ $cat->cierre}}</td>
 					<td>{{ $cat->costo}}</td>
 					<td>
-					@php if($cat->estatus==0){ echo "Activa"; }
+					@php if($cat->estatus==0){ echo "Abierta"; }
 						if($cat->estatus==1){ echo "Cerrada"; }
 						if($cat->estatus==2){ echo "Anulada"; } @endphp 
+
 					</td>
 					<td>
                         <a href="{{route('showcampana',['id'=>$cat->id])}}"><button class="btn btn-success btn-sm">Detalle</button></a>

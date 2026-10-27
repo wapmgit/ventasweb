@@ -45,7 +45,7 @@ class PedidoSheinController extends Controller
 		$monedas=DB::table('monedas')->get();
 		$vendedor=DB::table('vendedores')->get();
 		$categoria=DB::table('categoriaclientes')->get();	
-		$campana=DB::table('campana')->where('estatus','0')->get();	
+		$campana=DB::table('campana')->where('estatus','0')->where('activa','1')->OrderBY('id','desc')->get();	
 		$rutas=DB::table('rutas')->get();
 		$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
         $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev')-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->get();

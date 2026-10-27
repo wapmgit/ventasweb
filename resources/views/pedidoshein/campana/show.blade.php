@@ -32,6 +32,7 @@
 				<img src="{{ asset('dist/img/'.$empresa->logo)}}" width="50%" height="80%" title="NKS">
 				</div>
               </div>
+		@include('pedidoshein.campana.modalpermitir')
 		<div class="row">
                 <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
 
@@ -55,9 +56,20 @@
 			  <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
 				<div class="form-group">
                       <label for="proveedor">Estatus</label>
-                   <p>	@php if($campana->estatus==0){ echo "Activa"; }
+                   <p>	@php if($campana->estatus==0){ echo "Abierta "; 
+				   
+				   if($campana->activa==1){ @endphp
+					<a href="#" data-target="#modalpermitir{{$campana->id}}" data-toggle="modal" data-estado="1" data-campana="{{$campana->id}}"> / Activa</a>
+					@php }else{ @endphp
+					<a href="#" data-target="#modalpermitir{{$campana->id}}" data-toggle="modal" data-estado="0" data-campana="{{$campana->id}}"> / Inactiva</a>
+				@php	} 
+				
+				 }
 						if($campana->estatus==1){ echo "Cerrada"; }
-						if($campana->estatus==2){ echo "Anulada"; } @endphp </p>
+						if($campana->estatus==2){ echo "Anulada"; } 
+						
+						
+						@endphp </p>
                     </div>
               
             </div>
@@ -163,6 +175,29 @@
 <script>
 
 $(document).ready(function(){
+	
+	$('[data-target^="#modalpermitir"]').on('click', function() {
+        var estado = $(this).data('estado'); // Obtiene 1 o 0
+        var campanaId = $(this).data('campana'); // Obtiene el ID de la campaña
+        
+        var titulo = document.querySelector('#tituloModal' + campanaId);
+        var texto = document.querySelector('#textoModal' + campanaId);
+        var boton = document.querySelector('#btnConfirmarEstado' + campanaId);
+
+        if (estado == 0) {
+            titulo.textContent = "Activar Campaña";
+            texto.textContent = "¿Desea cambiar el estado de la campaña a Activa?";
+            boton.textContent = "Sí, Activar";
+            boton.className = "btn btn-success"; // Opcional: cambia el color del botón
+			$("#valor").val(1);
+        } else {
+            titulo.textContent = "Inactivar Campaña";
+            texto.textContent = "¿Desea cambiar el estado de la campaña a Inactiva?";
+            boton.textContent = "Sí, Inactivar";
+            boton.className = "btn btn-danger"; // Opcional: cambia el color del botón
+			$("#valor").val(0);
+        }
+    });
 		$('#imprimir').click(function(){
 	  document.getElementById('imprimir').style.display="none";
 		document.getElementById('repreciar').style.display="none";
@@ -175,6 +210,7 @@ $(document).ready(function(){
 		});
 $("#pagado").change(calculo); 
 $("#gasto").change(calculo); 
+
 });
   function calculo(){
       var cto= $("#costo").val();

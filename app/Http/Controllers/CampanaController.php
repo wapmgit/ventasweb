@@ -115,6 +115,16 @@ class CampanaController extends Controller
        return Redirect::to('campana');
 
     }
+public function estatuscampana(Request $request)
+    {   
+		//dd($request);
+			$data=campana::findOrFail($request->campana);
+			$data->activa=$request->valor;
+			$data->update();
+
+       return Redirect::to('campana');
+
+    }
 	public function comicampana($id)
     {   
         $campana=Campana::findOrFail($id);

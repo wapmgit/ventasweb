@@ -327,6 +327,7 @@ Route::post('generarcomisionshein', [CampanaController::class, 'generarcomisions
 Route::get('comisionvendedorshein', [CampanaController::class, 'comisionvendedorshein'])->name('comisionvendedorshein');
 Route::get('showcomishein/{id}', [CampanaController::class, 'showcomishein'])->name('showcomishein');
 Route::post('saveabonocomishein', [CampanaController::class, 'saveabonocomishein'])->name('saveabonocomishein');
+Route::post('estatuscampana', [CampanaController::class, 'estatuscampana'])->name('estatuscampana'); 
 
 //pedido shein
 Route::get('pedidoshein', [PedidoSheinController::class, 'index'])->name('pedidoshein');
