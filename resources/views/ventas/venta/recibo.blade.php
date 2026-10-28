@@ -141,7 +141,8 @@ function adjustext($textoin, $nc) {
     <table class="tabla-ticket" style="margin-bottom: 5px;">
         <thead>
             <tr>
-                <th width="100%">Descripción - Precio</th>
+			 <th width="25%">Cant</th>
+                <th width="75%">Descripción - Precio</th>
             </tr>
         </thead>
         <tbody>
@@ -152,7 +153,8 @@ function adjustext($textoin, $nc) {
 				 $cntline++; $acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);
 				@endphp
                     <tr>
-                        <td align="left">{{$det->cantidad}} {{$det->unidad}}
+					 <td class="text-center">{{$det->cantidad}} {{$det->unidad}}</td>
+                        <td align="left">
 						<?php echo adjustext($det->articulo, 30); ?>
 						<span style="font-size: 10pt;">({{number_format($det->precio_venta, 2, ',', '.')}} x {{$det->cantidad}}) ${{number_format(($det->precio_venta * $det->cantidad), 2, ',', '.')}}</span>
                         </td>
