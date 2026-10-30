@@ -36,12 +36,13 @@ class ClientesController extends Controller
 	public function create(Request $request)
 	{
 		$rol=DB::table('roles')-> select('newcliente')->where('iduser','=',$request->user()->id)->first();	
+		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		if ($rol->newcliente==1){
 		$vendedor=DB::table('vendedores')->where('activo','1')->get();	
 		$categoria=DB::table('categoriaclientes')->get();	
 		$rutas=DB::table('rutas')->get();	
 		$subrutas=DB::table('subrutas')->get();
-		return view("clientes.cliente.create",["subrutas"=>$subrutas,"rutas"=>$rutas,"categoria"=>$categoria,"vendedores"=>$vendedor]);
+		return view("clientes.cliente.create",["empresa"=>$empresa,"subrutas"=>$subrutas,"rutas"=>$rutas,"categoria"=>$categoria,"vendedores"=>$vendedor]);
 		} else { 
 		return view("reportes.mensajes.noautorizado");
 		}
@@ -136,7 +137,7 @@ class ClientesController extends Controller
     }
 	public function edit($historia)
 	{
-	
+	$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$vendedor=DB::table('vendedores')->where('activo','1')->get();
 		$rutas=DB::table('rutas')->get();
 		$subrutas=DB::table('subrutas')->get();
@@ -146,7 +147,7 @@ class ClientesController extends Controller
 			->select('v.nombre as vendedor')
 			-> where('c.id_cliente','=',$historia)
             ->first();
-		return view("clientes.cliente.edit",["subrutas"=>$subrutas,"rutas"=>$rutas,"categoria"=>$categoria,"cliente"=>Clientes::findOrFail($historia),"vendedores"=>$vendedor,"datos"=>$datos]);
+		return view("clientes.cliente.edit",["empresa"=>$empresa,"subrutas"=>$subrutas,"rutas"=>$rutas,"categoria"=>$categoria,"cliente"=>Clientes::findOrFail($historia),"vendedores"=>$vendedor,"datos"=>$datos]);
 	}
 	public function update(Request $request)
 	{

@@ -38,10 +38,11 @@ class CampanaController extends Controller
         }
     }
 		public function create(){
-	
+	$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$proveedores=DB::table('proveedores')->get();
 			return view('pedidoshein.campana.create')
-			->with('proveedores',$proveedores);
+			->with('proveedores',$proveedores)
+			->with('empresa',$empresa);
 	}
 	public function store (Request $request)
     {

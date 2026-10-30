@@ -41,7 +41,7 @@ role="dialog" tabindex="-1" id="modal-cerrar-{{$campana->id}}">
 					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                     <div class="form-group">
                         <label for="precio_venta">Pagado</label>
-                        <input type="number" name="pagopedido" id="pagado" class ="form-control" value="{{$acumcosto}}"  >
+                        <input type="number" name="pagopedido" id="pagado" step="0.01" class ="form-control" value="{{$acumcosto}}"  >
                     </div>
                     </div>
 					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">

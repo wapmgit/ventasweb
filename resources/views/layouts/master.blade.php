@@ -77,7 +77,7 @@
         <!-- ELEMENTO CENTRADO -->
         <!-- Usamos ml-auto y mr-auto para obligarlo a colocarse exactamente en el medio -->
         <li class="nav-item d-none d-sm-inline-block ml-auto mr-auto">
-            <span class="navbar-text font-weight-bold" style="font-size: 1.1em; color:white">{{$empresa->nombre}}</span>
+            <span class="navbar-text font-weight-bold" style="font-size: 1.1em; color:white">{{ $NombreEmpresa }}</span>
         </li> 
     </ul>
 
