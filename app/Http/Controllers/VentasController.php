@@ -341,6 +341,7 @@ catch(\Exception $e)
     }
 public function devolucion(Request $request){
 
+//dd($request);
 //registra la devolucion
 	$user=Auth::user()->name;
     $devolucion=new Devolucion;
@@ -469,7 +470,6 @@ public function devolucion(Request $request){
 //dd($request);
 	   	DB::beginTransaction(); 
 		try{
-
 	$user=Auth::user()->name;
 	$vdolar=$request -> get('tasa');
     $detalleventa=DetalleVentas::findOrFail($request->iddetalle);
@@ -874,6 +874,7 @@ public function nota2ds($id){
 		if ($rol->crearventa==1){
 	     $monedas=DB::table('monedas')->get();
 		 $rutas=DB::table('rutas')->get();
+		 $subrutas=DB::table('subrutas')->get();
 		 $categoria=DB::table('categoriaclientes')->get();	
 	     $vendedor=DB::table('vendedores')->get();
 		  $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
@@ -926,7 +927,7 @@ public function nota2ds($id){
 			$cxc=$cxcc->monto; }
 	
 		    $seriales =DB::table('seriales')->where('estatus','=',0)->get();
-     return view("ventas.venta.create",["cxcc"=>$cxc,"categoria"=>$categoria,"rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"monedas"=>$monedas,"articulos"=>$articulos,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
+     return view("ventas.venta.create",["subrutas"=>$subrutas,"cxcc"=>$cxc,"categoria"=>$categoria,"rutas"=>$rutas,"seriales"=>$seriales,"rol"=>$rol,"personas"=>$personas,"monedas"=>$monedas,"articulos"=>$articulos,"contador"=>$contador,"empresa"=>$empresa,"vendedores"=>$vendedor]);
 	    } else { 
 	return view("reportes.mensajes.noautorizado");
 	}

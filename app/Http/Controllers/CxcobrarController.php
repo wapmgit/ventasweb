@@ -33,7 +33,7 @@ $this->middleware('auth');
 		$rol=DB::table('roles')-> select('abonarcxc','crearventa')->where('iduser','=',$request->user()->id)->first();
 			$query=trim($request->get('searchText'));
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
-			$pacientes=DB::table('venta as v')
+			/*$pacientes=DB::table('venta as v')
 			->join('clientes as c','c.id_cliente','=','v.idcliente')
 			->join('vendedores as ve','ve.id_vendedor','=','c.vendedor')
 			->select(DB::raw('SUM(v.saldo) as acumulado'),DB::raw('SUM(v.total_venta) as tventa'),'c.nombre','ve.nombre as vendedor','c.cedula','c.codpais','c.telefono','c.id_cliente')
@@ -58,9 +58,59 @@ $this->middleware('auth');
 			->where('not.tipo','=',1)
 			->where('not.pendiente','>',0)
 			->groupby('not.idcliente')
-			->paginate(100);
-		
-			return view('clientes.cobrar.index',["empresa"=>$empresa,"rol"=>$rol,"pacientes"=>$pacientes,"notas"=>$notas,"notasnd"=>$notasnd,"searchText"=>$query]);
+			->paginate(100);*/
+// 1. Subconsulta para sumar ventas pendientes por cliente
+$subVentas = DB::table('venta')
+    ->select('idcliente', DB::raw('SUM(saldo) as total_saldo_ventas'), DB::raw('SUM(total_venta) as total_ventas'))
+    ->where('saldo', '>', 0)
+    ->groupBy('idcliente');
+
+// 2. Subconsulta para separar Notas de Débito (tipo 1) y Notas de Crédito (tipo 2)
+$subNotas = DB::table('notasadm')
+    ->select(
+        'idcliente',
+        DB::raw("SUM(CASE WHEN tipo = 1 THEN pendiente ELSE 0 END) as total_nd"), // Suman
+        DB::raw("SUM(CASE WHEN tipo = 2 THEN pendiente ELSE 0 END) as total_nc")  // Restan
+    )
+    ->where('pendiente', '>', 0)
+    ->groupBy('idcliente');
+
+// 3. Consulta principal uniendo todo
+$cuentasPorCobrar = DB::table('clientes as c')
+    ->join('vendedores as ve', 've.id_vendedor', '=', 'c.vendedor')
+    ->leftJoinSub($subVentas, 'v', function ($join) {
+        $join->on('c.id_cliente', '=', 'v.idcliente');
+    })
+    ->leftJoinSub($subNotas, 'n', function ($join) {
+        $join->on('c.id_cliente', '=', 'n.idcliente');
+    })
+    ->select(
+        'c.id_cliente',
+        'c.nombre',
+        'c.cedula',
+        'c.codpais',
+        'c.telefono',
+        've.nombre as vendedor',
+        DB::raw('COALESCE(v.total_saldo_ventas, 0) as saldo_ventas'),
+        DB::raw('COALESCE(n.total_nd, 0) as total_nd'),
+        DB::raw('COALESCE(n.total_nc, 0) as total_nc'),
+        // CÁLCULO FINAL DE LA DEUDA: Ventas + Notas de Débito - Notas de Crédito
+        DB::raw('(COALESCE(v.total_saldo_ventas, 0) + COALESCE(n.total_nd, 0) - COALESCE(n.total_nc, 0)) as total_deuda')
+    )
+    ->where('c.nombre', 'LIKE', '%' . $query . '%')
+    // Mostrar clientes que tengan alguna deuda o saldo pendiente real
+    ->where(function($queryBuilder) {
+        $queryBuilder->where('v.total_saldo_ventas', '>', 0)
+                     ->orWhere('n.total_nd', '>', 0)
+                     ->orWhere('n.total_nc', '>', 0);
+    })
+    ->groupBy(
+        'c.id_cliente', 'c.nombre', 'c.cedula', 'c.codpais', 'c.telefono', 've.nombre',
+        'v.total_saldo_ventas', 'n.total_nd', 'n.total_nc'
+    )
+    ->paginate(100);
+	//	dd($cuentasPorCobrar);
+			return view('clientes.cobrar.index',["empresa"=>$empresa,"rol"=>$rol,"cuentasPorCobrar"=>$cuentasPorCobrar,"searchText"=>$query]);
 		}
 	}
 	public function show($historia)

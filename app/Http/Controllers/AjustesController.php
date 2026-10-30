@@ -49,7 +49,7 @@ class AjustesController extends Controller
 			-> where('art.estado','=','Activo')
 			 ->OrderBy($order,'asc')
 			-> get();
-			//dd($contador->idarticulo);
+	
 			return view("compras.ajuste.create",["cnt"=>$contador,"rol"=>$rol,"articulos"=>$articulos,"empresa"=>$empresa,"categorias"=>$categorias]);
 		} else { 
 		return view("reportes.mensajes.noautorizado");

@@ -54,23 +54,31 @@
   <!-- Navbar -->
 	<nav class="{{ Auth::user()->tema_navbar ?? 'main-header navbar navbar-expand navbar-primary navbar-dark' }}">
     <!-- Left navbar links -->
-    <ul class="navbar-nav">
-      <li class="nav-item">
-      @if(Auth::user()->nivel=="A")    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-      @endif
-	  </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="{{route('home')}}" class="nav-link">Inicio</a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-		<a class="nav-link" href="{{ route('logout') }}"
-        onclick="event.preventDefault();
-        document.getElementById('logout-form').submit();">
-       Cerrar Sesión</a>
-		<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-        @csrf
-        </form>
-      </li>
+  <ul class="navbar-nav w-100 align-items-center">
+        <!-- Opciones de la izquierda -->
+        <li class="nav-item">
+            @if(Auth::user()->nivel=="A")    
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            @endif
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="{{route('home')}}" class="nav-link">Inicio</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a class="nav-link" href="{{ route('logout') }}"
+               onclick="event.preventDefault();
+               document.getElementById('logout-form').submit();">
+               Cerrar Sesión</a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
+        </li>
+        
+        <!-- ELEMENTO CENTRADO -->
+        <!-- Usamos ml-auto y mr-auto para obligarlo a colocarse exactamente en el medio -->
+        <li class="nav-item d-none d-sm-inline-block ml-auto mr-auto">
+            <span class="navbar-text font-weight-bold" style="font-size: 1.1em; color:white">{{$empresa->nombre}}</span>
+        </li> 
     </ul>
 
     <!-- Right navbar links -->
