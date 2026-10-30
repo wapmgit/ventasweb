@@ -56,7 +56,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 			<label>Cod - Articulo - existencia</label> <a href="" data-target="#modalarticuloid" data-toggle="modal"><span class="label label-success"><i class="fa  fa-plus-circle"> </i></span></a>
 			<select name="pidarticulo" id="pidarticulo" class="form-control selectpicker" data-live-search="true">
 			@foreach ($articulos as $articulo)
-			<option value="{{$articulo -> idarticulo}} - {{$articulo -> costo}} - {{ $articulo -> fraccion}}">{{$articulo -> articulo}}</option> 
+			<option value="{{$articulo -> idarticulo}} - {{$articulo -> costo}} - {{ $articulo -> fraccion}} - {{ $articulo -> stock}} ">{{$articulo -> articulo}}</option> 
 			@endforeach
 			</select>
 			</div>
@@ -336,9 +336,9 @@ function validar(){
   
     tipo = $("#ptipo option:selected").text();
     if (tipo == "Descargo"){
-        st = arti[2];
+        st = dato[3];
         if (pcanti > parseFloat(st)){
-            alert('cantidad supera al stock!! \n existencia:' + arti[2]);
+            alert('cantidad supera al stock!! \n existencia:' + dato[3]);
             $("#pcantidad").val("");
             $("#pcosto").val("");
             $("#pcantidad").focus();
