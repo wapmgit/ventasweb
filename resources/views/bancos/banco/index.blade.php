@@ -29,8 +29,9 @@
 					<td>{{ $ban->cuentaban}}</td>
 					<td>{{ $ban->titular}}</td>
 					<td>	
-					@if($rol->editbanco==1)<a href="{{route('editbanco',['id'=>$ban->idbanco])}}"><button class="btn btn-warning btn-xs">Editar</button></a>@endif
 					@if($rol->accesobanco==1)<a href="{{route('showbanco',['id'=>$ban->idbanco])}}"><button class="btn btn-info btn-xs"> Ingresar</button></a>  @endif
+					@if($rol->editbanco==1)<a href="{{route('editbanco',['id'=>$ban->idbanco])}}"><button class="btn btn-warning btn-xs">Editar</button></a>@endif
+					
 					</td>
 				</tr>@endforeach
 				</tbody>
