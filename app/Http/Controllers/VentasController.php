@@ -84,7 +84,7 @@ class VentasController extends Controller
 		$rutas=DB::table('rutas')->get();
        $subrutas=DB::table('subrutas')->get();
         $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')
-		->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre')
+		->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre','diascredito')
 		-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->OrderBy('clientes.nombre','asc')->get();
          $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
       //dd($contador);
@@ -165,6 +165,7 @@ class VentasController extends Controller
     if ($venta->saldo > 0){
     $venta->estado='Credito';} else { $venta->estado='Contado';}
     $venta->devolu='0';
+    $venta->diascre=$request->get('credito');
     $venta->comision=$request->get('comision');
 	$venta->montocomision=($request->get('total_venta')*($request->get('comision')/100));
 	$venta->user=$user;
@@ -749,10 +750,10 @@ public function notads($id){
 			 if ($empresa->orderart==1){$order="a.nombre";}else{$order="a.idarticulo";}
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select ('v.descuento','v.idventa','v.fecha_hora','v.fecha_emi','v.tasa','v.tasa','v.texe','v.base','v.total_iva','p.nombre','p.cedula',DB::raw('CONCAT(p.codpais,p.telefono) as telefono'),'p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            -> select ('v.diascre','v.descuento','v.idventa','v.fecha_hora','v.fecha_emi','v.tasa','v.tasa','v.texe','v.base','v.total_iva','p.nombre','p.cedula',DB::raw('CONCAT(p.codpais,p.telefono) as telefono'),'p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
             ->where ('v.idventa','=',$id)
             -> first();
-			//dd($venta);
+			
             $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
             -> select('a.peso','a.idarticulo','dv.idarticulo','a.nombre as articulo','dv.unidad','a.'.$empresa->codart.' as codigo','a.iva','dv.cantidad','dv.cntgrp','dv.descuento','dv.precio_venta','dv.precio')
@@ -819,7 +820,7 @@ public function nota2ds($id){
 		$paciente->creado=$mytime->toDateTimeString();
         $paciente->save();
 	// dd($paciente);
-	$personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.nombre','clientes.cedula','clientes.tipo_cliente','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre')-> where('clientes.cedula','=',$request->get('ccedula'))->get();
+	$personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.nombre','clientes.cedula','clientes.tipo_cliente','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre','diascredito')-> where('clientes.cedula','=',$request->get('ccedula'))->get();
            return response()->json($personas);
 	}
     }

@@ -90,13 +90,20 @@
 
            </div>
 		</div>
-			 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+			<div class="col-lg-1 col-md-1 col-sm-1 col-xs-6">
            <div class="form-group">
-				<label for="tipo_precio">Limite Credito </label><br>
+				<label for="tipo_precio">Limite Cre.</label><br>
 				  <input type="number" name="limitcre"  id="limitcre"  value="0" class="form-control">
 
            </div>
 		</div>
+		<div class="col-lg-1 col-md-1 col-sm-1 col-xs-6">
+           <div class="form-group">
+             <label for="tipo_precio">Recargo</label><br>
+     			<label for="recargo"> Si </label> <input name="recargo"  type="radio" value="1">
+		    <label for="recargo"> No </label> <input name="recargo" type="radio" value="0" >
+           </div>
+		   </div>
 		 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
            <div class="form-group">
 				<label for="tipo_precio">Tipo de Precio </label><br>
@@ -316,11 +323,14 @@
 			  var valor= $("#tipo_cliente").val();
 			  if(valor==0){ $("#diascre").attr("readonly",false); 
 			  $("#limitcre").attr("readonly",false); 
-			  $("#diascre").val(5); }
+			  $("#diascre").val(5);
+			$('input[name="recargo"]').prop('disabled', false); 
+			  }
 			  else { $("#diascre").attr("readonly",true);
 			    $("#limitcre").attr("readonly",true); 
 				$("#diascre").val(0);
 				$("#limitcre").val(0);
+				$('input[name="recargo"]').prop('disabled', true);
 			  }
 				 });
 	  $('#btnguardar').click(function(){   

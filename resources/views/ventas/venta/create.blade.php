@@ -95,7 +95,7 @@ $idv=0;
 						<label for="cliente">Cliente <a href="" data-target="#modalcliente" data-toggle="modal"><span class="label label-success"> <i class="fa fa-fw  fa-user-plus "> </i></span></a></label><?php if($cntvend==0){ echo "<span class='text-danger'>Debe Registrar Cliente¡¡</span>";} ?>
                     	<select name="id_cliente" id="id_cliente" class="form-control selectpicker" data-live-search="true" autofocus>						
                            @foreach ($personas as $per)
-                           <option value="{{$per -> id_cliente}}_{{$per -> tipo_precio}}_{{$per -> comision}}_{{$per -> nombrev}}_{{$per -> tipo_cliente}}_{{$per->limitecre}}">{{$per -> cedula}}-{{$per -> nombre}}</option> 
+                           <option value="{{$per -> id_cliente}}_{{$per -> tipo_precio}}_{{$per -> comision}}_{{$per -> nombrev}}_{{$per -> tipo_cliente}}_{{$per->limitecre}}_{{$per->diascredito}}">{{$per -> cedula}}-{{$per -> nombre}}</option> 
                            @endforeach
                         </select>
 						<input type="hidden" value="" id="tipocli" name="tipocli">
@@ -117,7 +117,11 @@ $idv=0;
 						 <input type="text" name="num_comprobante" style="background-color:#edefef"value="<?php echo add_ceros($idv,$ceros); ?>" class="form-control" placeholder="numero del comprobante" > 
 						</div></td><td><div class="form-group">
 							<label for="comision">Comision</label>
-						 <input type="number" name="comision" style="background-color:#edefef" id="comision"  value="" class="form-control" placeholder="%" >
+						 <input type="number" name="comision" style="background-color:#edefef" id="comision"  value=""  min="0" class="form-control" placeholder="%" >
+							</div></td>
+							<td><div class="form-group">
+							<label for="comision">Credito</label>
+						 <input type="number" name="credito" style="background-color:#edefef" id="credito"  value="" min="0" step="1" class="form-control" placeholder="Credito" >
 							</div></td></tr>
 					</table>		
 				</div>	
@@ -359,6 +363,7 @@ $(document).ready(function(){
 		var ms=	$("#cxccli").val();
 		$("#cxc").html("$: " + parseFloat(ms).toFixed(2));
 		$("#comision").val(comi);
+		$("#credito").val(dato[6]);
 		
 		$("#nvendedor").html("<strong>Vendedor:</strong> "+ vendedor);
 		$("#nvendedor").val(vendedor);
@@ -579,8 +584,9 @@ $(document).ready(function(){
 		var nv=resultado[0].nombrev; 
 		var tpc=resultado[0].tipo_cliente; 	
 		var limit=resultado[0].limitecre; 	
+		var credito=resultado[0].diascredito; 	
 			$("#id_cliente")
-			.append( '<option value="'+id+'_'+tp+'_'+idve+'_'+nv+'_'+tpc+'_'+limit+'" selected >'+ced+'-'+nombre+'</option>')
+			.append( '<option value="'+id+'_'+tp+'_'+idve+'_'+nv+'_'+tpc+'_'+limit+'_'+credito+'" selected >'+ced+'-'+nombre+'</option>')
 			.selectpicker('refresh');	
 			//$('.bootstrap-select .filter-option').text(ced+'-'+nombre)			
 			$('select[name=id_cliente]').change();
@@ -851,6 +857,7 @@ function trunc (x, posiciones = 0) {
 		$("#nvendedor").val(vendedor);
 		$("#tipocli").val(dato[4]);
 		$("#limitcre").val(dato[5]);
+		$("#credito").val(dato[6]);
 		$("#nvendedor").html("Vendedor:"+vendedor);
 		if ($("#tipocli").val()==1){		
 		document.getElementById('procesa').style.display="none"; }else{document.getElementById('procesa').style.display=""; }

@@ -73,7 +73,7 @@
                     </div>
             		</div>
             </div>
-						 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
+		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
               <div class="form-group">
 			  <input type="hidden" name="tclient" id="tclient" value="{{$cliente->tipo_cliente}}">
              <label for="tipo_cliente">Tipo cliente: <?php if($cliente->tipo_cliente==1){ echo "Contado";} else{ echo "Credito";}?></label>
@@ -92,13 +92,20 @@
 
            </div>
 		</div>
-					 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+		<div class="col-lg-1 col-md-1 col-sm-1 col-xs-6">
            <div class="form-group">
-				<label for="tipo_precio">Limite Credito $</label><br>
+				<label for="tipo_precio">Limite Cre.</label><br>
 				  <input type="number" name="limitcre"  id="limitcre"  value="{{$cliente->limitecre}}" class="form-control">
 
            </div>
 		</div>
+		<div class="col-lg-1 col-md-1 col-sm-1 col-xs-6">
+           <div class="form-group">
+             <label for="tipo_precio">Recargo</label><br>
+     			<label for="recargo"> Si </label> <input name="recargo" <?php if ($cliente->recargo==1){ echo "checked='checked'"; } ?>  type="radio" value="1">
+		    <label for="recargo"> No </label> <input name="recargo"<?php if ($cliente->recargo==0){ echo "checked='checked'"; } ?>  type="radio" value="0" >
+           </div>
+		   </div>
 	 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">		
            <div class="form-group">
              <label for="tipo_precio">Tipo de Precio </label><br>
@@ -320,11 +327,15 @@
 			  var valor= $("#tipo_cliente").val();
 			  if(valor==0){$("#diascre").attr("readonly",false); 
 			   $("#limitcre").attr("readonly",false);
-			  $("#diascre").val(5);}
+			  $("#diascre").val(5);
+			 $('input[name="recargo"]').prop('disabled', false); 
+			  }
 			  else { $("#diascre").attr("readonly",true);
 			   $("#limitcre").attr("readonly",true);
 				$("#diascre").val(0);
 				$("#limitcre").val(0);
+				
+				$('input[name="recargo"]').prop('disabled', true);
 			  }
 				 });
 	});

@@ -81,6 +81,7 @@ class ClientesController extends Controller
         $paciente->tipo_precio=$request->get('precio');
         $paciente->diascredito=$request->get('diascre');
         $paciente->limitecre=$request->get('limitcre');
+		$paciente->recargo=$request->get('recargo') ?? 0;
         if($request->get('agente')==1){
 		$paciente->retencion=$request->get('retencion');
 		}
@@ -151,7 +152,6 @@ class ClientesController extends Controller
 	}
 	public function update(Request $request)
 	{
-		//dd($request);
 			$this->validate($request,[
             'nombre' => 'required',
 			'rif'=>'required',
@@ -181,6 +181,7 @@ class ClientesController extends Controller
     	$paciente->tipo_cliente=$request->get('tipo_cliente');
     	$paciente->diascredito=$request->get('diascre');
 		$paciente->limitecre=$request->get('limitcre');
+		$paciente->recargo=$request->get('recargo') ?? 0;
 			if($request->get('agente')==1){
 		$paciente->retencion=$request->get('retencion');
 		}
