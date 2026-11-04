@@ -113,14 +113,15 @@ $cuentasPorCobrar = DB::table('clientes as c')
 			return view('clientes.cobrar.index',["empresa"=>$empresa,"rol"=>$rol,"cuentasPorCobrar"=>$cuentasPorCobrar,"searchText"=>$query]);
 		}
 	}
-	public function show($historia)
+	public function show(Request  $request,$historia)
 		{
+			$rol=DB::table('roles')-> select('abonarcxc','crearecargo','aplicarnc')->where('iduser','=',$request->user()->id)->first();
 			$monedas=DB::table('monedas')->get();
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$cliente=Clientes::findOrFail($historia);
 			$datos=DB::table('venta as v')
 			->join('clientes as c','c.id_cliente','=','v.idcliente')
-			->select('v.tasa','v.base','v.texe','v.total_iva as ivabs','v.flibre','v.mret','v.total_venta','c.id_cliente','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.fecha_hora','v.fecha_emi','v.saldo','v.idventa')
+			->select('v.lastrecargo','v.diascre','v.tasa','v.base','v.texe','v.total_iva as ivabs','v.flibre','v.mret','v.total_venta','c.id_cliente','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.fecha_hora','v.fecha_emi','v.saldo','v.idventa')
 			->where('v.idcliente','=',$historia)
 			->where('v.saldo','>',0)
 		   ->get();
@@ -137,7 +138,7 @@ $cuentasPorCobrar = DB::table('clientes as c')
 			->where('not.tipo','=',2)
 			->first();
 			//	dd($notas);
-			return view('clientes.cobrar.show',["datos"=>$datos,"notas"=>$notas,"notasc"=>$notasc,"cliente"=>$cliente,"monedas"=>$monedas,"empresa"=>$empresa]);	
+			return view('clientes.cobrar.show',["rol"=>$rol,"datos"=>$datos,"notas"=>$notas,"notasc"=>$notasc,"cliente"=>$cliente,"monedas"=>$monedas,"empresa"=>$empresa]);	
 		}
 	public function store (Request $request)
     {
@@ -766,5 +767,62 @@ catch(\Exception $e)
 			 $notas->update();
 
     return Redirect::to('edocuenta/'.$notas->idcliente);
+	}
+	public function saverecargo(Request $request){
+		$user=Auth::user()->name;
+			try{
+		DB::beginTransaction();
+
+	$contador=DB::table('notasadm')->select(DB::raw('count(ndocumento) as doc'))->where('tipo','=',1)->first();
+	$venta=Ventas::findOrFail($request->get('idventa'));
+	
+   if ($contador==NULL){$numero=0;}else{$numero=$contador->doc;}
+   
+		 $metodo = $request->get('metodo_calculo_' . $request->get('idventa'));
+
+		if ($metodo == "total_dias") {
+			$diasCobrados = $request->input('ndias');
+			$msj = $diasCobrados . " Dias " . $request->get('porcentaje') . "%";
+			
+			// 1. Calculamos la nueva fecha (faltaba el ';' al final)
+			$nuevaFechaUltimoRecargo = Carbon::today()->format('Y-m-d');
+
+		} else {
+			$periodos = $request->get('periodos_cobrados');
+			$diasCredito = $venta->diascre ?? 15; // Blindaje por si viene nulo
+			$diasCobrados = ($periodos * $diasCredito);
+			
+			$msj = $diasCobrados . " Dias " . $request->get('porcentaje') . "%"; 
+			
+			// 1. Calculamos la nueva fecha (faltaba el ';' al final)
+			$nuevaFechaUltimoRecargo = Carbon::parse($venta->lastrecargo)->addDays($diasCobrados+$diasCredito)->format('Y-m-d');
+		}
+
+		// 2. Actualizamos el campo y guardamos en la base de datos de forma limpia
+		$venta->lastrecargo = $nuevaFechaUltimoRecargo;
+		$venta->save();
+
+        $paciente=new Notasadm;
+        $paciente->tipo=1;
+        $paciente->ndocumento=$numero+1;
+        $paciente->idcliente=$venta->idcliente;
+        $paciente->descripcion=$request->get('observacion')." $".$venta->total_venta;
+        $paciente->referencia="NOT-".$request->get('idventa')." ".$msj;
+        $paciente->monto=$request->get('monto_nota');
+		$mytime=Carbon::now('America/Caracas');
+		$paciente->fecha=$mytime->toDateTimeString();
+        $paciente->pendiente=$request->get('monto_nota');
+		$paciente->usuario=Auth::user()->name;
+        $paciente->save();
+			DB::commit();
+		}
+		catch(\Exception $e)
+		{
+			$logsc=new Errores();
+			$mensaje=$logsc->logs($e->getMessage(),$user);
+			DB::rollback();
+			return view("reportes.mensajes.msgerror",["mensaje"=>$mensaje]);
+		} 
+    return Redirect::to('showcxc/'.$venta->idcliente);
 	}
 }

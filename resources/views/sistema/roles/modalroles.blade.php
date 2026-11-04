@@ -190,6 +190,13 @@
 					  <input type="checkbox" name="op82" class="minimal" @if($q->anularnotadm==1) checked @endif ></label>
 
 					</div>
+				</div>		
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+					 <div class="form-group">
+					 <label>Aplicar N/C: </label><label>
+					  <input type="checkbox" name="op87" class="minimal" @if($q->aplicarnc==1) checked @endif ></label>
+
+					</div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">
@@ -238,6 +245,12 @@
 					 <div class="form-group">
 					 <label>Abonar Ventas: </label><label>
 					  <input type="checkbox" name="op16" class="minimal" @if($q->abonarcxc==1) checked @endif ></label>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+					 <div class="form-group">
+					 <label>Crear Recargo: </label><label>
+					  <input type="checkbox" name="op86" class="minimal" @if($q->crearecargo==1) checked @endif ></label>
 					</div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">

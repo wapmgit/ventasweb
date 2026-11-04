@@ -16,6 +16,13 @@ function truncar($numero, $digitos){
 	$truncar = 10**$digitos;
 	return intval($numero * $truncar) / $truncar;
 	} 
+$fserver=date('Y-m-d');
+function dias_transcurridos($fserver,$fecha_a)
+{
+$dias = (strtotime($fecha_a)-strtotime($fserver))/86400;
+//$dias = abs($dias); $dias = floor($dias);
+return $dias;
+}
 ?>
 <?php $acum=0; $acum2=$aux=0;$auxn=0;$acumn=0;$acumf=0;$count=0; $count2=0; $contdoc=0; $montonc=0;$link="A"; $salpt=0; $cntpt=0; ?>
 <div class="row">
@@ -58,7 +65,7 @@ function truncar($numero, $digitos){
 		<div class="table-responsive">
 			<table class="table table-striped table-bordered table-condensed table-hover">
 				<thead style="background-color: #A9D0F5">
-					<th>Tipo de Doc</th>
+					<th>Doc.</th>
 					<th>N°</th>
 					<th>Fecha Doc.</th>
 					<th>Fecha Emi.</th>
@@ -83,25 +90,35 @@ function truncar($numero, $digitos){
 					<td> </td>
 					<td><?php echo number_format($not->pendiente, 2,',','.')." $";?></td>
 					<td><?php if ($notasc->montonc<> NULL){ $montonc=number_format($notasc->montonc, 2,',','.'); ?> <a href="javascript:abrirdivnc('N/D',{{$not->idnota}},{{$not->pendiente}},<?php echo $notasc->montonc; ?>);"><button  id="abono" class="btn btn-primary btn-xs">N/C: <?php echo number_format($notasc->montonc, 2,',','.')." $"; ?></button></a><?php } ?>
-					<a href="javascript:abrirespecial2({{$not->idnota}},{{$not->pendiente}});"><button  id="abono" class="btn btn-info btn-xs">Abono</button></a>
+					@if($rol->abonarcxc==1)<a href="javascript:abrirespecial2({{$not->idnota}},{{$not->pendiente}});"><button  id="abono" class="btn btn-info btn-xs">Abono</button></a> @endif
 					<a href="{{route('shownd',['id'=>$not->idnota.'_'.$link])}}"><button id="botondetalle" class="btn btn-success btn-xs">Detalle</button></a>
 					</td>
 				</tr>
 				@endforeach 
                @foreach ($datos as $cat)
-				   <?php 
-				   $contdoc++;
+				   <?php                 $periodosSugeridos=0;
+				   $contdoc++; $dias=0;
 				   $acum=$cat->saldo+$acum; 
 				   $acumf=$cat->saldo+$acumf; 
 				   $acum2=$cat->total_venta+$acum2; 
+				   $diasCredito = $cat->diascre ?? 0;
 				   ?>
 					@include('clientes.cobrar.modal')
 				 @include('clientes.cobrar.modalfl')					
 				<tr>
-					<td>{{$cat->tipo_comprobante}}<?php if(($cliente->retencion > 0)and ($cat->tipo_comprobante=="FAC") and ($cat->flibre==0)){?>
-				 <a href="" data-target="#modalfl{{$cat->idventa}}" data-toggle="modal"><i class="fa fa-fw fa-paste" title="Convertir Forma Libre"></i></a>	<?php
-					}?></td>
-					<td>{{$cat->serie_comprobante}}-{{$cat->num_comprobante}}</td>
+					<td>{{$cat->tipo_comprobante}}			
+					<?php  if($empresa->fl==1){ 
+								if(($cliente->retencion > 0)and ($cat->tipo_comprobante=="FAC") and ($cat->flibre==0)){?>
+				 <a href="" data-target="#modalfl{{$cat->idventa}}" data-toggle="modal"><i class="fa-solid fa-file-lines" title="Convertir Forma Libre"></i></a>	<?php
+					} }?> </td>
+					<td>{{$cat->serie_comprobante}}-{{$cat->num_comprobante}}
+					@if($rol->crearecargo==1) 	<?php  $dias = dias_transcurridos($cat->lastrecargo,$fserver)-$diasCredito;
+					if(($cliente->recargo==1)and($dias > 0)){
+						 echo "-> ".$dias." Dias";
+						?>
+				<a href="" data-target="#recargo{{$cat->idventa}}" data-toggle="modal"><i class="fa fa-line-chart" title="Aplicar Recargo"></i></a>	<?php
+					} ?> @endif
+					</td>
 					<td><?php echo date("d-m-Y h:i:s a",strtotime($cat->fecha_hora)); ?></td>
 					<td><?php echo date("d-m-Y",strtotime($cat->fecha_emi)); ?></td>
 					<td><?php echo number_format($cat->total_venta, 2,',','.')." $"; ?> </td>
@@ -113,14 +130,15 @@ function truncar($numero, $digitos){
 					<td>
 					<?php
 					if (($notasc->montonc<> NULL)){ $montonc=$notasc->montonc; ?>
-						<a href="javascript:abrirdivnc('FAC',{{$cat->idventa}},{{$cat->saldo}},<?php echo $notasc->montonc; ?>);"><button  id="abono" class="btn btn-primary btn-xs">N/C: <?php echo number_format($notasc->montonc, 2,',','.')." $"; ?></button></a>
+							@if($rol->aplicarnc==1) <a href="javascript:abrirdivnc('FAC',{{$cat->idventa}},{{$cat->saldo}},<?php echo $notasc->montonc; ?>);"><button  id="abono" class="btn btn-primary btn-xs">N/C: <?php echo number_format($notasc->montonc, 2,',','.')." $"; ?></button></a>@endif
 						<?php } ?>
-						<a <?php if($aux==1){echo "href='#'";}else { echo "href='javascript:abrirespecial($cat->idventa,$cat->saldo);'";}?>><button  id="abono" class="btn btn-info btn-xs">Abono</button></a>
+						@if($rol->abonarcxc==1)	<a <?php if($aux==1){echo "href='#'";}else { echo "href='javascript:abrirespecial($cat->idventa,$cat->saldo);'";}?>><button  id="abono" class="btn btn-info btn-xs">Abono</button></a> @endif
 						<a href="{{route('showdetalle',['id'=>$cat->idventa])}}"><button id="botondetalle" class="btn btn-success btn-xs">Detalle</button></a>
 					</td>
 				</tr>
 
 				 @include('clientes.cobrar.modalret')
+				 @include('clientes.cobrar.modalrecargo')
 				@endforeach
 			
 				@include('clientes.cobrar.modaln')
@@ -288,6 +306,25 @@ function truncar($numero, $digitos){
 @push ('scripts')
 <script>
 	$(document).ready(function(){
+	// Cambiar entre métodos de cálculo (Periodos vs Total Días)
+    $(document).on('change', '.metodo-calculo', function() {
+        let modal = $(this).closest('.modal');
+        let metodo = $(this).val();
+
+        if (metodo === 'periodos') {
+            modal.find('.contenedor-periodos').slideDown();
+        } else {
+            modal.find('.contenedor-periodos').slideUp();
+        }
+        calcularMontoFinal(modal);
+    });
+
+    // Recalcular al escribir en los inputs
+    $(document).on('input', '.porcentaje-recargo, .input-periodos', function() {
+        let modal = $(this).closest('.modal');
+        calcularMontoFinal(modal);
+    });
+
 		document.getElementById('bt_pago').style.display="none";
 		document.getElementById('procesa').style.display="none";
 		$('#pasapago').click(function(){
@@ -391,6 +428,47 @@ function truncar($numero, $digitos){
 				} 
 			})
 	});
+	function enviarRecargo(idventa) {
+    let $btn = $('#btn-submit-' + idventa);
+    let $form = $('#form-recargo-' + idventa);
+
+    // Si ya se hizo clic antes, detenemos la ejecución para evitar duplicados
+    if ($btn.data('is-submitted')) {
+        return;
+    }
+
+    // Marcamos la bandera para bloquear futuros clics
+    $btn.data('is-submitted', true);
+    
+    // Ocultamos el botón al instante
+    $btn.hide();
+
+    // Enviamos el formulario específico de esa venta
+    $form.submit();
+}
+function calcularMontoFinal(modal) {
+        let saldoBase = parseFloat(modal.find('.saldo-base').data('saldo')) || 0;
+        let porcentaje = parseFloat(modal.find('.porcentaje-recargo').val()) || 0;
+        let metodo = modal.find('.metodo-calculo:checked').val();
+        
+        let montoCalculado = 0;
+
+        if (metodo === 'periodos') {
+            // Método 1: Saldo * (Porcentaje / 100) * Períodos enteros
+            let periodos = parseInt(modal.find('.input-periodos').val()) || 1;
+            montoCalculado = saldoBase * (porcentaje / 100) * periodos;
+        } else {
+            // Método 2: Porcentaje directo sobre el saldo por el total de días (o porcentaje fijo directo)
+            // Aquí puedes ajustar si es un porcentaje directo fijo:
+            montoCalculado = saldoBase * (porcentaje / 100);
+            
+            // O si prefieres que sea proporcional a los días totales (ej: tasa mensual prorrateada por días):
+            // let diasTotales = parseInt(modal.find('.dias-mora-totales').data('dias')) || 0;
+            // montoCalculado = saldoBase * (porcentaje / 100) * (diasTotales / 30);
+        }
+
+        modal.find('.monto-calculado').val(montoCalculado.toFixed(2));
+    }
 // calculo pago
 	function mediopago(){
 	    document.getElementById('bt_pago').style.display="";		

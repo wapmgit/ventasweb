@@ -220,6 +220,7 @@ Route::get('pasarfl', [CxcobrarController::class, 'pasarfl'])->name('pasarfl');
 Route::get('apliret', [CxcobrarController::class, 'apliret'])->name('apliret');
 Route::get('multiplecxc', [CxcobrarController::class, 'multiple'])->name('multiplecxc');
 Route::post('anularnotadm', [CxcobrarController::class, 'anularnotadm'])->name('anularnotadm');
+Route::post('saverecargo', [CxcobrarController::class, 'saverecargo'])->name('saverecargo');
 //cxp
 Route::get('cxp', [CxpagarController::class, 'index'])->name('cxp');
 Route::get('showcxp/{id}', [CxpagarController::class, 'show'])->name('showcxp');

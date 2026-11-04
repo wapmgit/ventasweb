@@ -294,7 +294,7 @@ $idv=0;
 </select>					
 								</div>
 					<div  class="col-lg-4 ol-md-4 col-sm-6 col-xs-6" align="right" style="display: none" id="cfl">
-								¿ Forma Libre ? <input type="checkbox" id="convertir" name="convertir" />							
+						<?php if($empresa->fl==1){?>		¿ Forma Libre ? <input type="checkbox" id="convertir" name="convertir" />		<?php } ?>					
 								</div>
 						<div class="col-lg-4 ol-md-4 col-sm-12 col-xs-12" align="right">
 						<button type="button" class="btn btn-danger" id="regresar" data-dismiss="modal">Cancelar</button>

@@ -68,7 +68,7 @@ class VentasController extends Controller
     })
     ->orderBy('idventa', 'desc')
     ->paginate(50);
-   //  dd($ventas);
+
      return view ('ventas.venta.index',["rol"=>$rol,"ventas"=>$ventas,"searchText"=>$query,"empresa"=>$empresa]);
         }
     }
