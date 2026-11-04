@@ -263,10 +263,12 @@ public function show(Request $request,$id){
 		$dpedido=Pedidos::findOrFail($request -> get('idventa'));
 		$dpedido->impor=1;
 		$dpedido->update();
+			
 		//registro la venta
 		$venta=new Ventas;
 		$idcliente=explode("_",$request->get('id_cliente'));
 		$venta->idcliente=$idcliente[0];
+		$datacli=Clientes::findOrFail($idcliente[0]);
 		$venta->tipo_comprobante="FAC";
 		$venta->serie_comprobante=$dpedido->serie_comprobante;
 		$venta->control=$request->get('control');
@@ -280,6 +282,7 @@ public function show(Request $request,$id){
 		$mytime=Carbon::now('America/Caracas');
 		$venta->fecha_hora=$mytime->toDateTimeString();
 		$venta->fecha_emi=$request->get('fecha_emi');
+		$venta->lastrecargo=$request->get('fecha_emi');
 		$venta->impuesto='16';
 		if(($request->get('convertir')=="on")){
 			$venta->flibre=1;
@@ -291,6 +294,7 @@ public function show(Request $request,$id){
 		$venta->devolu='0';
 		$venta->comision=$dpedido->comision;
 		$venta->montocomision=$dpedido->montocomision;
+		$venta->diascre=$datacli->diascredito;
 		$venta->user=$user;
 		$venta-> save();
    if(($request->get('convertir')=="on")){

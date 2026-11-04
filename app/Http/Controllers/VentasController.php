@@ -156,6 +156,7 @@ class VentasController extends Controller
     $mytime=Carbon::now('America/Caracas');
     $venta->fecha_hora=$mytime->toDateTimeString();
 	$venta->fecha_emi=$request->get('fecha_emi');
+	$venta->lastrecargo=$request->get('fecha_emi');
     $venta->impuesto='16';
 		if(($request->get('convertir')=="on")){
 			$venta->flibre=1;
