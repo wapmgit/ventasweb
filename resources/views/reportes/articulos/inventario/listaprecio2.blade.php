@@ -39,6 +39,15 @@ function truncar($numero, $digitos)
 
 				  <h4>Lista de Precios</h4>
               
+					  <div class="form-group no-print">
+                        <select name="idcategoria" id="filtroGrupo" class="form-control selectpicker" data-live-search="true">
+                          <option value="todos">-- Todos los Grupos --</option>
+						  @foreach ($grupos as $cat)
+                                 <option value="{{$cat->idcategoria}}">   {{ $cat->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 				</div>
 					<div class="col-sm-3 invoice-col" align="center">
 <img src="{{ asset('dist/img/'.$empresa->logo)}}" width="50%" height="80%" title="NKS">
@@ -67,7 +76,7 @@ function truncar($numero, $digitos)
 						</thead><?php $count=0; $i=0;$costo=0;$costoacum=0; $precioacum=0; $order=1;?>
 							@foreach ($lista as $q)
 							   <?php $i++; ?>
-							<tr <?php if (($i%2)==0){ echo "style='background-color: #D4E6F1 !important'";}?>> <?php $count++; 
+							<tr class="item-articulo" data-grupo="{{$q->idcategoria}}" <?php if (($i%2)==0){ echo "style='background-color: #D4E6F1 !important'";}?>> <?php $count++; 
 								$costoacum=($q->stock-$q->apartado)+$costoacum;
 								$costo=$costo+($q->costo*($q->stock-$q->apartado));
 								$precioacum=(($q->stock-$q->apartado)*$q->precio1)+$precioacum;
@@ -88,7 +97,7 @@ function truncar($numero, $digitos)
 							</tr>						
 							@endforeach
 							<tr style="background-color: #A9CCE3" >					
-								<td colspan="2"><?php echo "<strong>Articulos: ".$count."</strong>"; ?></td>
+								<td colspan="2"><strong id="total-articulos">Articulos: {{ $count }}</strong></td>
 								<td class="filap1"></td>
 								<td class="filap1"></td>
 								<td class="filap2"></td>
@@ -96,7 +105,7 @@ function truncar($numero, $digitos)
 								<td class="filapv"></td>
 								<td class="filapv"></td>
 								<?Php if($empresa->tdif==1){?> <td class="filap4"></td> <td class="filap4"></td> <?php } ?>
-								<td class="filap3"><?php echo "<strong>Existencias : ".$costoacum."</strong>"; ?></td>												
+								<td class="filap3"><strong id="total-existencias">Existencias : {{ $costoacum }}</td>												
 							</tr>
 					</table>
 				</div>
@@ -111,6 +120,37 @@ function truncar($numero, $digitos)
 @push ('scripts')
 <script>
 $(document).ready(function(){
+	function recalcularTotales() {
+        let totalArticulos = 0;
+        let totalExistencias = 0;
+
+        // Recorremos únicamente las filas de artículos que estén visibles
+        $('.item-articulo:visible').each(function() {
+            totalArticulos++;
+            
+            // Obtenemos el valor de la existencia de esa fila (columna de stock, ajusta la clase si es necesario)
+            let stockFila = parseFloat($(this).find('.filap3').text().trim()) || 0;
+            totalExistencias += stockFila;
+        });
+
+        // Actualizamos los textos en la fila de totales de la tabla
+        $('#total-articulos').text("Articulos: " + totalArticulos);
+        $('#total-existencias').text("Existencias : " + totalExistencias);
+    }
+$('#filtroGrupo').on('change', function() {
+        let grupoSeleccionado = String($(this).val()); // Convertimos a string por seguridad
+
+        $('.item-articulo').each(function() {
+            let grupoFila = String($(this).data('grupo')); // Convertimos a string también
+
+            if (grupoSeleccionado === 'todos' || grupoFila === grupoSeleccionado) {
+                $(this).show(); 
+            } else {
+                $(this).hide(); 
+            }
+        });
+		recalcularTotales();
+    });
 	$('#ocultarpd').click(function(){
 		document.getElementById('pd').style.display="none";
 		document.getElementById('pdu').style.display="none";

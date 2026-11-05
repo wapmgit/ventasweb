@@ -515,6 +515,7 @@ $this->middleware('auth');
 		return Redirect::to('showcxp/'.$request->get('idcliente'));
 	}
 		public function multiple (Request $request){
+			//dd($request);
 //	// try{
  //  DB::beginTransaction();
  

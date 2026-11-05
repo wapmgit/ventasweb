@@ -282,9 +282,10 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
     $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
             $detalles=DB::table('detalle_compras as d')
             -> join('articulos as a','d.idarticulo','=','a.idarticulo')
-            -> select('a.nombre as articulo','a.'.$empresa->precioeti.' as precio1','a.codigo')
+            -> select('a.nombre as articulo','a.precio1','a.codigo','a.precio2','a.precio3')
             -> where ('d.idcompra','=',$id)
             ->get();
+			
             return view("compras.ingreso.".$empresa->formatoeti,["empresa"=>$empresa,"detalles"=>$detalles]);
 	}
 	public function actuartic(Request $request)

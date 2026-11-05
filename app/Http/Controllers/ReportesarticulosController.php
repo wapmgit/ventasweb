@@ -89,7 +89,9 @@ class ReportesarticulosController extends Controller
     }
 	public function listaprecio(Request $request)
     {  
+	//dd($request);
 		$rol=DB::table('roles')-> select('rlistap')->where('iduser','=',$request->user()->id)->first();	
+		$grupos=DB::table('categoria') ->where ('condicion','=','1')->get();
 		if ($rol->rlistap==1){
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			if($request->order){
@@ -99,7 +101,7 @@ class ReportesarticulosController extends Controller
 				->where('estado','=',"Activo")
 				->OrderBy('articulos.nombre')
 				->get();
-			$grupos=DB::table('categoria') ->where ('condicion','=','1')->get();
+
 			return view('reportes.articulos.inventario.'.$empresa->formatolp.'grupo',["grupos"=>$grupos,"lista"=>$lista,"empresa"=>$empresa]);
 		}else{     
         $lista=DB::table('articulos')
@@ -108,7 +110,7 @@ class ReportesarticulosController extends Controller
 		->where('estado','=',"Activo")
 		->OrderBy('articulos.nombre')
         ->get();
-		return view('reportes.articulos.inventario.'.$empresa->formatolp,["lista"=>$lista,"empresa"=>$empresa]);
+		return view('reportes.articulos.inventario.'.$empresa->formatolp,["grupos"=>$grupos,"lista"=>$lista,"empresa"=>$empresa]);
 		}         
 
 		} else { 
@@ -117,7 +119,7 @@ class ReportesarticulosController extends Controller
 	}
 		public function listapreciosdesc(Request $request)
     {  
-	//dd($request);
+	
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();   
 		$rol=DB::table('roles')-> select('rlistap')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->rlistap==1){
