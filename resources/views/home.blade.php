@@ -134,36 +134,20 @@
           <th>Enero</th><th>Febrero</th><th>Marzo</th><th>Abril</th><th>Mayo</th><th>Junio</th><th>Julio</th><th>Agosto</th><th>Septiembre</th><th>Octubre</th><th>Noviembre</th><th>Diciembre</th>
         </thead>    
 		<tbody>
-		<tr>
-          <td style="background-color: #2b92da" align="center"><strong>Compras</strong></td>
-          <td><?php   echo number_format($cene->total, 2,',','.'); ?></td>
-          <td><?php echo number_format($cfeb->total, 2,',','.'); ?></td>  
-		  <td><?php echo number_format($cmar->total, 2,',','.'); ?></td>
-		  <td><?php   echo number_format($cabr->total, 2,',','.'); ?></td>
-          <td><?php echo number_format($cmay->total, 2,',','.'); ?></td>  
-		  <td><?php echo number_format($cjun->total, 2,',','.'); ?></td> 
-		  <td><?php   echo number_format($cjul->total, 2,',','.'); ?></td>
-          <td><?php echo number_format($cago->total, 2,',','.'); ?></td>  
-		  <td><?php echo number_format($csep->total, 2,',','.'); ?></td>
-		  <td><?php   echo number_format($coct->total, 2,',','.'); ?></td>
-          <td><?php echo number_format($cnov->total, 2,',','.'); ?></td>  
-		  <td><?php echo number_format($cdic->total, 2,',','.'); ?></td>     		  
-        </tr>
-			<tr>
-          <td style="background-color: #269309" align="center"><strong>Ventas</strong></td>
-          <td><?php   echo number_format($vene->total, 2,',','.'); ?></td>
-          <td><?php echo number_format($vfeb->total, 2,',','.'); ?></td>  
-		  <td><?php echo number_format($vmar->total, 2,',','.'); ?></td>
-		  <td><?php   echo number_format($vabr->total, 2,',','.'); ?></td>
-          <td><?php echo number_format($vmay->total, 2,',','.'); ?></td>  
-		  <td><?php echo number_format($vjun->total, 2,',','.'); ?></td> 
-		  <td><?php   echo number_format($vjul->total, 2,',','.'); ?></td>
-          <td><?php echo number_format($vago->total, 2,',','.'); ?></td>  
-		  <td><?php echo number_format($vsep->total, 2,',','.'); ?></td>
-		  <td><?php   echo number_format($voct->total, 2,',','.'); ?></td>
-          <td><?php echo number_format($vnov->total, 2,',','.'); ?></td>  
-		  <td><?php echo number_format($vdic->total, 2,',','.'); ?></td>     		  
-        </tr>
+	<tr>
+    <td style="background-color: #2b92da" align="center"><strong>Compras</strong></td>
+    @foreach($mesesCompras as $totalCompra)
+        <td>{{ number_format($totalCompra, 2, ',', '.') }}</td>
+    @endforeach
+</tr>
+
+<!-- Fila de Ventas -->
+<tr>
+    <td style="background-color: #34bf75" align="center"><strong>Ventas</strong></td>
+    @foreach($mesesVentas as $totalVenta)
+        <td>{{ number_format($totalVenta, 2, ',', '.') }}</td>
+    @endforeach
+</tr>
 		</tbody>
       </table>
               </div>
@@ -182,6 +166,8 @@
 
 <script>
 $(document).ready(function(){
+	var ventasData = @json($mesesVentas);  
+	var comprasData = @json($mesesCompras);
   $(function () {
     /* ChartJS
      * -------
@@ -207,9 +193,7 @@ $(document).ready(function(){
           pointStrokeColor    : 'rgba(60,141,188,1)',
           pointHighlightFill  : '#fff',
           pointHighlightStroke: 'rgba(60,141,188,1)',
-		  data: [
-		<?php echo $cene->total.",".$cfeb->total.",".$cmar->total.",".$cabr->total.",".$cmay->total.",".$cjun->total.",".$cjul->total.",".$cago->total.",".$csep->total.",".$coct->total.",".$cnov->total.",".$cdic->total;
-		?>  ]
+		 data: @json($mesesCompras)
         },
         {
           label               : 'Ventas',
@@ -220,9 +204,7 @@ $(document).ready(function(){
           pointStrokeColor    : '#c1c7d1',
           pointHighlightFill  : '#fff',
           pointHighlightStroke: 'rgba(38, 147, 9,1)',
-		  data: [
-		<?php echo $vene->total.",".$vfeb->total.",".$vmar->total.",".$vabr->total.",".$vmay->total.",".$vjun->total.",".$vjul->total.",".$vago->total.",".$vsep->total.",".$voct->total.",".$vnov->total.",".$vdic->total;
-		?>  ]
+		  data: @json($mesesVentas)
         },
       ]
     }
@@ -236,10 +218,35 @@ $(document).ready(function(){
     barChartData.datasets[0] = temp1
     barChartData.datasets[1] = temp0
 
-    var barChartOptions = {
+   var barChartOptions = {
       responsive              : true,
       maintainAspectRatio     : false,
-      datasetFill             : false
+      datasetFill             : false,
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      },
+      // Configuración del tooltip (cuando pasas el mouse)
+      tooltips: {
+        callbacks: {
+          label: function(tooltipItem, data) {
+            // Obtiene el nombre del dataset (ej: "Ventas" o "Compras")
+            var label = data.datasets[tooltipItem.datasetIndex].label || '';
+            var value = tooltipItem.yLabel; // El valor numérico de esa barra/punto
+            
+            // Formatea el número a dos decimales con toLocaleString
+            var valorFormateado = Number(value).toLocaleString('es-VE', { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+            });
+
+            return label + ': ' + valorFormateado;
+          }
+        }
+      }
     }
 
     new Chart(barChartCanvas, {

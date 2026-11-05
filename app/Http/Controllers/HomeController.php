@@ -36,7 +36,7 @@ class HomeController extends Controller
 		 $articulos=DB::table('articulos')->get();
 		 $vendedores=DB::table('vendedores')->get();
 		$y = date("Y");
-		$vene =DB::table('venta')-> select(DB::raw('sum(total_venta) as total '))-> whereBetween('fecha_hora', [$y.'0101',$y.'0131']) -> first();
+		/*$vene =DB::table('venta')-> select(DB::raw('sum(total_venta) as total '))-> whereBetween('fecha_hora', [$y.'0101',$y.'0131']) -> first();
 		$vfeb =DB::table('venta')-> select(DB::raw('sum(total_venta) as total '))-> whereBetween('fecha_hora', [$y.'0201',$y.'0231']) -> first();
 		$vmar =DB::table('venta')-> select(DB::raw('sum(total_venta) as total '))-> whereBetween('fecha_hora', [$y.'0301',$y.'0331']) -> first();
 		$vabr =DB::table('venta')-> select(DB::raw('sum(total_venta) as total '))-> whereBetween('fecha_hora', [$y.'0401',$y.'0430']) -> first();
@@ -62,9 +62,39 @@ class HomeController extends Controller
 		$coct =DB::table('compras')-> select(DB::raw('sum(total) as total '))-> whereBetween('fecha_hora', [$y.'1001',$y.'1031']) -> first();
 		$cnov =DB::table('compras')-> select(DB::raw('sum(total) as total '))-> whereBetween('fecha_hora', [$y.'1101',$y.'1131']) -> first();
 		$cdic =DB::table('compras')-> select(DB::raw('sum(total) as total '))-> whereBetween('fecha_hora', [$y.'1201',$y.'1231']) -> first();
-        
-		
-        return view('home',["vene"=>$vene,"vfeb"=>$vfeb,"vmar"=>$vmar,"vabr"=>$vabr,"vmay"=>$vmay,"vjun"=>$vjun,"vjul"=>$vjul,"vago"=>$vago,"cene"=>$cene,"cfeb"=>$cfeb,"cmar"=>$cmar,"cmay"=>$cmay,"cabr"=>$cabr,"cjun"=>$cjun,"cjul"=>$cjul,"cago"=>$cago,"csep"=>$csep,"vsep"=>$vsep,"voct"=>$voct,"coct"=>$coct,"vnov"=>$vnov,"cnov"=>$cnov,"vdic"=>$vdic,"cdic"=>$cdic,"empresa"=>$empresa,"clientes"=>$clientes,"proveedor"=>$proveedor,"articulos"=>$articulos,"vendedores"=>$vendedores]);
+       
+		*/
+		$ventasAnuales = DB::table('venta')
+    ->select(
+        DB::raw('MONTH(fecha_hora) as mes'),
+        DB::raw('SUM(total_venta) as total')
+    )
+    ->where('devolu', 0)
+    ->whereYear('fecha_hora', $y)
+    ->groupBy(DB::raw('MONTH(fecha_hora)'))
+    ->pluck('total', 'mes'); // Devuelve un array asociativo [mes => total]
+
+// 2. Obtenemos todas las compras del año agrupadas por mes en UNA sola consulta
+$comprasAnuales = DB::table('compras')
+    ->select(
+        DB::raw('MONTH(fecha_hora) as mes'),
+        DB::raw('SUM(total) as total')
+    )
+    ->where('estatus', 0)
+    ->whereYear('fecha_hora', $y)
+    ->groupBy(DB::raw('MONTH(fecha_hora)'))
+    ->pluck('total', 'mes');
+		$mesesVentas = [];
+		$mesesCompras = [];
+
+		for ($i = 1; $i <= 12; $i++) {
+			// Si existe el mes en la consulta lo toma, si no, asigna 0
+			$mesesVentas[] = $ventasAnuales->get($i, 0); 
+			$mesesCompras[] = $comprasAnuales->get($i, 0);
+		}
+	//	dd($mesesVentas);
+     //   return view('home',["mesesVentas"=>$mesesVentas"vene"=>$vene,"vfeb"=>$vfeb,"vmar"=>$vmar,"vabr"=>$vabr,"vmay"=>$vmay,"vjun"=>$vjun,"vjul"=>$vjul,"vago"=>$vago,"cene"=>$cene,"cfeb"=>$cfeb,"cmar"=>$cmar,"cmay"=>$cmay,"cabr"=>$cabr,"cjun"=>$cjun,"cjul"=>$cjul,"cago"=>$cago,"csep"=>$csep,"vsep"=>$vsep,"voct"=>$voct,"coct"=>$coct,"vnov"=>$vnov,"cnov"=>$cnov,"vdic"=>$vdic,"cdic"=>$cdic,"empresa"=>$empresa,"clientes"=>$clientes,"proveedor"=>$proveedor,"articulos"=>$articulos,"vendedores"=>$vendedores]);
+        return view('home',["mesesVentas"=>$mesesVentas,"mesesCompras"=>$mesesCompras,"empresa"=>$empresa,"clientes"=>$clientes,"proveedor"=>$proveedor,"articulos"=>$articulos,"vendedores"=>$vendedores]);
     } else {
 		$rol=DB::table('roles')-> select('crearventa','anularventa','aplidescuento','cambiarprecioventa','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
 		if($rol <> null){	
