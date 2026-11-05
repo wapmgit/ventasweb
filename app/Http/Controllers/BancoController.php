@@ -248,7 +248,6 @@ class BancoController extends Controller
     }
 	public function addtraspaso(Request $request)
     {    
-//dd($request);
 	     $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 
 		$user=Auth::user()->name;
@@ -265,7 +264,7 @@ class BancoController extends Controller
         $mov->monto=$request->get('monto');
 		$mov->tasadolar=$empresa->tasa_banco;
         $mytime=Carbon::now('America/Caracas');
-        $mov->fecha_mov=$mytime->toDateTimeString();
+        $mov->fecha_mov=$request->get('fechatrasnf');
         $mov->user=Auth::user()->name;
         $mov->save();
 			$contador=DB::table('mov_ban')->select('id_mov')->orderby('id_mov','desc')->first();
@@ -284,7 +283,7 @@ class BancoController extends Controller
         $mov2->monto=$request->get('mdestino');
 		$mov2->tasadolar=$empresa->tasa_banco;
         $mytime=Carbon::now('America/Caracas');
-        $mov2->fecha_mov=$mytime->toDateTimeString();
+        $mov2->fecha_mov=$request->get('fechatrasnf');
         $mov2->user=Auth::user()->name;
         $mov2->save();
 	return Redirect::to('showbanco/'.$request->get('idbanco'));

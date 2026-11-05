@@ -51,14 +51,22 @@ role="dialog" tabindex="-1" id="modaldeposito">
 											    <label for="nombre">Concepto</label>
 											<input type="text" name="concepto"  required value="Transferencia entre cuentas" class="form-control" >
 										</div>
-									</div>	
-						<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
+									</div>
+					<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+										<div class="form-group">
+											<div class="form-group">
+											<label for="nombre">Fecha</label>
+												<input type="date" class="form-control" name="fechatrasnf" id="fechatrasnf" value="">
+											</div>
+										</div>
+										</div>									
+						<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
 										 <div class="form-group">
-											    <label for="nombre">Monto</label>
+											    <label for="nombre">Monto Origen</label>
 											<input type="number" step="0.01" required name="monto" value="" class="form-control" placeholder="monto...">
 										</div>
 									</div>
-											<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
+								<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
 										 <div class="form-group">
 											    <label for="nombre">Monto Destino</label>
 											<input type="number" step="0.01" required name="mdestino" value="" class="form-control" placeholder="monto...">

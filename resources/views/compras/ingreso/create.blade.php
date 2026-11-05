@@ -516,7 +516,8 @@
             $("#pcantidad").focus();
             $("#pcantidad").val(1);
             $("#pprecio_compra").val(0);        
-            $("#pprecio_venta").val(0);       
+            $("#pprecio_venta").val(0);  
+			validar();			
         });
 
         $('#pasapago').click(function() {
@@ -720,9 +721,10 @@
         if (idarticulo != "" && cantidad > 0 && precio_compra != "") {          
             neto = (cantidad * precio);
             if (viva == 0) { 
+			var imp="(E)";
                 subtotal[cont] = neto; miva = 0; arrayiva[cont] = 0;  
                 arraybase[cont] = 0; texe = texe + neto; arrayexento[cont] = neto; 
-            } else { 
+            } else { 	var imp="(G)";
                 subtotal[cont] = (neto * (viva / 100)) + neto;
                 arrayexento[cont] = 0;
                 miva = (neto * (viva / 100)); 
@@ -735,7 +737,7 @@
 
             var fila = '<tr class="selected" id="fila' + cont + '">' +
                 '<td><button class="btn btn-danger btn-xs" onclick="eliminar(' + cont + ');"><i class="fa fa-times"></i></button></td>' +
-                '<td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + narticulo + '</td>' +
+                '<td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + narticulo +''+imp+'</td>' +
                 '<td><input type="text" class="form-control form-control-sm" style="width: 60px" name="cantidad[]" readonly="true" value="' + cantidad + '"></td>' +
                 '<td><input type="text" name="precio_compra[]" readonly="true" class="form-control form-control-sm" style="width: 100px" value="' + precio_compra + '"></td>' +
                 '<td><input type="text" name="ptasa[]" readonly="true" class="form-control form-control-sm" style="width: 100px" value="' + precio_tasa + '"></td>' +

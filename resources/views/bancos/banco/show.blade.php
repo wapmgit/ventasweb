@@ -127,6 +127,7 @@ $idv=0;
 $(document).ready(function(){
    document.getElementById("fechand").valueAsDate = new Date();
    document.getElementById("fechanc").valueAsDate = new Date();
+   document.getElementById("fechatrasnf").valueAsDate = new Date();
     $('#c_cliente').click(function(){
 $('#modalcliente').modal('hide')
     });
