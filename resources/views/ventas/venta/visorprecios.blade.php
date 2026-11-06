@@ -69,7 +69,7 @@ $idv=0;
     
     <!-- Columna del Nombre de la Empresa (Ocupa 10 columnas) -->
     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 text-center">
-        <h1 style="margin: 10px 0;">{{ $empresa->nombre }}</h1>
+        <h2 style="margin: 10px 0;">{{ $empresa->nombre }}</h2>
     </div>
     
     <!-- Columna del Logo (Ocupa 2 columnas) -->
@@ -91,7 +91,7 @@ $idv=0;
 			</div>
 		<hr>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin: 25px 0;">
-        <div class="box box-default" style="padding: 20px; background-color: #fff; border-top: 3px solid #00a65a;">
+        <div class="box box-default" style="padding: 10px; background-color: #fff; border-top: 3px solid #00a65a;">
             
             <!-- Contenedor flexible para alinear imagen y texto en horizontal -->
             <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
@@ -113,17 +113,17 @@ $idv=0;
 		<hr>
 		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 			<div class="small-box bg-green text-center">
-			<label style="display: block; padding-top: 10px; font-size: 16px;">Dolares</label>
+			<label style="display: block; padding-top: 10px; font-size: 16px;">Bolivares</label>
 				<div class="inner">
-				   <h1 id="muestramontobs" align="center"><sup style="font-size: 30px"><?php ?>$   0.00</sup></h1>
+				   <h1 id="muestramontobs" align="center"><sup style="font-size: 30px"><?php ?>Bs   0.00</sup></h1>
 					</div>					 
 					</div>
 		</div>
 		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 				<div class="small-box bg-blue text-center">
-				<label style="display: block; padding-top: 10px; font-size: 16px;">Bolivares</label>
+				<label style="display: block; padding-top: 10px; font-size: 16px;">Dolares</label>
 				<div class="inner">
-				   <h1 id="muestramonto" align="center"><sup style="font-size: 30px"><?php ?>Bs   0.00</sup></h1>
+				   <h1 id="muestramonto" align="center"><sup style="font-size: 30px"><?php ?>$   0.00</sup></h1>
 					</div>
 					 
 					</div>
@@ -147,6 +147,9 @@ $(document).ready(function(){
     if (e.which === 13) {
         e.preventDefault(); 
     }
+});
+$('#formvisor').on('submit', function(e) {
+    e.preventDefault();
 });
 let barcodeTimer;
 const barcodeInput = document.getElementById('barcode'); 
