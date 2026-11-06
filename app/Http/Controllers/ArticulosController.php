@@ -53,7 +53,7 @@ class ArticulosController extends Controller
 			})
 			->orderBy('a.idarticulo', 'desc')
 			->paginate(50);
-			//dd($articulos);
+			
             return view('almacen.articulo.index',["rol"=>$rol,"articulos"=>$articulos,"empresa"=>$empresa,"searchText"=>$query]);
         } 
     }
@@ -372,8 +372,9 @@ class ArticulosController extends Controller
 
     }
 	    public function validar (Request $request){
+		$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
             if($request->ajax()){
-        $result=DB::table('articulos')->where('codigo','=',$request->get('codigo'))->get();
+        $result=DB::table('articulos')->where($empresa->codart,'=',$request->get('codigo'))->get();
          return response()->json($result);
      }
 		}
