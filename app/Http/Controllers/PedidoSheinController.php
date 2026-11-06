@@ -316,6 +316,33 @@ public function show(Request $request,$id){
 			 $venta=PedidoShein::findOrFail($request->get('id'));
 			 $venta->anulado=1;
              $venta->update();
+			 $recibos=DB::table('recibos as r')-> where ('r.idpedidoshein','=',$request->get('id'))
+			->get();
+				$long = count($recibos);
+				$array = array();
+			foreach($recibos as $ct){
+			$arrayid[] = $ct->idrecibo;
+			}		 
+				for ($j=0;$j<$long;$j++){
+			$recibo=Recibos::findOrFail($arrayid[$j]);
+			$mrecibo=$recibo->monto;	
+			 $recibo->referencia='Anulado ->'.$mrecibo;
+			 $recibo->monto='0';
+			 $recibo->recibido='0';
+			 $recibo->update();
+				 	$mbanco=DB::table('mov_ban')
+					->where('tipodoc','=',"PED")
+					->where('iddocumento','=',$arrayid[$j])->first();
+	
+				if($mbanco!= NULL){					
+				$delmov=MovBancos::findOrFail($mbanco->id_mov);
+				$delmov->monto=0;
+				$delmov->concepto="Anul.".$request->get('idventa')."Rec".$recibo->idrecibo."M:".$mrecibo;
+				$delmov->estatus=1;
+				$delmov->update();
+				}	
+				} 
+				
 			 return Redirect::to('pedidoshein');
 	}
 	public function recibopedido($id){
