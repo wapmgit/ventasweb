@@ -141,6 +141,7 @@ Route::post('anulforma', [ventasController::class, 'anulforma'])->name('anulform
 Route::post('anularecibo', [ventasController::class, 'anular'])->name('anularecibo');
 Route::post('validarcventa', [ventasController::class, 'validar'])->name('validarcventa');
 Route::post('ventacxc', [ventasController::class, 'vcxc'])->name('ventacxc');
+Route::get('visor', [ventasController::class, 'visorprecio'])->name('visor');
 
 
 //gastos

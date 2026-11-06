@@ -39,7 +39,11 @@ $idv=0;
 		
 	<div class="row" style="background-color:#f3f4f4"> 
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-			<h3>Nueva Venta</h3>
+			<h3>Nueva Venta</h3><li>
+    <a href="{{ route('visor') }}">
+        <i class="fa fa-barcode text-green"></i> <span>Visor de Precios</span>
+    </a>
+</li>
 			<button type="button" > <a id="calculo" href="" data-target="#modal_tasas" data-toggle="modal"> Referencia Monetaria </a></button>
 			@include('ventas.venta.modal_tasas')
 			@include('ventas.venta.modalcliente')

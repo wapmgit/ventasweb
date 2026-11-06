@@ -1094,5 +1094,12 @@ private function registrarMovimientoBancario($venta, $recibo, $moneda, $idClient
     $mov->user = Auth::user()->name;
     $mov->save();
 }
+ public function visorprecio(Request $request){
+
+			$empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
+			$monedas=DB::table('monedas')->get();
+
+     return view("ventas.venta.visorprecios",["monedas"=>$monedas,"empresa"=>$empresa]);
+ }
 }
 
