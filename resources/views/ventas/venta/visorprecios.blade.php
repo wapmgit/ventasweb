@@ -73,7 +73,7 @@ $idv=0;
     </div>
     
     <!-- Columna del Logo (Ocupa 2 columnas) -->
-    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-left">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-center">
         <img src="{{ asset('dist/img/' . $empresa->logo) }}" class="img-circle" style="max-height: 60px; width: auto;" alt="Logo Empresa">
     </div>
 
