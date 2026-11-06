@@ -90,7 +90,7 @@ $idv=0;
 				</form> 
 			</div>
 		<hr>
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin: 25px 0;">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin: 15px 0;">
         <div class="box box-default" style="padding: 10px; background-color: #fff; border-top: 3px solid #00a65a;">
             
             <!-- Contenedor flexible para alinear imagen y texto en horizontal -->
