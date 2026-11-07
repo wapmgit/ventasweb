@@ -565,6 +565,12 @@
                   <p>Detalle de Pagos</p>
                 </a>
               </li>
+			   <li class="nav-item">
+                <a href="{{route('repnotadmp')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p><small>Rep. Not. Administrativas</small></p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a href="{{route('comprasarticulo')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>

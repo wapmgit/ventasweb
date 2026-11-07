@@ -1271,7 +1271,7 @@ class ReportesventasController extends Controller
             ->get();
 			//dd($datos);
 		$query2=date("Y-m-d",strtotime($query2."- 1 days"));
-        return view('reportes.clientes.notasadm.index',["datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);    
+        return view('reportes.notasadm.clientes.index',["datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);    
 		} else { 
 			return view("reportes.mensajes.noautorizado");
 			}  

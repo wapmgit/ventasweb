@@ -271,6 +271,7 @@ Route::get('librocompras', [ReportescomprasController::class, 'libroc'])->name('
 Route::get('repseriales', [ReportescomprasController::class, 'seriales'])->name('repseriales');
 Route::get('editserial', [ReportescomprasController::class, 'editserial'])->name('editserial');
 Route::get('reportevence', [ReportescomprasController::class, 'reportevence'])->name('reportevence');
+Route::get('repnotadmp', [ReportescomprasController::class, 'repnotadmp'])->name('repnotadmp');
 
 // informes articulos
 Route::get('reportearticulos', [ReportesarticulosController::class, 'articulos'])->name('reportearticulos');

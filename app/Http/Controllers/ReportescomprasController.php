@@ -524,4 +524,35 @@ class ReportescomprasController extends Controller
 	}
 		
 	}
+		public function repnotadmp(Request $request)
+    {	
+	$rol=DB::table('roles')-> select('rcompras')->where('iduser','=',$request->user()->id)->first();	
+
+		if ($rol->rcompras==1){
+		$corteHoy = date("Y-m-d");
+			$tipoadm=$request->get('tipoadm');
+		if (($tipoadm)==0){ $con=">"; $fil=0;}
+		if (($tipoadm)==1){ $con="=";  $fil=1;}
+		if (($tipoadm)==2){ $con="=";  $fil=2;}
+        $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$tipo=$request->get('tipodoc');
+        $query=trim($request->get('searchText'));
+        $query2=trim($request->get('searchText2'));
+			if (($query)==""){$query=$corteHoy; }
+			$query2 = date_create($query2);
+            date_add($query2, date_interval_create_from_date_string('1 day'));
+            $query2=date_format($query2, 'Y-m-d');
+            $datos=DB::table('notasadmp as c')
+            ->join ('proveedores as p', 'p.idproveedor','=','c.idproveedor')			
+			->select ('c.*','p.nombre','p.rif')
+			->where('c.tipo',$con,$fil)
+            ->whereBetween('c.fecha', [$query, $query2])
+            ->get();
+			//dd($datos);
+		$query2=date("Y-m-d",strtotime($query2."- 1 days"));
+        return view('reportes.notasadm.proveedores.index',["datos"=>$datos,"empresa"=>$empresa,"searchText"=>$query,"searchText2"=>$query2]);    
+		} else { 
+			return view("reportes.mensajes.noautorizado");
+			}  
+  }
 }

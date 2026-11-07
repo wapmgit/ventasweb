@@ -1,7 +1,7 @@
 @extends ('layouts.master')
 @section ('contenido')
 <div class="row">
-		@include('reportes.clientes.notasadm.search')
+		@include('reportes.notasadm.proveedores.search')
 </div>
 <?php $acum=0;$efe=0;$deb=0;$che=0;$tra=0;$ctra=0;$cche=0; $cdeb=0;
 $cefe=0;?>
@@ -64,7 +64,7 @@ $cefe=0;?>
 		</div>
               <!-- info row -->
 			<div class="row invoice-info">
-			@include('reportes.clientes.notasadm.empresa')
+			@include('reportes.notasadm.proveedores.empresa')
               </div>
               <!-- /.row -->
               <!-- Table row -->
@@ -85,7 +85,7 @@ $cefe=0;?>
 							<tr> <?php $count++; ?> 
 							<td>{{ $q->rif}} {{ $q->nombre}}</td>
 							<td>@php if($q->tipo==1){ echo "N/D"; $tnd=$tnd+$q->monto; $tndsaldo=$tndsaldo+$q->pendiente;}else{ echo "N/C"; $tnc=$tnc+$q->monto; $tncsaldo=$tncsaldo+$q->pendiente;} @endphp</td>
-							<td>00-{{$q->ndocumento}} @php if($q->pordevolucion==1){ echo "*"; } @endphp</td>
+							<td>00-{{$q->ndocumento}}</td>
 							<td>{{$q->referencia}} </td>
 							<td><?php echo date("d-m-Y",strtotime($q->fecha)); ?></td>
 							<td><?php $tmonto=($tmonto+$q->monto);
@@ -95,7 +95,7 @@ $cefe=0;?>
 							<td><?php  echo number_format($q->pendiente, 2,',','.')." $"; ?></td>	
 							</tr>
 						@endforeach
-						<tr><td><strong>Total</strong> "(*) por devolucion"</td>
+						<tr><td><strong>Total</strong></td>
 						<td  colspan="3"><strong><?php echo "N/D ".number_format( $tnd, 2,',','.')."-> Saldo ".number_format( $tndsaldo, 2,',','.'); ?></strong></td>
 
 						<td colspan="3"><strong><?php echo "N/C ".number_format( $tnc, 2,',','.')."-> Saldo ".number_format( $tncsaldo, 2,',','.'); ?></strong></td></tr>
@@ -117,7 +117,7 @@ $cefe=0;?>
 			$(".filap1").remove();
 			  document.getElementById('imprimir').style.display="none";
 			  window.print(); 
-			  window.location="{{route('resumengastos')}}";
+			  window.location="{{route('repnotadmp')}}";
 		});
 	});
 	</script>
