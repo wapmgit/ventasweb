@@ -251,6 +251,9 @@ Route::get('ventasdivisas', [ReportesventasController::class, 'ventasdivisas'])-
 Route::get('reportecxcvencida', [ReportesventasController::class, 'reportecxcvencida'])->name('reportecxcvencida');
 Route::get('resumendiario', [ReportesventasController::class, 'resumendiario'])->name('resumendiario');
 Route::get('ventasproveedor', [ReportesventasController::class, 'ventasproveedor'])->name('ventasproveedor');
+Route::get('repnotadmc', [ReportesventasController::class, 'repnotadmc'])->name('repnotadmc');
+
+
 //informes compras
 Route::get('resumencompras', [ReportescomprasController::class, 'compras'])->name('resumencompras');
 Route::get('resumengastos', [ReportescomprasController::class, 'gastos'])->name('resumengastos');

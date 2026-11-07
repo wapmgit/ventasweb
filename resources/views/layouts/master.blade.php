@@ -470,6 +470,12 @@
                   <p>Detalle de Ingresos</p>
                 </a>
               </li>
+			  <li class="nav-item">
+                <a href="{{route('repnotadmc')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p><small>Rep. Not. Administrativas</small></p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a href="{{route('reportecxc')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
@@ -506,7 +512,7 @@
                   <p>Ventas de un Articulo</p>
                 </a>
               </li>
-			  			  <li class="nav-item">
+				<li class="nav-item">
                 <a href="{{route('ventasproveedor')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Ventas Por Proveedor</p>
