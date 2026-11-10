@@ -29,7 +29,7 @@
               
 				</div>
 					<div class="col-sm-3 invoice-col" align="center">
-				<img src="{{asset('dist/img/logoempresa.png')}}" width="50%" height="80%" title="NKS">
+				<img src="{{ asset('dist/img/'.$empresa->logo)}}" width="50%" height="80%" title="NKS">
 				</div>
               </div>
 		<div class="row">

@@ -87,6 +87,7 @@ $idv=0;
 				<input type="text" id="barcode" name="codigo" class="input-precio-visor" placeholder="Codigo de Barra">	
 				<input type="hidden" value="{{$empresa->tc}}" id="valortasa" name="tc"></input>
 				<input type="hidden" value="{{$empresa->peso}}" id="valortasap" name="peso"></input>	
+				<input type="hidden" value="{{$empresa->preciovi}}" id="tprecio" ></input>	
 				</form> 
 			</div>
 		<hr>
@@ -155,6 +156,7 @@ let barcodeTimer;
 const barcodeInput = document.getElementById('barcode'); 
 var 	bs= $("#valortasa").val();
 var  	ps= $("#valortasap").val();
+var  	tprecio= $("#tprecio").val();
 barcodeInput.addEventListener('input', function(e) {
 
     clearTimeout(barcodeTimer);
@@ -173,7 +175,12 @@ barcodeInput.addEventListener('input', function(e) {
 		  console.log(existemp);
       if (existemp > 0){
             var nombre=resultado2[0].nombre;
-          var price=resultado2[0].precio1;  
+          var price1=resultado2[0].precio1;  
+          var price2=resultado2[0].precio2;  
+          var price3=resultado2[0].precio3;
+if(tprecio=="precio1"){ price=price1}		  
+if(tprecio=="precio2"){ price=price2}		  
+if(tprecio=="precio3"){ price=price3}		  
           var imagen=resultado2[0].imagen;  
 		   $("#nameart").html(nombre); 
 		   $("#muestramonto").html(price); 

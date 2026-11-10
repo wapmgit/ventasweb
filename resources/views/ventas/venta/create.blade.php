@@ -794,7 +794,6 @@ function trunc (x, posiciones = 0) {
 	  $("#pcantidad").val(datosarticulo[7]);
       $("#pdescuento").val("0");	
 	  agregar();
-			
 		}else{
       tipo_precio=document.getElementById('id_cliente').value.split('_');
       tpc= tipo_precio[1];
@@ -955,8 +954,10 @@ function trunc (x, posiciones = 0) {
 				$('#detalles').prepend(fila);			
 				$("#pidarticulo").val('5000');
 				$("#pidarticulo").selectpicker('refresh');
-				$("#pidarticulo").selectpicker('toggle');
-				
+				setTimeout(function() {
+    $('#pidarticulo').selectpicker('toggle'); 
+}, 100);
+				//$("#pidarticulo").selectpicker('toggle');				
 				//document.getElementById("pidarticulo").focus();
 
 						if(mserial==1){ 

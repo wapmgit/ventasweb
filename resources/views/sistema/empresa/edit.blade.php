@@ -276,6 +276,20 @@
                     </td>
 				</tr>
 				<tr>
+                    <td>Precio Para Visor
+					</div></td>     
+                    <td>
+						<div class="form-group">
+							<select name="preciovisor" class="form-control">
+							<option value="precio1" <?php if($empresa->preciovi=="precio1"){ echo "Selected";} ?>>Precio 1</option>
+							<option value="precio2" <?php if($empresa->preciovi=="precio2"){ echo "Selected";} ?>>Precio 2</option>							
+							<option value="precio3" <?php if($empresa->preciovi=="precio3"){ echo "Selected";} ?>>Precio 3</option>							
+							</select>
+										
+						</div>
+                    </td>
+				</tr>
+				<tr>
                     <td>Formato Para Etiquetas de Articulos</br>
 					<label for="precio1"> P 1 </label> <input name="precioeti" type="radio" value="precio1" <?php if($empresa->precioeti=="precio1"){ echo "checked='checked'";} ?>>
 				<label for="precio2"> P 2 </label> <input name="precioeti" type="radio" value="precio2" <?php if($empresa->precioeti=="precio2"){ echo "checked='checked'";} ?>>

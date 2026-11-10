@@ -349,6 +349,7 @@ class SistemaController extends Controller
         $emp->formatofac=$request->get('formato');
         $emp->formatolp=$request->get('formatolp');
         $emp->precioeti=$request->get('precioeti');
+        $emp->preciovi=$request->get('preciovisor');
         $emp->formatoeti=$request->get('formatoeti');
         $emp->calc_util=$request->get('calc_util');
         $emp->calc_comi=$request->get('calc_comi');
