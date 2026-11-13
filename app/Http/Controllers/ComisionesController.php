@@ -139,6 +139,7 @@ $regla=DB::table('reglacomision')->get();
 		    $desde=trim($request->get('desde'));
 		    $hasta=trim($request->get('hasta'));
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
+		$rol=DB::table('roles')-> select('editreglacomi','generarcomi')->where('iduser','=',$request->user()->id)->first();	
 		if($empresa->calc_comi==1){
 		$venta = DB::table('venta as v')
     ->join('clientes as p', 'v.idcliente', '=', 'p.id_cliente')
@@ -203,7 +204,7 @@ $regla=DB::table('reglacomision')->get();
 		}
 			$detalle=[];
 			$regla=DB::table('reglacomision')->get();
-            return view("comisiones.comision.detalle",["regla"=>$regla,"detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
+            return view("comisiones.comision.detalle",["rol"=>$rol,"regla"=>$regla,"detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
 		public function vercomisiondetallada($id){
 
