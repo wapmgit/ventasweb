@@ -382,6 +382,7 @@ class SistemaController extends Controller
 		if($request->get('relaprecios')=="on"){$emp->relaprecios=1;}else{$emp->relaprecios=0;}
 		if($request->get('mp2')=="on"){$emp->mp2=1;}else{$emp->mp2=0;}
 		if($request->get('mp3')=="on"){$emp->mp3=1;}else{$emp->mp3=0;}
+		if($request->get('inclu_diascre_comi')=="on"){$emp->inclu_diascre_comi=1;}else{$emp->inclu_diascre_comi=0;}
         $emp->update();
 
 		 if ($tasa>0){

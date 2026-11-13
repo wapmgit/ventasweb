@@ -20,14 +20,14 @@ $acum=0; $acum2=0; $acumn=0; $count=0; $contdoc=0; $link=1; $p=1;  $count2=0;?>
 </div>
 	
 <div class="row">
-	 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+	 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
 
                  <div class="form-group">
                       <label for="proveedor">Nombre</label>
                    <p>{{$proveedor->rif}} {{$proveedor->nombre}}</p>
                     </div>
             </div> 
-			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+			<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
 
                  <div class="form-group">
                       <label for="proveedor">Telefono</label>

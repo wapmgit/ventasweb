@@ -119,6 +119,15 @@
 						</div>
                     </td>
 				</tr>
+				<tr>
+                    <td>Incluir Dias Credito Cliente en Regla Comision</td>
+                  
+                    <td class="text-right py-0 align-middle">
+   <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                      <input type="checkbox" name="inclu_diascre_comi" <?Php if($empresa->inclu_diascre_comi==1) echo "checked"; ?> class="custom-control-input" id="customSwitch6b">
+                      <label class="custom-control-label" for="customSwitch6b"></label>
+                    </div>
+                    </td>  </tr>
                   <tr>
                     <td>Usa forma Libre</td>
                   

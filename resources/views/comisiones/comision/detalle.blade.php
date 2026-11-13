@@ -41,7 +41,7 @@ $dias = (strtotime($fecha_inicial)-strtotime($fecha_final))/86400;
 $dias = abs($dias); $dias = floor($dias);
 return $dias;
 }
-$fecharecibo="";$pcomi=0; $comireal=0;
+$fecharecibo="";$pcomi=0; $comireal=0; $exisregla=0;$diascre=0; $diascreclie=0;
 ?>
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -74,14 +74,20 @@ $fecharecibo="";$pcomi=0; $comireal=0;
 					<td>{{$cat->tipo_comprobante}}:{{$cat->serie_comprobante}}-{{$cat->num_comprobante}}</td>
 					<td><?php echo date("d-m-Y",strtotime($cat->fecha_emi)); ?></td>
 					<td><?php echo date("d-m-Y",strtotime($cat->fecha_recibo)); ?></td>
-					<td><?php $diascre=(dias_pasados($cat->fecha_recibo,$cat->fecha_emi)-(int)$cat->diascre);
+					<td><?php 
+					if($empresa->inclu_diascre_comi==1){ $diascreclie=(int)$cat->diascre; } else{ $diascreclie=0;}
+					$exisregla=count($regla);
+					if($exisregla >0 ){
+								$diascre=(dias_pasados($cat->fecha_recibo,$cat->fecha_emi)-$diascreclie);
 								if($diascre<= 0){ ?>  <font style="color:#FF0000";><?php $pcomi=100; echo $diascre;?> </font> 
 								<?php }else {
-				?>@foreach($regla as $re)<?php if(($diascre >=$re->desde)and($diascre <= $re->hasta)){$pcomi=$re->porcentaje;}	
+								?>@foreach($regla as $re)<?php if(($diascre >=$re->desde)and($diascre <= $re->hasta)){$pcomi=$re->porcentaje;}	
 								?>@endforeach<?php
 								echo $diascre; }
-
-								?></td>
+					}else{
+					$pcomi=100; echo $diascre;
+					}
+					?></td>
 						<td><?php echo $pcomi ."%"; ?></td>
 					<td><?php echo number_format($cat->total_venta, 2,',','.')." $"; ?> </td>
 					<td><?php echo number_format($cat->montocomision, 2,',','.')." $"; ?> </td>	
