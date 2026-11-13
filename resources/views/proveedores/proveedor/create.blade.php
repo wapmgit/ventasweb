@@ -52,6 +52,18 @@
             	</select>
            </div>
 		</div>
+				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">	
+		         <div class="form-group">
+            <label for="direccion">Banco Pago</label>
+                <input type="text" name="bancopago" class="form-control" value="{{old('bancopago')}}" placeholder="Banco...">
+           </div>
+	</div>
+			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">	
+		         <div class="form-group">
+            <label for="direccion">N° de Cuenta/Pago Movil</label>
+                <input type="text" name="numerocuenta" class="form-control" value="{{old('numerocuenta')}}" placeholder="Cuenta...">
+           </div>
+	</div>
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">	
             <div class="form-group">
             	       <button class="btn btn-danger btn-sm" type="reset" id="btncancelar">Cancelar</button>
