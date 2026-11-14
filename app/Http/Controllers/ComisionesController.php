@@ -133,7 +133,7 @@ $regla=DB::table('reglacomision')->get();
 	
 	
 		public function detallecomisionfiltro(Request $request){
-		//dd($request);
+
 		$id=$request->get('vendedor');
 			$vendedor=DB::table('vendedores')-> where('id_vendedor','=',$id)->first();
 		    $desde=trim($request->get('desde'));
@@ -206,8 +206,8 @@ $regla=DB::table('reglacomision')->get();
 			$regla=DB::table('reglacomision')->get();
             return view("comisiones.comision.detalle",["rol"=>$rol,"regla"=>$regla,"detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
-		public function vercomisiondetallada($id){
-
+		public function vercomisiondetallada(request $request, $id){
+$rol=DB::table('roles')-> select('editreglacomi','generarcomi')->where('iduser','=',$request->user()->id)->first();	
 		$vendedor=DB::table('vendedores')-> where('id_vendedor','=',$id)->first();
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$venta = DB::table('venta as v')
@@ -261,7 +261,7 @@ $regla=DB::table('reglacomision')->get();
 			->where ('v.idvendedor','=',$id)
             ->get();
 				$regla=DB::table('reglacomision')->get();
-            return view("comisiones.comision.detalle",["regla"=>$regla,"detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
+            return view("comisiones.comision.detalle",["rol"=>$rol,"regla"=>$regla,"detalle"=>$detalle,"venta"=>$venta,"vendedor"=>$vendedor,"empresa"=>$empresa]);
 	}
 	public function store(Request $request){
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
