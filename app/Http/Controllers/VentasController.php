@@ -149,10 +149,15 @@ class VentasController extends Controller
     $venta->control=$request->get('control');
     $venta->tasa=$request->get('tc');
     $venta->total_venta=$request->get('total_venta');
-    $venta->descuento=$request->get('mdsctoventa');
-    $venta->base=$request->get('totalbase');
-    $venta->total_iva=$request->get('total_iva');
-    $venta->texe=$request->get('totalexe');
+    $venta->total_ventabs=$request->get('total_bs');
+    //$venta->descuento=$request->get('mdsctoventa',0);
+	$venta->descuento = $request->mdsctoventa ?? 0;
+    $venta->base=$request->get('base_bs');
+    $venta->base_us=$request->get('totalbase');
+    $venta->total_iva=$request->get('iva_bs');
+    $venta->iva_us=$request->get('total_iva');
+    $venta->texe=$request->get('exe_bs');
+    $venta->exe_us=$request->get('totalexe');
     $mytime=Carbon::now('America/Caracas');
     $venta->fecha_hora=$mytime->toDateTimeString();
 	$venta->fecha_emi=$request->get('fecha_emi');
@@ -468,106 +473,132 @@ public function devolucion(Request $request){
 		'fecha_emi' => $request->get('vfecha_emi')]);
 	return Redirect::to('showdevolucion/'.$request->get('vidventa'));      
     }
-	public function devoluparcial(Request $request){
-//dd($request);
-	   	DB::beginTransaction(); 
-		try{
-	$user=Auth::user()->name;
-	$vdolar=$request -> get('tasa');
-    $detalleventa=DetalleVentas::findOrFail($request->iddetalle);
-	$idar=$detalleventa->idarticulo;
-	$oldcomi=$detalleventa->mcomiarti;
-	$aux= $detalleventa->cantidad*$detalleventa->precio_venta;
-	$nc=($detalleventa->cantidad-$request -> get('cantidad'));
-	$newcomi=(($request -> get('cantidad')*$request -> get('precio'))*($detalleventa->pcomiarti/100));
-	$aux2=$request -> get('cantidad')*$request -> get('precio');	
-	$mnc=$aux-$aux2;
-	$costo=$detalleventa->costoarticulo;
+public function devoluparcial(Request $request) {
+   // DB::beginTransaction(); 
+   // try {
+        $user = Auth::user()->name;
+        $vdolar = floatval($request->get('tasa', 1));
+        
+        $detalleventa = DetalleVentas::findOrFail($request->iddetalle);
+        $idar = $detalleventa->idarticulo;
+        $oldcomi = $detalleventa->mcomiarti;
+        
+        $cantidadAnt = $detalleventa->cantidad;
+        $precioAnt = $detalleventa->precio_venta;
+        
+        $cantidadNew = floatval($request->get('cantidad'));
+        $precioNew = floatval($request->get('precio'));
 
-			$artcomi=Articulos::findOrFail($idar);
-				if($artcomi->iva>0){ 
-				$baseant=truncar((($detalleventa->precio_venta)/(($artcomi->iva/100)+1)), 2);
-				$auxb=truncar(($baseant*$vdolar),2);
-				$baseant=truncar(($detalleventa->cantidad*$auxb),2);	
-				$subivant=truncar(($baseant*($artcomi->iva/100)), 2);	
-				$subivant=truncar($subivant,2);
-		
-				$basenew=truncar((($request -> get('precio'))/(($artcomi->iva/100)+1)), 2);
-				$auxbnew=truncar(($basenew*$vdolar),2);
-				$basenew=truncar(($request -> get('cantidad')*$auxbnew),2);	
-				$subivanew=truncar(($basenew*($artcomi->iva/100)), 2);	
-				$subivanew=truncar($subivanew,2);
+        // Totales anteriores y nuevos de la línea (EN DÓLARES)
+        $auxAnt = $cantidadAnt * $precioAnt;
+        $auxNew = $cantidadNew * $precioNew;
+        
+        $nc = ($cantidadAnt - $cantidadNew);
+        $newcomi = (($cantidadNew * $precioNew) * ($detalleventa->pcomiarti / 100));
+        $mnc = $auxAnt - $auxNew; // Monto de la nota de crédito en dólares
+        $costo = $detalleventa->costoarticulo;
 
-					$subexeant=0;
-					$subexenew=0;
-			}else{
-					$subivant=$subivanew=$basenew=$baseant=0;
-					$subexeant=truncar($detalleventa->cantidad*(($detalleventa->precio_venta*$vdolar)),2);
-					$subexenew=truncar($request -> get('cantidad')*(($request -> get('precio')*$vdolar)),2);
+        $artcomi = Articulos::findOrFail($idar);
 
-			}				
-					$aventa=Ventas::findOrFail($request -> get('idventa'));
-					$abono=$aventa->total_venta-$aventa->saldo;
-					$saldov=$aventa->saldo;
-					$aventa->base=(($aventa->base-$baseant)+$basenew);
-					$aventa->total_iva=(($aventa->total_iva-$subivant)+$subivanew);
-					$aventa->texe=(($aventa->texe-$subexeant)+$subexenew);
-					$descuento=$aventa->descuento;
-					$aventa->total_venta=(($aventa->total_venta-($aux+$descuento))+$aux2);
-					$aventa->total_pagar=0;	
-					if($abono==0){
-					$aventa->saldo=(($aventa->saldo-($aux+$descuento))+$aux2);
-					}else{
-						$aventa->saldo=$aventa->total_venta-$abono;
-					}										
-					$aventa->montocomision=($aventa->montocomision-$oldcomi)+($newcomi);						
-					$aventa->update();	
-		
-		$detalleventa->cantidad=$request -> get('cantidad');
-		$detalleventa->mcomiarti=$newcomi;
-		$detalleventa->precio_venta=$request -> get('precio');
-		$detalleventa->update();
-		//actualizo stock
-		$artcomi->stock=($artcomi->stock+($nc*$detalleventa->cntgrp));
-		$artcomi->update();
-				
-		$kar=new Kardex;
-		$mytime=Carbon::now('America/Caracas');
-		$kar->fecha=$mytime->toDateTimeString();
-		$kar->documento="DEVP-".$request -> get('idventa');
-		$kar->idarticulo=$idar;
-		$kar->cantidad=$nc*$detalleventa->cntgrp;
-		$kar->costo=$costo;
-		$kar->tipo=1; 
-		$kar->user=$user;	
-		 $kar->save();	
-		 		if($request -> get('nc')=="on"){
-	$contador=DB::table('notasadm')->select(DB::raw('count(ndocumento) as doc'))->where('tipo','=',2)->first();
+        // --- CÁLCULOS FISCALES ESTRICTAMENTE EN DÓLARES ---
+        if ($artcomi->iva > 0) {
+            $alicuota = floatval($artcomi->iva);
 
-   if ($contador==NULL){$numero=0;}else{$numero=$contador->doc;}
-		$paciente=new Notasadm;
-        $paciente->tipo=2;
-        $paciente->ndocumento=$numero+1;
-        $paciente->idcliente= $aventa->idcliente;
-        $paciente->descripcion="N/C por Devolucion";
-        $paciente->referencia=$aventa->tipo_comprobante." ".$aventa->serie_comprobante." ".$aventa->num_comprobante;
-        $paciente->monto=$mnc;
-		$mytime=Carbon::now('America/Caracas');
-		$paciente->fecha=$mytime->toDateTimeString();
-        $paciente->pendiente=$mnc;
-        $paciente->pordevolucion=1;
-        $paciente->iddocnc=$request->get('idventa');
-		$paciente->usuario=Auth::user()->name;
-        $paciente->save();
-			}    
- DB::commit();
-}
-catch(\Exception $e)
-{
-    DB::rollback();
-} 
+            // Base e IVA Anterior (Dólares)
+            $baseant = round($auxAnt / (1 + ($alicuota / 100)), 2);
+            $subivant = round($auxAnt - $baseant, 2);
 
-  return Redirect::to('showdevolucion/'.$request -> get('idventa'));
+            // Base e IVA Nuevo (Dólares)
+            $basenew = round($auxNew / (1 + ($alicuota / 100)), 2);
+            $subivanew = round($auxNew - $basenew, 2);
+
+            $subexeant = 0;
+            $subexenew = 0;
+        } else {
+            $subivant = $subivanew = $basenew = $baseant = 0;
+            $subexeant = round($auxAnt, 2);
+            $subexenew = round($auxNew, 2);
+        }               
+		$baseBs  = round($basenew * $vdolar, 2);
+		$baseantBs  = round($baseant * $vdolar, 2);
+		$ivaBs   = round($subivanew * $vdolar, 2);
+		$ivaantBs   = round($subivant * $vdolar, 2);
+		$exeBs   = round($subexenew * $vdolar, 2);
+		$exeantBs   = round($subexeant * $vdolar, 2);
+        $aventa = Ventas::findOrFail($request->get('idventa'));
+        $abono = $aventa->total_venta - $aventa->saldo;
+        
+        // --- ACTUALIZACIÓN DE ACUMULADORES EN LA VENTA (DÓLARES) ---
+        $aventa->base = round(($aventa->base  - $baseantBs) + $baseBs, 2);
+        $aventa->base_us = round(($aventa->base_us - $baseant) + $basenew, 2);
+        $aventa->total_iva = round(($aventa->total_iva  - $ivaantBs ) + $ivaBs, 2);
+        $aventa->iva_us = round(($aventa->iva_us - $subivant) + $subivanew, 2);
+        $aventa->texe = round(($aventa->texe - $exeantBs ) + $exeBs, 2);        
+        $aventa->exe_us = round(($aventa->exe_us - $subexeant) + $subexenew, 2);        
+        $descuento = $aventa->descuento;
+        $aventa->total_venta = round(($aventa->total_venta - ($auxAnt + $descuento)) + $auxNew, 2);
+        $aventa->total_pagar = 0; 
+
+        if ($abono == 0) {
+            $aventa->saldo = round(($aventa->saldo - ($auxAnt + $descuento)) + $auxNew, 2);
+        } else {
+            $aventa->saldo = round($aventa->total_venta - $abono, 2);
+        }                                    
+
+        $aventa->montocomision = round(($aventa->montocomision - $oldcomi) + $newcomi, 2);  
+
+		$aventa->total_ventabs = round($aventa->total_venta * $vdolar, 2);		
+        $aventa->update();  
+    
+        // Actualizar detalle de venta
+        $detalleventa->cantidad = $cantidadNew;
+        $detalleventa->mcomiarti = $newcomi;
+        $detalleventa->precio_venta = $precioNew;
+        $detalleventa->update();
+
+        // Actualizar stock
+        $artcomi->stock = ($artcomi->stock + ($nc * $detalleventa->cntgrp));
+        $artcomi->update();
+                
+        // Registrar en Kardex
+        $kar = new Kardex;
+        $mytime = Carbon::now('America/Caracas');
+        $kar->fecha = $mytime->toDateTimeString();
+        $kar->documento = "DEVP-" . $request->get('idventa');
+        $kar->idarticulo = $idar;
+        $kar->cantidad = $nc * $detalleventa->cntgrp;
+        $kar->costo = $costo;
+        $kar->tipo = 1; 
+        $kar->user = $user;  
+        $kar->save();   
+
+        // Generar Nota de Crédito si aplica
+        if ($request->get('nc') == "on") {
+            $contador = DB::table('notasadm')->select(DB::raw('count(ndocumento) as doc'))->where('tipo', '=', 2)->first();
+            $numero = ($contador == NULL) ? 0 : $contador->doc;
+
+            $paciente = new Notasadm;
+            $paciente->tipo = 2;
+            $paciente->ndocumento = $numero + 1;
+            $paciente->idcliente = $aventa->idcliente;
+            $paciente->descripcion = "N/C por Devolucion";
+            $paciente->referencia = $aventa->tipo_comprobante . " " . $aventa->serie_comprobante . " " . $aventa->num_comprobante;
+            $paciente->monto = $mnc; // Monto en dólares (o el equivalente si tu BD maneja divisa)
+            $paciente->fecha = $mytime->toDateTimeString();
+            $paciente->pendiente = $mnc;
+            $paciente->pordevolucion = 1;
+            $paciente->iddocnc = $request->get('idventa');
+            $paciente->usuario = Auth::user()->name;
+            $paciente->save();
+        }     
+
+    /*    DB::commit();
+    } catch (\Exception $e) {
+        DB::rollback();
+        // Opcional: Log::error($e->getMessage()); para depurar si algo falla
+    }   */
+
+    return Redirect::to('showdevolucion/' . $request->get('idventa'));
 }
 public function recibo($id){
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();

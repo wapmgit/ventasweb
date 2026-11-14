@@ -97,12 +97,16 @@ class ApartadoController extends Controller
 		$venta->dias=$request->get('dias');
 		$venta->idvendedor=$request->get('nvendedor');
 		$venta->num_comprobante=($numero+1);
-		$venta->control=$request->get('control');
-		$venta->tasa=$request->get('tc');
+		$venta->control=$request->get('control');		
 		$venta->total_venta=$request->get('total_venta');
-		$venta->base=$request->get('totalbase');
-		$venta->total_iva=$request->get('total_iva');
-		$venta->texe=$request->get('totalexe');
+		$venta->total_ventabs=$request->get('total_bs');
+		$venta->tasa=$request->get('tasa');
+		$venta->base=$request->get('base_bs');
+		$venta->base_us=$request->get('totalbase');
+		$venta->total_iva=$request->get('iva_bs');
+		$venta->iva_us=$request->get('total_iva');
+		$venta->texe=$request->get('exe_bs');
+		$venta->exe_us=$request->get('totalexe');		
 		$mytime=Carbon::now('America/Caracas');
 		$venta->fecha_hora=$mytime->toDateTimeString();
 		$venta->fecha_emi=$request->get('fecha_emi');
@@ -271,15 +275,16 @@ catch(\Exception $e)
 			$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 			$venta=DB::table('venta as v')
             -> join ('clientes as p','v.idcliente','=','p.id_cliente')
-            -> select ('v.idventa','v.tasa','v.fecha_hora','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu')
+            -> leftjoin ('devolucion as dev','dev.idventa','=','v.idventa')
+            -> select ('v.descuento','v.fecha_emi','v.idventa','v.tasa','v.fecha_hora','p.nombre','p.cedula','p.telefono','p.direccion','v.control','v.tipo_comprobante','v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta','v.devolu','dev.fecha_hora as fechadev','dev.user as userdev')
             ->where ('v.idventa','=',$id)
             -> first();
-            $detalles=DB::table('detalle_venta as dv')
+
+			 $detalles=DB::table('detalle_venta as dv')
             -> join('articulos as a','dv.idarticulo','=','a.idarticulo')
-            -> select('a.idarticulo','a.nombre as articulo','a.iva','a.unidad','dv.cantidad','dv.descuento','dv.precio_venta')
+            -> select('a.peso','a.'.$empresa->codart.' as codigo','a.idarticulo','a.nombre as articulo','a.iva','dv.cntgrp','dv.unidad','dv.cantidad','dv.descuento','dv.precio','dv.precio_venta')
             -> where ('dv.idventa','=',$id)
             ->get();
-			
 			
 			$recibo=DB::table('recibos as r')-> where ('r.idapartado','=',$id)
             ->get();
@@ -287,7 +292,7 @@ catch(\Exception $e)
             ->get();
 			$retencion=DB::table('retencionventas')-> where ('idFactura','=',$id)
             ->first();
-			//dd($venta);
+			
 			$recibonc=DB::table('mov_notas as mov')-> where ('mov.iddoc','=',$id)-> where ('mov.tipodoc','=',"FAC")
             ->get();
 
@@ -458,14 +463,19 @@ catch(\Exception $e)
 		$venta->control=$request->get('control');
 		$venta->num_comprobante=($numero+1);
 		$venta->total_venta=$dpedido->total_venta-$dpedido->recargo;
+		$venta->total_ventabs=$dpedido->total_ventabs;
 		$venta->tasa=$request->get('tasa');
-		$venta->base=$request->get('total_base');
-		$venta->total_iva=$request->get('total_iva');
-		$venta->texe=$request->get('texe');
+		$venta->base=$dpedido->base;
+		$venta->base_us=$dpedido->base_us;
+		$venta->total_iva=$dpedido->total_iva;
+		$venta->iva_us=$dpedido->iva_us;
+		$venta->texe=$dpedido->texe;
+		$venta->exe_us=$dpedido->exe_us;
 		$venta->idvendedor=$dpedido->idvendedor;
 		$mytime=Carbon::now('America/Caracas');
 		$venta->fecha_hora=$mytime->toDateTimeString();
 		$venta->fecha_emi=$request->get('fecha_emi');
+		$venta->lastrecargo=$request->get('fecha_emi');
 		$venta->impuesto='16';
 			if(($request->get('convertir')=="on")){
 			$venta->flibre=1;

@@ -54,6 +54,8 @@ $this->middleware('auth');
         $proveedor->telefono=$request->get('telefono');
         $proveedor->contacto=$request->get('contacto');
         $proveedor->tpersona=$request->get('tpersona');
+		$proveedor->bancopago=$request->get('bancopago');
+		$proveedor->numerocuenta=$request->get('numerocuenta');
 		$proveedor->estatus='A';       
 		$mytime=Carbon::now('America/Caracas');
 		$proveedor->creado=$mytime->toDateTimeString();		
@@ -103,6 +105,8 @@ $this->middleware('auth');
         $proveedor->telefono=$request->get('telefono');
         $proveedor->contacto=$request->get('contacto');
 		$proveedor->tpersona=$request->get('tpersona');
+		$proveedor->bancopago=$request->get('bancopago');
+		$proveedor->numerocuenta=$request->get('numerocuenta');
         $proveedor->update();
 		return Redirect::to('proveedores');
 	}

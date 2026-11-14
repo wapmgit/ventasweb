@@ -59,9 +59,12 @@ role="dialog" tabindex="-1" id="modalpedido">
 		
 			<div class="col-lg-6 col-sm-6 col-md-6 col-xs-12">
 			           <div class="form-group">
-							<input type="hidden" value="<?php echo $acumexe; ?>" name="texe" >
-						  <input type="hidden" value="<?php echo $acumiva; ?>" name="total_iva" >
-						  <input type="hidden" value="<?php echo $acumbase; ?>" name="total_base" >
+							<input type="hidden" value="<?php echo $acumexebs; ?>" name="texe" >
+						  <input type="hidden" value="<?php echo $acumivabs; ?>" name="total_iva" >
+						  <input type="hidden" value="<?php echo $acumbasebs; ?>" name="total_base" >
+						  <input type="hidden" value="<?php echo $acumexe; ?>" name="texe_us" >
+						  <input type="hidden" value="<?php echo $acumiva; ?>" name="total_iva_us" >
+						  <input type="hidden" value="<?php echo $acumbase; ?>" name="total_base_us" >
 						  <input type="hidden" value=" {{$empresa->tc}}" name="tasa">
            </div>
 		   </div>

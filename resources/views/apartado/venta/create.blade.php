@@ -176,9 +176,9 @@ $idv=0;
 						  <tfoot style="background-color: #A9D0F5"> 
 						  <th colspan="2">Total items: <span id="item">0</span> </th>
 	
-							  <th>Exe:<input type="number" style="width: 70px" readonly  name="totalexe" id="texe">Bs</th>
-							  <th>Iva:<input type="number" style="width: 70px" readonly  name="total_iva" id="total_iva">Bs</th> 
-							  <th>BI:<input type="number" style="width: 80px" readonly name="totalbase" id="totalbase">Bs</th>
+							  <th>Exe:<input type="number" style="width: 70px" readonly  name="totalexe" id="texe">Bs<input type="hidden" readonly  name="exe_bs" id="exe_bs"></th>
+							  <th>Iva:<input type="number" style="width: 70px" readonly  name="total_iva" id="total_iva">Bs<input type="hidden"  readonly  name="iva_bs" id="iva_bs"></th> 
+							  <th>BI:<input type="number" style="width: 80px" readonly name="totalbase" id="totalbase">Bs<input type="hidden"  readonly name="base_bs" id="base_bs"><input type="hidden"  readonly name="total_bs" id="total_bs"></th>
 							  <th><h4 id="total">$.  0.00</h4><input type="hidden" name="total_venta" id="total_venta"></th>
 							 
 							  </tfoot>
@@ -365,6 +365,7 @@ $(document).ready(function(){
 		if($("#faccredito").val()==1){
 			document.getElementById('cfl').style.display="";
 		}
+		prepararMontosSeniat();
 		$("#pidpago").focus();
     })
 	$('#calculo').click(function(){
@@ -394,21 +395,39 @@ $(document).ready(function(){
 		$("#filapago" + i).remove(); acumpago[i]=0;}
 	})
    $('#btncancelar').click(function(){	
-   	totalexe=0;
-	totaliva=0;totalbase=0;
-		total=0; 
-		$("#total").html(" $  : " + total.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' }));			  
-	    $("#muestramonto").html(" $  : " + total.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' }));
-		$("#muestramontobs").html(" Bs  : " + total.toLocaleString('de-DE', { style: 'decimal',  decimal: '2' }));       
-	   $("#divtotal").val(total);
-	    $("#resta").val(total);
-		$("#tdeuda").val(total);
-		$("#totalbase").val(total);
-		$("#totalexe").val(total);
-		$("#total_iva").val(total);
-        $("#total_venta").val(total);
-		for(var i=0;i<cont;i++){
-		$("#fila" + i).remove(); subtotal[i]=0; subiva[i]=0; base[i]=0; subexe[i]=0; }
+ 	$('#detalles tbody').empty();   
+		cont = 0;
+		contl = 0;
+
+		total = 0;
+		totalbase = 0;
+		totaliva = 0;
+		totalexe = 0;
+
+		base = [];
+		subiva = [];
+		subexe = [];
+		subtotal = [];
+		artventa = [];
+		stcventa = [];
+		var ceros = "0.00";
+		    // campos visibles
+    $("#total").html(" $ : " + ceros);          
+    $("#muestramonto").html(" $ : " + ceros);
+    $("#muestramontobs").html(" Bs : " + ceros);
+    
+    $("#divtotal").val(ceros);
+    $("#tdeuda").val(ceros);
+    $("#resta").val(ceros);
+    $("#texe").val(ceros);     
+    $("#totalbase").val(ceros);   
+    $("#total_iva").val(ceros);    
+    $("#total_venta").val(ceros);
+	$("#botones").hide();
+
+
+    // Opcional: un aviso visual sutil
+    toastr.warning('Operación cancelada. Documento reiniciado.');
     })
 	// registro el cliente nuevo
 	document.getElementById('Cenviar').style.display="none";
@@ -492,6 +511,8 @@ function trunc (x, posiciones = 0) {
 	totaliva=0;totalbase=0;
 	subtotal=[];
 	subiva=[];
+	artventa=[];
+	stcventa=[];
 	base=[];
 	subexe=[];
 	$("#botones").hide();
@@ -547,53 +568,71 @@ function trunc (x, posiciones = 0) {
       var cantidad=0; var stock=0;
         datosarticulo=document.getElementById('pidarticulo').value.split('_');
         idarticulo=datosarticulo[0];
-        articulo= $("#pidarticulo option:selected").text();
-        cantidad= $("#pcantidad").val();
-        descuento=$("#pdescuento").val();
-        precio_venta=$("#pprecio_venta").val();
+        articulo= $("#pidarticulo option:selected").text();		
+		 var cantidad = parseFloat($("#pcantidad").val()) || 0;
+		var descuento = parseFloat($("#pdescuento").val()) || 0;
+		var precio_venta = parseFloat($("#pprecio_venta").val()) || 0;
+	
         stock=$("#pstock").val();
-		costoarticulo=datosarticulo[4];
-		alicuota=datosarticulo[5];
-		mserial=datosarticulo[6];
 		cantidad=cantidad*1;
-        if (idarticulo!="" && cantidad != "" && cantidad > "0" &&  precio_venta!=""){
+	var costoarticulo = datosarticulo[4] || 0;
+    var alicuota = parseFloat(datosarticulo[5]) || 0;
+    var mserial = datosarticulo[6] || 0;
 
+        if (idarticulo!="" && cantidad != "" && cantidad > "0" &&  precio_venta!=""){
+  var subitem = cantidad * precio_venta;
+    var baseItem = 0;
+    var ivaItem = 0;
+    var exeItem = 0;
                 if (cantidad <= stock){
 						
-					if(alicuota>0){subexe[cont]=0;
-						base[cont]=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
-						auxc=parseFloat((base[cont]*vdolar));
-							if(Number.isInteger(auxc)==true){
-								auxb=auxc;
-								base[cont]=(cantidad*auxb);	
-								totalbase=(totalbase+base[cont]);							
-								}else{
-									auxb=trunc(auxc,2);	
-									base[cont]=trunc((cantidad*auxb),2);	
-									totalbase=trunc((totalbase+base[cont]),2);
-							}; 
-							
-						subiva[cont]=trunc((base[cont]*(alicuota/100)), 2);											
-						subiva[cont]=trunc(subiva[cont],2);
-						}else{					
-							auxd=(precio_venta*vdolar);
-							if(Number.isInteger(auxd)==true){
-							subexe[cont]=(precio_venta*vdolar*cantidad);
-							}else{subexe[cont]=trunc((auxd*cantidad),2);}
-							subiva[cont]=0; base[cont]=0; 
-						}				
+					 if (alicuota > 0) {
+        // Producto Gravado
+					var subtotalConIva = subitem;
+					var baseTotal = subtotalConIva / (1 + (alicuota / 100));
+					var ivaTotal = subtotalConIva - baseTotal;
 					
-				totaliva=trunc((totaliva+subiva[cont]),2);
-				totalexe=parseFloat(totalexe)+parseFloat(subexe[cont]);
-                subtotal[cont]=((cantidad*precio_venta)-descuento);
-                total=parseFloat(total)+parseFloat(subtotal[cont].toFixed(2));
+					base[cont] = baseTotal;
+					subiva[cont] = ivaTotal;
+					subexe[cont] = 0;
+				} else {
+					// Producto Exento
+					exeItem = subitem;
+					subexe[cont] = exeItem;
+					subiva[cont] = 0;
+				}					
+								
+			    // --- ACUMULADORES GLOBALES (EN DÓLARES) ---
+    totalbase = parseFloat($("#totalbase").val()) || 0;
+    totaliva = parseFloat($("#total_iva").val()) || 0;
+    totalexe = parseFloat($("#texe").val()) || 0;
+    var totalGeneral = parseFloat($("#total_venta").val()) || 0;
 
+    // Acumulamos con redondeo estricto a 2 decimales por línea
+    totalbase = parseFloat((totalbase + base[cont]).toFixed(2));
+    totaliva = parseFloat((totaliva + subiva[cont]).toFixed(2));
+    totalexe = parseFloat((totalexe + subexe[cont]).toFixed(2));
+    totalGeneral = parseFloat((totalGeneral + subitem).toFixed(2));
+
+    // --- BLINDAJE CONTRA CÉNTIMOS FANTASMAS ---
+    // Si la suma de Base + IVA + Exento difiere por 0.01 del Total General debido a los redondeos, 
+    // ajustamos ese céntimo directamente en el IVA acumulado para que la factura cuadre perfecta.
+    var sumaFiscales = parseFloat((totalbase + totaliva + totalexe).toFixed(2));
+    var diferencia = parseFloat((totalGeneral - sumaFiscales).toFixed(2));
+    if (diferencia !== 0) {
+        totaliva = parseFloat((totaliva + diferencia).toFixed(2));
+    }
+
+    subtotal[cont] = subitem;
+    artventa[cont] = cantidad;
+    stcventa[cont] = stock;
               var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="cantidad[]" readonly="true" style="width: 60px" value="'+cantidad+'"></td><td><input type="number" readonly="true"  style="width: 80px" name="precio_venta[]" value="'+precio_venta+'"></td><td><input type="number"  name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td>'+subtotal[cont].toFixed(2)+'<input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"></td></tr>';
 				cont++;
 				contl++;
               limpiar();
-		
-			  var auxmbs=(parseFloat(total)*parseFloat(vdolar));
+		 var auxmbs = totalGeneral * vdolar;
+			total=totalGeneral;
+
 				$("#total").html(" $  : " + total.toFixed(2));			  
 				$("#muestramonto").html(" $  : " + total.toFixed(2));
 				$("#muestramontobs").html(" Bs  : " + auxmbs.toFixed(2));
@@ -630,34 +669,73 @@ function trunc (x, posiciones = 0) {
 			
         }
     }
-    function eliminar(index){
-		nlineas=$("#nlineas").val();
-		vdolar=$("#valortasa").val();
-		totaliva=(parseFloat(totaliva) - parseFloat(subiva[index]));
-		totalbase=(parseFloat(totalbase) - parseFloat(base[index]));
-		totalexe=(parseFloat(totalexe) - parseFloat(subexe[index]));
-        total=(total-subtotal[index]).toFixed(2);
-        $("#total").html(total);
-		//alert(totalexe);
-        $("#texe").val(totalexe);
-        $("#divtotal").val(total);
-		$("#resta").val(total);
-		var mon_tasad=(total);
-		$("#muestramonto").html("$  : " + mon_tasad.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' }));
-		$("#muestramontobs").html("Bs  : " + (mon_tasad*vdolar).toLocaleString('de-DE', { style: 'decimal',  decimal: '2' }));
-		if(total<0){total=0;}
-        $("#total_venta").val(total);
-        $("#total_iva").val(totaliva.toFixed(2));
-        $("#totalbase").val(totalbase.toFixed(2));
-        $("#tdeuda").val(total);
-        $("#fila" + index).remove();
-			contl--;
-		$("#item").html(contl);
-		if(parseFloat(contl) < parseFloat(nlineas)){
-				document.getElementById('bt_add').style.display="";
-				  }
-			evaluar();
 
+	   function eliminar(index) {
+        var nlineas = parseFloat($("#nlineas").val()) || 0;
+        var vdolar = parseFloat($("#valortasa").val()) || 0;
+
+        // 1. Obtener y asegurar los totales actuales como números puros
+        var currentTotalIva = parseFloat($("#total_iva").val()) || 0;
+        var currentTotalBase = parseFloat($("#totalbase").val()) || 0;
+        var currentTotalExe = parseFloat($("#texe").val()) || 0;
+        var currentTotalVenta = parseFloat($("#total_venta").val()) || 0;
+
+        // 2. Obtener los valores del ítem a eliminar de forma segura
+        var ivaItem = parseFloat(subiva[index]) || 0;
+        var baseItem = parseFloat(base[index]) || 0;
+        var exeItem = parseFloat(subexe[index]) || 0;
+        var subItem = parseFloat(subtotal[index]) || 0;
+
+        // 3. Restar los valores del ítem de forma matemática limpia
+        var totaliva = currentTotalIva - ivaItem;
+        var totalbase = currentTotalBase - baseItem;
+        var totalexe = currentTotalExe - exeItem;
+        var total = currentTotalVenta - subItem;
+
+        // Seguridad contra números negativos por imprecisiones flotantes
+        if (total < 0 || contl <= 1) {
+            total = 0;
+            totaliva = 0;
+            totalbase = 0;
+            totalexe = 0;
+            alert('Sin Articulos');
+
+        }
+
+        // 4. Pintar y actualizar inputs con .toFixed(2) exclusivamente al final
+        $("#total").html(total.toFixed(2));
+        $("#divtotal").val(total.toFixed(2));
+        $("#resta").val(total.toFixed(2));		
+
+        $("#muestramonto").html("$ : " + total.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        $("#muestramontobs").html("Bs : " + (total * vdolar).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+        $("#total_venta").val(total.toFixed(2));
+        
+        $("#total_iva").val(totaliva.toFixed(2)); 
+
+        $("#totalbase").val(totalbase.toFixed(2)); 
+
+        $("#texe").val(totalexe.toFixed(2)); 						
+
+        $("#tdeuda").val(total.toFixed(2));
+
+        // 5. Remover el elemento del DOM y ajustar contadores
+        $("#fila" + index).remove();
+        contl--;		
+        $("#item").html(contl);
+
+        if (contl < nlineas) {
+            document.getElementById('bt_add').style.display = "";
+        }
+
+        if (typeof evaluar === 'function') {
+            evaluar();
+        }
+        
+        $("#pidarticulo").val('5000');
+        $("#pidarticulo").selectpicker('refresh');
+        $("#pidarticulo").selectpicker('toggle');
     }
     function limpiar(){
 		$("#pidarticulo").val('1000');
@@ -836,6 +914,34 @@ function trunc (x, posiciones = 0) {
 				$("#pidarticulo").selectpicker('toggle');
 			});
 	});
+	function prepararMontosSeniat() {
+    var vdolar = parseFloat($("#valortasa").val()) || 0;
+    if (vdolar <= 0) {
+        alert("La tasa del dólar no puede ser cero.");
+        return false;
+    }
+
+    // 1. Tomamos los totales limpios que ya tienes en dólares
+    var totalBaseUSD  = parseFloat($("#totalbase").val()) || 0;
+    var totalIvaUSD   = parseFloat($("#total_iva").val()) || 0;
+    var totalExeUSD   = parseFloat($("#texe").val()) || 0;
+    var totalVentaUSD = parseFloat($("#total_venta").val()) || 0;
+
+    // 2. Los convertimos exactamente a Bolívares multiplicando una sola vez por la tasa
+    var totalBaseBs  = (totalBaseUSD * vdolar).toFixed(2);
+    var totalIvaBs   = (totalIvaUSD * vdolar).toFixed(2);
+    var totalExeBs   = (totalExeUSD * vdolar).toFixed(2);
+    var totalVentaBs = (totalVentaUSD * vdolar).toFixed(2);
+
+    // 3. Los asignas a los inputs que viajan por POST hacia PHP (para el SENIAT / Base de datos)
+    // (Asegúrate de tener estos inputs ocultos en tu formulario)
+    $("#base_bs").val(totalBaseBs);
+    $("#iva_bs").val(totalIvaBs);
+    $("#exe_bs").val(totalExeBs);
+    $("#total_bs").val(totalVentaBs);
+
+    return true; // Todo listo para enviar el formulario con éxito
+}
 </script>
 @endpush
 @endsection

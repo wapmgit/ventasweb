@@ -11,9 +11,9 @@ function add_ceros($numero,$ceros) {
   }
 return $insertar_ceros = $recibo.$numero;
 };
-$cntser=0;
-$cntline=$cntser=0;
+
 ?>
+<?php $des=$aux=$subbs=0; $acumsub=0; $cntline=$cntser=0; $acumpeso=0;?>
             <div class="invoice p-3 mb-3">
               <!-- title row -->
               <div class="row">
@@ -29,63 +29,81 @@ $cntline=$cntser=0;
               <div class="row invoice-info">
 			@include('ventas.venta.empresa')
               </div>
-<div class="row">
-	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-		<table width="100%"><tr><td width="30%"><strong>Cliente</strong></td><td width="20%"><strong>Telefono</strong></td><td width="30%"><strong>Direccion</strong></td><td width="20%"><strong># Control</strong></td>
-			</tr>
-			<tr><td>{{$venta->cedula}} -> {{$venta->nombre}}</td><td>{{$venta->telefono}}</td><td>{{$venta->direccion}}</td><td>{{$venta->control}}</td>
-			</tr>
-		</table></br>
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	<table width="100%" border="1">
+	<tr><td><small><b>DOCUMENTO:</small></b><?php  $idv=$venta->idventa; echo "NOT".add_ceros($idv,$ceros); ?></td><td><td><small><b>FECHA DE EMISION: </small></b><?php echo date("d-m-Y",strtotime($venta->fecha_emi)); ?></td><td><small><b>CONDICION: </small></b>{{$venta->estado}}</td></tr>
+	<tr><td colspan="4"><small><b>NOMBRE Y APELLIDO O RAZON SOCIAL: </b> </small>{{$venta->nombre}} <b>RIF: </b> {{$venta->cedula}}</td></tr>
+	<tr><td colspan="4"  width="50%"><small><b>DOMICILIO FISCAL: </b> {{$venta->direccion}} </small><b>TELF: </b> {{$venta->telefono}}</td></tr>
+	</table>
+	</br>
+		</div>
 	</div>
-
-</div>
 <div class ="row">
                                               
         <div class="col-md-12">
 	
-            <table id="detalles" width="100%">
-                      <thead style="background-color: #A9D0F5">                    
-                          <th width="7%">Codigo</th>
-                          <th>Articulo</th>
+    <table id="detalles" width="100%" border="1"  >
+                      <thead >                    
+							<th>Codigo</th>
+                          <th>Descripcion</th>
                           <th>Cantidad</th>
-                          <th>Unidad</th>
+                          <th>Unidad.</th>
                           <th>Precio</th>
+                          <th>Descto.</th>
+                          <th>P. Venta</th>                    
                           <th>Subtotal</th>
                       </thead>
-                      <tbody>
+                 <div style="position: absolute; top: 30%; left: 40%; transform: translate(-30%, -40%); width: 500px; opacity: 0.12; pointer-events: none;">
+                <img src="{{ asset('dist/img/'.$empresa->logo) }}" style="width: 100%;">
+            </div>
+                      <tbody >
                         @foreach($detalles as $det)
 						<?php $cntline++; 
-						if ($det->cantidad>0){?>
+						$acumsub=$acumsub+($det->precio_venta*$det->cantidad);
+						$acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);?>
                         <tr >
-						  <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
-                          <td>{{$det->articulo}} <?php if($det->iva>0){echo "(G)"; }else { echo "(E)"; } ?></td>
+						     <td>{{$det->codigo}}</td>
+                          <td>{{$det->articulo}}@if ($det->cntgrp>1) *{{$det->cntgrp}} UNDS @endif</td>
                           <td>{{$det->cantidad}}</td>
                           <td>{{$det->unidad}}</td>
-                          <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
-                          <td><?php echo number_format( ((($det->cantidad*$det->precio_venta)-$det->descuento)), 2,',','.'); ?></td>
-                        </tr>	<?php if ($seriales <> NULL){?>
+						     <td><?php echo number_format( ($det->precio), 2,',','.'); ?></td>
+                          <td>{{$det->descuento}}%</td>
+                          
+                          <td><?php echo number_format( ($det->precio_venta), 2,',','.'); ?></td>
+                          <td><?php echo number_format( ($det->precio_venta*$det->cantidad), 2,',','.'); ?></td>
+                        </tr>
+								<?php if ($seriales <> NULL){?>
 									@foreach($seriales as $ser) 
 									<?php  if ($det->idarticulo == $ser->idarticulo){ $cntser++;?>
 									<tr ><td colspan="6"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Chasis:</b> {{$ser->chasis}}
 									<b>Motor:</b> {{$ser->motor}}
 									<b>Color:</b> {{$ser->color}}
+									<b>Placa:</b> {{$ser->placa}}
 									<b>Año:</b> {{$ser->año}}</td>
 									</tr>  
 									<?php } ?>
 									@endforeach
 							<?php	} ?>
-
-							<?php } ?>
+						
                         @endforeach
-						<?php for($i=($cntline+$cntser);$i<30;$i++){ echo "<tr><td>&nbsp;</td></tr>"; }?>
+						<?php for($i=($cntline+$cntser);$i<16;$i++){ echo "<tr><td>&nbsp;</td></tr>"; }?>
+						 <?php if($venta->descuento >0){ ?>
+						 <tr><td colspan="8" align="right" ><b><font size="4"><?php echo "$ ".number_format(($acumsub), 2,',','.')." "; ?></b></font></td></tr>
+						 <tr><td colspan="8" align="right" ><b>Descto.<font size="3"><?php echo "$ ".number_format(($venta->descuento), 2,',','.')." "; ?></b></font></td></tr>
+						 
+						 <?php } ?>
                       </tbody>
-					       <tfoot>  
-						<th>Codigo <?php echo " :".number_format(($venta->total_venta), 2,',','.'); ?></th>						   
-                          <th colspan="4"><div align="right">TOTAL: </div></th>
-                          <th align="center"><b><font size="4"><?php echo " Bs ".number_format(($venta->total_venta), 2,',','.'); ?> </b></font></th>
-                          </tfoot>
             </table>
-	
+				  <table id="detalles" width="100%" border="1">
+				<tr>      
+					<td ><b>TOTAL: </b></td>
+					<td colspan="7" align="right"><b><font size="4"><?php echo "$ ".number_format(($acumsub-$venta->descuento), 2,',','.')." "; ?>&nbsp;</b></font></td>
+				</tr>
+				<?php if($empresa->printpeso ==1){?> 
+				<tr><td colspan="7"><b>Items:</b> <?php echo $cntline;  ?>, <b>Peso Total: </b> <?php echo $acumpeso; ?> Kg.</td></tr>
+			<?php } ?>
+			</table>
         </div>                   
 				<?php if(count($recibos)>0){?>
 				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"><h6 align="center">Desglose de pago</h6>

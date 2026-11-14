@@ -252,7 +252,7 @@ public function show(Request $request,$id){
 	return Redirect::to('showpedido/'.$request -> get('idventa'));
 	}
 	function facturar(Request $request){
-	//	dd($request);
+		//dd($request);
 		$mcomi=0;
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 		$user=Auth::user()->name;
@@ -274,8 +274,12 @@ public function show(Request $request,$id){
 		$venta->control=$request->get('control');
 		$venta->num_comprobante=($numero+1);
 		$venta->total_venta=$dpedido->total_venta;
+		$venta->total_ventabs=$request->get('total_base')+$request->get('texe')+$request->get('total_iva');
 		$venta->tasa=$request->get('tasa');
 		$venta->base=$request->get('total_base');
+		$venta->base_us=$request->get('total_base_us');
+		$venta->iva_us=$request->get('total_iva_us');
+		$venta->exe_us=$request->get('texe_us');
 		$venta->total_iva=$request->get('total_iva');
 		$venta->texe=$request->get('texe');
 		$venta->idvendedor=$dpedido->idvendedor;

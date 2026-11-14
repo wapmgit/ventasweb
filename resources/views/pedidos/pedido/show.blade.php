@@ -1,7 +1,7 @@
 @extends ('layouts.master')
 @section ('contenido')
 
-<?php $aux=0; $ceros=5; $acumexe=0; $exe=0;$acumiva=0; $fserver=date('Y-m-d'); $nstock=0; $acumitem=0;
+<?php $aux=0; $ceros=5; $acumexe=0; $subexe	= 0; $exe=0;$acumiva=0; $fserver=date('Y-m-d'); $nstock=0; $acumitem=0;
 function add_ceros($numero,$ceros) {
   $numero=$numero+1;
 $digitos=strlen($numero);
@@ -16,7 +16,7 @@ function truncar($numero, $digitos)
     $truncar = 10**$digitos;
     return intval($numero * $truncar) / $truncar;
 }
-$tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;$cxccli=0;$acumpeso=0;
+$tasa=0;$acumsub=0;$acumiva=0; $acumbase=0; $auxf=0;$cxccli=0;$acumpeso=$acumexebs=$acumivabs=$acumbasebs=$acumtventa=0;
 if (is_null($cxc)) {
     $cxccli=0;
 }else{ $cxccli= $cxc->monto; }
@@ -70,7 +70,7 @@ if (is_null($cxc)) {
                       </thead>
                       <tbody>
                         @foreach($detalles as $det)										
-						<?php 
+						<?php $subitem=0;
 						$acumpeso=$acumpeso+(($det->cantidad*$det->cntgrp)*$det->peso);
 						$nstock=$det->stock/$det->cntgrp;
 						if ($det->cantidad>$nstock){ $auxf=1;}?>
@@ -79,7 +79,9 @@ if (is_null($cxc)) {
 						} else{?> <a href="" data-target="#modaldevolucion-{{$det->idarticulo}}" data-toggle="modal"><i class="fa fa-fw fa-check-circle fa-lg"></i></a><?php  } ?>
 						@else <i class="fa fa-fw fa-lock"></i> @endif</td>
                           <td> {{$det->articulo}} @if($det->cntgrp>1) *{{$det->cntgrp}}UND  @endif
-						  <?php if($det->iva>0){echo "(G)"; 
+						  <?php 
+						  /*
+						  if($det->iva>0){echo "(G)"; 
 						  $aux=($det->precio_venta/(($det->iva/100)+1));
 						  $aux=truncar($aux,2);
 						  $cto=truncar(($aux*$tasa),2);						
@@ -95,7 +97,31 @@ if (is_null($cxc)) {
 						    $subbs=($cto*$det->cantidad);
 						   $acumsub=$acumsub+$subbs;
 						   $acumexe=$acumexe+$subbs;
-						  } ?>
+						  } */ 
+							$subitem = $det->cantidad * $det->precio_venta;
+						     if ($det->iva > 0) { echo "(G)"; 
+								$alicuota = floatval($det->iva);
+
+								// Base e IVA Anterior (Dólares)
+								$base = round($subitem / (1 + ($alicuota / 100)), 2);
+								$subiva = round($subitem - $base, 2);
+								$subexe	= 0;
+
+							} else {  echo "(E)";
+								$subiva =  $base = 0;
+								$subexe = round($subitem, 2);
+							}  
+						$baseBs  = round($base * $tasa, 2);
+						$subivaBs   = round($subiva * $tasa, 2);
+						$exeBs   = round($subexe * $tasa, 2);
+							$acumbase=round($acumbase+  $base,2);
+							$acumbasebs=round($acumbasebs+  $baseBs,2);
+							$acumiva=round($acumiva+$subiva,2);
+							$acumivabs=round($acumivabs+$subivaBs,2);
+							$acumexe=round($acumexe+$subexe,2);
+							$acumexebs=round($acumexebs+$exeBs,2);
+							$acumtventa=round($acumtventa+$subitem,2);
+						  ?>
 						  </td>
                           <td> <?php
 						  if(($det->cantidad>0)and ($venta->devolu==0)){ $acumitem++;
@@ -108,7 +134,7 @@ if (is_null($cxc)) {
                           <td>{{$det->precio}}</td>
                           <td>{{$det->descuento}}</td>
                           <td><?php echo number_format( $det->precio_venta, 2,',','.'); ?></td>
-                          <td><?php echo number_format( ($det->cantidad*$det->precio_venta), 2,',','.'); ?></td>
+                          <td><?php echo number_format( ($subitem), 2,',','.'); ?></td>
                         </tr>
 						@include('pedidos.pedido.modaldevolucion')
                         @endforeach
@@ -117,10 +143,10 @@ if (is_null($cxc)) {
 						  <th colspan="3">Total: {{$acumitem}} Items. Peso -> <?php echo number_format($acumpeso, 2,',','.'); ?></th>
 						  <th class="filaoc"></th>
 							  <th class="filaoc"></th>
-							  <th class="filaoc">Exe:<input type="number" style="width: 70px" readonly  name="totalexe" value="<?php echo $acumexe; ?>"  id="texe">Bs</th>
-							  <th class="filaoc">Iva:<input type="number" style="width: 70px" readonly  name="total_iva" value="<?php echo $acumiva; ?>" id="total_iva">Bs</th> 
-							  <th class="filaoc">BI:<input type="number" style="width: 80px" readonly name="totalbase" value="<?php echo $acumbase; ?>"  id="totalbase">Bs</th>
-							  <th><h4 id="total"><?php echo number_format($venta->total_venta, 2,',','.'); ?> $</h4><input type="hidden" name="total_venta" id="total_venta"></th>
+							  <th class="filaoc">Exe:<input type="number" style="width: 70px" readonly  name="totalexe" value="<?php echo $acumexebs; ?>"  id="texe">Bs</th>
+							  <th class="filaoc">Iva:<input type="number" style="width: 70px" readonly  name="total_iva" value="<?php echo $acumivabs; ?>" id="total_iva">Bs</th> 
+							  <th class="filaoc">BI:<input type="number" style="width: 80px" readonly name="totalbase" value="<?php echo $acumbasebs; ?>"  id="totalbase">Bs</th>
+							  <th><h4 id="total"><?php echo number_format($acumtventa, 2,',','.'); ?> $</h4><input type="hidden" name="total_venta" id="total_venta"></th>
 							 
 							  </tfoot>
                   </table>

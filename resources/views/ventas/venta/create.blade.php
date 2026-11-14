@@ -134,13 +134,18 @@ $idv=0;
 				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
 					<div class="form-group">
 						 <label>Articulos </label> <i class="fa fa-fw fa-refresh" id="refresh"></i></br>
-						 <select name="pidarticulo" id="pidarticulo" class="form-control selectpicker" data-live-search="true" >
+						 <input type="text" id="buscador_articulo" class="form-control" placeholder="Escribe el nombre o código del producto..." autocomplete="off">
+						
+						<div id="sugerencias_articulos" class="list-group" style="position: absolute; width: 100%; z-index: 9999; max-height: 250px; overflow-y: auto; display: none;"></div>
+						<div id="list_articulos"  style="display: none">
+						<select name="pidarticulo"  id="pidarticulo" class="form-control selectpicker" data-live-search="true" >
 						  <option value="5000" selected="selected">Seleccione Articulo..</option>
 						 @foreach ($articulos as $articulo)
 						 <?Php if($empresa->tasadif > 0){ $preciom=number_format(($articulo -> precio_promedio *((100-$empresa -> tasadif)/100)), 2,',','.');}else{ $preciom=$articulo -> precio2;} ?>
 						  <option value="{{$articulo -> idarticulo}}_{{$articulo -> stock}}_{{$articulo -> precio_promedio}}_{{$articulo -> precio2}}_{{$articulo -> costo}}_{{$articulo -> iva}}_{{$articulo->serial}}_{{$articulo->fraccion}}_{{$articulo->precio3}}_{{$articulo->usagrupo}}">{{$articulo -> articulo}} | {{$articulo -> precio_promedio}} | {{$preciom}}</option>
 						 @endforeach
 						  </select>
+						  </div>
                     </div>
 				</div>
 				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
@@ -204,9 +209,9 @@ $idv=0;
                       </div> -->
 						  </th>
 	
-							  <th><input type="hidden" style="width: 70px" readonly  name="totalexe" id="texe"></th>
-							  <th><input type="hidden" style="width: 70px" readonly  name="total_iva" id="total_iva"></th> 
-							  <th><input type="hidden" style="width: 80px" readonly name="totalbase" id="totalbase"></th>
+							  <th><input type="hidden" readonly  name="totalexe" id="texe"><input type="hidden" readonly  name="exe_bs" id="exe_bs"></th>
+							  <th><input type="hidden"  readonly  name="total_iva" id="total_iva"><input type="hidden"  readonly  name="iva_bs" id="iva_bs"></th> 
+							  <th><input type="hidden"  readonly name="totalbase" id="totalbase"><input type="hidden"  readonly name="base_bs" id="base_bs"><input type="hidden"  readonly name="total_bs" id="total_bs"></th>
 							  <th colspan="2" align="right"><h4 id="total" align="right">$.  0.00</h4><input type="hidden" name="total_venta" id="total_venta"></th>
 							 
 							  </tfoot>
@@ -315,48 +320,106 @@ $idv=0;
 @push ('scripts')
 <script>
 $(document).ready(function(){
-			function filtrarSubrutas() {
-					var rutaSeleccionada = $('#idruta').val();
-
-					// Ocultar todas las opciones excepto la opción por defecto
-					$('#idsubruta option').each(function(){
-						var rutaPadre = $(this).data('ruta');
-
-						if (rutaPadre == rutaSeleccionada) {
-							$(this).show().prop('disabled', false);
-						} else if ($(this).val() !== "") {
-							$(this).hide().prop('disabled', true);
-						}
-					});
-
-					// Si el cliente no tiene subruta guardada o si cambió de ruta, se deselecciona la inválida
-					var subrutaValida = $('#idsubruta option[value="' + $('#idsubruta').val() + '"]').is(':enabled');
-					if (!subrutaValida) {
-						$('#idsubruta').val("");
-					}
+	function filtrarSubrutas() {
+		var rutaSeleccionada = $('#idruta').val();
+	
+	// Ocultar todas las opciones excepto la opción por defecto
+		$('#idsubruta option').each(function(){
+		var rutaPadre = $(this).data('ruta');
+	
+			if (rutaPadre == rutaSeleccionada) {
+					$(this).show().prop('disabled', false);
+				} else if ($(this).val() !== "") {
+					$(this).hide().prop('disabled', true);
 				}
+			});
+
+			// Si el cliente no tiene subruta guardada o si cambió de ruta, se deselecciona la inválida
+			var subrutaValida = $('#idsubruta option[value="' + $('#idsubruta').val() + '"]').is(':enabled');
+			if (!subrutaValida) {
+				$('#idsubruta').val("");
+			}
+		}
 
 				// Ejecutar al cargar la página
-				filtrarSubrutas();
+		filtrarSubrutas();
 
-				// Ejecutar cuando el usuario cambie la Ruta principal
-				$('#idruta').change(function(){
-					filtrarSubrutas();
-				});
+		// Ejecutar cuando el usuario cambie la Ruta principal
+		$('#idruta').change(function(){
+			filtrarSubrutas();
+		});
 	$('[data-widget="pushmenu"]').PushMenu('collapse');
 	$('[data-mask]').inputmask();
+	
+	//de la opcion de busqueda
+	$('#buscador_articulo').on('keydown', function(e) {
+    if (e.key === 'Enter' || e.keyCode === 13) {
+        e.preventDefault(); // Evita el envío del formulario o recarga
+        
+        // Opcional: Si quieres que al presionar Enter seleccione automáticamente 
+        // la primera sugerencia de la lista flotante:
+        var primeraSugerencia = $('#sugerencias_articulos .seleccionar-sugerencia').first();
+        if (primeraSugerencia.length > 0) {
+            primeraSugerencia.click();
+        }
+    }
+});
+$('#buscador_articulo').on('keyup', function(e) {
+    var texto = $(this).val().toLowerCase();
+    var contenedor = $('#sugerencias_articulos');
+    
+    if (texto.length < 2) {
+        contenedor.hide().empty();
+        return;
+    }
+
+    var htmlSugerencias = '';
+    
+    // Recorremos las opciones del select oculto original
+    $('#pidarticulo option').each(function() {
+        var optionText = $(this).text();
+        var optionVal = $(this).val(); 
+
+        if (optionVal !== '5000' && optionText.toLowerCase().includes(texto)) {
+            htmlSugerencias += '<button type="button" class="list-group-item list-group-item-action seleccionar-sugerencia" data-val="' + optionVal + '">' + optionText + '</button>';
+        }
+    });
+
+    if (htmlSugerencias !== '') {
+        contenedor.html(htmlSugerencias).show();
+    } else {
+        contenedor.hide().empty();
+    }
+});
+
+// 2. Cuando el usuario hace clic en una sugerencia de la lista
+$(document).on('click', '.seleccionar-sugerencia', function() {
+    var valorSeleccionado = $(this).data('val');
+    var textoCompleto = $(this).text();
+	$('#buscador_articulo').val(textoCompleto);
+    // Asignamos el valor al select oculto original
+    $('#pidarticulo').val(valorSeleccionado);
+    
+    // Ocultamos las sugerencias y limpiamos el buscador
+    $('#sugerencias_articulos').hide().empty();
+    //$('#buscador_articulo').val('');
+
+    // LLAMAMOS DIRECTAMENTE A TU FUNCIÓN AGREGAR EXISTENTE
+    mostrarvalores();
+
+});
+
+// 3. Opcional: Cerrar las sugerencias si hace clic fuera
+$(document).click(function(e) {
+    if (!$(e.target).closest('#buscador_articulo, #sugerencias_articulos').length) {
+        $('#sugerencias_articulos').hide();
+    }
+});
+	//de la busqueda en input
 	document.getElementById('pcantidad').addEventListener('keypress',function(e){ validar(e); });	
 	document.getElementById('pprecio_venta').addEventListener('keypress',function(e){ validarno(e); });	
 	document.getElementById('pdescuento').addEventListener('keypress',function(e){ validarno(e); });	
-	 /*  document.addEventListener('keydown', function(event) {
-            Verificamos si la tecla presionada es 'Spacebar' o ' '
-            if (event.code === 'Space' || event.key === ' ') {
-				event.preventDefault();
-				$("#pidarticulo").selectpicker('refresh');
-				$("#pidarticulo").selectpicker('toggle');
-				
-            }
-        }); */
+
 	var count =document.getElementById('id_cliente').options.length;
 	if(count ==1 ){
 		dato=document.getElementById('id_cliente').value.split('_');
@@ -383,6 +446,7 @@ $(document).ready(function(){
     $('#bt_add').click(function(){
 		if($("#id_cliente").val()==0){
 			  toastr.error('¡Debe seleccionar un cliente para el Documento!.');
+			  limpiar();
 		}else{
 			agregar();
 		} 
@@ -518,6 +582,7 @@ $(document).ready(function(){
 		if($("#faccredito").val()==1){
 			document.getElementById('cfl').style.display="";
 		}
+		prepararMontosSeniat();
 		$("#pidpago").focus();
     })
 	$('#calculo').click(function(){
@@ -550,7 +615,51 @@ $(document).ready(function(){
 		document.getElementById('linkdscto').style.display="";	
 		document.getElementById('mdesapli').style.display="none";	
 	})
-   $('#btncancelar').click(function(){	
+   $('#btncancelar').click(function(){
+		$('#detalles tbody').empty();   
+		cont = 0;
+		contl = 0;
+
+		total = 0;
+		totalbase = 0;
+		totaliva = 0;
+		totalexe = 0;
+
+		base = [];
+		subiva = [];
+		subexe = [];
+		subtotal = [];
+		artventa = [];
+		stcventa = [];
+		var ceros = "0.00";
+
+    // campos visibles
+    $("#total").html(" $ : " + ceros);          
+    $("#muestramonto").html(" $ : " + ceros);
+    $("#muestramontobs").html(" Bs : " + ceros);
+    
+    $("#divtotal").val(ceros);
+    $("#tdeuda").val(ceros);
+    $("#resta").val(ceros);
+    
+    $("#texe").val(ceros); 
+    $("#vtexe").html(ceros);
+    
+    $("#totalbase").val(ceros); 
+    $("#vtotalbase").html(ceros);
+    
+    $("#total_iva").val(ceros); 
+    $("#vtotal_iva").html(ceros);
+    
+    $("#total_venta").val(ceros);
+	$("#botones").hide();
+
+
+    // Opcional: un aviso visual sutil
+    toastr.warning('Operación cancelada. Documento reiniciado.');
+   /*
+	var tabla = document.getElementById('detalles');
+	var totalFilas = tabla.rows.length;
    	totalexe=0;
 	totaliva=0;totalbase=0;
 		total=0; 
@@ -564,12 +673,14 @@ $(document).ready(function(){
 		$("#totalexe").val(total); 
 		$("#total_iva").val(total);
         $("#total_venta").val(total);
-		for(var i=0;i<cont;i++){
-		$("#fila" + i).remove(); subtotal[i]=0; subiva[i]=0; base[i]=0; subexe[i]=0; }
+		$("#vtotalbase").html("0 Bs."); 
+		$("#vtexe").html("0 Bs.");
+		$("#vtotal_iva").html("0 Bs.");
+		for(var i=0;i<totalFilas;i++){
+		$("#fila" + i).remove(); subtotal[i]=0; subiva[i]=0; base[i]=0; subexe[i]=0; }*/
     })
 	// registro el cliente nuevo
-	document.getElementById('Cenviar').style.display="none";
-	
+	document.getElementById('Cenviar').style.display="none";	
 	$("#Cenviar").on("click",function(){ 
 	if(($("#codpais").val()!= "")&($("#telefono").val()!= "")&($("#direccion").val()!= "") ){
 		document.getElementById('Cenviar').style.display="none";	
@@ -793,6 +904,7 @@ function trunc (x, posiciones = 0) {
 		$("#pcantidad").attr("step", nuevoStep);
 	  $("#pcantidad").val(datosarticulo[7]);
       $("#pdescuento").val("0");	
+	      $('#buscador_articulo').focus();
 	  agregar();
 		}else{
       tipo_precio=document.getElementById('id_cliente').value.split('_');
@@ -809,7 +921,7 @@ function trunc (x, posiciones = 0) {
       $("#pcantidad").attr("min", nuevoStep); 
 		$("#pcantidad").attr("step", nuevoStep);
 	  $("#pcantidad").val(datosarticulo[7]);
-      $("#pdescuento").val("0"); 
+      $("#pdescuento").val("0"); 	  
 	  document.getElementById('pcantidad').focus();
     }
 	}
@@ -866,212 +978,344 @@ function trunc (x, posiciones = 0) {
 		document.getElementById('procesa').style.display="none"; }else{document.getElementById('procesa').style.display=""; }
 		$("#id_cliente option[value="+cli+"]").attr("selected",true);   
 		document.getElementById('changeprice').style.display="";
+		$('#buscador_articulo').focus();
   }
-    function agregar(){
-	
-		vdolar=$("#valortasa").val();
-		nlineas=$("#nlineas").val();
-		factsinexis=$("#factsinexis").val();
-		var cantidad=0; var stock=0;
-        datosarticulo=document.getElementById('pidarticulo').value.split('_');
-        idarticulo=datosarticulo[0];
-        artext= $("#pidarticulo option:selected").text();
-		articulo=artext.split('|');
-		articulo=articulo[0];
-        cantidad= $("#pcantidad").val();
-        descuento=$("#pdescuento").val();
-		pdesc=((100-descuento)/100);
-        var precio=$("#pprecio_venta").val();       
-		if(descuento>0){
-		precondesc= trunc((precio*pdesc),2);
-		precio_venta=precondesc; }else{
-			precio_venta=precio;
-		}
-		if(factsinexis==0){
-        stock=$("#pstock").val();}else{ stock=cantidad; }
-		costoarticulo=datosarticulo[4];
-		alicuota=datosarticulo[5];
-		mserial=datosarticulo[6];
-		usag=datosarticulo[9];
-		cantidad=cantidad*1;
-        if (idarticulo!="" && cantidad != "" && cantidad > "0" &&  precio_venta!=""){
+function agregar() {
+    var vdolar = parseFloat($("#valortasa").val()) || 0;
+    var nlineas = parseFloat($("#nlineas").val()) || 0;
+    var factsinexis = parseInt($("#factsinexis").val()) || 0;
+    
+    var datosarticulo = document.getElementById('pidarticulo').value.split('_');
+    var idarticulo = datosarticulo[0];
+    var artext = $("#pidarticulo option:selected").text();
+    var articulo = artext.split('|')[0].trim();
+    
+    var cantidad = parseFloat($("#pcantidad").val()) || 0;
+    var descuento = parseFloat($("#pdescuento").val()) || 0;
+    var precio = parseFloat($("#pprecio_venta").val()) || 0;
+    
+    // Cálculo de precio con descuento
+    var pdesc = (100 - descuento) / 100;
+    var precio_venta = descuento > 0 ? (precio * pdesc) : precio;
+    
+    var stock = factsinexis === 0 ? (parseFloat($("#pstock").val()) || 0) : cantidad;
+    var costoarticulo = datosarticulo[4] || 0;
+    var alicuota = parseFloat(datosarticulo[5]) || 0;
+    var mserial = datosarticulo[6] || 0;
+    var usag = datosarticulo[9] || 0;
 
-                if (cantidad <= stock){
-						
-					if(alicuota>0){subexe[cont]=0;
-						base[cont]=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
-						baseimp=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
-						auxc=parseFloat((base[cont]*vdolar));
-							if(Number.isInteger(auxc)==true){
-								auxb=auxc;
-								base[cont]=(cantidad*auxb);	
-								totalbase=(totalbase+base[cont]);							
-								}else{									
-									auxc=parseFloat((base[cont]*cantidad));
-									auxb=trunc(auxc,2);										
-									base[cont]=trunc((vdolar*auxb),2);										
-									totalbase=trunc((totalbase+base[cont]),2);
-							}; 
-						baseimp=((precio_venta-baseimp)*cantidad).toFixed(2);	
-						baseimp=trunc(baseimp,2);
-						calciva=trunc((baseimp*vdolar),2);
-						subiva[cont]=calciva;											
-						subiva[cont]=trunc(subiva[cont],2);
-						}else{					
-							auxd=(precio_venta*vdolar);
-							if(Number.isInteger(auxd)==true){
-							subexe[cont]=(precio_venta*vdolar*cantidad);
-							}else{
-								auxd=trunc((precio_venta*cantidad).toFixed(2),2);
-								subexe[cont]=trunc((auxd*vdolar),2);}
-							subiva[cont]=0; base[cont]=0; 
-						}				
-					
-				totaliva=trunc((totaliva+subiva[cont]),2);
-				totalexe=parseFloat(totalexe)+parseFloat(subexe[cont]);
-                subtotal[cont]=((cantidad*precio_venta));
-                total=parseFloat(total)+parseFloat(subtotal[cont].toFixed(2));
-				artventa[cont]=cantidad;
-				stcventa[cont]=stock;
-              var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs"  onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" id="varticulo'+cont+'" name="articulo[]" value="'+articulo+'"><input type="hidden"  name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" id="vcantidad'+cont+'" name="cantidad[]" onchange="adjcnt('+cont+');" onkeydown="if(event.keyCode===13){ event.preventDefault(); event.stopPropagation(); $(\'#pidarticulo\').val(\'5000\'); $(\'#pidarticulo\').selectpicker(\'refresh\'); $(\'#pidarticulo\').selectpicker(\'toggle\'); }" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" id="precio'+cont+'" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number" id="vdescuento'+cont+'" name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true"  style="width: 80px" id="pventa'+cont+'" name="precio_venta[]" value="'+precio_venta+'"></td><td><span id="subt'+cont+'">'+subtotal[cont].toFixed(2)+'</span><input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"><input type="hidden" name="usag[]" readonly="true" value="'+usag+'"></td></tr>';
-				cont++;
-				contl++;
-              limpiar();
-		
-			  var auxmbs=(parseFloat(total)*parseFloat(vdolar));
-				$("#total").html(" $  : " + total.toFixed(2));			  
-				$("#muestramonto").html(" $  : " + total.toFixed(2));
-				$("#muestramontobs").html(" Bs  : " + auxmbs.toFixed(2));
-				$("#divtotal").val(total);
-				$("#tdeuda").val(total);
-				$("#resta").val(total);
-				$("#total_iva").val(totaliva); $("#vtotal_iva").html(totaliva);
-				$("#totalbase").val(totalbase); $("#vtotalbase").html(totalbase);
-				$("#texe").val(totalexe.toFixed(2)); $("#vtexe").html(totalexe.toFixed(2));
-				$("#total_venta").val(total);
-				evaluar();
-				$("#item").html(contl);
-				$('#detalles').prepend(fila);			
-				$("#pidarticulo").val('5000');
-				$("#pidarticulo").selectpicker('refresh');
-				setTimeout(function() {
-    $('#pidarticulo').selectpicker('toggle'); 
-}, 100);
-				//$("#pidarticulo").selectpicker('toggle');				
-				//document.getElementById("pidarticulo").focus();
-
-						if(mserial==1){ 
-							var data = <?php echo json_encode($seriales);?>;
-								for(var i=0;i<data.length;i++){
-									if(data[i].idarticulo == datosarticulo[0]){
-										var fila='<tr class="accionada" id="filaseriales'+i+'" ><td><div class="form-check"><input class="form-check-input" type="checkbox" name="pidserial[]" value="'+data[i].idserial+'" onclick="javascript:cntseriales('+i+');" id="defaultCheck'+i+'"><label class="form-check-label" for="defaultCheck1">Chasis -> '+data[i].chasis+' motor -> '+data[i].motor+' Placa-> '+data[i].placa+' Color-> '+data[i].color+' Año-> '+data[i].año+'</label></div></td></tr>';
-										$('#lseriales').append(fila);
-									}
-								}
-						$("#modalseriales").modal("show")};			
-					if(contl >= nlineas){
-					alert('¡Limite de lineas por Documento alcanzado!')
-					document.getElementById('bt_add').style.display="none";
-				  }
-			document.getElementById('vdescuento').style.display="";	  
-				}else{
-              alert("cantidad *"+cantidad+"* supera stock *"+stock+"*");
-			  $("#pcantidad").val(1);
-              }
-        }else{
-			  toastr.error('Error al ingresar el Articulo en venta, ¡ Seleccionar Cliente y Revisar datos del Articulo!.');
-			
-        }
+    // Validaciones iniciales
+    if (idarticulo === "" || cantidad <= 0 || precio_venta <= 0) {
+        toastr.error('Error al ingresar el Artículo en venta, ¡Seleccionar Cliente y Revisar datos del Artículo!.');  
+	   return;
     }
-    function eliminar(index){
-		nlineas=$("#nlineas").val();
-		vdolar=$("#valortasa").val();
-		totaliva=(parseFloat(totaliva) - parseFloat(subiva[index])); 
-		totalbase=(parseFloat(totalbase) - parseFloat(base[index])); 
-		totalexe=(parseFloat(totalexe) - parseFloat(subexe[index]));  
-        total=(total-subtotal[index]).toFixed(2);
-        $("#total").html(total);
-		//alert(totalexe);
-        $("#divtotal").val(total);
-		$("#resta").val(total);		
-		if(total < 0){total=0; cont=0; alert('Sin Articulos'); document.getElementById('vdescuento').style.display="none"; totaliva=0;	totalbase=0; totalexe=0;}
-		var mon_tasad=(total);
-		$("#muestramonto").html("$  : " + mon_tasad.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' }));
-		$("#muestramontobs").html("Bs  : " + (mon_tasad*vdolar).toLocaleString('de-DE', { style: 'decimal',  decimal: '2' }));
-        $("#total_venta").val(mon_tasad);
-        $("#total_iva").val(totaliva.toFixed(2));$("#vtotal_iva").html(totaliva);
-        $("#totalbase").val(totalbase.toFixed(2)); $("#vtotalbase").html(totalbase);
-		$("#texe").val(totalexe.toFixed(2)); $("#vtexe").html(totalexe.toFixed(2));						
-        $("#tdeuda").val(mon_tasad);
+
+    if (cantidad > stock) {
+        alert("Cantidad *" + cantidad + "* supera stock *" + stock + "*");
+        $("#pcantidad").val(1);
+        return;
+    }
+
+    // --- CÁLCULOS EN MONEDA BASE (DÓLARES) ---
+    var subitem = cantidad * precio_venta;
+    var baseItem = 0;
+    var ivaItem = 0;
+    var exeItem = 0;
+
+    if (alicuota > 0) {
+        // Producto Gravado
+        var subtotalConIva = subitem;
+        var baseTotal = subtotalConIva / (1 + (alicuota / 100));
+        var ivaTotal = subtotalConIva - baseTotal;
+        
+        base[cont] = baseTotal;
+        subiva[cont] = ivaTotal;
+        subexe[cont] = 0;
+    } else {
+        // Producto Exento
+        exeItem = subitem;
+        subexe[cont] = exeItem;
+        subiva[cont] = 0;
+        base[cont] = 0;
+    }
+
+    // --- ACUMULADORES GLOBALES (EN DÓLARES) ---
+    totalbase = parseFloat($("#totalbase").val()) || 0;
+    totaliva = parseFloat($("#total_iva").val()) || 0;
+    totalexe = parseFloat($("#texe").val()) || 0;
+    var totalGeneral = parseFloat($("#total_venta").val()) || 0;
+
+    // Acumulamos con redondeo estricto a 2 decimales por línea
+    totalbase = parseFloat((totalbase + base[cont]).toFixed(2));
+    totaliva = parseFloat((totaliva + subiva[cont]).toFixed(2));
+    totalexe = parseFloat((totalexe + subexe[cont]).toFixed(2));
+    totalGeneral = parseFloat((totalGeneral + subitem).toFixed(2));
+
+    // --- BLINDAJE CONTRA CÉNTIMOS FANTASMAS ---
+    // Si la suma de Base + IVA + Exento difiere por 0.01 del Total General debido a los redondeos, 
+    // ajustamos ese céntimo directamente en el IVA acumulado para que la factura cuadre perfecta.
+    var sumaFiscales = parseFloat((totalbase + totaliva + totalexe).toFixed(2));
+    var diferencia = parseFloat((totalGeneral - sumaFiscales).toFixed(2));
+    if (diferencia !== 0) {
+        totaliva = parseFloat((totaliva + diferencia).toFixed(2));
+    }
+
+    subtotal[cont] = subitem;
+    artventa[cont] = cantidad;
+    stcventa[cont] = stock;
+
+    // --- CONSTRUCCIÓN DE LA FILA HTML ---
+    var fila='<tr class="selected" id="fila'+cont+'" ><td><button class="btn btn-warning btn-xs" onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" id="varticulo'+cont+'" name="articulo[]" value="'+articulo+'"><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" id="vcantidad'+cont+'" name="cantidad[]" onchange="adjcnt('+cont+');" onkeydown="if(event.keyCode===13){ event.preventDefault(); event.stopPropagation(); $(\'#pidarticulo\').val(\'5000\'); $(\'#pidarticulo\').selectpicker(\'refresh\'); $(\'#pidarticulo\').selectpicker(\'toggle\'); }" style="width: 60px" value="'+cantidad+'"></td><td>'+preopt+'<input type="number" id="precio'+cont+'" name="precio[]" readonly="true" style="width: 60px" value="'+precio+'"></td><td><input type="number" id="vdescuento'+cont+'" name="descuento[]" readonly="true" style="width: 80px" value="'+descuento+'"></td><td><input type="number" readonly="true" style="width: 80px" id="pventa'+cont+'" name="precio_venta[]" value="'+precio_venta+'"></td><td><span id="subt'+cont+'">'+subtotal[cont].toFixed(2)+'</span><input type="hidden" name="costoarticulo[]" readonly="true" value="'+costoarticulo+'"><input type="hidden" name="usag[]" readonly="true" value="'+usag+'"></td></tr>';
+
+    cont++;
+    contl++;
+    limpiar();
+
+    // --- ACTUALIZACIÓN DE VALORES EN EL DOM ---
+    var auxmbs = totalGeneral * vdolar;
+	total=totalGeneral;
+    $("#total").html(" $ : " + totalGeneral.toFixed(2));          
+    $("#muestramonto").html(" $ : " + totalGeneral.toFixed(2));
+    $("#muestramontobs").html(" Bs : " + auxmbs.toFixed(2));
+    
+    $("#divtotal").val(totalGeneral.toFixed(2));
+    $("#tdeuda").val(totalGeneral.toFixed(2));
+    $("#resta").val(totalGeneral.toFixed(2));
+    
+    $("#total_iva").val(totaliva.toFixed(2)); 
+    $("#vtotal_iva").html(totaliva.toFixed(2));
+    
+    $("#totalbase").val(totalbase.toFixed(2)); 
+    $("#vtotalbase").html(totalbase.toFixed(2));
+    
+    $("#texe").val(totalexe.toFixed(2)); 
+    $("#vtexe").html(totalexe.toFixed(2));
+    
+    $("#total_venta").val(totalGeneral.toFixed(2));
+    
+    if (typeof evaluar === 'function') { evaluar(); }
+    
+    $("#item").html(contl);
+    $('#detalles').prepend(fila);           
+    $('#buscador_articulo').focus(); //focus al buscador
+   
+   /* $("#pidarticulo").val('5000');
+    $("#pidarticulo").selectpicker('refresh');
+    setTimeout(function() {
+        $('#pidarticulo').selectpicker('toggle'); 
+    }, 100); */
+
+    // Manejo de seriales si aplica
+    if (mserial == 1) {
+        var data = <?php echo json_encode($seriales);?>;
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].idarticulo == datosarticulo[0]) {
+               var fila='<tr class="accionada" id="filaseriales'+i+'" ><td><div class="form-check"><input class="form-check-input" type="checkbox" name="pidserial[]" value="'+data[i].idserial+'" onclick="javascript:cntseriales('+i+');" id="defaultCheck'+i+'"><label class="form-check-label" for="defaultCheck1">Chasis -> '+data[i].chasis+' motor -> '+data[i].motor+' Placa-> '+data[i].placa+' Color-> '+data[i].color+' Año-> '+data[i].año+'</label></div></td></tr>';
+                $('#lseriales').append(filaSerial);
+            }
+        }
+        $("#modalseriales").modal("show");
+    }
+
+    if (contl >= nlineas) {
+        alert('¡Límite de líneas por Documento alcanzado!');
+        document.getElementById('bt_add').style.display = "none";
+    }
+    
+    document.getElementById('vdescuento').style.display = "";
+}
+   function eliminar(index) {
+        var nlineas = parseFloat($("#nlineas").val()) || 0;
+        var vdolar = parseFloat($("#valortasa").val()) || 0;
+
+        // 1. Obtener y asegurar los totales actuales como números puros
+        var currentTotalIva = parseFloat($("#total_iva").val()) || 0;
+        var currentTotalBase = parseFloat($("#totalbase").val()) || 0;
+        var currentTotalExe = parseFloat($("#texe").val()) || 0;
+        var currentTotalVenta = parseFloat($("#total_venta").val()) || 0;
+
+        // 2. Obtener los valores del ítem a eliminar de forma segura
+        var ivaItem = parseFloat(subiva[index]) || 0;
+        var baseItem = parseFloat(base[index]) || 0;
+        var exeItem = parseFloat(subexe[index]) || 0;
+        var subItem = parseFloat(subtotal[index]) || 0;
+
+        // 3. Restar los valores del ítem de forma matemática limpia
+        var totaliva = currentTotalIva - ivaItem;
+        var totalbase = currentTotalBase - baseItem;
+        var totalexe = currentTotalExe - exeItem;
+        var total = currentTotalVenta - subItem;
+
+        // Seguridad contra números negativos por imprecisiones flotantes
+        if (total < 0 || contl <= 1) {
+            total = 0;
+            totaliva = 0;
+            totalbase = 0;
+            totalexe = 0;
+            alert('Sin Articulos');
+            document.getElementById('vdescuento').style.display = "none";
+        }
+
+        // 4. Pintar y actualizar inputs con .toFixed(2) exclusivamente al final
+        $("#total").html(total.toFixed(2));
+        $("#divtotal").val(total.toFixed(2));
+        $("#resta").val(total.toFixed(2));		
+
+        $("#muestramonto").html("$ : " + total.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        $("#muestramontobs").html("Bs : " + (total * vdolar).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+        $("#total_venta").val(total.toFixed(2));
+        
+        $("#total_iva").val(totaliva.toFixed(2)); 
+        $("#vtotal_iva").html(totaliva.toFixed(2));
+
+        $("#totalbase").val(totalbase.toFixed(2)); 
+        $("#vtotalbase").html(totalbase.toFixed(2)); 
+
+        $("#texe").val(totalexe.toFixed(2)); 
+        $("#vtexe").html(totalexe.toFixed(2));						
+
+        $("#tdeuda").val(total.toFixed(2));
+
+        // 5. Remover el elemento del DOM y ajustar contadores
         $("#fila" + index).remove();
-		contl--;		
-		$("#item").html(contl);
-		if(parseFloat(contl) < parseFloat(nlineas)){
-				document.getElementById('bt_add').style.display="";
-				  }
-			evaluar();
-			$("#pidarticulo").val('5000');
-			$("#pidarticulo").selectpicker('refresh');
-			$("#pidarticulo").selectpicker('toggle');
-    }		
+        contl--;		
+        $("#item").html(contl);
 
-	function adjcnt(index){
+        if (contl < nlineas) {
+            document.getElementById('bt_add').style.display = "";
+        }
 
-		vdolar=$("#valortasa").val();
-		cntant=artventa[index];
-		ncntart=$("#vcantidad"+index).val(); 
-		stccant=stcventa[index];
-		//alert(stccant);
-		if(ncntart==0){ alert('Cantidad Incorrecta'); $("#vcantidad"+index).val(cntant); }else{
-			if(parseFloat(ncntart) > parseFloat(stccant)){ alert('Cantidad Supera el Stock'); $("#vcantidad"+index).val(cntant); }else{
-		subtant=subtotal[index]; //totalanterior
-		npre=$("#precio"+index).val(); //precio
-		nsubt=trunc((ncntart*npre).toFixed(2),2); //nuevo subtotal
-			//calculo iva			
-		var ivaart= parseFloat(subiva[index]);
-			totaliva=$("#total_iva").val();
-			niva=((ivaart*ncntart)/cntant);
-			subiva[index]=niva.toFixed(2);			
-		var ntiva=(parseFloat(totaliva)-parseFloat(ivaart))+parseFloat(niva);
-			$("#total_iva").val(ntiva.toFixed(2));
-			$("#vtotal_iva").html(ntiva.toFixed(2));
-			 
-		 		//calculo base		
-			totalbase=$("#totalbase").val();				
-		var baseart=parseFloat(base[index]); 
-			nbase=((baseart*ncntart)/cntant);
-			base[index]=nbase.toFixed(2);
-		var ntbase=(parseFloat(totalbase)-parseFloat(baseart))+parseFloat(nbase);
-			$("#vtotalbase").html(ntbase.toFixed(2));
-			$("#totalbase").val(ntbase.toFixed(2));
-			//calculo exento
-			totalexe=$("#texe").val();
-		var exeart=parseFloat(subexe[index]); 
-			nexe=((exeart*ncntart)/cntant);
-			subexe[index]=nexe.toFixed(2);
-		var ntexe=(parseFloat(totalexe)-parseFloat(exeart))+parseFloat(nexe);	
-			$("#texe").val(ntexe.toFixed(2));
-			 $("#vtexe").html(ntexe.toFixed(2));
-			 
-		artventa[index]=ncntart;
-		subtotal[index]=(nsubt);
-		
-		total=((total-subtant)+subtotal[index]).toFixed(2);
-		$("#total_venta").val(total);
-		$("#total").html(total);
-		 $("#tdeuda").val(total);
-		$("#muestramonto").html("$  : " + total.toLocaleString('de-DE', { style: 'decimal',  decimal: '3' }));
-		$("#muestramontobs").html("Bs  : " + (total*vdolar).toLocaleString('de-DE', { style: 'decimal',  decimal: '2' }));
-		$("#subt"+index).html(subtotal[index]);
-		 $("#divtotal").val(total);
-		}
-		}
-	}
+        if (typeof evaluar === 'function') {
+            evaluar();
+        }
+        
+       /* $("#pidarticulo").val('5000');
+        $("#pidarticulo").selectpicker('refresh');
+        $("#pidarticulo").selectpicker('toggle'); */
+		$('#buscador_articulo').focus();
+    }
+function adjcnt(index) {
+    var vdolar = parseFloat($("#valortasa").val()) || 0;
+    var cntant = parseFloat(artventa[index]) || 0;
+    var ncntart = parseFloat($("#vcantidad" + index).val()) || 0;
+    var stccant = parseFloat(stcventa[index]) || 0;
+
+    // Validaciones de stock y cantidad
+    if (ncntart <= 0) {
+        alert('Cantidad Incorrecta');
+        $("#vcantidad" + index).val(cntant);
+        return;
+    }
+    if (ncntart > stccant) {
+        alert('Cantidad Supera el Stock');
+        $("#vcantidad" + index).val(cntant);
+        return;
+    }
+
+    var subtant = parseFloat(subtotal[index]) || 0;
+    var npre = parseFloat($("#precio" + index).val()) || 0;
+    var descuento = parseFloat($("#vdescuento" + index).val()) || 0; // Por si usa descuento por línea
+
+    // Recalcular precio con descuento si aplica
+    var pdesc = (100 - descuento) / 100;
+    var precio_venta = descuento > 0 ? (npre * pdesc) : npre;
+
+    // Nuevo subtotal bruto del renglón
+    var nsubt = ncntart * precio_venta;
+
+    // Identificar si el ítem era gravado o exento evaluando sus valores anteriores
+    var eraGravado = parseFloat(subiva[index]) > 0;
+
+    // Variables para el nuevo cálculo de la línea
+    var nuevoBaseItem = 0;
+    var nuevoIvaItem = 0;
+    var nuevoExeItem = 0;
+
+    // Necesitamos saber la alícuota. Como la función agregar la sacaba del select, 
+    // podemos deducirla de los valores anteriores o calcularla limpiamente:
+    // Si era gravado, recalculamos la base y el IVA exactamente igual que en agregar():
+    if (eraGravado) {
+        // Asumiendo 16% (o puedes extraer la alícuota si la guardas en un array, ej: alicuotaArr[index])
+        // O despejando de la base y subtotal anterior:
+        var baseAnt = parseFloat(base[index]) || 0;
+        var subAntLinea = subtant;
+        // Tasa de alícuota implícita: ((Subtotal / Base) - 1) * 100
+        var alicuotaEstimada = Math.round(((subAntLinea / baseAnt) - 1) * 100);
+        if (alicuotaEstimada <= 0) alicuotaEstimada = 16; // Respaldó por defecto al 16%
+
+        nuevoBaseItem = nsubt / (1 + (alicuotaEstimada / 100));
+        nuevoIvaItem = nsubt - nuevoBaseItem;
+    } else {
+        nuevoExeItem = nsubt;
+    }
+
+    // --- REVERTIR VALORES ANTERIORES DE ESTE ÍTEM EN LOS ACUMULADORES GLOBALES ---
+    var totalbase = parseFloat($("#totalbase").val()) || 0;
+    var totaliva = parseFloat($("#total_iva").val()) || 0;
+    var totalexe = parseFloat($("#texe").val()) || 0;
+    var totalGeneral = parseFloat($("#total_venta").val()) || 0;
+
+    totalbase = parseFloat((totalbase - (parseFloat(base[index]) || 0)).toFixed(2));
+    totaliva = parseFloat((totaliva - (parseFloat(subiva[index]) || 0)).toFixed(2));
+    totalexe = parseFloat((totalexe - (parseFloat(subexe[index]) || 0)).toFixed(2));
+    totalGeneral = parseFloat((totalGeneral - subtant).toFixed(2));
+
+    // --- APLICAR LOS NUEVOS VALORES DE ESTE ÍTEM ---
+    base[index] = nuevoBaseItem;
+    subiva[index] = nuevoIvaItem;
+    subexe[index] = nuevoExeItem;
+
+    totalbase = parseFloat((totalbase + nuevoBaseItem).toFixed(2));
+    totaliva = parseFloat((totaliva + nuevoIvaItem).toFixed(2));
+    totalexe = parseFloat((totalexe + nuevoExeItem).toFixed(2));
+    totalGeneral = parseFloat((totalGeneral + nsubt).toFixed(2));
+
+    // --- BLINDAJE CONTRA CÉNTIMOS FANTASMAS (Control de cuadre fiscal) ---
+    var sumaFiscales = parseFloat((totalbase + totaliva + totalexe).toFixed(2));
+    var diferencia = parseFloat((totalGeneral - sumaFiscales).toFixed(2));
+    if (diferencia !== 0) {
+        totaliva = parseFloat((totaliva + diferencia).toFixed(2));
+    }
+
+    // Actualizar arreglos de control
+    artventa[index] = ncntart;
+    subtotal[index] = nsubt;
+
+    // --- ACTUALIZACIÓN DE VALORES EN EL DOM ---
+    var auxmbs = totalGeneral * vdolar;
+
+    $("#total").html(totalGeneral.toFixed(2));
+    $("#divtotal").val(totalGeneral.toFixed(2));
+    $("#tdeuda").val(totalGeneral.toFixed(2));
+    $("#resta").val(totalGeneral.toFixed(2));
+
+    $("#muestramonto").html("$ : " + totalGeneral.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+    $("#muestramontobs").html("Bs : " + auxmbs.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+    $("#total_venta").val(totalGeneral.toFixed(2));
+    
+    $("#total_iva").val(totaliva.toFixed(2)); 
+    $("#vtotal_iva").html(totaliva.toFixed(2));
+
+    $("#totalbase").val(totalbase.toFixed(2)); 
+    $("#vtotalbase").html(totalbase.toFixed(2));
+
+    $("#texe").val(totalexe.toFixed(2)); 
+    $("#vtexe").html(totalexe.toFixed(2));
+
+    $("#subt" + index).html(nsubt.toFixed(2));
+
+    if (typeof evaluar === 'function') {
+        evaluar();
+    }
+}
     function limpiar(){
         $("#pcantidad").val("");
         $("#pdescuento").val("");
         $("#pstock").val("");
         $("#pprecio_venta").val("");
+		$('#buscador_articulo').val("");
     }
 
     function evaluar(){
@@ -1240,11 +1484,14 @@ function trunc (x, posiciones = 0) {
 				$("#pidarticulo")
 				.append( '<option value="'+r3[j].idarticulo+'_'+r3[j].stock+'_'+r3[j].precio_promedio+'_'+r3[j].precio2+'_'+r3[j].costo+'_'+r3[j].iva+'_'+r3[j].serial+'_'+r3[j].fraccion+'_'+r3[j].usagrupo+'">'+r3[j].articulo+' | '+r3[j].precio_promedio+' | '+trunc(preciom,2)+'</option>');
 				}
-				$("#pidarticulo").selectpicker('refresh');
-				$("#pidarticulo").selectpicker('toggle');
-			});
+				
+			//	$("#pidarticulo").selectpicker('refresh');
+				//$("#pidarticulo").selectpicker('toggle');
+			}); 
+			toastr.success('Lista de Articulos Actualizada con Exito');
+			$('#buscador_articulo').focus();
 	});
-	function recalcularfac(tpc){
+	function recalcularfac(tpc){ // esta no esta corriendo
 			vdolar=$("#valortasa").val();		
 	var sele=document.getElementById('pidarticulo');
 		total=0;totalexe=0;totaliva=0;totalbase=0;
@@ -1309,79 +1556,135 @@ function trunc (x, posiciones = 0) {
 		}
 		alert('Cambio de precio Realizado.');
 	}
-	function ajustedescuento(desc){
-		vdolar=$("#valortasa").val();
-		var sele=document.getElementById('pidarticulo');
-	
-		total=0;totalexe=0;totaliva=0;totalbase=0;
-			for(var i=0;i<(cont);i++){
-				item_name="";pnew=0;    var precio=$("#precio"+i).val();  
-				if (precio !== undefined) {
-				for (var pss=sele.length-1;pss>=0;pss--)
-					{
-					if (sele.options[pss].text == $("#varticulo"+i).val()){
-					item_name=sele.options[pss].value; 				}		
-					} 
-			datosarticulo=item_name.split('_');
-			pdesc=((100-desc)/100);		
+	function ajustedescuento(desc) {
+    var vdolar = parseFloat($("#valortasa").val()) || 0;
+    var sele = document.getElementById('pidarticulo');
+    
+    var total = 0;
+    var totalexe = 0;
+    var totaliva = 0;
+    var totalbase = 0;
 
-		if(desc>0){			
-			precondesc= trunc((precio*pdesc),2);
-			precio_venta=precondesc; }else{
-			desc=0;
-			precio_venta=precio;
-		}					
-		alicuota=datosarticulo[5];
-		$("#pventa"+i).val(precio_venta);
-		$("#vdescuento"+i).val(desc);
-		cantidad=$("#vcantidad"+i).val();
-		if(alicuota>0){subexe[i]=0;
-						base[i]=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
-						baseimp=trunc(((precio_venta)/((alicuota/100)+1)), 2);	
-						auxc=parseFloat((base[i]*vdolar));
-							if(Number.isInteger(auxc)==true){
-								auxb=auxc;
-								base[i]=(cantidad*auxb);	
-								totalbase=(totalbase+base[i]);							
-								}else{
-									auxc=parseFloat((base[i]*cantidad));
-									auxb=trunc(auxc,2);															
-									base[i]=trunc((vdolar*auxb),2);	
-									totalbase=trunc((totalbase+base[i]),2);
-							}; 
-						baseimp=((precio_venta-baseimp)*cantidad);	
-						baseimp=trunc(baseimp,2);
-						calciva=trunc((baseimp*vdolar),2);
-						subiva[i]=calciva;											
-						subiva[i]=trunc(subiva[i],2);
-						}else{					
-							auxd=(precio_venta*vdolar);
-							if(Number.isInteger(auxd)==true){
-							subexe[i]=(precio_venta*vdolar*cantidad);
-							}else{
-								auxd=trunc((precio_venta*cantidad).toFixed(2),2);
-								subexe[i]=trunc((auxd*vdolar),2);}
-							subiva[i]=0; base[i]=0; 
-						}	
-			totaliva=trunc((totaliva+subiva[i]),2);
-			totalexe=parseFloat(totalexe)+parseFloat(subexe[i]);
-			subtotal[i]=((cantidad*precio_venta));
-			total=parseFloat(total)+parseFloat(subtotal[i].toFixed(2));
-		$("#subt"+i).html(subtotal[i]);
-		 var auxmbs=(parseFloat(total)*parseFloat(vdolar));
-				$("#total").html(" $  : " + total.toFixed(2));			  
-				$("#muestramonto").html(" $  : " + total.toFixed(2));
-				$("#muestramontobs").html(" Bs  : " + auxmbs.toFixed(2));
-				$("#divtotal").val(total);
-				$("#tdeuda").val(total);
-				$("#resta").val(total);
-				$("#total_iva").val(totaliva);
-				$("#totalbase").val(totalbase);
-				$("#texe").val(totalexe.toFixed(2));
-				$("#total_venta").val(total);
-		}
-			}
-	}
+    // Recorrer todas las líneas activas de la tabla
+    for (var i = 0; i < cont; i++) {
+        var precioInput = $("#precio" + i);
+        if (precioInput.length === 0 || precioInput.val() === undefined) {
+            continue; // Si la fila fue eliminada, saltarla
+        }
+
+        var precio = parseFloat(precioInput.val()) || 0;
+        var articuloNombre = $("#varticulo" + i).val();
+        var item_name = "";
+
+        // Buscar el value original en el select para sacar la alícuota
+        for (var pss = sele.length - 1; pss >= 0; pss--) {
+            if (sele.options[pss].text === articuloNombre) {
+                item_name = sele.options[pss].value;
+                break;
+            }
+        }
+
+        var datosarticulo = item_name.split('_');
+        var alicuota = parseFloat(datosarticulo[5]) || 0;
+        var cantidad = parseFloat($("#vcantidad" + i).val()) || 0;
+
+        // Calcular nuevo precio con el descuento global
+        var porcentajeDesc = desc > 0 ? ((100 - desc) / 100) : 1;
+        var precio_venta = parseFloat((precio * porcentajeDesc).toFixed(2));
+        var descuentoAplicar = desc > 0 ? desc : 0;
+
+        // Actualizar inputs visuales de la fila
+        $("#pventa" + i).val(precio_venta.toFixed(2));
+        $("#vdescuento" + i).val(descuentoAplicar);
+
+        var subitem = cantidad * precio_venta;
+        var baseItem = 0;
+        var ivaItem = 0;
+        var exeItem = 0;
+
+        // Cálculo fiscal limpio en Dólares (siguiendo la misma lógica de agregar)
+        if (alicuota > 0) {
+            var subtotalConIva = subitem;
+            baseItem = subtotalConIva / (1 + (alicuota / 100));
+            ivaItem = subtotalConIva - baseItem;
+
+            base[i] = baseItem;
+            subiva[i] = ivaItem;
+            subexe[i] = 0;
+        } else {
+            exeItem = subitem;
+            subexe[i] = exeItem;
+            subiva[i] = 0;
+            base[i] = 0;
+        }
+
+        // Acumular con redondeo estricto a 2 decimales por línea
+        totalbase = parseFloat((totalbase + base[i]).toFixed(2));
+        totaliva = parseFloat((totaliva + subiva[i]).toFixed(2));
+        totalexe = parseFloat((totalexe + subexe[i]).toFixed(2));
+        total = parseFloat((total + subitem).toFixed(2));
+
+        subtotal[i] = subitem;
+        $("#subt" + i).html(subitem.toFixed(2));
+    }
+
+    // --- BLINDAJE CONTRA CÉNTIMOS FANTASMAS (Control de cuadre fiscal) ---
+    var sumaFiscales = parseFloat((totalbase + totaliva + totalexe).toFixed(2));
+    var diferencia = parseFloat((total - sumaFiscales).toFixed(2));
+    if (diferencia !== 0) {
+        totaliva = parseFloat((totaliva + diferencia).toFixed(2));
+    }
+
+    // --- ACTUALIZACIÓN DE VALORES GENERALES EN EL DOM ---
+    var auxmbs = total * vdolar;
+
+    $("#total").html(" $ : " + total.toFixed(2));          
+    $("#muestramonto").html(" $ : " + total.toFixed(2));
+    $("#muestramontobs").html(" Bs : " + auxmbs.toFixed(2));
+    
+    $("#divtotal").val(total.toFixed(2));
+    $("#tdeuda").val(total.toFixed(2));
+    $("#resta").val(total.toFixed(2));
+    
+    $("#total_iva").val(totaliva.toFixed(2));
+    $("#vtotal_iva").html(totaliva.toFixed(2));
+    
+    $("#totalbase").val(totalbase.toFixed(2));
+    $("#vtotalbase").html(totalbase.toFixed(2));
+    
+    $("#texe").val(totalexe.toFixed(2));
+    $("#vtexe").html(totalexe.toFixed(2));
+    
+    $("#total_venta").val(total.toFixed(2));
+}
+function prepararMontosSeniat() {
+    var vdolar = parseFloat($("#valortasa").val()) || 0;
+    if (vdolar <= 0) {
+        alert("La tasa del dólar no puede ser cero.");
+        return false;
+    }
+
+    // 1. Tomamos los totales limpios que ya tienes en dólares
+    var totalBaseUSD  = parseFloat($("#totalbase").val()) || 0;
+    var totalIvaUSD   = parseFloat($("#total_iva").val()) || 0;
+    var totalExeUSD   = parseFloat($("#texe").val()) || 0;
+    var totalVentaUSD = parseFloat($("#total_venta").val()) || 0;
+
+    // 2. Los convertimos exactamente a Bolívares multiplicando una sola vez por la tasa
+    var totalBaseBs  = (totalBaseUSD * vdolar).toFixed(2);
+    var totalIvaBs   = (totalIvaUSD * vdolar).toFixed(2);
+    var totalExeBs   = (totalExeUSD * vdolar).toFixed(2);
+    var totalVentaBs = (totalVentaUSD * vdolar).toFixed(2);
+
+    // 3. Los asignas a los inputs que viajan por POST hacia PHP (para el SENIAT / Base de datos)
+    // (Asegúrate de tener estos inputs ocultos en tu formulario)
+    $("#base_bs").val(totalBaseBs);
+    $("#iva_bs").val(totalIvaBs);
+    $("#exe_bs").val(totalExeBs);
+    $("#total_bs").val(totalVentaBs);
+
+    return true; // Todo listo para enviar el formulario con éxito
+}
 </script>
 @endpush
 @endsection
