@@ -121,6 +121,7 @@ $idv=0;
                             <option value="LTR">Litros</option>                                     
                             <option value="MNG">Manga</option>                                     
                             <option value="FDO">Fardo</option>                                     
+                            <option value="PAQ">Paquete</option>                                     
                         </select>                               
                     </div>
                 </div>

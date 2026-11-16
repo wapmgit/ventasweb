@@ -114,6 +114,7 @@
                         <option value="LTR" {{ $articulo->unidad == 'LTR' ? 'selected' : '' }}>Litros</option>      
                         <option value="MNG" {{ $articulo->unidad == 'MNG' ? 'selected' : '' }}>Manga</option>      
                         <option value="FDO" {{ $articulo->unidad == 'FDO' ? 'selected' : '' }}>Fardo</option>      
+                        <option value="PAQ" {{ $articulo->unidad == 'PAQ' ? 'selected' : '' }}>Paquete</option>      
                     </select>               
                 </div>
             </div>
