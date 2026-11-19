@@ -1489,6 +1489,7 @@ function adjcnt(index) {
 				//$("#pidarticulo").selectpicker('toggle');
 			}); 
 			toastr.success('Lista de Articulos Actualizada con Exito');
+			$('#buscador_articulo').val("");
 			$('#buscador_articulo').focus();
 	});
 	function recalcularfac(tpc){ // esta no esta corriendo
