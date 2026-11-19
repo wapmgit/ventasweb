@@ -42,7 +42,12 @@ role="dialog" tabindex="-1" id="modal-calcular-{{$categoria->idcategoria}}">
             		</div>
             </div>		   
 
-				
+				  <div class="col-xl-6 col-sm-6">
+                            <div class="custom-control custom-switch switch-sm custom-switch-on-success custom-switch-off-danger my-1">
+                                <input type="checkbox" name="todos" class="custom-control-input" id="customSwitch3">
+                                <label class="custom-control-label small" for="customSwitch3">¿Aplicar a todos los grupos?</label>
+                            </div>
+                        </div>
 			    </div>  <!-- del row -->
 		</div>  <!-- del modal body-->
 			<div class="modal-primary">

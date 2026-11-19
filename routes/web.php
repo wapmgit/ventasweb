@@ -279,6 +279,7 @@ Route::get('valorizado', [ReportesarticulosController::class, 'valorizado'])->na
 Route::get('listaprecios', [ReportesarticulosController::class, 'listaprecio'])->name('listaprecios');
 Route::get('listapreciosdesc', [ReportesarticulosController::class, 'listapreciosdesc'])->name('listapreciosdesc');
 Route::get('tomainventario', [ReportesarticulosController::class, 'tomainventario'])->name('tomainventario');
+Route::get('actstock', [ReportesarticulosController::class, 'actstockinv'])->name('actstock');
 Route::get('stockcero', [ReportesarticulosController::class, 'cero'])->name('stockcero');
 Route::get('catalogo', [ReportesarticulosController::class, 'catalogo'])->name('catalogo');
 Route::get('resumen', [ReportesarticulosController::class, 'resumen'])->name('resumen');

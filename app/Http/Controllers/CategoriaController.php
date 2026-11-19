@@ -59,7 +59,7 @@ class CategoriaController extends Controller
 		$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
         $articulos=DB::table('articulos as a')
             -> join('categoria as c','a.idcategoria','=','c.idcategoria')
-            -> select ('a.idarticulo','a.nombre','a.codigo','a.costo','a.precio1','a.precio2','a.stock','c.nombre as categoria','a.descripcion','a.estado')
+            -> select ('a.idarticulo','a.nombre','a.codigo','a.costo','a.precio1','a.precio2','a.precio3','a.stock','c.nombre as categoria','a.descripcion','a.estado')
             ->where ('c.idcategoria','=',$id)
             ->where ('a.estado','=','Activo')
             ->orderBy('a.nombre','asc')
@@ -77,16 +77,22 @@ class CategoriaController extends Controller
 	public function recalcular( Request $request)
     {
 		 $empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
-		//dd($request);
+		   $categoria=$request->get('categoria');
+		if($request->get('todos')=="on"){
+			$articulos=DB::table('articulos as a')
+            -> select ('a.idarticulo','a.utilidad','a.util2','iva','a.costo','a.precio1','a.precio2')
+			->get();  }	else{				
+			$articulos=DB::table('articulos as a')
+            -> select ('a.idarticulo','a.utilidad','a.util2','iva','a.costo','a.precio1','a.precio2')
+            ->where ('a.idcategoria','=',$categoria)
+			->get();
+			}
+			
 			$nutil=0;$nprecio=0;$pt=0;
 			$modo=$request->get('modo');
 			$tasa=$request->get('tasa');
-            $categoria=$request->get('categoria');
+          
 			if ($modo == 1){
-				$articulos=DB::table('articulos as a')
-				-> select ('a.idarticulo','a.utilidad','a.util2','iva','a.costo','a.precio1','a.precio2')
-				->where ('a.idcategoria','=',$categoria)
-				->get();
 				 $cont = 0;
 				
 					 if($empresa->calc_util==1){
@@ -135,10 +141,6 @@ class CategoriaController extends Controller
 						 }
 			}
 			if ($modo == 2){
-			$articulos=DB::table('articulos as a')
-            -> select ('a.idarticulo','a.utilidad','a.util2','iva','a.costo','a.precio1','a.precio2')
-            ->where ('a.idcategoria','=',$categoria)
-			->get();  
 			
 			 $cont = 0;
 			  if($empresa->calc_util==1){

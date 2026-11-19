@@ -33,8 +33,10 @@ $cefe=0;?>
           
           <th>Articulo</th>
           <th>Und.</th>
-          <th>Stock</th>
-
+          <th id="stk">Stock <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarstk"></th>
+          <th id="kdx">Kardex <i class="fa fa-fw fa-eye" title="Ocultar" id="ocultarkd"></th>
+          <th>Dif</th>
+			
         </thead>
   
 		<tbody>           
@@ -42,8 +44,15 @@ $cefe=0;?>
 		<tr <?php if (($i%2)==0){ echo "style='background-color: #D4E6F1 !important'";}?>>
 			<td>{{$q->nombre}}</td>
 			<td>{{$q->unidad}}</td>
+			<td class="filastk">{{$q->stock}}</td>
+			<td class="filaskd">
+			<?php  if( $q->dif <> $q->stock ){?>
+				{{$q->dif}} @php if($rol->crearajuste==1){ @endphp <a href="" data-target="#actstock-{{$q->idarticulo}}" data-toggle="modal"><i class="fa fa-fw fa-refresh"></i> </a>@php } @endphp
+				<?php
+			} else { echo $q->dif; }?></td>
 			<td>_______</td>
         </tR>
+		@include('reportes.articulos.tomainventario.modalactstock')  
 		@endforeach	 
 		</tbody>
 		<tfoot>
@@ -70,9 +79,22 @@ $(document).ready(function(){
     $('#imprimir').click(function(){
   //  alert ('si');
   document.getElementById('imprimir').style.display="none";
+  document.getElementById('kdx').style.display="none";
+  document.getElementById('stk').style.display="none";
   window.print(); 
 window.location="{{route('tomainventario')}}";
     });
+	$('#ocultarstk').click(function(){
+		document.getElementById('stk').style.display="none";
+		document.getElementById('ocultarstk').style.display="none";
+		$(".filastk").remove();
+    });
+	$('#ocultarkd').click(function(){
+	document.getElementById('kdx').style.display="none";
+	document.getElementById('ocultarkd').style.display="none";
+	$(".filaskd").remove();
+});
+
 
 });
 
