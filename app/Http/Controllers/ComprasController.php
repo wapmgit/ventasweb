@@ -68,7 +68,7 @@ class ComprasController extends Controller
 	}   
    }
     public function store(Request $request){
-
+	//dd($request);
 	$empresa=DB::table('empresa')-> where('idempresa','=','1')->first();
 	$user=Auth::user()->name; 
 
@@ -85,9 +85,13 @@ class ComprasController extends Controller
     $ingreso->impuesto='16';
     $ingreso->emision=$request->get('emision');
     $ingreso->total=$request->get('total_venta');
+    $ingreso->totalbs=$request->get('total_bs');
     $ingreso->base=$request->get('base');
+    $ingreso->basebs=$request->get('base_bs');
     $ingreso->miva=$request->get('iva');
+    $ingreso->ivabs=$request->get('iva_bs');
     $ingreso->exento=$request->get('exento');
+    $ingreso->exentobs=$request->get('exe_bs');
 	if(empty($request->get('tdeuda'))){   $ingreso->saldo=$request->get('total_venta');}
 	else { $ingreso->saldo=$request->get('tdeuda');}
     if ($ingreso->saldo > 0){
@@ -154,6 +158,7 @@ class ComprasController extends Controller
         $precio = $request -> get('precio');
         $precio_cambio = $request -> get('ptasa');
         $descuento = $request -> get('descuento');
+        $neto = $request -> get('neto');
         $subtotal = $request -> get('stotal');
 		
         
@@ -168,6 +173,7 @@ class ComprasController extends Controller
             $detalle->precio_tasa=$precio_cambio[$cont];
             $detalle->precio=$precio[$cont];
             $detalle->descuento=$descuento[$cont];
+            $detalle->neto=$neto[$cont];
             $detalle->subtotal=$subtotal[$cont];
 			$mytime=Carbon::now('America/Caracas');
 			$detalle->fecha=$mytime->toDateTimeString();
@@ -267,7 +273,7 @@ return Redirect::to('showcompra/'.$ingreso->idcompra."-1");
 
 		$detalles=DB::table('detalle_compras as d')
 			-> join('articulos as a','d.idarticulo','=','a.idarticulo')
-			-> select('d.iddetalle_compra','a.idarticulo','a.nombre as articulo','d.cantidad','d.precio_compra','d.precio_venta','d.subtotal','d.descuento','d.precio')
+			-> select('d.iddetalle_compra','a.idarticulo','a.nombre as articulo','d.cantidad','d.precio_compra','d.neto','d.precio_venta','d.subtotal','d.descuento','d.precio')
 			-> where ('d.idcompra','=',$id)
 			->get();
 			
@@ -632,58 +638,115 @@ catch(\Exception $e)
 } */
 return Redirect::to('compras');
 }
-public function ajustec(Request $request){
-	//dd($request);
-	DB::beginTransaction();
-	try{
-	
-	$user=Auth::user()->name;
-    $detalleventa=DetalleCompras::findOrFail($request->iddetalle);
-	$aux= $detalleventa->cantidad*$detalleventa->precio_compra;
-	if($request -> get('descuento')==0){  $precio=$request -> get('precio'); }
-	else{
-		$precio=$request -> get('precio')*((100-$request -> get('descuento'))/100);
-		}
-	$precio_compra=$request -> get('precio');
-	$aux2=$request -> get('cantidad')*$precio;	
+public function ajustec(Request $request)
+{
+    $request->validate([
+        'iddetalle' => ['required', 'integer'],
+        'idcompra'  => ['required', 'integer'],
+        'cantidad'  => ['required', 'numeric', 'min:0.0001'],
+        'precio'    => ['required', 'numeric', 'min:0'],
+        'descuento' => ['nullable', 'numeric', 'min:0', 'max:100'],
+        'tasa'      => ['nullable', 'numeric', 'min:0'],
+    ]);
 
-		$art=DB::table('articulos')-> select('iva')->where('idarticulo','=',$detalleventa->idarticulo)->first();	
-			if($art->iva > 0){
-				 $nmexe=$request -> get('exe');
-				$niva=$aux2*($art->iva/100);
-				$ivaant=$aux*($art->iva/100);
-				$nmiva=($request -> get('miva')-$ivaant)+$niva;
-				$nbase=$aux2-$niva;
-				$baseant=$aux-$ivaant;
-				$nmbase=($request -> get('base')-$baseant)+$nbase;
-			}else{
-				 $nmbase=$request -> get('base');
-				 $nmiva=$request -> get('iva');
-				 $nmexe=($request -> get('exe')-$aux)+$aux2;
-			}
-		$compra=Compras::findOrFail($request -> get('idcompra'));
-			 $compra->total=(($compra->total-$aux)+$aux2); 
-			 $compra->saldo= $compra->total;
-			 $compra->exento= $nmexe;
-			 $compra->base= $nmbase;
-			 $compra->miva= $nmiva;
-			$compra->update();
-			
-	$detalleventa->cantidad=$request -> get('cantidad');
-	$detalleventa->precio_compra=$precio_compra;
-	$detalleventa->descuento=$request -> get('descuento');
-	$detalleventa->precio=$precio;
-	$detalleventa->subtotal=$precio*$request -> get('cantidad');
-	$detalleventa->update();
+    DB::beginTransaction();
 
-	 DB::commit();
-	}
-	catch(\Exception $e)
-	{
-		DB::rollback();
-	}
-	return Redirect::to('showcompra/'.$request -> get('idcompra').'-1');
-	}
+    try {
+        $vdolar = floatval($request->get('tasa', 1));
+        if ($vdolar <= 0) {
+            $vdolar = 1;
+        }
+
+        $detalle = DetalleCompras::findOrFail($request->get('iddetalle'));
+        $compra  = Compras::findOrFail($request->get('idcompra'));
+
+        $art = DB::table('articulos')
+            ->select('iva')
+            ->where('idarticulo', '=', $detalle->idarticulo)
+            ->first();
+
+        $tasaIva = $art ? floatval($art->iva) : 0;
+
+        $cantidad     = floatval($request->get('cantidad'));
+        $precioCompra = floatval($request->get('precio'));
+        $descuento    = floatval($request->get('descuento', 0));
+
+        // Precio unitario con descuento si aplica
+        $precioUnit = $descuento > 0
+            ? $precioCompra * ((100 - $descuento) / 100)
+            : $precioCompra;
+
+        // Valores anteriores de esta línea (subtotal ya incluye IVA; neto está sin IVA)
+        $subAnt  = round(floatval($detalle->subtotal), 2);
+        $netoAnt = round(floatval($detalle->neto), 2);
+
+        if ($tasaIva > 0) {
+            $baseAnt = $netoAnt > 0 ? $netoAnt : round($subAnt / (1 + ($tasaIva / 100)), 2);
+            $ivaAnt  = round(max(0, $subAnt - $baseAnt), 2);
+            $exeAnt  = 0;
+        } else {
+            $baseAnt = 0;
+            $ivaAnt  = 0;
+            $exeAnt  = $netoAnt > 0 ? $netoAnt : $subAnt;
+        }
+
+        // Nuevos valores de esta línea
+        $montoBruto = $cantidad * $precioUnit;
+
+        if ($tasaIva > 0) {
+            // Subtotal con IVA incluido; neto sin IVA (base imponible)
+            $subNuevo  = round($montoBruto, 2);
+            $netoNuevo = round($subNuevo / (1 + ($tasaIva / 100)), 2);
+            $ivaNuevo  = round($subNuevo - $netoNuevo, 2);
+
+            $baseNueva = $netoNuevo;
+            $exeNueva  = 0;
+        } else {
+            // Exento: neto y subtotal coinciden, sin IVA
+            $subNuevo  = round($montoBruto, 2);
+            $netoNuevo = $subNuevo;
+            $ivaNuevo  = 0;
+
+            $baseNueva = 0;
+            $exeNueva  = $subNuevo;
+        }
+
+        // Actualizar cabecera de compra restando lo anterior y sumando lo nuevo
+        $nuevoTotal = max(0, round((floatval($compra->total) - $subAnt) + $subNuevo, 2));
+        $nuevaBase  = max(0, round((floatval($compra->base) - $baseAnt) + $baseNueva, 2));
+        $nuevoIva   = max(0, round((floatval($compra->miva) - $ivaAnt) + $ivaNuevo, 2));
+        $nuevoExe   = max(0, round((floatval($compra->exento) - $exeAnt) + $exeNueva, 2));
+
+        $compra->total    = $nuevoTotal;
+        $compra->totalbs  = round($nuevoTotal * $vdolar, 2);
+        $compra->saldo    = $nuevoTotal; // Sin abonos, el saldo acompaña al nuevo total
+        $compra->base     = $nuevaBase;
+        $compra->basebs   = round($nuevaBase * $vdolar, 2);
+        $compra->miva     = $nuevoIva;
+        $compra->ivabs    = round($nuevoIva * $vdolar, 2);
+        $compra->exento   = $nuevoExe;
+        $compra->exentobs = round($nuevoExe * $vdolar, 2);
+        $compra->update();
+
+        // Actualizar la línea del detalle
+        $detalle->cantidad      = $cantidad;
+        $detalle->precio_compra = $precioCompra;
+        $detalle->descuento     = $descuento;
+        $detalle->precio        = $precioUnit;
+        $detalle->neto          = $netoNuevo;
+        $detalle->subtotal      = $subNuevo;
+        $detalle->update();
+
+        DB::commit();
+
+        return Redirect::to('showcompra/' . $compra->idcompra . '-1');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->withErrors([
+            'error' => 'No se pudo ajustar la línea de compra: ' . $e->getMessage()
+        ]);
+    }
+}
 	public function actpreciocompra(Request $request){
 	//dd($request);
 	DB::beginTransaction();

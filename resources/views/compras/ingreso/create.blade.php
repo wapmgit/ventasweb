@@ -165,7 +165,7 @@
                 <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                     <div class="form-group mb-0">
                         <label for="precio_compra">Precio Compra</label>
-                        <input type="text" step="any" name="pprecio_compra" id="pprecio_compra" class="form-control" placeholder="Precio">
+                        <input type="number" step="any" name="pprecio_compra" id="pprecio_compra" class="form-control" min="0" inputmode="decimal" placeholder="Precio">
                     </div>
                 </div>
 
@@ -204,6 +204,7 @@
                             <th colspan="8" class="text-right"><h4><strong>TOTAL:</strong></h4></th>
                             <th class="text-center"><h4 id="total" class="text-primary font-weight-bold">$. 0.00</h4></th>
                             <input type="hidden" name="total_venta" id="total_venta">
+							<input type="hidden"  readonly name="total_bs" id="total_bs">
                         </tr>
                     </tfoot>
                     <tbody></tbody>
@@ -216,19 +217,22 @@
                     <div class="form-group mb-0">
                         <strong>Base Imponible: </strong>
                         <input type="text" class="form-control d-inline-block text-center font-weight-bold" style="width: 120px;" name="base" id="pbase" value="0" placeholder="Base" readonly>
-                    </div>
+						<input type="hidden"  readonly name="base_bs" id="base_bs">
+					</div>
                 </div>
                 <div class="col-md-4 text-center">
                     <div class="form-group mb-0">
                         <strong>IVA: </strong>
                         <input type="text" class="form-control d-inline-block text-center font-weight-bold" style="width: 120px;" name="iva" id="piva" value="0" placeholder="IVA" readonly>
-                    </div>
+						<input type="hidden"  readonly  name="iva_bs" id="iva_bs">
+					</div>
                 </div>
                 <div class="col-md-4 text-center">
                     <div class="form-group mb-0">
                         <strong>Exento: </strong>
                         <input type="text" class="form-control d-inline-block text-center font-weight-bold" style="width: 120px;" name="exento" id="pexento" value="0" placeholder="Exento" readonly>
-                    </div>
+						<input type="hidden" readonly  name="exe_bs" id="exe_bs">
+				   </div>
                 </div>
             </div>
 
@@ -362,6 +366,8 @@
     var arraybase = [];
     var arrayexento = [];
 
+	artventa=[];
+	stcventa=[];
     // =========================================================================
     // FUNCIONES PARA LOCALSTORAGE (AUTO-GUARDADO)
     // =========================================================================
@@ -378,7 +384,7 @@
                 ptasa: row.find('input[name="ptasa[]"]').val(),
                 descuento: row.find('input[name="descuento[]"]').val(),
                 precio: row.find('input[name="precio[]"]').val(),
-                neto: row.find('td:eq(7)').text(),
+                neto: row.find('input[name="neto[]"]').val(),
                 iva: row.find('input[name="iva[]"]').val(),
                 exento: row.find('input[name="exento[]"]').val(),
                 base: row.find('input[name="base[]"]').val(),
@@ -444,12 +450,12 @@
                     var fila = '<tr class="selected" id="fila' + cont + '">' +
                         '<td><button class="btn btn-danger btn-xs" onclick="eliminar(' + cont + ');"><i class="fa fa-times"></i></button></td>' +
                         '<td><input type="hidden" name="idarticulo[]" value="' + item.idarticulo + '">' + item.articulo + '</td>' +
-                        '<td><input type="text" class="form-control form-control-sm" style="width: 60px" name="cantidad[]" readonly="true" value="' + item.cantidad + '"></td>' +
-                        '<td><input type="text" name="precio_compra[]" readonly="true" class="form-control form-control-sm" style="width: 100px" value="' + item.precio_compra + '"></td>' +
-                        '<td><input type="text" name="ptasa[]" readonly="true" class="form-control form-control-sm" style="width: 100px" value="' + item.ptasa + '"></td>' +
-                        '<td><input type="number" readonly="true" name="descuento[]" class="form-control form-control-sm" style="width: 80px" value="' + item.descuento + '"></td>' +
-                        '<td><input type="number" readonly="true" name="precio[]" class="form-control form-control-sm" style="width: 100px" value="' + item.precio + '"></td>' +
-                        '<td>' + item.neto + '</td>' +
+                        '<td><input type="number" class="form-control form-control-sm" style="width: 60px" name="cantidad[]" id="vcantidad'+cont+'" value="' + item.cantidad + '"></td>' +
+                        '<td><input type="text" name="precio_compra[]"  class="form-control form-control-sm" style="width: 100px" id="preciocompra'+cont+'" value="' + item.precio_compra + '"></td>' +
+                        '<td><input type="text" name="ptasa[]" readonly="true" class="form-control form-control-sm" style="width: 100px" id="preciotasa'+cont+'" value="' + item.ptasa + '"></td>' +
+                        '<td><input type="number" readonly="true" name="descuento[]" class="form-control form-control-sm" style="width: 80px" id="vdescuento'+cont+'" value="' + item.descuento + '"></td>' +
+                        '<td><input type="number" readonly="true" name="precio[]" class="form-control form-control-sm" style="width: 100px" id="preciocompradescto'+cont+'" value="' + item.precio + '"></td>' +
+                        '<td><input type="number" readonly="true" name="neto[]" class="form-control form-control-sm" style="width: 100px" id="precioneto'+cont+'" value="' + item.neto + '"></td>' +
                         '<td><input type="hidden" name="iva[]" value="' + item.iva + '"><input type="hidden" name="exento[]" value="' + item.exento + '"><input type="hidden" name="base[]" value="' + item.base + '"><input type="number" name="stotal[]" class="form-control form-control-sm" style="width: 100px" readonly="true" value="' + item.stotal + '"></td>' +
                         '</tr>';
 
@@ -542,7 +548,7 @@
             abono = $("#totala").val();
             tv = $("#total_venta").val();
             var t1 = parseFloat(abono);
-            
+            prepararMontosSeniat();
             document.getElementById('loading').style.display = ""; 
             document.getElementById('procesa').style.display = "none"; 
             document.getElementById('regresar').style.display = "none"; 
@@ -734,17 +740,19 @@
             }
             tmiva = tmiva + miva;
             total = total + subtotal[cont];
+			artventa[cont] = cantidad;
+			
 
             var fila = '<tr class="selected" id="fila' + cont + '">' +
                 '<td><button class="btn btn-danger btn-xs" onclick="eliminar(' + cont + ');"><i class="fa fa-times"></i></button></td>' +
                 '<td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + narticulo +''+imp+'</td>' +
-                '<td><input type="text" class="form-control form-control-sm" style="width: 60px" name="cantidad[]" readonly="true" value="' + cantidad + '"></td>' +
-                '<td><input type="text" name="precio_compra[]" readonly="true" class="form-control form-control-sm" style="width: 100px" value="' + precio_compra + '"></td>' +
-                '<td><input type="text" name="ptasa[]" readonly="true" class="form-control form-control-sm" style="width: 100px" value="' + precio_tasa + '"></td>' +
-                '<td><input type="number" readonly="true" name="descuento[]" class="form-control form-control-sm" style="width: 80px" value="' + descuento + '"></td>' +
-                '<td><input type="number" readonly="true" name="precio[]" class="form-control form-control-sm" style="width: 100px" value="' + precio + '"></td>' +
-                '<td>' + neto.toFixed(2) + '</td>' +
-                '<td><input type="hidden" name="iva[]" value="' + arrayiva[cont] + '"><input type="hidden" name="exento[]" value="' + arrayexento[cont] + '"><input type="hidden" name="base[]" value="' + arraybase[cont] + '"><input type="number" name="stotal[]" class="form-control form-control-sm" style="width: 100px" readonly="true" value="' + subtotal[cont].toFixed(2) + '"></td>' +
+                '<td><input type="number" class="form-control form-control-sm" style="width: 60px" name="cantidad[]" id="vcantidad'+cont+'" onchange="adjcnt('+cont+');"   value="' + cantidad + '"></td>' +
+                '<td><input type="number" name="precio_compra[]"  class="form-control form-control-sm" style="width: 100px" id="preciocompra'+cont+'" onchange="adjcnt('+cont+');"  value="' + precio_compra + '"></td>' +
+                '<td><input type="text" name="ptasa[]" readonly="true" class="form-control form-control-sm" style="width: 100px" id="preciotasa'+cont+'" value="' + precio_tasa + '"></td>' +
+                '<td><input type="number" readonly="true" name="descuento[]" class="form-control form-control-sm" id="vdescuento'+cont+'" style="width: 80px" value="' + descuento + '"></td>' +
+                '<td><input type="number" readonly="true" name="precio[]" class="form-control form-control-sm"  id="preciocompradescto'+cont+'" style="width: 100px"  value="' + precio + '"></td>' +
+                '<td><input type="number" readonly="true" name="neto[]" class="form-control form-control-sm" id="precioneto'+cont+'" style="width: 100px"  value="' + neto + '"></td>' +
+                '<td><input type="hidden" name="iva[]" value="' + arrayiva[cont] + '"><input type="hidden" name="exento[]" value="' + arrayexento[cont] + '"><input type="hidden" name="base[]" value="' + arraybase[cont] + '"><input type="number" name="stotal[]" class="form-control form-control-sm" style="width: 100px" readonly="true" id="subt'+cont+'" value="' + subtotal[cont].toFixed(2) + '"></td>' +
                 '</tr>';
 
             cont++;
@@ -752,6 +760,7 @@
             $("#total").html("$ : " + total.toFixed(2));
             $("#total_venta").val(total.toFixed(2));
             $("#divtotal").val(total.toFixed(2));
+            $("#tdeuda").val(total.toFixed(2));
             $("#resta").val(total.toFixed(2));
             $("#pidarticulo").selectpicker('toggle');
 
@@ -774,122 +783,279 @@
             toastr.error('Error Al Ingresar El Artículo, ¡Verifique!.');
         }
     }
+function adjcnt(index) {
+    var vdolar = parseFloat($("#valortasa").val()) || 0;
+    var cntant = parseFloat(artventa[index]) || 0;
+    var ncntart = parseFloat($("#vcantidad" + index).val()) || 0;
 
-    function agregarbs() {  
-        var precio = 0;
-        tasacompra = $('#tasacompra').val();
-        idarticulo = $("#pidarticulo").val();
-        articulo = $("#pidarticulo option:selected").text();
-        newarticulo = $("#pidarticulo").val();
-        cantidad = $("#pcantidad").val();
-        precio_compra = ($("#pprecio_compra").val() / tasacompra);
-        precio_venta = ($("#pprecio_venta").val() / tasacompra);
-        precio_tasa = (precio_compra * tasacompra).toFixed(2);
-        descuento = $("#pprecio_venta").val();
-        pdesc = ((100 - descuento) / 100);
-
-        if (descuento > 0) {
-            precondesc = trunc((precio_compra * pdesc), 8);
-            precio = precondesc; 
-        } else {
-            precio = trunc((precio_compra), 8);
-        }
-
-        artiva = articulo.split('-');
-        newartiva = newarticulo.split('_');
-        viva = newartiva[1];
-        mserial = artiva[5];
-        narticulo = artiva[1];
-        idarticulo = newartiva[0]; 
-
-        if (idarticulo != "" && cantidad > 0 && precio_compra != "") {  
-            neto = (cantidad * precio);
-            if (viva == 0) { 
-                subtotal[cont] = neto; miva = 0; arrayiva[cont] = 0;  
-                arraybase[cont] = 0; texe = texe + neto; arrayexento[cont] = neto; 
-            } else { 
-                subtotal[cont] = (neto * (viva / 100)) + neto;
-                arrayexento[cont] = 0;
-                miva = (neto * (viva / 100)); 
-                arrayiva[cont] = miva;
-                arraybase[cont] = neto;
-                tneto = tneto + neto; 
-            }
-            tmiva = tmiva + miva;
-            total = total + subtotal[cont];
-
-            var fila = '<tr class="selected" id="fila' + cont + '">' +
-                '<td><button class="btn btn-danger btn-xs" onclick="eliminar(' + cont + ');"><i class="fa fa-times"></i></button></td>' +
-                '<td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + narticulo + '</td>' +
-                '<td><input type="text" class="form-control form-control-sm" style="width: 60px" name="cantidad[]" readonly="true" value="' + cantidad + '"></td>' +
-                '<td><input type="text" name="precio_compra[]" readonly="true" class="form-control form-control-sm" style="width: 100px" value="' + precio_compra + '"></td>' +
-                '<td><input type="text" name="ptasa[]" readonly="true" class="form-control form-control-sm" style="width: 100px" value="' + precio_tasa + '"></td>' +
-                '<td><input type="number" readonly="true" name="descuento[]" class="form-control form-control-sm" style="width: 80px" value="' + descuento + '"></td>' +
-                '<td><input type="number" readonly="true" name="precio[]" class="form-control form-control-sm" style="width: 100px" value="' + precio + '"></td>' +
-                '<td>' + neto.toFixed(2) + '</td>' +
-                '<td><input type="hidden" name="iva[]" value="' + arrayiva[cont] + '"><input type="hidden" name="exento[]" value="' + arrayexento[cont] + '"><input type="hidden" name="base[]" value="' + arraybase[cont] + '"><input type="number" name="stotal[]" class="form-control form-control-sm" style="width: 100px" readonly="true" value="' + subtotal[cont].toFixed(2) + '"></td>' +
-                '</tr>';
-
-            cont++;
-            limpiar();
-            $("#total").html("$ : " + (total).toFixed(2));
-            $("#total_venta").val((total.toFixed(2)));
-            $("#divtotal").val(total.toFixed(2));
-            $("#resta").val((total));
-            evaluar();
-            $('#detalles').append(fila);
-            $("#piva").val(tmiva.toFixed(2));
-            $("#pbase").val(tneto.toFixed(2));
-            $("#pexento").val(texe.toFixed(2));
-
-            if (mserial == 1) { 
-                $("#modalseriales").modal("show");
-                for (var m = 0; m < cantidad; m++) {
-                    var fila2 = '<tr class="selected"><td><input type="hidden" name="artserial[]" value="' + idarticulo + '"><input type="text" name="chasis[]" value=""></td><td><input type="text" name="motor[]" value=""></td><td><input type="text" name="placa[]" style="width: 70px" value=""></td><td><input type="text" name="color[]" style="width: 70px" value=""></td><td><input type="text" name="ano[]" style="width: 50px" value=""></td></tr>';
-                    $('#tableseriales').append(fila2);
-                }
-            }
-
-            guardarBorrador(); // <--- Auto-guardar tras agregar elemento
-        } else {
-            toastr.error('Error Al Ingresar El Artículo, ¡Verifique!.');
-        }
+    if (isNaN(ncntart) || ncntart <= 0) {
+        alert('Cantidad Incorrecta');
+        $("#vcantidad" + index).val(cntant);
+        return;
     }
 
-    function eliminar(index) {   
-        total = subtotal[index];
-        iva = arrayiva[index];
-        base = arraybase[index];
-        exe = arrayexento[index];
-        auxexe = $("#pexento").val();
-        auxbase = $("#pbase").val();
-        resta = $("#total_venta").val();
-        auxiva = $("#piva").val();
+    var subtant = parseFloat(subtotal[index]) || 0;
+    var npre = parseFloat($("#preciocompra" + index).val()) || 0; 
+    var descto = parseFloat($("#vdescuento" + index).val()) || 0;
+	
+    var pdesc = descto > 0 ? ((100 - descto) / 100) : 1;
+    var precioUnit = npre * pdesc;
 
-        nbase = (parseFloat(auxbase) - parseFloat(base)); if (nbase < 0) { tneto = 0; nbase = 0; }
-        niva = (parseFloat(auxiva) - parseFloat(iva)); if (niva < 0) { tmiva = 0; niva = 0; }
-        nexe = (parseFloat(auxexe) - parseFloat(exe)); if (nexe < 0) { texe = 0; nexe = 0; }
-        nv = (parseFloat(resta) - (total));
+    var baseAnt = parseFloat(arraybase[index]) || 0;
+    var ivaAnt = parseFloat(arrayiva[index]) || 0;
+    var exeAnt = parseFloat(arrayexento[index]) || 0;
+    var eraGravado = ivaAnt > 0 || baseAnt > 0;
 
-        texe = nexe;
-        tmiva = niva;
-        tneto = nbase;
+    var nuevoNeto = 0;
+    var nuevoIvaItem = 0;
+    var nuevoExeItem = 0;
+    var nsubt = 0;
 
-        $("#total").html("$" + nv.toFixed(2));
-        $("#divtotal").val(nv.toFixed(2));
-        $("#piva").val(niva.toFixed(2));
-        $("#pexento").val(nexe.toFixed(2));
-        $("#pbase").val(nbase.toFixed(2));
-        $("#total_venta").val(nv.toFixed(2));   
-        $("#resta").val((nv.toFixed(2)));        
-        $("#fila" + index).remove();
+    if (eraGravado) {
+        var alicuota = 16;
+        if (baseAnt > 0 && subtant > 0) {
+            var tasaCalc = Math.round(((subtant / baseAnt) - 1) * 100);
+            if (tasaCalc > 0 && tasaCalc < 100) {
+                alicuota = tasaCalc;
+            }
+        }
+        nuevoNeto = ncntart * precioUnit;
+        nuevoIvaItem = parseFloat((nuevoNeto * (alicuota / 100)).toFixed(2));
+        nsubt = nuevoNeto + nuevoIvaItem;
+		netofalso=nuevoNeto;
+    } else {
+        nuevoExeItem = ncntart * precioUnit;
+        nsubt = nuevoExeItem;
+		netofalso=nsubt;
+    }
 
-        subtotal[index] = (nv);   
-        total = subtotal[index];  
+    // Revertir valores anteriores de esta línea en los acumuladores globales
+    var totalbase = parseFloat($("#pbase").val()) || 0;
+    var totaliva = parseFloat($("#piva").val()) || 0;
+    var totalexe = parseFloat($("#pexento").val()) || 0;
+    var totalGeneral = parseFloat($("#total_venta").val()) || 0;
+
+    totalbase = parseFloat((totalbase - baseAnt + nuevoNeto).toFixed(2));
+    totaliva = parseFloat((totaliva - ivaAnt + nuevoIvaItem).toFixed(2));
+    totalexe = parseFloat((totalexe - exeAnt + nuevoExeItem).toFixed(2));
+    totalGeneral = parseFloat((totalGeneral - subtant + nsubt).toFixed(2));
+
+    // Guardar en arreglos de control
+    artventa[index] = ncntart;
+    subtotal[index] = nsubt;
+    arraybase[index] = nuevoNeto;
+    arrayiva[index] = nuevoIvaItem.toFixed(2);
+    arrayexento[index] = nuevoExeItem;
+
+
+    // Actualizar inputs ocultos de la fila si existen
+    var $fila = $("#fila" + index);
+    $fila.find('input[name="iva[]"]').val(nuevoIvaItem.toFixed(2));
+    $fila.find('input[name="exento[]"]').val(nuevoExeItem);
+    $fila.find('input[name="base[]"]').val(nuevoNeto);
+
+    // Actualizar totales en pantalla
+   // var auxmbs = totalGeneral * vdolar;
+
+    $("#total").html("$ : " + totalGeneral.toFixed(2));
+    $("#divtotal").val(totalGeneral.toFixed(2));
+    $("#tdeuda").val(totalGeneral.toFixed(2));
+    $("#resta").val(totalGeneral.toFixed(2));
+    $("#total_venta").val(totalGeneral.toFixed(2));
+
+    $("#piva").val(totaliva.toFixed(2));
+    $("#pbase").val(totalbase.toFixed(2));
+    $("#pexento").val(totalexe.toFixed(2));
+    $("#subt" + index).val(nsubt.toFixed(2));
+    $("#preciotasa" + index).val((npre*vdolar).toFixed(2)); 
+    $("#precioneto" + index).val(netofalso.toFixed(2));
+    $("#preciocompradescto" + index).val(precioUnit.toFixed(2));
+
+    // Mantener variables globales sincronizadas por si se sigue agregando
+    tneto = totalbase;
+    tmiva = totaliva;
+    texe = totalexe;
+    total = totalGeneral;
+    guardarBorrador();
+    if (typeof evaluar === 'function') {
         evaluar();
-
-        guardarBorrador(); // <--- Auto-guardar tras eliminar elemento
     }
+}
+function agregarbs() {
+    var precio = 0;
+    var tasacompra = parseFloat($('#tasacompra').val()) || 0;
+    var articulo = $("#pidarticulo option:selected").text() || "";
+    var newarticulo = $("#pidarticulo").val() || "";
+    var cantidad = parseFloat($("#pcantidad").val()) || 0;
+    var precioBsRaw = parseFloat($("#pprecio_compra").val()) || 0;
+    var descuento = parseFloat($("#pprecio_venta").val()) || 0;
+
+    if (tasacompra <= 0) {
+        toastr.error('Ingrese una tasa de cambio válida.');
+        return;
+    }
+
+    var precio_compra = precioBsRaw / tasacompra;
+    var pdesc = (100 - descuento) / 100;
+
+    if (descuento > 0) {
+        precio = trunc((precio_compra * pdesc), 8);
+    } else {
+        precio = trunc((precio_compra), 8);
+    }
+
+    var precio_tasa = (precio * tasacompra).toFixed(2);
+
+    var artiva = articulo.split('-');
+    var newartiva = newarticulo.split('_');
+    var idarticulo = newartiva[0] || "";
+    var viva = parseFloat(newartiva[1]) || 0;
+    // Si en tu select el serial viene en newartiva[2], usa newartiva[2]; si viene en artiva[5], ajusta aquí
+    var mserial = newartiva[2] !== undefined ? newartiva[2] : (artiva[5] || 0);
+    var narticulo = artiva[1] || articulo;
+
+    if (idarticulo !== "" && cantidad > 0 && precioBsRaw > 0) {
+        var neto = cantidad * precio;
+        var imp = "";
+
+        if (viva == 0) {
+            imp = "(E)";
+            var netoRedondeado = parseFloat(neto.toFixed(2));
+            subtotal[cont] = netoRedondeado;
+            miva = 0;
+            arrayiva[cont] = 0;
+            arraybase[cont] = 0;
+            texe = parseFloat((texe + netoRedondeado).toFixed(2));
+            arrayexento[cont] = netoRedondeado;
+        } else {
+            imp = "(G)";
+            var mivaCalc = neto * (viva / 100);
+            var subCalc = neto + mivaCalc;
+            var subRedondeado = parseFloat(subCalc.toFixed(2));
+            var mivaRedondeado = parseFloat(mivaCalc.toFixed(2));
+            var baseRedondeado = parseFloat(neto.toFixed(2));
+
+            subtotal[cont] = subRedondeado;
+            arrayexento[cont] = 0;
+            miva = mivaRedondeado;
+            arrayiva[cont] = mivaRedondeado.toFixed(2);
+            arraybase[cont] = baseRedondeado;
+            tneto = parseFloat((tneto + baseRedondeado).toFixed(2));
+        }
+
+        tmiva = parseFloat((tmiva + miva).toFixed(2));
+        total = parseFloat((total + subtotal[cont]).toFixed(2));
+        artventa[cont] = cantidad;
+
+        var fila = '<tr class="selected" id="fila' + cont + '">' +
+            '<td><button type="button" class="btn btn-danger btn-xs" onclick="eliminar(' + cont + ');"><i class="fa fa-times"></i></button></td>' +
+            '<td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + narticulo + ' ' + imp + '</td>' +
+            '<td><input type="number" step="any" class="form-control form-control-sm" style="width: 60px" name="cantidad[]" id="vcantidad' + cont + '" onchange="adjcnt(' + cont + ');" value="' + cantidad + '"></td>' +
+            '<td><input type="number" step="any" name="precio_compra[]" class="form-control form-control-sm" style="width: 100px" id="preciocompra' + cont + '" onchange="adjcnt(' + cont + ');" value="' + precio_compra + '"></td>' +
+            '<td><input type="text" name="ptasa[]" readonly="true" class="form-control form-control-sm" style="width: 100px" id="preciotasa' + cont + '" value="' + precio_tasa + '"></td>' +
+            '<td><input type="number" readonly="true" name="descuento[]" class="form-control form-control-sm" id="vdescuento' + cont + '" style="width: 80px" value="' + descuento + '"></td>' +
+            '<td><input type="number" readonly="true" name="precio[]" class="form-control form-control-sm" id="preciocompradescto' + cont + '" style="width: 100px" value="' + precio + '"></td>' +
+            '<td><input type="number" readonly="true" name="neto[]" class="form-control form-control-sm" id="precioneto' + cont + '" style="width: 100px" value="' + neto + '"></td>' +
+            '<td><input type="hidden" name="iva[]" value="' + arrayiva[cont] + '"><input type="hidden" name="exento[]" value="' + arrayexento[cont] + '"><input type="hidden" name="base[]" value="' + arraybase[cont] + '"><input type="number" name="stotal[]" class="form-control form-control-sm" style="width: 100px" readonly="true" id="subt' + cont + '" value="' + subtotal[cont].toFixed(2) + '"></td>' +
+            '</tr>';
+
+        cont++;
+        limpiar();
+
+        $("#total").html("$ : " + total.toFixed(2));
+        $("#total_venta").val(total.toFixed(2));
+        $("#divtotal").val(total.toFixed(2));
+        $("#tdeuda").val(total.toFixed(2));
+        $("#resta").val(total.toFixed(2));
+
+        if ($("#pidarticulo").data('selectpicker')) {
+            $("#pidarticulo").selectpicker('toggle');
+        }
+
+        if (typeof evaluar === "function") {
+            evaluar();
+        }
+
+        $('#detalles').append(fila);
+        $("#piva").val(tmiva.toFixed(2));
+        $("#pbase").val(tneto.toFixed(2));
+        $("#pexento").val(texe.toFixed(2));
+
+        if (mserial == 1) {
+            $("#modalseriales").modal("show");
+            for (var m = 0; m < cantidad; m++) {
+                var fila2 = '<tr class="selected"><td><input type="hidden" name="artserial[]" value="' + idarticulo + '"><input type="text" name="chasis[]" value=""></td><td><input type="text" name="motor[]" value=""></td><td><input type="text" name="placa[]" style="width: 70px" value=""></td><td><input type="text" name="color[]" style="width: 70px" value=""></td><td><input type="number" name="ano[]" style="width: 50px" maxlength="4" value=""></td></tr>';
+                $('#tableseriales').append(fila2);
+            }
+        }
+
+        if (typeof guardarBorrador === "function") {
+            guardarBorrador();
+        }
+    } else {
+        toastr.error('Error Al Ingresar El Artículo, ¡Verifique!.');
+    }
+}
+function eliminar(index) {
+    var itemSubt = parseFloat(subtotal[index]) || 0;
+    var itemIva  = parseFloat(arrayiva[index]) || 0;
+    var itemBase = parseFloat(arraybase[index]) || 0;
+    var itemExe  = parseFloat(arrayexento[index]) || 0;
+
+    var auxexe   = parseFloat($("#pexento").val()) || 0;
+    var auxbase  = parseFloat($("#pbase").val()) || 0;
+    var auxiva   = parseFloat($("#piva").val()) || 0;
+    var auxtotal = parseFloat($("#total_venta").val()) || 0;
+
+    var nbase = parseFloat((auxbase - itemBase).toFixed(2));
+    var niva  = parseFloat((auxiva - itemIva).toFixed(2));
+    var nexe  = parseFloat((auxexe - itemExe).toFixed(2));
+    var nv    = parseFloat((auxtotal - itemSubt).toFixed(2));
+
+    if (nbase <= 0) nbase = 0;
+    if (niva <= 0)  niva = 0;
+    if (nexe <= 0)  nexe = 0;
+    if (nv <= 0)    nv = 0;
+
+    // Sincronizar acumuladores globales para futuros agregar() / adjcnt()
+    tneto = nbase;
+    tmiva = niva;
+    texe  = nexe;
+    total = nv;
+
+    // Limpiar valores de la fila eliminada
+    subtotal[index]    = 0;
+    arraybase[index]   = 0;
+    arrayiva[index]    = 0;
+    arrayexento[index] = 0;
+    artventa[index]    = 0;
+
+    $("#total").html("$" + nv.toFixed(2));
+    $("#divtotal").val(nv.toFixed(2));
+    $("#piva").val(niva.toFixed(2));
+    $("#pexento").val(nexe.toFixed(2));
+    $("#pbase").val(nbase.toFixed(2));
+    $("#total_venta").val(nv.toFixed(2));
+    $("#resta").val(nv.toFixed(2));
+    $("#tdeuda").val(nv.toFixed(2));
+
+    $("#fila" + index).remove();
+
+    if (typeof evaluar === "function") {
+        evaluar();
+    }
+
+    if (typeof guardarBorrador === "function") {
+        guardarBorrador();
+    }
+	console.log({
+    index,
+    auxtotal, itemSubt, restaTotal: auxtotal - itemSubt,
+    auxbase,  itemBase, restaBase:  auxbase - itemBase,
+    auxiva,   itemIva,  restaIva:   auxiva - itemIva,
+    auxexe,   itemExe,  restaExe:   auxexe - itemExe
+});
+}
 
     function limpiar() {
         $("#pcantidad").val("");
@@ -940,10 +1106,11 @@
         datosarticulo = $("#pidarticulo option:selected").text();
         arti = datosarticulo.split('-');
         st = arti[3];
-        $("#pprecio_compra").val("" + st); 
+		var valorLimpio = parseNumeroSeguro(st);
+        $("#pprecio_compra").val(valorLimpio); 
         if (auxcompra == 1) {
             var tasac = $("#tasacompra").val();
-            $("#pprecio_compra").val((tasac * st).toFixed(2)); 
+            $("#pprecio_compra").val((tasac * valorLimpio)); 
         }
     }
 
@@ -1030,6 +1197,49 @@
         total = acumpago[index];
         tventa = $("#divtotal").val();
     }
+	function parseNumeroSeguro(valor) {
+    if (typeof valor === 'number') {
+        return Number.isFinite(valor) ? valor : 0;
+    }
+    if (!valor) return 0;
+
+    // Convierte coma decimal a punto y elimina cualquier letra o símbolo extraño
+    var normalizado = String(valor)
+        .trim()
+        .replace(',', '.')
+        .replace(/[^0-9.-]/g, '');
+
+    var numero = parseFloat(normalizado);
+    return Number.isFinite(numero) ? numero : 0;
+}
+function prepararMontosSeniat() {
+    var vdolar = parseFloat($("#valortasa").val()) || 0;
+    if (vdolar <= 0) {
+        alert("La tasa del dólar no puede ser cero.");
+        return false;
+    }
+
+    // 1. Tomamos los totales limpios que ya tienes en dólares
+    var totalBaseUSD  = parseFloat($("#pbase").val()) || 0;
+    var totalIvaUSD   = parseFloat($("#piva").val()) || 0;
+    var totalExeUSD   = parseFloat($("#pexento").val()) || 0;
+    var totalVentaUSD = parseFloat($("#total_venta").val()) || 0;
+
+    // 2. Los convertimos exactamente a Bolívares multiplicando una sola vez por la tasa
+    var totalBaseBs  = (totalBaseUSD * vdolar).toFixed(2);
+    var totalIvaBs   = (totalIvaUSD * vdolar).toFixed(2);
+    var totalExeBs   = (totalExeUSD * vdolar).toFixed(2);
+    var totalVentaBs = (totalVentaUSD * vdolar).toFixed(2);
+
+    // 3. Los asignas a los inputs que viajan por POST hacia PHP (para el SENIAT / Base de datos)
+    // (Asegúrate de tener estos inputs ocultos en tu formulario)
+    $("#base_bs").val(totalBaseBs);
+    $("#iva_bs").val(totalIvaBs);
+    $("#exe_bs").val(totalExeBs);
+    $("#total_bs").val(totalVentaBs);
+
+    return true; // Todo listo para enviar el formulario con éxito
+}
 </script>
 @endpush
 @endsection

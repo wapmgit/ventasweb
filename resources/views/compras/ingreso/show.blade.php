@@ -69,7 +69,7 @@ $cntser=0;$acumnc=0;
                           <td><?php echo number_format( $det->precio_compra, 2,',','.'); ?></td>
                           <td><?php echo number_format( $det->descuento, 2,',','.'); ?></td>
                           <td><?php echo number_format( $det->precio, 2,',','.'); ?></td>
-                           <td><?php echo number_format( $det->cantidad*$det->precio, 2,',','.'); ?></td>
+                           <td><?php echo number_format( $det->neto, 2,',','.'); ?></td>
                           <td><?php echo number_format( $det->subtotal, 2,',','.'); ?></td>
                         </tr>
 							<?php if ($ser <> NULL){?>

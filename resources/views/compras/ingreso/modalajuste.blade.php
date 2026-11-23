@@ -28,6 +28,7 @@ role="dialog" tabindex="-1" id="modaldevolucion-{{$det->idarticulo}}">
 					<input type="hidden" name="base"  value="{{$ingreso->base}}" >
 					<input type="hidden" name="miva"  value="{{$ingreso->miva}}" >
 					<input type="hidden" name="exe"  value="{{$ingreso->exento}}" >
+					<input type="hidden" name="tasa"  value="{{$ingreso->tasa}}" >
 					<input type="hidden" name="plink"  value="0" >
             		</div>
             	</div>
