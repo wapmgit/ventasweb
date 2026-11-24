@@ -933,18 +933,16 @@ public function nota2ds($id){
 		  $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
 		  if ($empresa->orderart==1){$order="nombre";}else{$order="idarticulo";}
           if($rol->factsinexis==0){ $exi='0';}else{$exi='-10000';} 
-		 $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')->select('clientes.id_cliente','clientes.tipo_precio','clientes.nombre','clientes.cedula','clientes.tipo_cliente','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre')
-         -> where('status','=','A')
-		 ->groupby('clientes.id_cliente')
-         -> where ('id_cliente','=',$idcliente)
-         ->get();
+		   $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')
+		->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre','diascredito')
+		-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->OrderBy('clientes.nombre','asc')->get();
          $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
       //dd($contador);
-	$q2=DB::table('articulos as art')
+			$q2=DB::table('articulos as art')
 		->join('agrupados as pre','pre.idarticulo','=','art.idarticulo')
         -> select('art.nombre',DB::raw('CONCAT(IFNULL(art.'.$empresa->codart.',art.idarticulo)," ",art.nombre," ",pre.descripcion) as articulo'),'art.idarticulo',DB::raw('(art.stock/pre.cantidad) as stock'),DB::raw('(art.costo*pre.cantidad) as costo'),'pre.precio1 as precio_promedio','pre.precio2 as precio2','art.iva','art.serial','pre.fraccion','pre.precio2 as precio3','pre.id as usagrupo')
         -> where('art.estado','=','Activo')
-        -> where ('art.stock','>','0')
+        -> where ('art.stock','>',$exi) 
         -> where ('art.usagrupo','=','1')
         ->groupBy(
 				'art.idarticulo', 
@@ -960,9 +958,9 @@ public function nota2ds($id){
 				'art.fraccion', 
 				'pre.id'
 			);
-		
+	//
        $q3 =DB::table('articulos as art')
-         -> select('art.nombre',DB::raw('CONCAT(IFNULL(art.'.$empresa->codart.',art.idarticulo)," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3',DB::raw('(space(1)*0) as usagrupo'))
+        -> select('art.nombre',DB::raw('CONCAT(IFNULL(art.'.$empresa->codart.',art.idarticulo)," ",art.nombre) as articulo'),'art.idarticulo',DB::raw('(art.stock-art.apartado) as stock'),'art.costo','art.precio1 as precio_promedio','art.precio2 as precio2','art.iva','art.serial','art.fraccion','art.precio3',DB::raw('(space(1)*0) as usagrupo'))
         -> where('art.estado','=','Activo')   
 		-> where ('art.stock','>',$exi) 
         ->groupby('art.idarticulo');
