@@ -32,7 +32,7 @@ if (dias_transcurridos($fecha_a,$fserver) < 0){
 				<span> <b>fecha de vencimiento:</b> </span>{{$empresa -> fechavence}} </br>
 				<span> <b>Dias para vencer:</b> </span><?php echo dias_transcurridos($fecha_a,$fserver); ?></br>
 			<span></br><b>Contacto Soporte:</b> 04169067104- 04247163726<span>
-			<span></br><b>Revision:</b> 23/11/2026<span>
+			<span></br><b>Revision:</b> 24/11/2026<span>
 		</p>
 		</div>
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">

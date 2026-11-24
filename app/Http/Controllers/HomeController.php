@@ -96,7 +96,7 @@ $comprasAnuales = DB::table('compras')
      //   return view('home',["mesesVentas"=>$mesesVentas"vene"=>$vene,"vfeb"=>$vfeb,"vmar"=>$vmar,"vabr"=>$vabr,"vmay"=>$vmay,"vjun"=>$vjun,"vjul"=>$vjul,"vago"=>$vago,"cene"=>$cene,"cfeb"=>$cfeb,"cmar"=>$cmar,"cmay"=>$cmay,"cabr"=>$cabr,"cjun"=>$cjun,"cjul"=>$cjul,"cago"=>$cago,"csep"=>$csep,"vsep"=>$vsep,"voct"=>$voct,"coct"=>$coct,"vnov"=>$vnov,"cnov"=>$cnov,"vdic"=>$vdic,"cdic"=>$cdic,"empresa"=>$empresa,"clientes"=>$clientes,"proveedor"=>$proveedor,"articulos"=>$articulos,"vendedores"=>$vendedores]);
         return view('home',["mesesVentas"=>$mesesVentas,"mesesCompras"=>$mesesCompras,"empresa"=>$empresa,"clientes"=>$clientes,"proveedor"=>$proveedor,"articulos"=>$articulos,"vendedores"=>$vendedores]);
     } else {
-		$rol=DB::table('roles')-> select('crearventa','anularventa','aplidescuento','cambiarprecioventa','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
+		$rol=DB::table('roles')-> select('ajustasaventa','crearventa','anularventa','aplidescuento','cambiarprecioventa','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
 		if($rol <> null){	
 			if ($rol->crearventa==1){
 				 if($rol->factsinexis==0){ $exi='0';}else{$exi='-10000';} 
@@ -107,10 +107,11 @@ $comprasAnuales = DB::table('compras')
 		$subrutas=DB::table('subrutas')->get();
         $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
 		if ($empresa->orderart==1){$order="nombre";}else{$order="idarticulo";}
-         $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')
-		->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre')
+        $personas=DB::table('clientes')->join('vendedores','vendedores.id_vendedor','=','clientes.vendedor')
+		->select('clientes.id_cliente','clientes.tipo_precio','clientes.tipo_cliente','clientes.nombre','clientes.cedula','vendedores.comision','vendedores.id_vendedor as nombrev','limitecre','diascredito')
 		-> where('clientes.status','=','A')->groupby('clientes.id_cliente')->OrderBy('clientes.nombre','asc')->get();
-         $contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
+        
+		$contador=DB::table('venta')->select('idventa')->limit('1')->orderby('idventa','desc')->get();
       //dd($contador);
       
 		$q2=DB::table('articulos as art')

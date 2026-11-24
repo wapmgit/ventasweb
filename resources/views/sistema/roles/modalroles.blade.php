@@ -176,6 +176,12 @@
 					 <label>Aplicar Descto. Global: </label><label>
 					  <input type="checkbox" name="op78" class="minimal" @if($q->aplidescuento==1) checked @endif ></label>
 					</div>
+				</div>	
+				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+					 <div class="form-group">
+					 <label>Ajustar Tasa en Venta: </label><label>
+					  <input type="checkbox" name="op88" class="minimal" @if($q->ajustasaventa==1) checked @endif ></label>
+					</div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 					 <div class="form-group">

@@ -73,7 +73,7 @@ class VentasController extends Controller
         }
     }
     public function create(Request $request){
-		$rol=DB::table('roles')-> select('crearventa','aplidescuento','cambiarprecioventa','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
+		$rol=DB::table('roles')-> select('ajustasaventa','crearventa','aplidescuento','cambiarprecioventa','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
 		 $empresa=DB::table('empresa')->join('sistema','sistema.idempresa','=','empresa.idempresa')->first();
 		 if ($empresa->orderart==1){$order="nombre";}else{$order="idarticulo";}
 		if ($rol->crearventa==1){
@@ -923,7 +923,7 @@ public function nota2ds($id){
     }
 	public function facturar(Request $request, $idcliente){
 		//dd($request);
-		$rol=DB::table('roles')-> select('crearventa','cambiarprecioventa','aplidescuento','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
+		$rol=DB::table('roles')-> select('ajustasaventa','crearventa','cambiarprecioventa','aplidescuento','factsinexis','cargarapida')->where('iduser','=',$request->user()->id)->first();	
 		if ($rol->crearventa==1){
 	     $monedas=DB::table('monedas')->get();
 		 $rutas=DB::table('rutas')->get();

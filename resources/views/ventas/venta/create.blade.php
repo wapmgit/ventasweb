@@ -30,7 +30,7 @@ return $insertar_ceros = $recibo.$numero;
 $cntvend=count($vendedores);
 $cntcli=count($personas);
 $idv=0;
-
+$count = 0;
 ?>  
    @foreach ($contador as $p)
 		<?php  $idv=$p -> idventa; ?>
@@ -38,6 +38,7 @@ $idv=0;
 	@endforeach
 		
 	<div class="row" style="background-color:#f3f4f4"> 
+	@include('proveedores.pagar.modalmonedas')
 		<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
 			<h3>Nueva Venta</h3><li>
     <a href="{{ route('visor') }}">
@@ -237,17 +238,33 @@ $idv=0;
 			@include('ventas.venta.modalseriales')			
 			<div class ="row" id="divdesglose" style="display: none">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 align="center">TOTAL <input type="number" id="divtotal" value="" disabled >
-					<span id="pasapago" title="haz click para hacer cobro total">RESTA</span>
-					<input type="number" id="resta" disabled value=""> <?php if ($rol->aplidescuento==1){?><a  id="linkdscto" href="" data-target="#modaldscto" data-toggle="modal"> <i class="fa-solid fa-percent"></i> </a><?php } ?>
-					<input type="hidden" name="tdeuda" id="tdeuda" value=""  >		
-				</div>
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+        <div style="width: 110px;" class="hidden-xs"></div>
+
+        <h3 style="margin: 0; text-align: center; flex: 1;">
+            TOTAL <input type="number" id="divtotal" value="" disabled>
+            <span id="pasapago" title="haz click para hacer cobro total">RESTA</span>
+            <input type="number" id="resta" disabled value="">
+            <?php if ($rol->aplidescuento == 1) { ?>
+                <a id="linkdscto" href="" data-target="#modaldscto" data-toggle="modal">
+                    <i class="fa-solid fa-percent"></i>
+                </a>
+            <?php } ?>
+            <input type="hidden" name="tdeuda" id="tdeuda" value="">
+        </h3>
+		@if($rol->ajustasaventa==1)
+        <a href="#" data-target="#modalm" data-toggle="modal" class="btn btn-warning btn-xs">
+            <i class="fa fa-refresh"></i> Act. Tasas
+        </a>
+		@endif
+    </div>
+</div>
 				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
 					<div class="form-group">
 					<select name="pidpago" id="pidpago" class="form-control">
 					<option value="100" selected="selected">Selecione...</option>
-					@foreach ($monedas as $m)
-					 <option value="{{$m-> idmoneda}}_{{$m->tipo}}_{{$m->valor}}">{{$m -> nombre}}</option> 
+					@foreach ($monedas as $m) <?php $count++; ?>
+					 <option id="vm<?php echo $count; ?>" value="{{$m-> idmoneda}}_{{$m->tipo}}_{{$m->valor}}">{{$m -> nombre}}</option> 
 					@endforeach
 					</select>
 					</div>
@@ -1685,6 +1702,15 @@ function prepararMontosSeniat() {
     $("#total_bs").val(totalVentaBs);
 
     return true; // Todo listo para enviar el formulario con éxito
+}
+function actmonedas(aux, id, t){
+    var dato = $("#vm" + aux).val();
+    var nv = $("#valor" + aux).val();
+    var ndato = id + '_' + t + '_' + nv;
+    $("#vm" + aux).val(ndato);
+    $("#vmm" + aux).val(ndato);
+    $("#vmpt" + aux).val(ndato);
+    alert('Monto Actualizado.');
 }
 </script>
 @endpush
