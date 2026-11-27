@@ -1,5 +1,37 @@
 @extends ('layouts.master')
 @section ('contenido')
+<style>
+.seniat-btn-compact {
+    background-color: #003876; /* Azul */
+    color: #ffffff;
+    border: 1px solid #002855;
+    border-top: 2px solid #ffcc00;    /* Amarillo arriba */
+    border-bottom: 2px solid #cf142b; /* Rojo abajo */
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+}
+
+.seniat-btn-compact:hover,
+.seniat-btn-compact:focus {
+    background-color: #004c9e;
+    color: #ffffff;
+}
+
+.seniat-btn-compact i {
+    color: #ffcc00; /* Ícono amarillo */
+    font-size: 11px;
+}
+
+.seniat-btn-compact span {
+    font-size: 9px;
+    font-weight: 700;
+    margin-left: 3px;
+    letter-spacing: 0.4px;
+}
+</style>
 	<div class="row">
 		<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 			<h3>Editar datos de:{{ $cliente->nombre}}</h3>
@@ -15,21 +47,29 @@
             <div class="form-group">
             	<label for="nombre">Nombre</label>
 				<input type="hidden" name="id" class="form-control" value="{{$cliente->id_cliente}}">
-            	<input type="text" name="nombre" class="form-control" onchange="conMayusculas(this)" value="{{$cliente->nombre}}" placeholder="Nombre...">
+            	<input type="text" name="nombre"  id="nombre" class="form-control" onchange="conMayusculas(this)" value="{{$cliente->nombre}}" placeholder="Nombre...">
 				@if($errors->first('nombre'))<P class='text-danger'>{{$errors->first('nombre')}}</p>@endif
 			</div>
 	</div>
 	<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">	
             <div class="form-group">
             	<label for="cedula">Cedula</label>
-            	<input type="text" name="cedula" class="form-control"  onchange="conMayusculas(this)" value="{{$cliente->cedula}}" placeholder="cedula...">
+            	<input type="text" name="cedula" id="cedula" class="form-control"  onchange="conMayusculas(this)" value="{{$cliente->cedula}}" placeholder="cedula...">
 					@if($errors->first('cedula'))<P class='text-danger'>{{$errors->first('cedula')}}</p>@endif
 			</div>
 	</div>
 		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">	
             <div class="form-group">
-            	<label for="cedula">Rif</label>
-            	<input type="text" name="rif" class="form-control" onchange="conMayusculas(this)" value="{{$cliente->rif}}" placeholder="rif...">
+            	<label for="cedula">Rif </label> <button
+					type="button"
+					class="btn btn-xs seniat-btn-compact"
+					title="Validar en SENIAT"
+					onclick="abrirModalSeniat('#rif', '#nombre');">
+					<i class="fa fa-check-circle"></i>
+					<span>SENIAT</span>
+				</button>
+            	<input type="text" name="rif" id="rif" class="form-control" onchange="conMayusculas(this)" value="{{$cliente->rif}}" placeholder="rif...">
+				
 				@if($errors->first('rif'))<P class='text-danger'>{{$errors->first('rif')}}</p>@endif
 			</div>
 	</div>
@@ -229,7 +269,62 @@
 @include('clientes.cliente.modaldireccionedit')
 </div>	
             </form>
+	<div class="modal fade" id="modalSeniat" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fa fa-id-card-o"></i> Validación Fiscal SENIAT</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="seniat_dato_actual">Cédula / RIF ingresado:</label>
+                    <div class="input-group">
+                        <input type="text" id="seniat_dato_actual" class="form-control" readonly>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" onclick="copiarDatoSeniat();" title="Copiar dato">
+                                <i class="fa fa-copy"></i> Copiar
+                            </button>
+                        </span>
+                    </div>
+                </div>
 
+                <p class="text-muted" style="font-size: 13px; margin-bottom: 10px;">
+                    1. Abre el portal del SENIAT y completa la verificación.<br>
+                    2. Copia el rif y nombre o razón social resultante(Una sola seleccion).<br>
+                    3. Pégalo abajo para pasar el dato a tu formulario.
+                </p>
+
+                <button type="button" class="btn btn-outline-primary btn-block" onclick="abrirPortalSeniat();">
+                    <i class="fa fa-external-link"></i> Abrir BuscaRif SENIAT
+                </button>
+
+                <hr>
+
+                <div class="form-group" style="margin-bottom: 0;">
+				<label for="texto_pegar_seniat">
+					<strong>Pegado rápido (pega aquí y se pasa solo):</strong>
+				</label>
+				<input
+					type="text"
+					id="texto_pegar_seniat"
+					class="form-control"
+					placeholder="Pega aquí con Ctrl + V..."
+					autocomplete="off"
+				>
+				<small class="text-muted">Al pegar, se limpia el texto, se llena el campo y se cierra la ventana.</br>
+				Completara los campo Nombre y Rif en el formulario de Registro.
+				</small>
+			</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 @endsection
  @push('scripts') 
@@ -338,6 +433,27 @@
 				$('input[name="recargo"]').prop('disabled', true);
 			  }
 				 });
+				 	// Captura el pegado directo en el input del modal
+$(document).on('paste', '#texto_pegar_seniat', function (e) {
+    var clipboardData = (e.originalEvent && e.originalEvent.clipboardData) || window.clipboardData;
+    var textoPegado = clipboardData ? clipboardData.getData('text') : '';
+
+    if (textoPegado) {
+        e.preventDefault();
+        aplicarTextoSeniat(textoPegado);
+    }
+});
+
+// Respaldo por si el navegador pega vía input/change sin disparar bien paste
+$(document).on('input', '#texto_pegar_seniat', function () {
+    var val = $(this).val();
+    if (val && val.trim().length > 1) {
+        aplicarTextoSeniat(val);
+    }
+});
+$('#modalSeniat').one('shown.bs.modal', function () {
+    $('#texto_pegar_seniat').val('').focus();
+});
 	});
 	 $('#btncancelar').click(function(){  
 	   window.location="{{route('clientes')}}";
@@ -362,5 +478,131 @@ document.getElementById('btn-toggle-mapaon').style.display="none";
 			 function conMayusculas(field) {
             field.value = field.value.toUpperCase()
 }
-				</script>
+//de la validacion
+function limpiarNombreSeniat(texto) {
+    if (!texto) {
+        return { rif: '', nombre: '' };
+    }
+
+    var limpio = texto
+        .replace(/[\r\n]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    var matchRif = limpio.match(/^(?:rif\s*:?\s*)?([VEJGPC])[\s\-]*(\d{7,10})(?:[\s\-]*(\d))?\b[\s:\-\–—]*(.*)$/i);
+
+    if (matchRif) {
+        var rifExtraido = (matchRif[1] + matchRif[2] + (matchRif[3] || '')).toUpperCase();
+        var nombreExtraido = (matchRif[4] || '')
+            .replace(/^(raz[oó]n\s*social|nombre\s*(o\s*raz[oó]n\s*social)?)\s*:?\s*/i, '')
+            .replace(/^[\s:\-\–—]+/, '')
+            .trim();
+
+        return {
+            rif: rifExtraido,
+            nombre: nombreExtraido
+        };
+    }
+
+    var soloNombre = limpio
+        .replace(/^(raz[oó]n\s*social|nombre\s*(o\s*raz[oó]n\s*social)?)\s*:?\s*/i, '')
+        .replace(/^[\s:\-\–—]+/, '')
+        .trim();
+
+    return {
+        rif: '',
+        nombre: soloNombre
+    };
+}
+
+function aplicarTextoSeniat(textoCrudo) {
+    var datos = limpiarNombreSeniat(textoCrudo);
+    if (!datos.nombre && !datos.rif) return;
+
+    if (datos.rif && $(seniatRifSelector).length) {
+        $(seniatRifSelector).val(datos.rif).trigger('change');
+    }
+
+    if (datos.nombre && $(seniatDestinoSelector).length) {
+        $(seniatDestinoSelector).val(datos.nombre).trigger('change');
+    }
+
+    $('#texto_pegar_seniat').val('');
+    $('#modalSeniat').modal('hide');
+
+    if (typeof toastr !== 'undefined') {
+        toastr.success(datos.rif ? 'RIF y nombre cargados.' : 'Dato cargado: ' + datos.nombre);
+    }
+}
+var seniatOrigenSelector = '#cedula';
+var seniatDestinoSelector = '#nombre';
+var seniatRifSelector = '#rif';
+
+function abrirModalSeniat(selectorOrigen, selectorDestino, selectorRif) {
+    seniatOrigenSelector = selectorOrigen || '#cedula';
+    seniatDestinoSelector = selectorDestino || '#nombre';
+    seniatRifSelector = selectorRif || '#rif';
+
+    var valorActual = ($(seniatRifSelector).val() || '')
+        .replace(/[^a-zA-Z0-9]/g, '')
+        .toUpperCase();
+
+    if (!valorActual) {
+        if (typeof toastr !== 'undefined') {
+            toastr.warning('Primero ingresa una cédula o RIF.');
+        } else {
+            alert('Primero ingresa una cédula o RIF.');
+        }
+        $(seniatRifSelector).focus();
+        return;
+    }
+
+    $(seniatRifSelector).val(valorActual);
+    $('#seniat_dato_actual').val(valorActual);
+    $('#texto_pegar_seniat').val('');
+
+    $('#modalSeniat').modal('show');
+    setTimeout(function () {
+        $('#texto_pegar_seniat').focus();
+    }, 300);
+}
+function copiarDatoSeniat() {
+    var dato = $('#seniat_dato_actual').val();
+    if (!dato) return;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(dato);
+    } else {
+        var temp = document.getElementById('seniat_dato_actual');
+        temp.select();
+        document.execCommand('copy');
+    }
+
+    if (typeof toastr !== 'undefined') {
+        toastr.info('Copiado: ' + dato);
+    }
+}
+function abrirPortalSeniat() {
+    var url = 'https://contribuyente.seniat.gob.ve/BuscaRif/BuscaRif.jsp';
+    var width = 640;
+    var height = 540;
+    var left = (screen.width / 2) - (width / 2);
+    var top = (screen.height / 2) - (height / 2);
+
+    window.open(
+        url,
+        'SeniatConsulta',
+        'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=' + width + ',height=' + height + ',top=' + top + ',left=' + left
+    );
+}
+function autocompletarDesdeSeniat(e) {
+    var clipboardData = e.clipboardData || window.clipboardData;
+    var textoPegado = clipboardData ? clipboardData.getData('text') : '';
+
+    if (textoPegado) {
+        e.preventDefault();
+        aplicarTextoSeniat(textoPegado);
+    }
+}
+</script>
 			@endpush
