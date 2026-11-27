@@ -1,5 +1,37 @@
 @extends ('layouts.master')
 @section ('contenido')
+<style>
+.seniat-btn-compact {
+    background-color: #003876; /* Azul */
+    color: #ffffff;
+    border: 1px solid #002855;
+    border-top: 2px solid #ffcc00;    /* Amarillo arriba */
+    border-bottom: 2px solid #cf142b; /* Rojo abajo */
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+}
+
+.seniat-btn-compact:hover,
+.seniat-btn-compact:focus {
+    background-color: #004c9e;
+    color: #ffffff;
+}
+
+.seniat-btn-compact i {
+    color: #ffcc00; /* Ícono amarillo */
+    font-size: 11px;
+}
+
+.seniat-btn-compact span {
+    font-size: 9px;
+    font-weight: 700;
+    margin-left: 3px;
+    letter-spacing: 0.4px;
+}
+</style>
 <?php $cntvend=count($vendedores); ?>
 <?php $cntrut=count($rutas); ?>
 	<div class="row">
@@ -17,16 +49,16 @@
 			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">			
             <div class="form-group">
             	<label for="descripcion">Cedula  <span class="input-group-btn">
-    <button
-        type="button"
-        class="btn btn-default btn-sm seniat-btn-compact"
-        title="Validar en SENIAT"
-        onclick="abrirModalSeniat('#vidcedula', '#nombre');">
-        <i class="fa fa-check-circle text-info"></i>
-        <span style="font-size: 11px; font-weight: 600; margin-left: 3px;">SENIAT</span>
-    </button>
+  <button
+    type="button"
+    class="btn btn-xs seniat-btn-compact"
+    title="Validar en SENIAT"
+    onclick="abrirModalSeniat('#vidcedula', '#nombre');">
+    <i class="fa fa-check-circle"></i>
+    <span>SENIAT</span>
+</button>
 </span></label>
-            	<input type="text" name="cedula" id="vidcedula" onchange="conMayusculas(this)"  value="{{old('cedula')}}" class="form-control" maxlength="10" placeholder="000000">
+            	<input type="text" name="cedula" id="vidcedula" onchange="conMayusculas(this)"  value="{{old('cedula')}}" class="form-control" maxlength="10" placeholder="00000000">
 					@if($errors->first('cedula'))<P class='text-danger'>{{$errors->first('cedula')}}</p>@endif
 			</div>
 		</div>	
