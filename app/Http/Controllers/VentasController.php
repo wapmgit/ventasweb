@@ -348,7 +348,8 @@ catch(\Exception $e)
     }
 public function devolucion(Request $request){
 
-//dd($request);
+  DB::beginTransaction(); 
+    try {
 //registra la devolucion
 	$user=Auth::user()->name;
     $devolucion=new Devolucion;
@@ -457,7 +458,12 @@ public function devolucion(Request $request){
         $paciente->iddocnc=$request->get('idventa');
 		$paciente->usuario=Auth::user()->name;
         $paciente->save();
-			}      
+			}    
+   DB::commit();
+    } catch (\Exception $e) {
+        DB::rollback();
+       //  Opcional: Log::error($e->getMessage()); para depurar si algo falla
+    } 			
 	if(Auth::user()->nivel=="A"){
 		return Redirect::to('ventas');}else{
 		return Redirect::to('ventacaja');
@@ -474,8 +480,8 @@ public function devolucion(Request $request){
 	return Redirect::to('showdevolucion/'.$request->get('vidventa'));      
     }
 public function devoluparcial(Request $request) {
-   // DB::beginTransaction(); 
-   // try {
+   DB::beginTransaction(); 
+    try {
         $user = Auth::user()->name;
         $vdolar = floatval($request->get('tasa', 1));
         
@@ -527,7 +533,7 @@ public function devoluparcial(Request $request) {
 		$exeantBs   = round($subexeant * $vdolar, 2);
         $aventa = Ventas::findOrFail($request->get('idventa'));
         $abono = $aventa->total_venta - $aventa->saldo;
-        
+         $mytime = Carbon::now('America/Caracas');
         // --- ACTUALIZACIÓN DE ACUMULADORES EN LA VENTA (DÓLARES) ---
         $aventa->base = round(($aventa->base  - $baseantBs) + $baseBs, 2);
         $aventa->base_us = round(($aventa->base_us - $baseant) + $basenew, 2);
@@ -542,7 +548,28 @@ public function devoluparcial(Request $request) {
         if ($abono == 0) {
             $aventa->saldo = round(($aventa->saldo - ($auxAnt + $descuento)) + $auxNew, 2);
         } else {
+			if(($abono >$aventa->total_venta) and ($aventa->saldo > 0)){
+			$aventa->saldo=0;
+			$contador = DB::table('notasadm')->select(DB::raw('count(ndocumento) as doc'))->where('tipo', '=', 2)->first();
+            $numero = ($contador == NULL) ? 0 : $contador->doc;
+
+            $paciente = new Notasadm;
+            $paciente->tipo = 2;
+            $paciente->ndocumento = $numero + 1;
+            $paciente->idcliente = $aventa->idcliente;
+            $paciente->descripcion = "N/C por Devolucion";
+            $paciente->referencia = $aventa->tipo_comprobante . " " . $aventa->serie_comprobante . " " . $aventa->num_comprobante;
+            $paciente->monto =$abono - $aventa->total_venta; // Monto en dólares (o el equivalente si tu BD maneja divisa)
+            $paciente->fecha = $mytime->toDateTimeString();
+            $paciente->pendiente = $abono - $aventa->total_venta;
+            $paciente->pordevolucion = 1;
+            $paciente->iddocnc = $request->get('idventa');
+            $paciente->usuario = Auth::user()->name;
+            $paciente->save();
+				
+			}else{
             $aventa->saldo = round($aventa->total_venta - $abono, 2);
+			}
         }                                    
 
         $aventa->montocomision = round(($aventa->montocomision - $oldcomi) + $newcomi, 2);  
@@ -592,11 +619,11 @@ public function devoluparcial(Request $request) {
             $paciente->save();
         }     
 
-    /*    DB::commit();
+      DB::commit();
     } catch (\Exception $e) {
         DB::rollback();
-        // Opcional: Log::error($e->getMessage()); para depurar si algo falla
-    }   */
+       //  Opcional: Log::error($e->getMessage()); para depurar si algo falla
+    }   
 
     return Redirect::to('showdevolucion/' . $request->get('idventa'));
 }
